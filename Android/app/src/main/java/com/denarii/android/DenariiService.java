@@ -8,18 +8,21 @@ import retrofit2.http.Path;
 
 public interface DenariiService {
 
-    @POST("users/{user}/{email}/{password}/create")
-    Call<Wallet> createWallet(@Path("user") String userName, @Path("email") String email, @Path("password") String password);
+    @GET("users/{user}/{email}")
+    Call<Wallet> getUserId(@Path("user") String userName, @Path("email") String email);
 
-    @PATCH("users/{user}/{email}/{wallet}/{password}/{seed}/restore")
-    Call<Wallet> restoreWallet(@Path("user") String userName, @Path("email") String email, @Path("wallet") String walletName, @Path("password") String password, @Path("seed") String seed);
+    @POST("users/{id}/{password}/create")
+    Call<Wallet> createWallet(@Path("id") String userId, @Path("password") String password);
 
-    @GET("users/{user}/{email}/{wallet}/{password}/open")
-    Call<Wallet> openWallet(@Path("user") String userName, @Path("email") String email, @Path("wallet") String walletName, @Path("password") String password);
+    @PATCH("users/{id}/{wallet}/{password}/{seed}/restore")
+    Call<Wallet> restoreWallet(@Path("id") String userId, @Path("wallet") String walletName, @Path("password") String password, @Path("seed") String seed);
 
-    @GET("users/{user}/{email}/{wallet}/balance")
-    Call<Wallet> getBalance(@Path("user") String userName, @Path("email") String email, @Path("wallet") String walletName);
+    @GET("users/{id}/{wallet}/{password}/open")
+    Call<Wallet> openWallet(@Path("id") String userId, @Path("wallet") String walletName, @Path("password") String password);
 
-    @POST("users/{user}/{email}/{wallet}/{amount}/send")
-    Call<Wallet> sendDenarii(@Path("user") String userName, @Path("email") String email, @Path("wallet") String walletName, @Path("amount") int amountToSend);
+    @GET("users/{id}/{wallet}/balance")
+    Call<Wallet> getBalance(@Path("id") String userId, @Path("wallet") String walletName);
+
+    @POST("users/{id}/{wallet}/{amount}/send")
+    Call<Wallet> sendDenarii(@Path("id") String userId, @Path("wallet") String walletName, @Path("amount") int amountToSend);
 }
