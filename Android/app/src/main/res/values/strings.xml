@@ -23,8 +23,18 @@
     <string name="open_wallet_password_text">Wallet Password</string>
     <string name="open_wallet_name_text">Wallet Name</string>
     <string name="restore_wallet_success_text">Success</string>
+    <string name="restore_wallet_failure_text">Failure</string>
     <string name="restore_wallet_submit_text">Submit</string>
     <string name="restore_wallet_seed_text">Wallet Seed</string>
     <string name="restore_wallet_password_text">Wallet Password</string>
     <string name="restore_wallet_name_text">Wallet Name</string>
+    <string name="user_info_success_text">Success</string>
+    <string name="user_info_failure_text">Failure</string>
+    <string name="opened_wallet_balance_text">Balance</string>
+    <string name="opened_wallet_success_text">Success</string>
+    <string name="opened_wallet_failure_text">Failure</string>
+    <string name="opened_wallet_send_text">Send</string>
+    <string name="opened_wallet_send_to_text">Send To</string>
+    <string name="opened_wallet_amount_to_send_text">Amount to Send</string>
+    <string name="opened_wallet_refresh_balance_text">Refresh Balance</string>
 </resources>

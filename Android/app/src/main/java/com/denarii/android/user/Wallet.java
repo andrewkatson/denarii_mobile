@@ -1,4 +1,4 @@
-package com.denarii.android;
+package com.denarii.android.user;
 
 public class Wallet {
     public int responseCode;
