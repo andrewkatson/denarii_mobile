@@ -9,7 +9,7 @@ This code is the frontend and backend code for the Denarii cryptocurrency. It ru
 ### Backend 
 
 ```bash
-pip install Django pytest
+pip install Django pytest && bazel run :configure
 ```
 
 ### Frontend
@@ -24,4 +24,20 @@ Just open Android/ folder with Android Studio.
 
 ### IOS
 
+N/A
+
+## Running 
+
+### Backend
+```bash
+python Backend/manage.py runserver 10003
+```
+
+### Frontend
+N/A
+
+### Android
+Run button in Android Studio either with a virtual device or a Wi-Fi connected one.
+
+### IOS
 N/A
