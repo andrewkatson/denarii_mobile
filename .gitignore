@@ -89,3 +89,4 @@ bazel-bin/
 bazel-out/
 bazel-denarii_mobile/
 bazel-testlogs/
+external/
