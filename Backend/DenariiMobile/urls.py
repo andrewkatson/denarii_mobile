@@ -10,5 +10,5 @@ urlpatterns = [
     path('<str:id>/<str:wallet>/<str:password>/open/', views.open_wallet),
     path('<str:id>/<str:wallet>/balance/', views.get_balance),
     # This one the amount is a string but really is a double.
-    path('<str:id>/<str:wallet>/<str:address>/<str:amount>/send')
+    path('<str:id>/<str:wallet>/<str:address>/<str:amount>/send', views.send_denarii)
 ]
