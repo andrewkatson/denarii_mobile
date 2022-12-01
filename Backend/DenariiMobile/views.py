@@ -193,14 +193,14 @@ def send_denarii(request, user_id, wallet_name, address, amount):
         receiver = wallet.Wallet("", "")
         receiver.address = address
 
-        amount_sent = client.transfer_money(amount, sender, receiver)
+        amount_sent = client.transfer_money(float(amount), sender, receiver)
 
         existing_wallet.balance = client.get_balance_of_wallet(sender)
 
         existing_wallet.save()
 
         if amount_sent == amount:
-            return HttpResponseBadRequest({'wallet': existing_wallet})
+            return JsonResponse({'wallet': existing_wallet})
         else:
             return HttpResponseBadRequest("Could not send denarii")
 
