@@ -8,4 +8,5 @@ public class WalletDetails implements Serializable {
     public String userId;
     public String walletName;
     public String walletPassword;
+    public String walletAddress;
 }

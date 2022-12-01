@@ -69,6 +69,7 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
             public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        userDetails.getWalletDetails().walletAddress = response.body().response.walletAddress;
                         createSuccessTextView();
                     } else {
                         createFailureTextView("No response body");

@@ -6,12 +6,6 @@ import os
 import pathlib
 import requests
 import sys
-import workspace_path_finder
-
-# Append path with the location of all moved python protos
-sys.path.append(str(workspace_path_finder.get_home() / "py_proto"))
-
-from Proto import wallet_pb2
 
 
 class DenariiClient:
@@ -145,7 +139,6 @@ class DenariiClient:
 
                 for address in result_dict["addresses"]:
                     if address["label"] != "Primary account":
-
                         wallet.sub_addresses.append(bytes(address["address"], 'utf-8'))
 
             return True

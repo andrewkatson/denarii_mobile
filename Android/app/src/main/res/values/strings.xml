@@ -37,4 +37,5 @@
     <string name="opened_wallet_send_to_text">Send To</string>
     <string name="opened_wallet_amount_to_send_text">Amount to Send</string>
     <string name="opened_wallet_refresh_balance_text">Refresh Balance</string>
+    <string name="opened_wallet_address_text">Own Address</string>
 </resources>

@@ -58,7 +58,9 @@ public class OpenedWallet extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         userDetails.getWalletDetails().balance = response.body().response.balance;
-                        createSuccessTextView("Got Balance", userDetails.getWalletDetails().balance);
+                        createSuccessTextView("Got Balance",
+                                userDetails.getWalletDetails().balance,
+                                userDetails.getWalletDetails().walletAddress);
                     } else {
                         createFailureTextView("Response body was null for get balance");
                     }
@@ -92,7 +94,9 @@ public class OpenedWallet extends AppCompatActivity {
                             // Update the balance now that we sent denarii.
                             getBalance(userDetails);
 
-                            createSuccessTextView("Sent Money", userDetails.getWalletDetails().balance);
+                            createSuccessTextView("Sent Money",
+                                    userDetails.getWalletDetails().balance,
+                                    userDetails.getWalletDetails().walletAddress);
                         } else {
                             createFailureTextView("Response body was null for send money");
                         }
@@ -111,10 +115,14 @@ public class OpenedWallet extends AppCompatActivity {
         }
     }
 
-    private void createSuccessTextView(String successMessage, double newBalance) {
+    private void createSuccessTextView(String successMessage, double newBalance, String walletAddress) {
         TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
 
         balance.setText(String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), newBalance));
+
+        TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
+
+        address.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), walletAddress));
 
         TextView success = (TextView) findViewById(R.id.opened_wallet_success_text_view);
 
@@ -126,6 +134,11 @@ public class OpenedWallet extends AppCompatActivity {
         TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
 
         balance.setText(String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), 0.0d));
+
+        TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
+
+        address.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), ""));
+
 
         TextView success = (TextView) findViewById(R.id.opened_wallet_success_text_view);
 

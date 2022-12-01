@@ -233,3 +233,6 @@ fabric.properties
 
 # Django 
 Backend/secret_key.txt
+
+# Other
+denarii_client.py

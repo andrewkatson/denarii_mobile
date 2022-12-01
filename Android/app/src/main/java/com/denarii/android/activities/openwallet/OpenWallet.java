@@ -68,6 +68,7 @@ public class OpenWallet extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         userDetails.getWalletDetails().seed = response.body().response.seed;
+                        userDetails.getWalletDetails().walletAddress = response.body().response.walletAddress;
                         createSuccessTextView(userDetails.getWalletDetails().seed);
                     } else {
                         createFailureTextView("No response body");
