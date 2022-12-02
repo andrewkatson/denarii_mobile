@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 import denarii_client
 
-from interface import wallet
-from models import wallet_details, user
+from DenariiMobile.interface import wallet
+from DenariiMobile.models import wallet_details, user
 
 
 def get_user(username, email):
