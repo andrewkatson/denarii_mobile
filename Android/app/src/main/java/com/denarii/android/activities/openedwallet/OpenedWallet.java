@@ -50,7 +50,7 @@ public class OpenedWallet extends AppCompatActivity {
     }
 
     private void getBalance(UserDetails userDetails) {
-        Call<Wallet> walletCall = denariiService.getBalance(userDetails.getWalletDetails().userId, userDetails.getWalletDetails().walletName);
+        Call<Wallet> walletCall = denariiService.getBalance(userDetails.getWalletDetails().userIdentifier, userDetails.getWalletDetails().walletName);
 
         walletCall.enqueue(new Callback<Wallet>() {
             @Override
@@ -82,7 +82,7 @@ public class OpenedWallet extends AppCompatActivity {
         EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
 
         try {
-            Call<Wallet> walletCall = denariiService.sendDenarii(userDetails.getWalletDetails().userId,
+            Call<Wallet> walletCall = denariiService.sendDenarii(userDetails.getWalletDetails().userIdentifier,
                     userDetails.getWalletDetails().walletName, sendTo.getText().toString(),
                     Double.parseDouble(amount.getText().toString()));
 

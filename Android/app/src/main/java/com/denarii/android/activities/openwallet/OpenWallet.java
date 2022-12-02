@@ -60,7 +60,7 @@ public class OpenWallet extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<Wallet> walletCall = denariiService.openWallet(userDetails.getWalletDetails().userId, walletName.getText().toString(), walletPassword.getText().toString());
+        Call<Wallet> walletCall = denariiService.openWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString());
 
         walletCall.enqueue(new Callback<Wallet>() {
             @Override

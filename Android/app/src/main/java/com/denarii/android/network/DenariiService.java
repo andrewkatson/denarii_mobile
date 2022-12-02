@@ -14,17 +14,17 @@ public interface DenariiService {
     Call<Wallet> getUserId(@Path("user") String userName, @Path("email") String email);
 
     @POST("users/{id}/{wallet}/{password}/create")
-    Call<Wallet> createWallet(@Path("id") String userId, @Path("wallet") String walletName, @Path("password") String password);
+    Call<Wallet> createWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);
 
     @PATCH("users/{id}/{wallet}/{password}/{seed}/restore")
-    Call<Wallet> restoreWallet(@Path("id") String userId, @Path("wallet") String walletName, @Path("password") String password, @Path("seed") String seed);
+    Call<Wallet> restoreWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password, @Path("seed") String seed);
 
     @GET("users/{id}/{wallet}/{password}/open")
-    Call<Wallet> openWallet(@Path("id") String userId, @Path("wallet") String walletName, @Path("password") String password);
+    Call<Wallet> openWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);
 
     @GET("users/{id}/{wallet}/balance")
-    Call<Wallet> getBalance(@Path("id") String userId, @Path("wallet") String walletName);
+    Call<Wallet> getBalance(@Path("id") int userIdentifier, @Path("wallet") String walletName);
 
     @POST("users/{id}/{wallet}/{address}/{amount}/send")
-    Call<Wallet> sendDenarii(@Path("id") String userId, @Path("wallet") String walletName, @Path("address") String addressToSendTo, @Path("amount") double amountToSend);
+    Call<Wallet> sendDenarii(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("address") String addressToSendTo, @Path("amount") double amountToSend);
 }

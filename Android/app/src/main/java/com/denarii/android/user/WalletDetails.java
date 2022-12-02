@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class WalletDetails implements Serializable {
     public double balance;
     public String seed;
-    public String userId;
+    public int userIdentifier;
     public String walletName;
     public String walletPassword;
     public String walletAddress;

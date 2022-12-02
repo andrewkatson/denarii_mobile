@@ -12,14 +12,10 @@ import android.widget.TextView;
 
 import com.denarii.android.R;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
-import com.denarii.android.activities.userinfo.UserInfo;
-import com.denarii.android.activities.walletdecision.WalletDecision;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
-
-import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -64,7 +60,7 @@ public class CreateWallet extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<Wallet> walletCall = denariiService.createWallet(userDetails.getWalletDetails().userId, walletName.getText().toString(), walletPassword.getText().toString());
+        Call<Wallet> walletCall = denariiService.createWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString());
 
         walletCall.enqueue(new Callback<Wallet>() {
             @Override

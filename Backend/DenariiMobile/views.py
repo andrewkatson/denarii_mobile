@@ -1,51 +1,49 @@
+from django.db import models
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render
 
 import denarii_client
 
 from DenariiMobile.interface import wallet
-from DenariiMobile.models import wallet_details, user
+from DenariiMobile.models import WalletDetails, DenariiUser
 
 
 def get_user(username, email):
     try:
-        existing = user.User.objects.get(name=username, email=email)
+        existing = DenariiUser.objects.get(username=username, email=email)
         return existing
-    except user.User.DoesNotExist:
+    except DenariiUser.DoesNotExist:
         return None
 
 
 def get_user_with_id(user_id):
     try:
-        existing = user.User.objects.get(id=user_id)
+        existing = DenariiUser.objects.get(id=user_id)
         return existing
-    except user.User.DoesNotExist:
+    except DenariiUser.DoesNotExist:
         return None
 
 
-def get_wallet(wallet_id):
-    try:
-        existing = wallet_details.WalletDetails.objects.get(id=wallet_id)
-        return existing
-    except wallet_details.WalletDetails.DoesNotExist:
-        return None
+def get_wallet(user):
+    # Only get the first wallet for now. In theory there could be many, but
+    # we want to enforce one username + email per wallet.
+    return user.wallet_details_set.all()[0]
 
 
 def get_user_id(request, username, email):
     existing = get_user(username, email)
     if existing is not None:
 
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         return JsonResponse({'wallet': existing_wallet})
     else:
-        new_wallet_details = wallet_details.WalletDetails()
-        new_user = user.User(name=username, email=email)
+        new_wallet_details = WalletDetails()
+        new_user = DenariiUser(username=username, email=email)
 
-        new_user.wallet_id = new_wallet_details.id
         new_user.save()
 
-        new_wallet_details.user_id = new_user.id
+        new_wallet_details.user_identifier = new_user.id
         new_wallet_details.save()
 
         return JsonResponse({'wallet': new_wallet_details})
@@ -54,7 +52,7 @@ def get_user_id(request, username, email):
 def create_wallet(request, user_id, wallet_name, password):
     existing = get_user_with_id(user_id)
     if existing is not None:
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password)
@@ -92,7 +90,7 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
     existing = get_user_with_id(user_id)
     if existing is not None:
 
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password, seed)
@@ -127,7 +125,7 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 def open_wallet(request, user_id, wallet_name, password):
     existing = get_user_with_id(user_id)
     if existing is not None:
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password)
@@ -166,7 +164,7 @@ def open_wallet(request, user_id, wallet_name, password):
 def get_balance(request, user_id, wallet_name):
     existing = get_user_with_id(user_id)
     if existing is not None:
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, existing_wallet.wallet_password)
@@ -185,7 +183,7 @@ def get_balance(request, user_id, wallet_name):
 def send_denarii(request, user_id, wallet_name, address, amount):
     existing = get_user_with_id(user_id)
     if existing is not None:
-        existing_wallet = get_wallet(existing.wallet_id)
+        existing_wallet = get_wallet(existing)
 
         client = denarii_client.DenariiClient()
         sender = wallet.Wallet(wallet_name, existing_wallet.wallet_password)

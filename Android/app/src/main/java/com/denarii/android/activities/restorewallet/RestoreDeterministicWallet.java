@@ -62,7 +62,7 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<Wallet> walletCall = denariiService.restoreWallet(userDetails.getWalletDetails().userId, walletName.getText().toString(), walletPassword.getText().toString(), walletSeed.getText().toString());
+        Call<Wallet> walletCall = denariiService.restoreWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString(), walletSeed.getText().toString());
 
         walletCall.enqueue(new Callback<Wallet>() {
             @Override
