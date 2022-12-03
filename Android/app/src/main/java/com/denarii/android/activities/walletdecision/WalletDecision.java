@@ -24,7 +24,7 @@ public class WalletDecision extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        Button openWallet = (Button) findViewById(R.id.open_wallet_button);
+        Button openWallet = (Button) findViewById(R.id.wallet_decision_open_wallet_button);
 
         openWallet.setOnClickListener(v -> {
             Intent intent = new Intent(WalletDecision.this, OpenWallet.class);
@@ -32,7 +32,7 @@ public class WalletDecision extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button restoreWallet = (Button) findViewById(R.id.restore_wallet_button);
+        Button restoreWallet = (Button) findViewById(R.id.wallet_decision_restore_wallet_button);
 
         restoreWallet.setOnClickListener(v -> {
             Intent intent = new Intent(WalletDecision.this, RestoreDeterministicWallet.class);
@@ -40,7 +40,7 @@ public class WalletDecision extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button createWallet = (Button) findViewById(R.id.create_wallet_button);
+        Button createWallet = (Button) findViewById(R.id.wallet_decision_create_wallet_button);
 
         createWallet.setOnClickListener(v -> {
             Intent intent = new Intent(WalletDecision.this, CreateWallet.class);

@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="22dp"
             android:layout_marginTop="21dp"
-            android:text="@string/open_wallet_success_text"
+            android:text="@string/open_wallet_failure_text"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="@+id/open_wallet_submit_button"
             app:layout_constraintTop_toBottomOf="@+id/open_wallet_submit_button" />

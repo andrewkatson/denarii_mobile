@@ -15,6 +15,8 @@ import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
+import com.denarii.android.user.WalletDetails;
+import com.google.gson.Gson;
 
 import java.util.Locale;
 
@@ -22,6 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenedWallet extends AppCompatActivity {
 
@@ -32,7 +35,7 @@ public class OpenedWallet extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opened_wallet);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         denariiService = retrofit.create(DenariiService.class);
 
         Intent currentIntent = getIntent();
@@ -50,17 +53,22 @@ public class OpenedWallet extends AppCompatActivity {
     }
 
     private void getBalance(UserDetails userDetails) {
+        if (userDetails == null) {
+            userDetails = new UserDetails();
+            userDetails.setWalletDetails(new WalletDetails());
+        }
         Call<Wallet> walletCall = denariiService.getBalance(userDetails.getWalletDetails().userIdentifier, userDetails.getWalletDetails().walletName);
 
+        UserDetails finalUserDetails = userDetails;
         walletCall.enqueue(new Callback<Wallet>() {
             @Override
             public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        userDetails.getWalletDetails().balance = response.body().response.balance;
+                        finalUserDetails.getWalletDetails().balance = response.body().response.balance;
                         createSuccessTextView("Got Balance",
-                                userDetails.getWalletDetails().balance,
-                                userDetails.getWalletDetails().walletAddress);
+                                finalUserDetails.getWalletDetails().balance,
+                                finalUserDetails.getWalletDetails().walletAddress);
                     } else {
                         createFailureTextView("Response body was null for get balance");
                     }
@@ -71,12 +79,16 @@ public class OpenedWallet extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<Wallet> call, @NonNull Throwable t) {
-                createFailureTextView("Response failed for get balance");
+                createFailureTextView(String.format("%s %s", "Response failed for get balance", t));
             }
         });
     }
 
     private void attemptToSendMoney(UserDetails userDetails) {
+        if (userDetails == null) {
+            userDetails = new UserDetails();
+            userDetails.setWalletDetails(new WalletDetails());
+        }
 
         EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
         EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
@@ -86,17 +98,18 @@ public class OpenedWallet extends AppCompatActivity {
                     userDetails.getWalletDetails().walletName, sendTo.getText().toString(),
                     Double.parseDouble(amount.getText().toString()));
 
+            UserDetails finalUserDetails = userDetails;
             walletCall.enqueue(new Callback<Wallet>() {
                 @Override
                 public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
                             // Update the balance now that we sent denarii.
-                            getBalance(userDetails);
+                            getBalance(finalUserDetails);
 
                             createSuccessTextView("Sent Money",
-                                    userDetails.getWalletDetails().balance,
-                                    userDetails.getWalletDetails().walletAddress);
+                                    finalUserDetails.getWalletDetails().balance,
+                                    finalUserDetails.getWalletDetails().walletAddress);
                         } else {
                             createFailureTextView("Response body was null for send money");
                         }
@@ -107,7 +120,7 @@ public class OpenedWallet extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<Wallet> call, @NonNull Throwable t) {
-                    createFailureTextView("Response failed for send money");
+                    createFailureTextView(String.format("%s %s", "Response failed for send money", t));
                 }
             });
         } catch (NumberFormatException e) {

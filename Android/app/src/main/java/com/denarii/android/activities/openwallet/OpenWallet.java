@@ -16,6 +16,7 @@ import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
+import com.denarii.android.user.WalletDetails;
 
 import java.util.Locale;
 
@@ -23,6 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenWallet extends AppCompatActivity {
 
@@ -52,24 +54,29 @@ public class OpenWallet extends AppCompatActivity {
     }
 
     private void setupRetroFit(UserDetails userDetails) {
+        if (userDetails == null) {
+            userDetails = new UserDetails();
+            userDetails.setWalletDetails(new WalletDetails());
+        }
         EditText walletName = (EditText) findViewById(R.id.open_wallet_enter_name);
         EditText walletPassword = (EditText) findViewById(R.id.open_wallet_enter_password);
 
         userDetails.getWalletDetails().walletName = walletName.getText().toString();
         userDetails.getWalletDetails().walletPassword = walletPassword.getText().toString();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
         Call<Wallet> walletCall = denariiService.openWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString());
 
+        UserDetails finalUserDetails = userDetails;
         walletCall.enqueue(new Callback<Wallet>() {
             @Override
             public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        userDetails.getWalletDetails().seed = response.body().response.seed;
-                        userDetails.getWalletDetails().walletAddress = response.body().response.walletAddress;
-                        createSuccessTextView(userDetails.getWalletDetails().seed);
+                        finalUserDetails.getWalletDetails().seed = response.body().response.seed;
+                        finalUserDetails.getWalletDetails().walletAddress = response.body().response.walletAddress;
+                        createSuccessTextView(finalUserDetails.getWalletDetails().seed);
                     } else {
                         createFailureTextView("No response body");
                     }
@@ -80,7 +87,7 @@ public class OpenWallet extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<Wallet> call, @NonNull Throwable t) {
-                createFailureTextView("Response failed");
+                createFailureTextView(String.format("%s %s", "Response failed", t));
             }
         });
     }
@@ -102,6 +109,8 @@ public class OpenWallet extends AppCompatActivity {
 
         String textToShow = String.format(Locale.US, "%s: %s", getString(R.string.open_wallet_failure_text), failureMessage);
         successOrFailure.setText(textToShow);
+
+        successOrFailure.setVisibility(View.VISIBLE);
     }
 
     private boolean success() {

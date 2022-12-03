@@ -38,12 +38,10 @@ def get_user_id(request, username, email):
 
         return JsonResponse({'wallet': existing_wallet})
     else:
-        new_wallet_details = WalletDetails()
         new_user = DenariiUser(username=username, email=email)
-
         new_user.save()
 
-        new_wallet_details.user_identifier = new_user.id
+        new_wallet_details = new_user.wallet_details_set.create(new_user_identifier=new_user.id)
         new_wallet_details.save()
 
         return JsonResponse({'wallet': new_wallet_details})
