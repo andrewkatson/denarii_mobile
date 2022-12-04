@@ -12,8 +12,8 @@ import retrofit2.http.Path;
 
 public interface DenariiService {
 
-    @GET("users/{user}/{email}")
-    Call<List<Wallet>> getUserId(@Path("user") String userName, @Path("email") String email);
+    @GET("users/{user}/{email}/{password}")
+    Call<List<Wallet>> getUserId(@Path("user") String userName, @Path("email") String email, @Path("password") String password);
 
     @POST("users/{id}/{wallet}/{password}/create")
     Call<List<Wallet>> createWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);

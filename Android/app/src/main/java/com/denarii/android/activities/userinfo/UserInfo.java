@@ -43,9 +43,11 @@ public class UserInfo extends AppCompatActivity {
 
             EditText name = (EditText)findViewById(R.id.user_info_enter_name);
             EditText email = (EditText)findViewById(R.id.user_info_enter_email);
+            EditText password = (EditText) findViewById(R.id.user_info_password_edit_text);
 
             userDetails.setUserName(name.getText().toString());
             userDetails.setUserEmail(email.getText().toString());
+            userDetails.setUserPassword(password.getText().toString());
 
             getWalletDetails(userDetails);
         });
@@ -68,7 +70,8 @@ public class UserInfo extends AppCompatActivity {
         }
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(), userDetails.getUserEmail());
+        Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(),
+                userDetails.getUserEmail(), userDetails.getUserPassword());
         UserDetails finalUserDetails = userDetails;
         walletCall.enqueue(new Callback<List<Wallet>>() {
             @Override

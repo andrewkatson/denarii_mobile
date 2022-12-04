@@ -2,10 +2,7 @@
 # to directly hash with randomx
 
 import json
-import os
-import pathlib
 import requests
-import sys
 
 
 class DenariiClient:

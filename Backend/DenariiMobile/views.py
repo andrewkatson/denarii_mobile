@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.core import serializers
 from django.http import JsonResponse, HttpResponseBadRequest
 
@@ -17,9 +18,9 @@ else:
 client = denarii_client.DenariiClient()
 
 
-def get_user(username, email):
+def get_user(username, email, password):
     try:
-        existing = DenariiUser.objects.get(username=username, email=email)
+        existing = authenticate(username=username, email=email, password=password)
         return existing
     except DenariiUser.DoesNotExist:
         return None
@@ -39,15 +40,15 @@ def get_wallet(user):
     return user.walletdetails_set.all()[0]
 
 
-def get_user_id(request, username, email):
-    existing = get_user(username, email)
+def get_user_id(request, username, email, password):
+    existing = get_user(username, email, password)
     if existing is not None:
 
         existing_wallet = get_wallet(existing)
         serialized_wallet = serializers.serialize('json', [existing_wallet], fields='user_identifier')
         return JsonResponse({'wallet': serialized_wallet})
     else:
-        new_user = DenariiUser.objects.create_user(username=username, email=email)
+        new_user = DenariiUser.objects.create_user(username=username, email=email, password=password)
         new_user.save()
 
         new_wallet_details = new_user.walletdetails_set.create(user_identifier=new_user.id)

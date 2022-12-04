@@ -36,7 +36,7 @@ public class DenariiServiceTest {
     @Test
     public void getUserId_fails() {
 
-        Call<List<Wallet>> wallet = denariiService.getUserId("username","email@email.com");
+        Call<List<Wallet>> wallet = denariiService.getUserId("username","email@email.com", "password");
 
         try {
             Response<List<Wallet>> response = wallet.execute();

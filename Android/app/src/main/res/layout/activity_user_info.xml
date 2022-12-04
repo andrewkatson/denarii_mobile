@@ -63,10 +63,11 @@
             android:id="@+id/user_info_success_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="128dp"
             android:text="@string/user_info_failure_text"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_info_enter_email" />
 
@@ -74,10 +75,25 @@
             android:id="@+id/user_info_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="68dp"
             android:text="@string/user_info_submit_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_info_enter_email" />
+
+        <EditText
+            android:id="@+id/user_info_password_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="2dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/user_info_password_text"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            app:layout_constraintEnd_toEndOf="@+id/user_info_enter_email"
             app:layout_constraintTop_toBottomOf="@+id/user_info_enter_email" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

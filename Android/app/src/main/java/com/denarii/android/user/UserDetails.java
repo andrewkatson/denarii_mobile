@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class UserDetails implements Serializable {
     private String userName;
     private String userEmail;
+    private String userPassword;
     private WalletDetails walletDetails;
 
     public void setUserName(String userName) {
@@ -13,6 +14,10 @@ public class UserDetails implements Serializable {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
     public void setWalletDetails(WalletDetails walletDetails) {
@@ -25,6 +30,10 @@ public class UserDetails implements Serializable {
 
     public String getUserEmail() {
         return this.userEmail;
+    }
+
+    public String getUserPassword() {
+        return this.userPassword;
     }
 
     public WalletDetails getWalletDetails() {
