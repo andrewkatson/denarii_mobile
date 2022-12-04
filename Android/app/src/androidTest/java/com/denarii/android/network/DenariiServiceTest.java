@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -35,11 +36,12 @@ public class DenariiServiceTest {
     @Test
     public void getUserId_fails() {
 
-        Call<Wallet> wallet = denariiService.getUserId("username","email@email.com");
+        Call<List<Wallet>> wallet = denariiService.getUserId("username","email@email.com");
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.userIdentifier, 1);
@@ -50,11 +52,12 @@ public class DenariiServiceTest {
 
     @Test
     public void createWallet_fails() {
-        Call<Wallet> wallet = denariiService.createWallet(1, "wallet_name", "wallet_password");
+        Call<List<Wallet>> wallet = denariiService.createWallet(1, "wallet_name", "wallet_password");
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.seed, "do re me");
@@ -66,11 +69,12 @@ public class DenariiServiceTest {
 
     @Test
     public void openWallet_fails() {
-        Call<Wallet> wallet = denariiService.openWallet(1, "wallet_name", "wallet_password");
+        Call<List<Wallet>> wallet = denariiService.openWallet(1, "wallet_name", "wallet_password");
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.seed, "do re me");
@@ -82,11 +86,12 @@ public class DenariiServiceTest {
 
     @Test
     public void restoreWallet_fails() {
-        Call<Wallet> wallet = denariiService.restoreWallet(1, "wallet_name", "wallet_password", "do re me");
+        Call<List<Wallet>> wallet = denariiService.restoreWallet(1, "wallet_name", "wallet_password", "do re me");
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.walletAddress, "wallet_address");
@@ -97,11 +102,12 @@ public class DenariiServiceTest {
 
     @Test
     public void getBalance_fails() {
-        Call<Wallet> wallet = denariiService.getBalance(1, "wallet_name");
+        Call<List<Wallet>> wallet = denariiService.getBalance(1, "wallet_name");
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.walletAddress, "wallet_address");
@@ -113,11 +119,12 @@ public class DenariiServiceTest {
 
     @Test
     public void sendDenarii_fails() {
-        Call<Wallet> wallet = denariiService.sendDenarii(1, "wallet_name", "other_address", 1.0);
+        Call<List<Wallet>> wallet = denariiService.sendDenarii(1, "wallet_name", "other_address", 1.0);
 
         try {
-            Response<Wallet> response = wallet.execute();
-            Wallet responseWallet = response.body();
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
             assertEquals(Objects.requireNonNull(responseWallet).response.balance, 0.0, 0.0);

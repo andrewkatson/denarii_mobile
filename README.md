@@ -10,7 +10,8 @@ This code is the frontend and backend code for the Denarii cryptocurrency. It ru
 
 In terminal or command prompt
 ```bash
-pip install Django pytest django-debug-toolbar
+pip install Django pytest django-debug-toolbar django-crispy-forms pytest-djagno pandas
+
 ```
 
 In command prompt (only on Windows)

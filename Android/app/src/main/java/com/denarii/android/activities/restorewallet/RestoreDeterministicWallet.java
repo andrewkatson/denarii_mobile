@@ -18,6 +18,7 @@ import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -68,15 +69,16 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<Wallet> walletCall = denariiService.restoreWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString(), walletSeed.getText().toString());
+        Call<List<Wallet>> walletCall = denariiService.restoreWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString(), walletSeed.getText().toString());
 
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<Wallet>() {
+        walletCall.enqueue(new Callback<List<Wallet>>() {
             @Override
-            public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
+            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        finalUserDetails.getWalletDetails().walletAddress = response.body().response.walletAddress;
+                        // We only care about the first wallet.
+                        finalUserDetails.getWalletDetails().walletAddress = response.body().get(0).response.walletAddress;
                         createSuccessTextView();
                     } else {
                         createFailureTextView("No response body");
@@ -87,7 +89,7 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Wallet> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
                 createFailureTextView(String.format("%s %s", "Response failed", t));
             }
         });

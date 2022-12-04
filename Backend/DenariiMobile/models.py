@@ -13,11 +13,11 @@ class DenariiUser(AbstractUser):
 
 
 class WalletDetails(models.Model):
-    wallet_name = models.TextField()
-    wallet_password = models.TextField()
-    seed = models.TextField()
-    balance = models.FloatField()
-    wallet_address = models.TextField()
+    wallet_name = models.TextField(null=True)
+    wallet_password = models.TextField(null=True)
+    seed = models.TextField(null=True)
+    balance = models.FloatField(null=True)
+    wallet_address = models.TextField(null=True)
     user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=get_default_denarii_user)
     user_identifier = models.IntegerField(default=0)
 

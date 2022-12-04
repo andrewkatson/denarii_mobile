@@ -1,11 +1,20 @@
-from django.db import models
+from django.core import serializers
 from django.http import JsonResponse, HttpResponseBadRequest
-from django.shortcuts import render
 
-import denarii_client
+try:
+    from Backend.settings import DEBUG
+except ImportError as e:
+    from test.settings import DEBUG
 
 from DenariiMobile.interface import wallet
 from DenariiMobile.models import WalletDetails, DenariiUser
+
+if DEBUG:
+    import DenariiMobile.testing.testing_denarii_client as denarii_client
+else:
+    import denarii_client
+
+client = denarii_client.DenariiClient()
 
 
 def get_user(username, email):
@@ -27,7 +36,7 @@ def get_user_with_id(user_id):
 def get_wallet(user):
     # Only get the first wallet for now. In theory there could be many, but
     # we want to enforce one username + email per wallet.
-    return user.wallet_details_set.all()[0]
+    return user.walletdetails_set.all()[0]
 
 
 def get_user_id(request, username, email):
@@ -35,16 +44,17 @@ def get_user_id(request, username, email):
     if existing is not None:
 
         existing_wallet = get_wallet(existing)
-
-        return JsonResponse({'wallet': existing_wallet})
+        serialized_wallet = serializers.serialize('json', [existing_wallet], fields='user_identifier')
+        return JsonResponse({'wallet': serialized_wallet})
     else:
-        new_user = DenariiUser(username=username, email=email)
+        new_user = DenariiUser.objects.create_user(username=username, email=email)
         new_user.save()
 
-        new_wallet_details = new_user.wallet_details_set.create(new_user_identifier=new_user.id)
+        new_wallet_details = new_user.walletdetails_set.create(user_identifier=new_user.id)
         new_wallet_details.save()
 
-        return JsonResponse({'wallet': new_wallet_details})
+        serialized_wallet = serializers.serialize('json', [new_wallet_details], fields='user_identifier')
+        return JsonResponse({'wallet': serialized_wallet})
 
 
 def create_wallet(request, user_id, wallet_name, password):
@@ -52,7 +62,6 @@ def create_wallet(request, user_id, wallet_name, password):
     if existing is not None:
         existing_wallet = get_wallet(existing)
 
-        client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password)
         res = client.create_wallet(wallet_interface)
         if res is True:
@@ -71,9 +80,10 @@ def create_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    existing_wallet.wallet_password = ""
+                    serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                              fields=('seed', 'wallet_address'))
 
-                    return JsonResponse({'wallet': existing_wallet})
+                    return JsonResponse({'wallet': serialized_wallet})
                 else:
                     return HttpResponseBadRequest("Could not get wallet address")
             else:
@@ -90,7 +100,6 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 
         existing_wallet = get_wallet(existing)
 
-        client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password, seed)
         res = client.restore_wallet(wallet_interface)
 
@@ -108,10 +117,10 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 
                 existing_wallet.save()
 
-                existing_wallet.wallet_password = ""
-                existing_wallet.seed = ""
+                serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                          fields='wallet_address')
 
-                return JsonResponse({'wallet': existing_wallet})
+                return JsonResponse({'wallet': serialized_wallet})
             else:
                 return HttpResponseBadRequest("Could not get wallet address")
         else:
@@ -125,7 +134,6 @@ def open_wallet(request, user_id, wallet_name, password):
     if existing is not None:
         existing_wallet = get_wallet(existing)
 
-        client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, password)
 
         res = client.set_current_wallet(wallet_interface)
@@ -146,9 +154,10 @@ def open_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    existing_wallet.wallet_password = ""
+                    serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                              fields=('seed', 'wallet_address'))
 
-                    return JsonResponse({'wallet': existing_wallet})
+                    return JsonResponse({'wallet': serialized_wallet})
                 else:
                     return HttpResponseBadRequest("Could not get wallet address")
             else:
@@ -164,7 +173,6 @@ def get_balance(request, user_id, wallet_name):
     if existing is not None:
         existing_wallet = get_wallet(existing)
 
-        client = denarii_client.DenariiClient()
         wallet_interface = wallet.Wallet(wallet_name, existing_wallet.wallet_password)
 
         wallet_interface.balance = client.get_balance_of_wallet(wallet_interface)
@@ -172,7 +180,10 @@ def get_balance(request, user_id, wallet_name):
 
         existing_wallet.save()
 
-        return JsonResponse({'wallet': existing_wallet})
+        serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                  fields='balance')
+
+        return JsonResponse({'wallet': serialized_wallet})
 
     else:
         return HttpResponseBadRequest("No user with id")
@@ -183,7 +194,6 @@ def send_denarii(request, user_id, wallet_name, address, amount):
     if existing is not None:
         existing_wallet = get_wallet(existing)
 
-        client = denarii_client.DenariiClient()
         sender = wallet.Wallet(wallet_name, existing_wallet.wallet_password)
         # We only need the receiver's address not their wallet name and password
         receiver = wallet.Wallet("", "")
@@ -195,8 +205,12 @@ def send_denarii(request, user_id, wallet_name, address, amount):
 
         existing_wallet.save()
 
+        # We explicitly send no fields when sending denarii because the client should know how much was sent
+        # based on whether the call was successful or not.
+        serialized_wallet = serializers.serialize('json', [existing_wallet], fields=())
+
         if amount_sent == amount:
-            return JsonResponse({'wallet': existing_wallet})
+            return JsonResponse({'wallet': serialized_wallet})
         else:
             return HttpResponseBadRequest("Could not send denarii")
 

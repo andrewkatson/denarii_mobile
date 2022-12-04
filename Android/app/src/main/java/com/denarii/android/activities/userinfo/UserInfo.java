@@ -18,6 +18,7 @@ import com.denarii.android.activities.walletdecision.WalletDecision;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -67,14 +68,15 @@ public class UserInfo extends AppCompatActivity {
         }
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         DenariiService denariiService = retrofit.create(DenariiService.class);
-        Call<Wallet> walletCall = denariiService.getUserId(userDetails.getUserName(), userDetails.getUserEmail());
+        Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(), userDetails.getUserEmail());
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<Wallet>() {
+        walletCall.enqueue(new Callback<List<Wallet>>() {
             @Override
-            public void onResponse(@NonNull Call<Wallet> call, @NonNull Response<Wallet> response) {
+            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        finalUserDetails.setWalletDetails(response.body().response);
+                        // We only care about the first wallet.
+                        finalUserDetails.setWalletDetails(response.body().get(0).response);
                         createSuccessTextView();
                     } else {
                         createFailureTextView("No response body");
@@ -85,7 +87,7 @@ public class UserInfo extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<Wallet> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
                 createFailureTextView(String.format("%s %s", "Response failed", t));
             }
         });
