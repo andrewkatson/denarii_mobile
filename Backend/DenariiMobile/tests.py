@@ -1,5 +1,6 @@
 import pandas as pd
 
+from django.http import HttpRequest
 from django.test import TestCase
 
 from DenariiMobile.views import *
@@ -23,7 +24,8 @@ def create_user(name, email, password):
 
 
 def make_wallet(user_id, wallet_name, password):
-    response = create_wallet(None, user_id, wallet_name, password)
+    request = create_user_request(user_id)
+    response = create_wallet(request, user_id, wallet_name, password)
     try:
         fields = get_json_fields(response)
         return 'seed' in fields and 'wallet_address' in fields
@@ -38,6 +40,13 @@ def run_general_setup(user_name, email, user_password, wallet_name, wallet_passw
     if output is False:
         raise Exception("No output from make_wallet")
     return user_id
+
+
+def create_user_request(user_id):
+    user = DenariiUser.objects.get(id=user_id)
+    request = HttpRequest()
+    request.user = user
+    return request
 
 
 class ViewsTestCase(TestCase):
@@ -72,7 +81,8 @@ class ViewsTestCase(TestCase):
         password = "other_other_password"
         user_id = create_user(self.user, self.email, password)
 
-        response = create_wallet(None, user_id, self.wallet_name, self.wallet_password)
+        request = create_user_request(user_id)
+        response = create_wallet(request, user_id, self.wallet_name, self.wallet_password)
         fields = get_json_fields(response)
 
         self.assertTrue('seed' in fields)
@@ -86,7 +96,8 @@ class ViewsTestCase(TestCase):
         new_wallet_password = "open_wallet_password"
         user_id = run_general_setup(new_user, new_email, new_password, new_wallet_name, new_wallet_password)
 
-        response = open_wallet(None, user_id, new_wallet_name, new_wallet_password)
+        request = create_user_request(user_id)
+        response = open_wallet(request, user_id, new_wallet_name, new_wallet_password)
         fields = get_json_fields(response)
 
         self.assertTrue('seed' in fields)
@@ -100,7 +111,8 @@ class ViewsTestCase(TestCase):
         new_wallet_password = "restore_wallet_password"
         user_id = run_general_setup(new_user, new_email, new_password, new_wallet_name, new_wallet_password)
 
-        response = restore_wallet(None, user_id, new_wallet_name, new_wallet_password, self.seed)
+        request = create_user_request(user_id)
+        response = restore_wallet(request, user_id, new_wallet_name, new_wallet_password, self.seed)
         fields = get_json_fields(response)
 
         self.assertFalse('seed' in fields)
@@ -114,7 +126,8 @@ class ViewsTestCase(TestCase):
         new_wallet_password = "get_balance_password"
         user_id = run_general_setup(new_user, new_email, new_password, new_wallet_name, new_wallet_password)
 
-        response = get_balance(None, user_id, new_wallet_name)
+        request = create_user_request(user_id)
+        response = get_balance(request, user_id, new_wallet_name)
         fields = get_json_fields(response)
 
         self.assertEquals(fields['balance'], 1.0)
@@ -127,7 +140,8 @@ class ViewsTestCase(TestCase):
         new_wallet_password = "send_denarii_password"
         user_id = run_general_setup(new_user, new_email, new_password, new_wallet_name, new_wallet_password)
 
-        response = send_denarii(None, user_id, new_wallet_name, self.other_address, self.amount_to_send)
+        request = create_user_request(user_id)
+        response = send_denarii(request, user_id, new_wallet_name, self.other_address, self.amount_to_send)
         fields = get_json_fields(response)
 
         self.assertFalse("balance" in fields)

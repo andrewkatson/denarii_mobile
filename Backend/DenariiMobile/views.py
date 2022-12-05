@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import JsonResponse, HttpResponseBadRequest
 
@@ -58,6 +59,7 @@ def get_user_id(request, username, email, password):
         return JsonResponse({'wallet': serialized_wallet})
 
 
+@login_required
 def create_wallet(request, user_id, wallet_name, password):
     existing = get_user_with_id(user_id)
     if existing is not None:
@@ -95,6 +97,7 @@ def create_wallet(request, user_id, wallet_name, password):
         return HttpResponseBadRequest("No user with id")
 
 
+@login_required
 def restore_wallet(request, user_id, wallet_name, password, seed):
     existing = get_user_with_id(user_id)
     if existing is not None:
@@ -130,6 +133,7 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
         return HttpResponseBadRequest("No user with id")
 
 
+@login_required
 def open_wallet(request, user_id, wallet_name, password):
     existing = get_user_with_id(user_id)
     if existing is not None:
@@ -169,6 +173,7 @@ def open_wallet(request, user_id, wallet_name, password):
         return HttpResponseBadRequest("No user with id")
 
 
+@login_required
 def get_balance(request, user_id, wallet_name):
     existing = get_user_with_id(user_id)
     if existing is not None:
@@ -190,6 +195,7 @@ def get_balance(request, user_id, wallet_name):
         return HttpResponseBadRequest("No user with id")
 
 
+@login_required
 def send_denarii(request, user_id, wallet_name, address, amount):
     existing = get_user_with_id(user_id)
     if existing is not None:
