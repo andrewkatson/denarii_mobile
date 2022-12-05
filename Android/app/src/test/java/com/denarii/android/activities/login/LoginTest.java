@@ -1,4 +1,4 @@
-package com.denarii.android.activities.userinfo;
+package com.denarii.android.activities.login;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,15 +17,16 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 
 @RunWith(RobolectricTestRunner.class)
-public class UserInfoTest {
+public class LoginTest {
+
     @Test
-    public void clickSubmit_doesNotTakeToWalletDecisionActivity() {
-        try(ActivityController<UserInfo> controller = Robolectric.buildActivity(UserInfo.class)) {
+    public void clickSubmit_doesNothing() {
+        try(ActivityController<Login> controller = Robolectric.buildActivity(Login.class)) {
             controller.setup();
 
-            UserInfo activity = controller.get();
+            Login activity = controller.get();
 
-            activity.findViewById(R.id.user_info_submit).performClick();
+            activity.findViewById(R.id.login_submit_button).performClick();
 
             Intent actual = shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
             assertNull(actual);
@@ -33,17 +34,17 @@ public class UserInfoTest {
     }
 
     @Test
-    public void clickNext_doesNotTakeToWalletDecisionActivity() {
-        try(ActivityController<UserInfo> controller = Robolectric.buildActivity(UserInfo.class)) {
+    public void clickNext_takesToWalletDecisionActivity() {
+        try(ActivityController<Login> controller = Robolectric.buildActivity(Login.class)) {
             controller.setup();
 
-            UserInfo activity = controller.get();
+            Login activity = controller.get();
 
-            activity.findViewById(R.id.user_info_next).performClick();
+            activity.findViewById(R.id.login_next_button).performClick();
 
-            Intent expectedIntent = new Intent(activity, WalletDecision.class);
+            Intent expected = new Intent(activity, WalletDecision.class);
             Intent actual = shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
-            assertEquals(expectedIntent.getComponent(), actual.getComponent());
+            assertEquals(expected.getComponent(), actual.getComponent());
         }
     }
 }

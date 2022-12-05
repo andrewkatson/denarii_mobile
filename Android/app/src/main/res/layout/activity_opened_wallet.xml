@@ -64,7 +64,7 @@
             android:id="@+id/opened_wallet_success_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="76dp"
             android:text="@string/opened_wallet_failure_text"
             android:visibility="invisible"

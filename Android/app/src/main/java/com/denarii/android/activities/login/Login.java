@@ -1,4 +1,4 @@
-package com.denarii.android.activities.userinfo;
+package com.denarii.android.activities.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.denarii.android.R;
+import com.denarii.android.activities.walletdecision.WalletDecision;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
-import com.denarii.android.activities.walletdecision.WalletDecision;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 
@@ -27,23 +27,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UserInfo extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
-
+        setContentView(R.layout.activity_login);
         UserDetails userDetails = new UserDetails();
 
 
-        Button submit = (Button)findViewById(R.id.user_info_submit);
+        Button submit = (Button)findViewById(R.id.login_submit_button);
 
         submit.setOnClickListener(v -> {
 
-            EditText name = (EditText)findViewById(R.id.user_info_enter_name);
-            EditText email = (EditText)findViewById(R.id.user_info_enter_email);
-            EditText password = (EditText) findViewById(R.id.user_info_password_edit_text);
+            EditText name = (EditText)findViewById(R.id.login_enter_name_edit_text);
+            EditText email = (EditText)findViewById(R.id.login_enter_email_edit_text);
+            EditText password = (EditText) findViewById(R.id.login_enter_password_edit_text);
 
             userDetails.setUserName(name.getText().toString());
             userDetails.setUserEmail(email.getText().toString());
@@ -52,10 +51,10 @@ public class UserInfo extends AppCompatActivity {
             getWalletDetails(userDetails);
         });
 
-        Button next = (Button) findViewById(R.id.user_info_next);
+        Button next = (Button) findViewById(R.id.login_next_button);
 
         next.setOnClickListener( v -> {
-            Intent intent = new Intent(UserInfo.this, WalletDecision.class);
+            Intent intent = new Intent(Login.this, WalletDecision.class);
 
             intent.putExtra(Constants.USER_DETAILS, userDetails);
 
@@ -97,19 +96,19 @@ public class UserInfo extends AppCompatActivity {
     }
 
     private void createSuccessTextView() {
-        TextView successOrFailure = (TextView)findViewById(R.id.user_info_success_text_view);
+        TextView successOrFailure = (TextView)findViewById(R.id.login_success_text_view);
 
-        successOrFailure.setText(R.string.user_info_success_text);
+        successOrFailure.setText(getString(R.string.login_success_text));
         successOrFailure.setVisibility(View.VISIBLE);
 
-        Button next = (Button)findViewById(R.id.user_info_next);
+        Button next = (Button)findViewById(R.id.login_next_button);
         next.setVisibility(View.VISIBLE);
     }
 
     private void createFailureTextView(String failureMessage) {
-        TextView successOrFailure = (TextView)findViewById(R.id.user_info_success_text_view);
+        TextView successOrFailure = (TextView)findViewById(R.id.login_success_text_view);
 
-        String textToShow = String.format(Locale.US, "%s: %s", getString(R.string.user_info_failure_text), failureMessage);
+        String textToShow = String.format(Locale.US, "%s: %s", getString(R.string.login_failure_text), failureMessage);
         successOrFailure.setText(textToShow);
 
         successOrFailure.setVisibility(View.VISIBLE);
