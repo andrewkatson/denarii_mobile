@@ -5,12 +5,12 @@ from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponseBadRequest
 
 try:
-    from Backend.settings import DEBUG
+    from Backend.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 except ImportError as e:
-    from test.settings import DEBUG
+    from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 from DenariiMobile.interface import wallet
-from DenariiMobile.models import WalletDetails, DenariiUser
+from DenariiMobile.models import DenariiUser
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
@@ -106,8 +106,8 @@ def request_reset(request, username_or_email):
         random_number = DenariiUser.objects.make_random_password(length=6, allowed_chars='123456789')
 
         # Send the user an email.
-        send_mail("Password reset id", f"Your password reset id is {random_number}", "denariicrypto@gmail.com",
-                  [user.email])
+        send_mail("Password reset id", f"Your password reset id is {random_number}", f"{EMAIL_HOST_USER}@gmail.com",
+                  [user.email], auth_user=EMAIL_HOST_USER, auth_password=EMAIL_HOST_PASSWORD)
 
         user.reset_id = random_number
         user.save()

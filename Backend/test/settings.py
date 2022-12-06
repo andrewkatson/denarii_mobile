@@ -123,3 +123,18 @@ INTERNAL_IPS = [
 ]
 
 AUTH_USER_MODEL = 'DenariiMobile.DenariiUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+with open(Path(f"{BASE_DIR}/email_data.txt"), "rb") as email_file:
+    lines = email_file.readlines()
+    for line in lines:
+        if EMAIL_HOST_USER == '':
+            EMAIL_HOST_USER = line.decode('utf8').strip()
+        else:
+            EMAIL_HOST_PASSWORD = line.decode('utf8').strip()
+            break
