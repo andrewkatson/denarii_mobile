@@ -4,7 +4,7 @@ from . import views
 
 # URLConf
 urlpatterns = [
-    path('<str:username>/<str:email>/<std:password>/', views.get_user_id),
+    path('<str:username>/<str:email>/<str:password>/', views.get_user_id),
     path('<str:username>/<str:email>/<str:password>/reset/', views.reset_password),
     path('<str:username_or_email>/request_reset/', views.request_reset),
     path('<str:username_or_email>/<int:reset_id>/verify_reset/', views.verify_reset),

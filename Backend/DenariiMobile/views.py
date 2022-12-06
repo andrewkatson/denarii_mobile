@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponseBadRequest
 
 try:
@@ -26,12 +27,13 @@ def get_user_with_username_and_email(username, email):
     except DenariiUser.DoesNotExist:
         return None
 
+
 def get_user_with_username_or_email(username_or_email):
     existing = get_user_with_username(username_or_email)
-
     if existing is None:
         existing = get_user_with_email(username_or_email)
-
+        return existing
+    else:
         return existing
 
 
@@ -98,7 +100,28 @@ def get_user_id(request, username, email, password):
 
 
 def request_reset(request, username_or_email):
-    pass
+    user = get_user_with_username_or_email(username_or_email)
+
+    if user is not None:
+        random_number = DenariiUser.objects.make_random_password(length=6, allowed_chars='123456789')
+
+        # Send the user an email.
+        send_mail("Password reset id", f"Your password reset id is {random_number}", "denariicrypto@gmail.com",
+                  [user.email])
+
+        user.reset_id = random_number
+        user.save()
+
+        existing_wallet = get_wallet(user)
+
+        # We send no data back. Just a successful response.
+        serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                  fields=())
+
+        return JsonResponse({'wallet': serialized_wallet})
+
+    else:
+        return HttpResponseBadRequest("No user with that username or email")
 
 
 def verify_reset(request, username_or_email, reset_id):
@@ -120,7 +143,7 @@ def verify_reset(request, username_or_email, reset_id):
         else:
             return HttpResponseBadRequest("That reset id does not match")
     else:
-        return HttpResponseBadRequest("No user with that username")
+        return HttpResponseBadRequest("No user with that username or email")
 
 
 def reset_password(request, username, email, password):
