@@ -128,7 +128,7 @@ def verify_reset(request, username_or_email, reset_id):
     user = get_user_with_username_or_email(username_or_email)
 
     if user is not None:
-        if reset_id == user.reset_id:
+        if reset_id == user.reset_id and reset_id != 0:
 
             user.reset_id = 0
             user.save()
