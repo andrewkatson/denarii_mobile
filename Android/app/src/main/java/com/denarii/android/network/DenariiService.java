@@ -15,6 +15,15 @@ public interface DenariiService {
     @GET("users/{user}/{email}/{password}")
     Call<List<Wallet>> getUserId(@Path("user") String userName, @Path("email") String email, @Path("password") String password);
 
+    @GET("users/{usernameOrEmail}/request_reset")
+    Call<List<Wallet>> requestPasswordReset(@Path("usernameOrEmail") String usernameOrEmail);
+
+    @POST("users/{usernameOrEmail}/{resetId}/verify_reset")
+    Call<List<Wallet>> verifyReset(@Path("usernameOrEmail") String usernameOrEmail, @Path("resetId") int resetId);
+
+    @PATCH("users/{username}/{email}/{password}/reset_password")
+    Call<List<Wallet>> resetPassword(@Path("username") String username, @Path("email") String email, @Path("password") String password);
+
     @POST("users/{id}/{wallet}/{password}/create")
     Call<List<Wallet>> createWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);
 

@@ -74,15 +74,15 @@
             app:layout_constraintStart_toStartOf="@+id/restore_wallet_enter_name"
             app:layout_constraintTop_toBottomOf="@+id/restore_wallet_enter_seed" />
 
-        <TextView
-            android:id="@+id/restore_wallet_success"
+        <Button
+            android:id="@+id/restore_wallet_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/restore_wallet_failure_text"
+            android:layout_marginEnd="31dp"
+            android:layout_marginBottom="31dp"
+            android:text="@string/restore_wallet_next_text"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@+id/restore_wallet_submit_button"
-            app:layout_constraintTop_toBottomOf="@+id/restore_wallet_submit_button" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

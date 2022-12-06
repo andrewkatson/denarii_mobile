@@ -51,6 +51,59 @@ public class DenariiServiceTest {
     }
 
     @Test
+    public void requestReset_fails() {
+
+        Call<List<Wallet>> wallet = denariiService.requestPasswordReset("username");
+
+        try {
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
+
+            assertTrue(response.isSuccessful());
+            assertEquals(Objects.requireNonNull(responseWallet).response.userIdentifier, 1);
+        } catch (IOException e) {
+            assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
+        }
+    }
+
+    @Test
+    public void verifyReset_fails() {
+
+        Call<List<Wallet>> wallet = denariiService.verifyReset("username", 123);
+
+        try {
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
+
+            assertTrue(response.isSuccessful());
+            assertEquals(Objects.requireNonNull(responseWallet).response.userIdentifier, 1);
+        } catch (IOException e) {
+            assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
+        }
+    }
+
+
+    @Test
+    public void getResetPassword_fails() {
+
+        Call<List<Wallet>> wallet = denariiService.resetPassword("username", "email","password");
+
+        try {
+            Response<List<Wallet>> response = wallet.execute();
+            assert response.body() != null;
+            Wallet responseWallet = response.body().get(0);
+
+            assertTrue(response.isSuccessful());
+            assertEquals(Objects.requireNonNull(responseWallet).response.userIdentifier, 1);
+        } catch (IOException e) {
+            assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
+        }
+    }
+
+
+    @Test
     public void createWallet_fails() {
         Call<List<Wallet>> wallet = denariiService.createWallet(1, "wallet_name", "wallet_password");
 

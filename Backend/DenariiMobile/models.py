@@ -7,6 +7,7 @@ def get_default_denarii_user():
 
 
 class DenariiUser(AbstractUser):
+    reset_id = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.username}::{self.email}"

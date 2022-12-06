@@ -3,16 +3,16 @@ package com.denarii.android.activities.register;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.denarii.android.R;
 import com.denarii.android.activities.login.Login;
-import com.denarii.android.activities.walletdecision.WalletDecision;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
@@ -20,7 +20,7 @@ import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 
 import java.util.List;
-import java.util.Locale;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,7 +47,7 @@ public class Register extends AppCompatActivity {
             EditText confirmPassword = (EditText) findViewById(R.id.register_confirm_password_edit_text);
 
             if (!confirmPassword.getText().toString().equals(password.getText().toString())) {
-                createFailureTextView("Passwords do not match");
+                createFailureToast("Passwords do not match");
                 return;
             }
 
@@ -61,7 +61,7 @@ public class Register extends AppCompatActivity {
         Button next = (Button) findViewById(R.id.register_next_button);
 
         next.setOnClickListener( v -> {
-            Intent intent = new Intent(Register.this, WalletDecision.class);
+            Intent intent = new Intent(Register.this, Login.class);
 
             intent.putExtra(Constants.USER_DETAILS, userDetails);
 
@@ -86,38 +86,40 @@ public class Register extends AppCompatActivity {
                     if (response.body() != null) {
                         // We only care about the first wallet.
                         finalUserDetails.setWalletDetails(response.body().get(0).response);
-                        createSuccessTextView();
+                        createSuccessToast();
                     } else {
-                        createFailureTextView("No response body");
+                        createFailureToast("No response body");
                     }
                 } else {
-                    createFailureTextView("Response was not successful");
+                    createFailureToast("Response was not successful");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
-                createFailureTextView(String.format("%s %s", "Response failed", t));
+                createFailureToast(String.format("%s %s", "Response failed", t));
             }
         });
     }
 
-    private void createSuccessTextView() {
-        TextView successOrFailure = (TextView)findViewById(R.id.register_success_text_view);
 
-        successOrFailure.setText(getString(R.string.register_success_text));
-        successOrFailure.setVisibility(View.VISIBLE);
+    private void createSuccessToast() {
+        Context context = getApplicationContext();
+        CharSequence text = "Registered Account";
+        int duration = Toast.LENGTH_SHORT;
 
-        Button next = (Button)findViewById(R.id.register_next_button);
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+        Button next = (Button) findViewById(R.id.register_next_button);
         next.setVisibility(View.VISIBLE);
     }
 
-    private void createFailureTextView(String failureMessage) {
-        TextView successOrFailure = (TextView)findViewById(R.id.register_success_text_view);
+    private void createFailureToast(String message) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
 
-        String textToShow = String.format(Locale.US, "%s: %s", getString(R.string.register_failure_text), failureMessage);
-        successOrFailure.setText(textToShow);
-
-        successOrFailure.setVisibility(View.VISIBLE);
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
     }
 }

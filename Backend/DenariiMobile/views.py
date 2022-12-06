@@ -19,6 +19,38 @@ else:
 client = denarii_client.DenariiClient()
 
 
+def get_user_with_username_and_email(username, email):
+    try:
+        existing = DenariiUser.objects.get(username=username, email=email)
+        return existing
+    except DenariiUser.DoesNotExist:
+        return None
+
+def get_user_with_username_or_email(username_or_email):
+    existing = get_user_with_username(username_or_email)
+
+    if existing is None:
+        existing = get_user_with_email(username_or_email)
+
+        return existing
+
+
+def get_user_with_username(username):
+    try:
+        existing = DenariiUser.objects.get(username=username)
+        return existing
+    except DenariiUser.DoesNotExist:
+        return None
+
+
+def get_user_with_email(email):
+    try:
+        existing = DenariiUser.objects.get(email=email)
+        return existing
+    except DenariiUser.DoesNotExist:
+        return None
+
+
 def get_user(username, email, password):
     try:
         existing = authenticate(username=username, email=email, password=password)
@@ -41,6 +73,7 @@ def get_wallet(user):
     return user.walletdetails_set.all()[0]
 
 
+# In spite of its name this function handles login and registration
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
@@ -49,6 +82,11 @@ def get_user_id(request, username, email, password):
         serialized_wallet = serializers.serialize('json', [existing_wallet], fields='user_identifier')
         return JsonResponse({'wallet': serialized_wallet})
     else:
+
+        # We first need to check no user has this email or username.
+        if get_user_with_username(username) is not None or get_user_with_email(email) is not None:
+            return HttpResponseBadRequest("User already exists")
+
         new_user = DenariiUser.objects.create_user(username=username, email=email, password=password)
         new_user.save()
 
@@ -57,6 +95,50 @@ def get_user_id(request, username, email, password):
 
         serialized_wallet = serializers.serialize('json', [new_wallet_details], fields='user_identifier')
         return JsonResponse({'wallet': serialized_wallet})
+
+
+def request_reset(request, username_or_email):
+    pass
+
+
+def verify_reset(request, username_or_email, reset_id):
+    user = get_user_with_username_or_email(username_or_email)
+
+    if user is not None:
+        if reset_id == user.reset_id:
+
+            user.reset_id = 0
+            user.save()
+
+            existing_wallet = get_wallet(user)
+
+            # We send no data back. Just a successful response.
+            serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                      fields=())
+
+            return JsonResponse({'wallet': serialized_wallet})
+        else:
+            return HttpResponseBadRequest("That reset id does not match")
+    else:
+        return HttpResponseBadRequest("No user with that username")
+
+
+def reset_password(request, username, email, password):
+    user = get_user_with_username_and_email(username, email)
+
+    if user is not None:
+        user.password = password
+        user.save()
+
+        existing_wallet = get_wallet(user)
+
+        # We send no data back. Just a successful response.
+        serialized_wallet = serializers.serialize('json', [existing_wallet],
+                                                  fields=())
+
+        return JsonResponse({'wallet': serialized_wallet})
+    else:
+        return HttpResponseBadRequest("No user with that username and email")
 
 
 @login_required

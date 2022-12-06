@@ -7,7 +7,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.Intent;
 
 import com.denarii.android.R;
-import com.denarii.android.activities.walletdecision.WalletDecision;
+import com.denarii.android.activities.login.Login;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ public class RegisterTest {
     }
 
     @Test
-    public void clickNext_takesToWalletDecisionActivity() {
+    public void clickNext_takesToLoginActivity() {
         try(ActivityController<Register> controller = Robolectric.buildActivity(Register.class)) {
             controller.setup();
 
@@ -42,7 +42,7 @@ public class RegisterTest {
 
             activity.findViewById(R.id.register_next_button).performClick();
 
-            Intent expected = new Intent(activity, WalletDecision.class);
+            Intent expected = new Intent(activity, Login.class);
             Intent actual = shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
             assertEquals(expected.getComponent(), actual.getComponent());
         }

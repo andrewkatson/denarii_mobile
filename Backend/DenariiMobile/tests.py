@@ -77,6 +77,12 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(wallet_fields['user_identifier'], new_user.id)
 
+    def test_get_user_id_existing_username_clashes_returns_error(self):
+        pass
+
+    def test_get_user_id_existing_email_clashes_returns_error(self):
+        pass
+
     def test_create_wallet_attempts_to_create_wallet(self):
         password = "other_other_password"
         user_id = create_user(self.user, self.email, password)
@@ -145,3 +151,12 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(response)
 
         self.assertFalse("balance" in fields)
+
+    def test_request_reset(self):
+        pass
+
+    def verify_reset(self):
+        pass
+
+    def test_reset_password(self):
+        pass

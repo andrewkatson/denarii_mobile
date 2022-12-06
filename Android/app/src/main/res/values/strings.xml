@@ -57,4 +57,20 @@
     <string name="register_email_text">Your Email</string>
     <string name="register_name_text">Your Name</string>
     <string name="register_password_text">Your Password</string>
+    <string name="login_forgot_password_text">Forgot Password?</string>
+    <string name="request_reset_username_or_email_text">Username or Email</string>
+    <string name="request_reset_text">Request Reset</string>
+    <string name="reset_password_reset_password_text">Reset Password</string>
+    <string name="reset_password_name_text">Your Name</string>
+    <string name="reset_password_email_text">Your Email</string>
+    <string name="reset_password_password_text">Your New Password</string>
+    <string name="reset_password_confirm_password_text">Confirm New Password</string>
+    <string name="verify_reset_verify_reset_text">Verify Reset</string>
+    <string name="verify_reset_reset_id_text">Reset Id</string>
+    <string name="request_reset_next_text">Next</string>
+    <string name="reset_password_next_text">Next</string>
+    <string name="verify_reset_next_text">Next</string>
+    <string name="create_wallet_next_button_text">Next</string>
+    <string name="open_wallet_next_text">Next</string>
+    <string name="restore_wallet_next_text">Next</string>
 </resources>

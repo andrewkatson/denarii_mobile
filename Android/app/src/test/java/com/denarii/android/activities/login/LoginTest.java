@@ -7,6 +7,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.Intent;
 
 import com.denarii.android.R;
+import com.denarii.android.activities.requestreset.RequestReset;
 import com.denarii.android.activities.walletdecision.WalletDecision;
 
 import org.junit.Test;
@@ -43,6 +44,21 @@ public class LoginTest {
             activity.findViewById(R.id.login_next_button).performClick();
 
             Intent expected = new Intent(activity, WalletDecision.class);
+            Intent actual = shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
+            assertEquals(expected.getComponent(), actual.getComponent());
+        }
+    }
+
+    @Test
+    public void clickForgotPassword_takesToRequestResetActivity() {
+        try(ActivityController<Login> controller = Robolectric.buildActivity(Login.class)) {
+            controller.setup();
+
+            Login activity = controller.get();
+
+            activity.findViewById(R.id.login_forgot_password_button).performClick();
+
+            Intent expected = new Intent(activity, RequestReset.class);
             Intent actual = shadowOf(RuntimeEnvironment.getApplication()).getNextStartedActivity();
             assertEquals(expected.getComponent(), actual.getComponent());
         }

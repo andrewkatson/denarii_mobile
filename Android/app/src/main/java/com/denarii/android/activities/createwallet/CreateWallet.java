@@ -3,6 +3,7 @@ package com.denarii.android.activities.createwallet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.denarii.android.R;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
@@ -18,6 +20,8 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,14 +48,19 @@ public class CreateWallet extends AppCompatActivity {
             // Makes the call to create the wallet and then we check if the success box
             // has the right text to continue to the next activity.
             setupRetroFit(userDetails);
+        });
 
-            if (success()) {
-                Intent intent = new Intent(CreateWallet.this, OpenedWallet.class);
+        Button next = (Button) findViewById(R.id.create_wallet_next_button);
 
-                intent.putExtra(Constants.USER_DETAILS, userDetails);
+        next.setOnClickListener(v -> {
+            Intent currentIntent = getIntent();
+            UserDetails userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
-                startActivity(intent);
-            }
+            Intent intent = new Intent(CreateWallet.this, OpenedWallet.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
         });
     }
 
@@ -79,45 +88,43 @@ public class CreateWallet extends AppCompatActivity {
                         // We only care about the first wallet.
                         finalUserDetails.getWalletDetails().seed = response.body().get(0).response.seed;
                         finalUserDetails.getWalletDetails().walletAddress = response.body().get(0).response.walletAddress;
-                        createSuccessTextView(finalUserDetails.getWalletDetails().seed);
+                        createSuccessToast(finalUserDetails.getWalletDetails().seed);
                     } else {
-                        createFailureTextView("No response body");
+                        createFailureToast("No response body");
                     }
                 } else {
-                    createFailureTextView("Response was not successful");
+                    createFailureToast("Response was not successful");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
-                createFailureTextView(String.format("%s %s", "Response failed", t));
+                createFailureToast(String.format("%s %s", "Response failed", t));
             }
         });
     }
 
-    private void createSuccessTextView(String userSeed) {
-        TextView successOrFailure = (TextView) findViewById(R.id.create_wallet_success_text_view);
+    private void createSuccessToast(String seed) {
+        Context context = getApplicationContext();
+        CharSequence text = "Created Wallet";
+        int duration = Toast.LENGTH_SHORT;
 
-        successOrFailure.setText(R.string.create_wallet_success_text);
-        successOrFailure.setVisibility(View.VISIBLE);
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
-        TextView seed = (TextView) findViewById(R.id.create_wallet_seed_text_view);
+        Button next = (Button) findViewById(R.id.create_wallet_next_button);
+        next.setVisibility(View.VISIBLE);
 
-        seed.setText(String.format(Locale.US, "Seed: %s", userSeed));
-        seed.setVisibility(View.VISIBLE);
+        TextView seedTextView = (TextView) findViewById(R.id.create_wallet_seed_text_view);
+        seedTextView.setText(seed);
+        seedTextView.setVisibility(View.VISIBLE);
     }
 
-    private void createFailureTextView(String failureMessage) {
-        TextView successOrFailure = (TextView) findViewById(R.id.create_wallet_success_text_view);
+    private void createFailureToast(String message) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
 
-        String textToShow = String.format(Locale.US, "%s: %s", getString(R.string.create_wallet_failure_text), failureMessage);
-        successOrFailure.setText(textToShow);
-
-        successOrFailure.setVisibility(View.VISIBLE);
-    }
-
-    private boolean success() {
-        TextView successOrFailure = (TextView) findViewById(R.id.create_wallet_success_text_view);
-        return successOrFailure.getText().toString().contains(getString(R.string.create_wallet_success_text));
+        Toast toast = Toast.makeText(context, message, duration);
+        toast.show();
     }
 }
