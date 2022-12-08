@@ -8,12 +8,12 @@ This code is the frontend and backend code for the Denarii cryptocurrency. It ru
 
 ### Backend 
 
-Before anything else run the commands for Linux, Windows, or Mac to install prerequsites needed for the denarii base applications. 
+Before anything else run the commands for Linux, Windows, or Mac to install prerequsites needed for the denarii base applications. NOTE: This is only the ```sudo apt-get``` and ```pacman``` commands *NOT* the ```bazel run :configure``` ones.
 See: https://github.com/andrewkatson/denarii
 
 In terminal or command prompt
 ```bash
-pip install Django pytest django-debug-toolbar django-crispy-forms pytest-djagno pandas Pillow
+pip install Django pytest django-debug-toolbar django-crispy-forms pytest-djagno pandas Pillow boto3 django-storages
 
 ```
 
