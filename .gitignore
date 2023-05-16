@@ -90,3 +90,7 @@ bazel-out/
 bazel-denarii_mobile/
 bazel-testlogs/
 external/
+
+# Ios 
+.DS_Store
+Ios/.DS_Store
