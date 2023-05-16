@@ -1,0 +1,670 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		244E38702A113D1A0011B999 /* denariiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E386F2A113D1A0011B999 /* denariiApp.swift */; };
+		244E38722A113D1A0011B999 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
+		244E38742A113D1B0011B999 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244E38732A113D1B0011B999 /* Assets.xcassets */; };
+		244E38772A113D1B0011B999 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244E38762A113D1B0011B999 /* Preview Assets.xcassets */; };
+		244E38812A113D1B0011B999 /* denariiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38802A113D1B0011B999 /* denariiTests.swift */; };
+		244E388B2A113D1B0011B999 /* denariiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E388A2A113D1B0011B999 /* denariiUITests.swift */; };
+		244E388D2A113D1B0011B999 /* denariiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E388C2A113D1B0011B999 /* denariiUITestsLaunchTests.swift */; };
+		244E389A2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38992A1141F60011B999 /* LoginOrRegisterView.swift */; };
+		244E389B2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38992A1141F60011B999 /* LoginOrRegisterView.swift */; };
+		244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38992A1141F60011B999 /* LoginOrRegisterView.swift */; };
+		244E389E2A1144570011B999 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E389D2A1144570011B999 /* LoginView.swift */; };
+		244E389F2A1144570011B999 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E389D2A1144570011B999 /* LoginView.swift */; };
+		244E38A02A1144570011B999 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E389D2A1144570011B999 /* LoginView.swift */; };
+		244E38A22A1144660011B999 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A12A1144660011B999 /* RegisterView.swift */; };
+		244E38A32A1144660011B999 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A12A1144660011B999 /* RegisterView.swift */; };
+		244E38A42A1144660011B999 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A12A1144660011B999 /* RegisterView.swift */; };
+		244E38A62A116DF10011B999 /* WalletDecisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A52A116DF10011B999 /* WalletDecisionView.swift */; };
+		244E38A72A116DF10011B999 /* WalletDecisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A52A116DF10011B999 /* WalletDecisionView.swift */; };
+		244E38A82A116DF10011B999 /* WalletDecisionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A52A116DF10011B999 /* WalletDecisionView.swift */; };
+		244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A92A116E040011B999 /* CreateWalletView.swift */; };
+		244E38AB2A116E040011B999 /* CreateWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A92A116E040011B999 /* CreateWalletView.swift */; };
+		244E38AC2A116E040011B999 /* CreateWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38A92A116E040011B999 /* CreateWalletView.swift */; };
+		244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38AD2A116E160011B999 /* OpenWalletView.swift */; };
+		244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38AD2A116E160011B999 /* OpenWalletView.swift */; };
+		244E38B02A116E160011B999 /* OpenWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38AD2A116E160011B999 /* OpenWalletView.swift */; };
+		244E38B22A116E210011B999 /* OpenedWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B12A116E210011B999 /* OpenedWalletView.swift */; };
+		244E38B32A116E210011B999 /* OpenedWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B12A116E210011B999 /* OpenedWalletView.swift */; };
+		244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B12A116E210011B999 /* OpenedWalletView.swift */; };
+		244E38B62A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B52A116E2E0011B999 /* RestoreDeterministicWalletView.swift */; };
+		244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B52A116E2E0011B999 /* RestoreDeterministicWalletView.swift */; };
+		244E38B82A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B52A116E2E0011B999 /* RestoreDeterministicWalletView.swift */; };
+		244E38BA2A116E440011B999 /* RequestResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B92A116E440011B999 /* RequestResetView.swift */; };
+		244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B92A116E440011B999 /* RequestResetView.swift */; };
+		244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38B92A116E440011B999 /* RequestResetView.swift */; };
+		244E38C22A116E620011B999 /* VerifyResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C12A116E620011B999 /* VerifyResetView.swift */; };
+		244E38C32A116E620011B999 /* VerifyResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C12A116E620011B999 /* VerifyResetView.swift */; };
+		244E38C42A116E620011B999 /* VerifyResetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C12A116E620011B999 /* VerifyResetView.swift */; };
+		244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
+		244E38C72A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
+		244E38C82A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		244E387D2A113D1B0011B999 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 244E38642A113D1A0011B999 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 244E386B2A113D1A0011B999;
+			remoteInfo = denarii;
+		};
+		244E38872A113D1B0011B999 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 244E38642A113D1A0011B999 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 244E386B2A113D1A0011B999;
+			remoteInfo = denarii;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		244E386C2A113D1A0011B999 /* denarii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = denarii.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		244E386F2A113D1A0011B999 /* denariiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiApp.swift; sourceTree = "<group>"; };
+		244E38712A113D1A0011B999 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		244E38732A113D1B0011B999 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		244E38762A113D1B0011B999 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		244E387C2A113D1B0011B999 /* denariiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = denariiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		244E38802A113D1B0011B999 /* denariiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiTests.swift; sourceTree = "<group>"; };
+		244E38862A113D1B0011B999 /* denariiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = denariiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		244E388A2A113D1B0011B999 /* denariiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiUITests.swift; sourceTree = "<group>"; };
+		244E388C2A113D1B0011B999 /* denariiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		244E38992A1141F60011B999 /* LoginOrRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOrRegisterView.swift; sourceTree = "<group>"; };
+		244E389D2A1144570011B999 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		244E38A12A1144660011B999 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		244E38A52A116DF10011B999 /* WalletDecisionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDecisionView.swift; sourceTree = "<group>"; };
+		244E38A92A116E040011B999 /* CreateWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletView.swift; sourceTree = "<group>"; };
+		244E38AD2A116E160011B999 /* OpenWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWalletView.swift; sourceTree = "<group>"; };
+		244E38B12A116E210011B999 /* OpenedWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedWalletView.swift; sourceTree = "<group>"; };
+		244E38B52A116E2E0011B999 /* RestoreDeterministicWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreDeterministicWalletView.swift; sourceTree = "<group>"; };
+		244E38B92A116E440011B999 /* RequestResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestResetView.swift; sourceTree = "<group>"; };
+		244E38C12A116E620011B999 /* VerifyResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyResetView.swift; sourceTree = "<group>"; };
+		244E38C52A116E710011B999 /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		244E38692A113D1A0011B999 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E38792A113D1B0011B999 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E38832A113D1B0011B999 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		244E38632A113D1A0011B999 = {
+			isa = PBXGroup;
+			children = (
+				244E386E2A113D1A0011B999 /* denarii */,
+				244E387F2A113D1B0011B999 /* denariiTests */,
+				244E38892A113D1B0011B999 /* denariiUITests */,
+				244E386D2A113D1A0011B999 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		244E386D2A113D1A0011B999 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				244E386C2A113D1A0011B999 /* denarii.app */,
+				244E387C2A113D1B0011B999 /* denariiTests.xctest */,
+				244E38862A113D1B0011B999 /* denariiUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		244E386E2A113D1A0011B999 /* denarii */ = {
+			isa = PBXGroup;
+			children = (
+				244E386F2A113D1A0011B999 /* denariiApp.swift */,
+				244E38712A113D1A0011B999 /* ContentView.swift */,
+				244E38992A1141F60011B999 /* LoginOrRegisterView.swift */,
+				244E389D2A1144570011B999 /* LoginView.swift */,
+				244E38A52A116DF10011B999 /* WalletDecisionView.swift */,
+				244E38A92A116E040011B999 /* CreateWalletView.swift */,
+				244E38AD2A116E160011B999 /* OpenWalletView.swift */,
+				244E38B12A116E210011B999 /* OpenedWalletView.swift */,
+				244E38B52A116E2E0011B999 /* RestoreDeterministicWalletView.swift */,
+				244E38B92A116E440011B999 /* RequestResetView.swift */,
+				244E38C12A116E620011B999 /* VerifyResetView.swift */,
+				244E38C52A116E710011B999 /* ResetPasswordView.swift */,
+				244E38A12A1144660011B999 /* RegisterView.swift */,
+				244E38732A113D1B0011B999 /* Assets.xcassets */,
+				244E38752A113D1B0011B999 /* Preview Content */,
+			);
+			path = denarii;
+			sourceTree = "<group>";
+		};
+		244E38752A113D1B0011B999 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				244E38762A113D1B0011B999 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		244E387F2A113D1B0011B999 /* denariiTests */ = {
+			isa = PBXGroup;
+			children = (
+				244E38802A113D1B0011B999 /* denariiTests.swift */,
+			);
+			path = denariiTests;
+			sourceTree = "<group>";
+		};
+		244E38892A113D1B0011B999 /* denariiUITests */ = {
+			isa = PBXGroup;
+			children = (
+				244E388A2A113D1B0011B999 /* denariiUITests.swift */,
+				244E388C2A113D1B0011B999 /* denariiUITestsLaunchTests.swift */,
+			);
+			path = denariiUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		244E386B2A113D1A0011B999 /* denarii */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 244E38902A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denarii" */;
+			buildPhases = (
+				244E38682A113D1A0011B999 /* Sources */,
+				244E38692A113D1A0011B999 /* Frameworks */,
+				244E386A2A113D1A0011B999 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = denarii;
+			productName = denarii;
+			productReference = 244E386C2A113D1A0011B999 /* denarii.app */;
+			productType = "com.apple.product-type.application";
+		};
+		244E387B2A113D1B0011B999 /* denariiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 244E38932A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denariiTests" */;
+			buildPhases = (
+				244E38782A113D1B0011B999 /* Sources */,
+				244E38792A113D1B0011B999 /* Frameworks */,
+				244E387A2A113D1B0011B999 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				244E387E2A113D1B0011B999 /* PBXTargetDependency */,
+			);
+			name = denariiTests;
+			productName = denariiTests;
+			productReference = 244E387C2A113D1B0011B999 /* denariiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		244E38852A113D1B0011B999 /* denariiUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 244E38962A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denariiUITests" */;
+			buildPhases = (
+				244E38822A113D1B0011B999 /* Sources */,
+				244E38832A113D1B0011B999 /* Frameworks */,
+				244E38842A113D1B0011B999 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				244E38882A113D1B0011B999 /* PBXTargetDependency */,
+			);
+			name = denariiUITests;
+			productName = denariiUITests;
+			productReference = 244E38862A113D1B0011B999 /* denariiUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		244E38642A113D1A0011B999 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					244E386B2A113D1A0011B999 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					244E387B2A113D1B0011B999 = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 244E386B2A113D1A0011B999;
+					};
+					244E38852A113D1B0011B999 = {
+						CreatedOnToolsVersion = 14.3;
+						TestTargetID = 244E386B2A113D1A0011B999;
+					};
+				};
+			};
+			buildConfigurationList = 244E38672A113D1A0011B999 /* Build configuration list for PBXProject "denarii" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 244E38632A113D1A0011B999;
+			productRefGroup = 244E386D2A113D1A0011B999 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				244E386B2A113D1A0011B999 /* denarii */,
+				244E387B2A113D1B0011B999 /* denariiTests */,
+				244E38852A113D1B0011B999 /* denariiUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		244E386A2A113D1A0011B999 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				244E38772A113D1B0011B999 /* Preview Assets.xcassets in Resources */,
+				244E38742A113D1B0011B999 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E387A2A113D1B0011B999 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E38842A113D1B0011B999 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		244E38682A113D1A0011B999 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				244E38C22A116E620011B999 /* VerifyResetView.swift in Sources */,
+				244E38722A113D1A0011B999 /* ContentView.swift in Sources */,
+				244E38A22A1144660011B999 /* RegisterView.swift in Sources */,
+				244E38702A113D1A0011B999 /* denariiApp.swift in Sources */,
+				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
+				244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */,
+				244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */,
+				244E38B62A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
+				244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */,
+				244E38B22A116E210011B999 /* OpenedWalletView.swift in Sources */,
+				244E389A2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				244E38BA2A116E440011B999 /* RequestResetView.swift in Sources */,
+				244E38A62A116DF10011B999 /* WalletDecisionView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E38782A113D1B0011B999 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				244E38B32A116E210011B999 /* OpenedWalletView.swift in Sources */,
+				244E389F2A1144570011B999 /* LoginView.swift in Sources */,
+				244E38A32A1144660011B999 /* RegisterView.swift in Sources */,
+				244E38C72A116E710011B999 /* ResetPasswordView.swift in Sources */,
+				244E38C32A116E620011B999 /* VerifyResetView.swift in Sources */,
+				244E38A72A116DF10011B999 /* WalletDecisionView.swift in Sources */,
+				244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */,
+				244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */,
+				244E38AB2A116E040011B999 /* CreateWalletView.swift in Sources */,
+				244E389B2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				244E38812A113D1B0011B999 /* denariiTests.swift in Sources */,
+				244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		244E38822A113D1B0011B999 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				244E38C42A116E620011B999 /* VerifyResetView.swift in Sources */,
+				244E388B2A113D1B0011B999 /* denariiUITests.swift in Sources */,
+				244E38A42A1144660011B999 /* RegisterView.swift in Sources */,
+				244E388D2A113D1B0011B999 /* denariiUITestsLaunchTests.swift in Sources */,
+				244E38A02A1144570011B999 /* LoginView.swift in Sources */,
+				244E38AC2A116E040011B999 /* CreateWalletView.swift in Sources */,
+				244E38C82A116E710011B999 /* ResetPasswordView.swift in Sources */,
+				244E38B82A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
+				244E38B02A116E160011B999 /* OpenWalletView.swift in Sources */,
+				244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */,
+				244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */,
+				244E38A82A116DF10011B999 /* WalletDecisionView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		244E387E2A113D1B0011B999 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 244E386B2A113D1A0011B999 /* denarii */;
+			targetProxy = 244E387D2A113D1B0011B999 /* PBXContainerItemProxy */;
+		};
+		244E38882A113D1B0011B999 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 244E386B2A113D1A0011B999 /* denarii */;
+			targetProxy = 244E38872A113D1B0011B999 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		244E388E2A113D1B0011B999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		244E388F2A113D1B0011B999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		244E38912A113D1B0011B999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"denarii/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denarii;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		244E38922A113D1B0011B999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"denarii/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denarii;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		244E38942A113D1B0011B999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denariiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/denarii.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/denarii";
+			};
+			name = Debug;
+		};
+		244E38952A113D1B0011B999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denariiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/denarii.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/denarii";
+			};
+			name = Release;
+		};
+		244E38972A113D1B0011B999 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denariiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = denarii;
+			};
+			name = Debug;
+		};
+		244E38982A113D1B0011B999 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = keiros.denariiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = denarii;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		244E38672A113D1A0011B999 /* Build configuration list for PBXProject "denarii" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				244E388E2A113D1B0011B999 /* Debug */,
+				244E388F2A113D1B0011B999 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		244E38902A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denarii" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				244E38912A113D1B0011B999 /* Debug */,
+				244E38922A113D1B0011B999 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		244E38932A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denariiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				244E38942A113D1B0011B999 /* Debug */,
+				244E38952A113D1B0011B999 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		244E38962A113D1B0011B999 /* Build configuration list for PBXNativeTarget "denariiUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				244E38972A113D1B0011B999 /* Debug */,
+				244E38982A113D1B0011B999 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 244E38642A113D1A0011B999 /* Project object */;
+}
