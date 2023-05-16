@@ -20,12 +20,11 @@ struct VerifyResetView: View {
                 TextField("Reset id", text: $resetId)
                     .padding(.leading, 40)
                 Button("Verify Reset") {
-                    let verified = attemptVerifyReset()
-                    isVerified = verified
+                    isVerified = attemptVerifyReset()
                 }.padding(.trailing, 120)
                 Spacer()
                 NavigationLink(destination: ResetPasswordView()) {
-                    if (true) {
+                    if (isVerified) {
                         Text("Next")
                     }
                 }.padding(.leading, 100)

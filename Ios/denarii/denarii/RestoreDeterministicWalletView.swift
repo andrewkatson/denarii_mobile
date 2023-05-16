@@ -35,8 +35,7 @@ struct RestoreDeterministicWalletView: View {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
-                    .padding(.top, 125)
+                }.padding(.leading, 100).padding(.top, 60)
                 Spacer()
             }
         }

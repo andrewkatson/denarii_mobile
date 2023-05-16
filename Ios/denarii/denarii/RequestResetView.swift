@@ -20,8 +20,7 @@ struct RequestResetView: View {
                 Spacer()
                 TextField("Username or Email", text: $usernameOrEmail)
                 Button("Request Reset") {
-                    let requested = attemptRequest()
-                    isRequested = requested
+                    isRequested = attemptRequest()
                 }.padding(.trailing, 120)
                 Spacer()
                 NavigationLink(destination: VerifyResetView()) {

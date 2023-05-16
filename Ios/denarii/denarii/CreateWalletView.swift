@@ -33,8 +33,7 @@ struct CreateWalletView: View {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
-                    .padding(.top, 125)
+                }.padding(.leading, 100).padding(.top, 80)
                 Spacer()
             }
         }
