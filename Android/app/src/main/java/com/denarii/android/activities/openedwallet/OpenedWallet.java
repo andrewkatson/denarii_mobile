@@ -3,12 +3,14 @@ package com.denarii.android.activities.openedwallet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.denarii.android.R;
 import com.denarii.android.constants.Constants;
@@ -139,10 +141,12 @@ public class OpenedWallet extends AppCompatActivity {
 
         address.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), walletAddress));
 
-        TextView success = (TextView) findViewById(R.id.opened_wallet_success_text_view);
 
-        success.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_success_text), successMessage));
-        success.setVisibility(View.VISIBLE);
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, successMessage, duration);
+        toast.show();
     }
 
     private void createFailureTextView(String failureMessage) {
@@ -154,10 +158,10 @@ public class OpenedWallet extends AppCompatActivity {
 
         address.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), ""));
 
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
 
-        TextView success = (TextView) findViewById(R.id.opened_wallet_success_text_view);
-
-        success.setText(String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_failure_text), failureMessage));
-        success.setVisibility(View.VISIBLE);
+        Toast toast = Toast.makeText(context, failureMessage, duration);
+        toast.show();
     }
 }
