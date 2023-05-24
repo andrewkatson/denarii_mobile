@@ -9,15 +9,15 @@ import SwiftUI
 
 struct OpenedWalletView: View {
     
-    @State private var ownAddress: String = ""
-    @State private var balance: String = ""
-    @State private var addressToSendTo: String = ""
+    @ObservedObject private var ownAddress: ObservableString =  ObservableString()
+    @ObservedObject private var balance: ObservableString =  ObservableString()
+    @State  private var addressToSendTo: String = ""
     @State private var amountToSend: String = ""
     
     var body: some View {
         VStack(alignment: .center) {
-            Text("Address: " + ownAddress)
-            Text("Balance: " + balance)
+            Text("Address: " + ownAddress.getValue())
+            Text("Balance: " + balance.getValue())
             Button(action: refreshBalance) {
                 Text("Refresh Balance")
             }.padding(.top)
@@ -30,10 +30,38 @@ struct OpenedWalletView: View {
     }
     
     func refreshBalance() {
+        if DEBUG {
+            if self.balance.getValue().isEmpty {
+                print("Setting it to 1")
+                self.balance.setValue("1")
+                print(balance.getValue())
+            }
+        } else {
+            // TODO: Make API call
+        }
     }
     
     func sendDenarii() {
-        
+        if DEBUG {
+            var currBalance = "1"
+            if self.balance.getValue().isEmpty == false {
+                print("Setting balance with another balance")
+                currBalance = self.balance.getValue()
+                print(currBalance)
+            }
+            self.balance.setValue( String(Int(currBalance)! - 1))
+            print(self.balance.getValue())
+        } else {
+            // TODO: Make API call
+        }
+    }
+    
+    func getBalance() -> String {
+        return self.balance.getValue()
+    }
+    
+    func setBalance(_ newBalance: String) {
+        self.balance.setValue(newBalance)
     }
 }
 

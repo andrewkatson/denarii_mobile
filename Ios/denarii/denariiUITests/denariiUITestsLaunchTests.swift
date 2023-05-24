@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import denarii
 
 final class denariiUITestsLaunchTests: XCTestCase {
 
@@ -15,6 +16,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+        DEBUG = true
     }
 
     func testLaunch() throws {

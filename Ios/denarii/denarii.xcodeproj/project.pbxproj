@@ -47,6 +47,12 @@
 		244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
 		244E38C72A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
 		244E38C82A116E710011B999 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C52A116E710011B999 /* ResetPasswordView.swift */; };
+		244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C92A1EC33B0011B999 /* Constants.swift */; };
+		244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C92A1EC33B0011B999 /* Constants.swift */; };
+		244E38CC2A1EC33B0011B999 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38C92A1EC33B0011B999 /* Constants.swift */; };
+		244E38CE2A1ED1B80011B999 /* ObservableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38CD2A1ED1B80011B999 /* ObservableString.swift */; };
+		244E38CF2A1ED1B80011B999 /* ObservableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38CD2A1ED1B80011B999 /* ObservableString.swift */; };
+		244E38D02A1ED1B80011B999 /* ObservableString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38CD2A1ED1B80011B999 /* ObservableString.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +94,8 @@
 		244E38B92A116E440011B999 /* RequestResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestResetView.swift; sourceTree = "<group>"; };
 		244E38C12A116E620011B999 /* VerifyResetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyResetView.swift; sourceTree = "<group>"; };
 		244E38C52A116E710011B999 /* ResetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
+		244E38C92A1EC33B0011B999 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		244E38CD2A1ED1B80011B999 /* ObservableString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableString.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +161,8 @@
 				244E38A12A1144660011B999 /* RegisterView.swift */,
 				244E38732A113D1B0011B999 /* Assets.xcassets */,
 				244E38752A113D1B0011B999 /* Preview Content */,
+				244E38C92A1EC33B0011B999 /* Constants.swift */,
+				244E38CD2A1ED1B80011B999 /* ObservableString.swift */,
 			);
 			path = denarii;
 			sourceTree = "<group>";
@@ -315,6 +325,7 @@
 				244E38C22A116E620011B999 /* VerifyResetView.swift in Sources */,
 				244E38722A113D1A0011B999 /* ContentView.swift in Sources */,
 				244E38A22A1144660011B999 /* RegisterView.swift in Sources */,
+				244E38CE2A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E38702A113D1A0011B999 /* denariiApp.swift in Sources */,
 				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
 				244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */,
@@ -323,6 +334,7 @@
 				244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38B22A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				244E389A2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */,
 				244E38BA2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38A62A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 			);
@@ -339,7 +351,9 @@
 				244E38C32A116E620011B999 /* VerifyResetView.swift in Sources */,
 				244E38A72A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 				244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */,
+				244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */,
 				244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */,
+				244E38CF2A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E38AB2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E389B2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
 				244E38812A113D1B0011B999 /* denariiTests.swift in Sources */,
@@ -354,6 +368,7 @@
 				244E38C42A116E620011B999 /* VerifyResetView.swift in Sources */,
 				244E388B2A113D1B0011B999 /* denariiUITests.swift in Sources */,
 				244E38A42A1144660011B999 /* RegisterView.swift in Sources */,
+				244E38D02A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E388D2A113D1B0011B999 /* denariiUITestsLaunchTests.swift in Sources */,
 				244E38A02A1144570011B999 /* LoginView.swift in Sources */,
 				244E38AC2A116E040011B999 /* CreateWalletView.swift in Sources */,
@@ -362,6 +377,7 @@
 				244E38B02A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				244E38CC2A1EC33B0011B999 /* Constants.swift in Sources */,
 				244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38A82A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 			);

@@ -49,7 +49,12 @@ struct LoginView: View {
     }
     
     func attemptSubmit() -> Bool {
-        return true
+        if DEBUG {
+            return true
+        } else {
+            // TODO: make API call
+            return false
+        }
     }
 }
 

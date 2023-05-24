@@ -34,7 +34,12 @@ struct RequestResetView: View {
     }
     
     func attemptRequest() -> Bool {
-        return true
+        if DEBUG {
+            return true
+        } else {
+            // TODO: Make API call
+            return false
+        }
     }
 }
 

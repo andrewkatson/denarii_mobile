@@ -42,7 +42,12 @@ struct RestoreDeterministicWalletView: View {
     }
     
     func attemptSubmit() -> Bool {
-        return true
+        if DEBUG {
+            return true
+        } else {
+            // TODO: Make API call
+            return false
+        }
     }
 }
 

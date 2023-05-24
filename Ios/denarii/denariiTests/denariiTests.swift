@@ -9,27 +9,132 @@ import XCTest
 @testable import denarii
 
 final class denariiTests: XCTestCase {
-
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        DEBUG = true
+        
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    func testLogin() throws {
+        XCTAssert(LoginView().attemptSubmit() == true)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
+    
+    func testCreateWallet() throws {
+        XCTAssert(CreateWalletView().attemptSubmit() == true)
+    }
+    
+    func testOpenWallet() throws {
+        XCTAssert(OpenWalletView().attemptSubmit() == true)
+    }
+    
+    func testOpenedWalletRefreshBalance() throws {
+        let openedWalletView = OpenedWalletView()
+        openedWalletView.refreshBalance()
+        print(openedWalletView.getBalance())
+        XCTAssert(openedWalletView.getBalance() == "1")
+    }
+    
+    func testOpenedWalletSendDenarii() throws {
+        let openedWalletView = OpenedWalletView()
+        // Get some denarii into the wallet
+        openedWalletView.setBalance("1")
+        openedWalletView.sendDenarii()
+        print(openedWalletView.getBalance())
+        XCTAssert(openedWalletView.getBalance() == "0")
+    }
+    
+    func testRestoreDeterministicWallet() throws {
+        XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == true)
+    }
+    
+    func testRequestReset() throws {
+        XCTAssert(RequestResetView().attemptRequest() == true)
+    }
+    
+    func testVerifyReset() throws {
+        XCTAssert(VerifyResetView().attemptVerifyReset() == true)
+    }
+    
+    func testResetPassword() throws {
+        XCTAssert(ResetPasswordView().attemptReset() == true)
+    }
+    
+    func testRegister() throws {
+        XCTAssert(RegisterView().attemptSubmit() == true)
+    }
+    
+    func testLoginPerformance() throws {
+        DEBUG = false
         self.measure {
-            // Put the code you want to measure the time of here.
+            XCTAssert(LoginView().attemptSubmit() == false)
+        }
+    }
+    
+    func testCreateWalletPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(CreateWalletView().attemptSubmit() == false)
+        }
+    }
+    
+    func testOpenWalletPerformance() throws {
+       DEBUG = false
+        self.measure {
+            XCTAssert(OpenWalletView().attemptSubmit() == false)
+        }
+    }
+    
+    func testOpenedWalletRefreshBalancePerformance() throws {
+        DEBUG = false
+        self.measure {
+            OpenedWalletView().refreshBalance()
+        }
+    }
+    
+    func testOpenedWalletSendDenariiPerformance() throws {
+        DEBUG = false
+        self.measure {
+            OpenedWalletView().sendDenarii()
+        }
+    }
+    
+    func testRestoreDeterministicWalletPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == false)
+        }
+    }
+    
+    func testRequestResetPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(RequestResetView().attemptRequest() == false)
+        }
+    }
+    
+    func testVerifyResetPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(VerifyResetView().attemptVerifyReset() == false)
+        }
+    }
+    
+    func testResetPasswordPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(ResetPasswordView().attemptReset() == false)
+        }
+    }
+    
+    func testRegisterPerformance() throws {
+        DEBUG = false
+        self.measure {
+            XCTAssert(RegisterView().attemptSubmit() == false)
         }
     }
 

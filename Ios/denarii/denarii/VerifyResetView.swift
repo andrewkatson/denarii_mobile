@@ -35,7 +35,12 @@ struct VerifyResetView: View {
     }
     
     func attemptVerifyReset() -> Bool {
-        return true
+        if DEBUG {
+            return true
+        } else {
+            // TODO: Make API call
+            return false
+        }
     }
 }
 
