@@ -8,17 +8,26 @@
 import SwiftUI
 
 struct WalletDecisionView: View {
+    
+    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    
+    init() {}
+    
+    init(_ userIdentifier: Int) {
+        self.userIdentifier.setValue(userIdentifier)
+    }
+    
     var body: some View {
         HStack {
             Spacer()
             VStack {
-                NavigationLink(destination: CreateWalletView()) {
+                NavigationLink(destination: CreateWalletView(userIdentifier.getValue())) {
                     Text("Create Wallet")
                 }.padding(.bottom, 10)
-                NavigationLink(destination: RestoreDeterministicWalletView()) {
-                    Text("Restore Deteministic Wallet")
+                NavigationLink(destination: RestoreDeterministicWalletView(userIdentifier.getValue())) {
+                    Text("Restore Deterministic Wallet")
                 }.padding(.bottom, 10)
-                NavigationLink(destination: OpenWalletView()) {
+                NavigationLink(destination: OpenWalletView(userIdentifier.getValue())) {
                     Text("Open Wallet")
                 }
             }

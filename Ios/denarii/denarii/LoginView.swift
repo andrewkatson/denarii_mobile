@@ -13,19 +13,36 @@ struct LoginView: View {
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var isSubmitted: Bool = false
+    @State private var showingPopover = false
+    
+    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    
+    init() {}
+    
+    init(_ userIdentifier: Int) {
+        self.userIdentifier.setValue(userIdentifier)
+    }
     
     var body: some View {
         HStack {
-            Spacer(minLength: 100)
+            Spacer()
             VStack {
-                Spacer(minLength: 300)
+                Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
-                SecureField("Password", text: $password)
-                SecureField("Confirm Password", text: $confirmPassword)
+                SecureField("Password", text: $password).textContentType(.password)
+                SecureField("Confirm Password", text: $confirmPassword).textContentType(.password)
                 HStack {
                     Button("Submit") {
                         isSubmitted = attemptSubmit()
+                        showingPopover = true
+                    }.popover(isPresented: $showingPopover) {
+                        Text(successOrFailure.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopover = false
+                            }.accessibilityIdentifier("Popover")
                     }
                     .padding(.top, 15)
                     .padding(.bottom, 15)
@@ -33,12 +50,12 @@ struct LoginView: View {
                     Spacer()
                 }
                 HStack {
-                    NavigationLink(destination: RequestResetView()) {
+                    NavigationLink(destination: RequestResetView(userIdentifier.getValue())) {
                         Text("Forgot Password")
                     }.padding(.trailing, 70)
                 }
-                Spacer(minLength: 150)
-                NavigationLink(destination: WalletDecisionView()) {
+                Spacer()
+                NavigationLink(destination: WalletDecisionView(userIdentifier.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
@@ -49,11 +66,23 @@ struct LoginView: View {
     }
     
     func attemptSubmit() -> Bool {
-        if DEBUG {
+        if (password != confirmPassword) {
+            successOrFailure.setValue("Failed to login becasue password is not the same as confirm password")
+            return false
+        }
+        if Constants.DEBUG {
+            successOrFailure.setValue("Logged In in DEBUG mode")
             return true
         } else {
-            // TODO: make API call
-            return false
+            let api = Config().api
+            let wallet = api.getUserId(username, email, password)
+            if wallet.responseCode != 200 {
+                successOrFailure.setValue("Failed to login becasue of a server side error")
+                return false
+            }
+            userIdentifier.setValue(wallet.response.userIdentifier)
+            successOrFailure.setValue("Logged In")
+            return true
         }
     }
 }

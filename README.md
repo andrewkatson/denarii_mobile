@@ -37,7 +37,9 @@ Just open Android/ folder with Android Studio.
 
 ### IOS
 
-N/A
+Just open Ios/ folder with XCode
+
+Go to "Edit Scheme" and add "UI-TESTING" to Arguments Passed on Launch
 
 ## Running 
 

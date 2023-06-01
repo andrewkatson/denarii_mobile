@@ -12,8 +12,7 @@ final class denariiTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        DEBUG = true
-        
+        Constants.DEBUG = true
     }
     
     override func tearDownWithError() throws {
@@ -69,70 +68,70 @@ final class denariiTests: XCTestCase {
     }
     
     func testLoginPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(LoginView().attemptSubmit() == false)
         }
     }
     
     func testCreateWalletPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(CreateWalletView().attemptSubmit() == false)
         }
     }
     
     func testOpenWalletPerformance() throws {
-       DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(OpenWalletView().attemptSubmit() == false)
         }
     }
     
     func testOpenedWalletRefreshBalancePerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             OpenedWalletView().refreshBalance()
         }
     }
     
     func testOpenedWalletSendDenariiPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             OpenedWalletView().sendDenarii()
         }
     }
     
     func testRestoreDeterministicWalletPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == false)
         }
     }
     
     func testRequestResetPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(RequestResetView().attemptRequest() == false)
         }
     }
     
     func testVerifyResetPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(VerifyResetView().attemptVerifyReset() == false)
         }
     }
     
     func testResetPasswordPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(ResetPasswordView().attemptReset() == false)
         }
     }
     
     func testRegisterPerformance() throws {
-        DEBUG = false
+        Constants.DEBUG = false
         self.measure {
             XCTAssert(RegisterView().attemptSubmit() == false)
         }

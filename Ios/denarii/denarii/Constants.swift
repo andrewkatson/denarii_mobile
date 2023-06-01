@@ -7,4 +7,7 @@
 
 import Foundation
 
-var DEBUG: Bool = false
+struct Constants {
+    // Used in Unit Testing. See Config for how to stub an API in UI Testing
+    static var DEBUG = false
+}

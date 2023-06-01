@@ -8,7 +8,13 @@
 import Foundation
 
 class ObservableString : ObservableObject {
-    private var value: String = ""
+    @Published var value: String = ""
+    
+    init() {}
+    
+    init(_ value: String) {
+        self.value = value
+    }
     
     func setValue(_ newVal: String) {
         self.value = newVal

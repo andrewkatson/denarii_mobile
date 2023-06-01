@@ -14,13 +14,23 @@ struct ResetPasswordView: View {
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @State private var isReset: Bool = false
+    @State private var showingPopover = false
+    
+    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    
+    init() {}
+    
+    init(_ userIdentifier: Int) {
+        self.userIdentifier.setValue(userIdentifier)
+    }
     
     
     var body: some View {
         HStack {
             Spacer(minLength: 100)
             VStack {
-                Spacer(minLength: 300)
+                Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
                 SecureField("Password", text: $password)
@@ -28,14 +38,22 @@ struct ResetPasswordView: View {
                 HStack {
                     Button("Reset Password") {
                         isReset = attemptReset()
+                        showingPopover = true
                     }
                     .padding(.top, 15)
                     .padding(.bottom, 15)
-                    .padding(.leading, 25)
+                    .padding(.leading, 25).popover(isPresented: $showingPopover) {
+                        Text(successOrFailure.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopover = false
+                            }
+                            .accessibilityIdentifier("Popover")
+                    }
                     Spacer()
                 }
-                Spacer(minLength: 150)
-                NavigationLink(destination: LoginView()) {
+                Spacer()
+                NavigationLink(destination: LoginView(userIdentifier.getValue())) {
                     if (isReset) {
                         Text("Next")
                     }
@@ -46,11 +64,24 @@ struct ResetPasswordView: View {
     }
     
     func attemptReset() -> Bool {
-        if DEBUG {
+        
+        if (password != confirmPassword) {
+            successOrFailure.setValue("Failed to reset password because password and confirm password did not match")
+            return false
+        }
+        
+        if Constants.DEBUG {
+            successOrFailure.setValue("Reset password in DEBUG mode")
             return true
         } else {
-            // TODO: Make API call
-            return false
+            let api = Config().api
+            let wallet = api.resetPassword(username, email, password)
+            if wallet.responseCode != 200 {
+                successOrFailure.setValue("Failed to reset password due to a server side error")
+                return false
+            }
+            successOrFailure.setValue("Reset password")
+            return true
         }
     }
 }

@@ -11,6 +11,18 @@ struct VerifyResetView: View {
     
     @State private var resetId: String = ""
     @State private var isVerified: Bool = false
+    @State private var showingPopover = false
+    
+    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var usernameOrEmail: ObservableString = ObservableString()
+    
+    init() {}
+
+    init(_ userIdentifier: Int, _ usernameOrEmail: String) {
+        self.userIdentifier.setValue(userIdentifier)
+        self.usernameOrEmail.setValue(usernameOrEmail)
+    }
     
     var body: some View {
         HStack {
@@ -21,9 +33,17 @@ struct VerifyResetView: View {
                     .padding(.leading, 40)
                 Button("Verify Reset") {
                     isVerified = attemptVerifyReset()
-                }.padding(.trailing, 120)
+                    showingPopover = true
+                }.padding(.trailing, 120).popover(isPresented: $showingPopover) {
+                    Text(successOrFailure.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopover = false
+                        }
+                        .accessibilityIdentifier("Popover")
+                }
                 Spacer()
-                NavigationLink(destination: ResetPasswordView()) {
+                NavigationLink(destination: ResetPasswordView(userIdentifier.getValue())) {
                     if (isVerified) {
                         Text("Next")
                     }
@@ -35,11 +55,18 @@ struct VerifyResetView: View {
     }
     
     func attemptVerifyReset() -> Bool {
-        if DEBUG {
+        if Constants.DEBUG {
+            successOrFailure.setValue("Verified password reset in DEBUG mode")
             return true
         } else {
-            // TODO: Make API call
-            return false
+            let api = Config().api
+            let wallet = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
+            if wallet.responseCode != 200 {
+                successOrFailure.setValue("Failed to verify password reset due to a server side error")
+                return false
+            }
+            successOrFailure.setValue("Verified password reset")
+            return true
         }
     }
 }
