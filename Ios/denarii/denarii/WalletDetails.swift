@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WalletDetails {
+struct WalletDetails : Codable {
     var balance: Double = 0.0
     var seed: String = ""
     var userIdentifier: Int = 0

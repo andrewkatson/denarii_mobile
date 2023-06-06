@@ -37,67 +37,91 @@ protocol API {
 }
 
 class RealAPI: API {
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Wallet {
-        // TODO call a real API
+    
+    private var urlBase: String = "https://denariimobilebackend.com"
+    
+    func makeApiCall(_ urlStr: String) -> Wallet {
+        
+        let url = URL(string: urlStr)
+        
         var wallet = Wallet()
-        wallet.responseCode = 400
+        
+        var errorString = ""
+        var responseCode = 200
+
+        let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
+            if let err = error {
+                errorString = String(error!.localizedDescription)
+                responseCode = 400
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+              errorString = "Problem with the http response"
+              responseCode = 400
+              return
+            }
+            
+            if let data = data,
+                    let walletData = try? JSONDecoder().decode(Wallet.self, from: data) {
+                    wallet = walletData
+                  }
+        })
+
+        task.resume()
+        
+        if responseCode != 200 {
+            wallet.responseCode = responseCode
+            wallet.responseCodeText = errorString
+        }
+        
         return wallet
+    }
+
+    func getUserId(_ username: String, _ email: String, _ password: String) -> Wallet {
+        var urlString = "\(urlBase)/users/\(username)/\(email)/\(password)"
+        return makeApiCall(urlString)
     }
     
     func requestPasswordReset(_ usernameOrEmail: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(usernameOrEmail)/request_reset"
+        return makeApiCall(urlString)
     }
     
     func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(usernameOrEmail)/\(resetId)/verify_reset"
+        return makeApiCall(urlString)
     }
     
     func resetPassword(_ username: String, _ email: String, _ password: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(username)/\(email)/\(password)/reset_password"
+        return makeApiCall(urlString)
     }
     
     func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/create"
+        return makeApiCall(urlString)
     }
     
     func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/\(seed)/restore"
+        return makeApiCall(urlString)
     }
     
     func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/open"
+        return makeApiCall(urlString)
     }
     
     func getBalance(_ userIdentifier: Int, _ walletName: String) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/balance"
+        return makeApiCall(urlString)
     }
     
     func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Wallet {
-        // TODO call a real API
-        var wallet = Wallet()
-        wallet.responseCode = 400
-        return wallet
+        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(adddressToSendTo)/\(amountToSend)/send"
+        return makeApiCall(urlString)
     }
 }
 

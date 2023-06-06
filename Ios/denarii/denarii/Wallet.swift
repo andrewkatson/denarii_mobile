@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Wallet {
+struct Wallet : Codable {
     var responseCode: Int = 0
     var responseCodeText: String = ""
     var response: WalletDetails = WalletDetails()
