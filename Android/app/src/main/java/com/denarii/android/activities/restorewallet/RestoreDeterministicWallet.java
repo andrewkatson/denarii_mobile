@@ -19,6 +19,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
 import java.util.Locale;
@@ -74,8 +75,7 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
         userDetails.getWalletDetails().walletPassword = walletPassword.getText().toString();
         userDetails.getWalletDetails().seed = walletSeed.getText().toString();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        DenariiService denariiService = retrofit.create(DenariiService.class);
+        DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
         Call<List<Wallet>> walletCall = denariiService.restoreWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString(), walletSeed.getText().toString());
 
         UserDetails finalUserDetails = userDetails;

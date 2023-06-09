@@ -20,6 +20,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
 
@@ -59,8 +60,7 @@ public class RequestReset extends AppCompatActivity {
 
         EditText usernameOrEmail = (EditText) findViewById(R.id.request_reset_username_or_email_edit_text);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        DenariiService denariiService = retrofit.create(DenariiService.class);
+        DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
         Call<List<Wallet>> walletCall = denariiService.requestPasswordReset(usernameOrEmail.getText().toString());
         walletCall.enqueue(new Callback<List<Wallet>>() {
             @Override

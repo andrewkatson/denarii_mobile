@@ -20,6 +20,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+import com.denarii.android.util.DenariiServiceHandler;
 
 import org.w3c.dom.Text;
 
@@ -75,8 +76,7 @@ public class CreateWallet extends AppCompatActivity {
         userDetails.getWalletDetails().walletName = walletName.getText().toString();
         userDetails.getWalletDetails().walletPassword = walletPassword.getText().toString();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        DenariiService denariiService = retrofit.create(DenariiService.class);
+        DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
         Call<List<Wallet>> walletCall = denariiService.createWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString());
 
         UserDetails finalUserDetails = userDetails;

@@ -20,6 +20,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
 import java.util.Locale;
@@ -80,8 +81,7 @@ public class Login extends AppCompatActivity {
             userDetails = new UserDetails();
             userDetails.setWalletDetails(new WalletDetails());
         }
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        DenariiService denariiService = retrofit.create(DenariiService.class);
+        DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
         Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(),
                 userDetails.getUserEmail(), userDetails.getUserPassword());
         UserDetails finalUserDetails = userDetails;

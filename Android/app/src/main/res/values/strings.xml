@@ -73,4 +73,5 @@
     <string name="create_wallet_next_button_text">Next</string>
     <string name="open_wallet_next_text">Next</string>
     <string name="restore_wallet_next_text">Next</string>
+    <string name="opened_wallet_seed_text">Seed: </string>
 </resources>

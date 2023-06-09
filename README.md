@@ -35,6 +35,9 @@ N/A
 
 Just open Android/ folder with Android Studio.
 
+Go to Run/Edit Configurations. For test targets add to Instrumentation Arguments. Name: "UI-TESTING" Value: "True".
+For app target add to Launch Flags `-e UI-TESTING True`
+
 ### IOS
 
 Just open Ios/ folder with XCode

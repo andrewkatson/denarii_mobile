@@ -18,6 +18,7 @@ import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
+import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
 
@@ -56,8 +57,7 @@ public class VerifyReset extends AppCompatActivity {
 
         EditText resetId = (EditText) findViewById(R.id.verify_reset_reset_id_edit_text);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        DenariiService denariiService = retrofit.create(DenariiService.class);
+        DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
 
         try {
             Call<List<Wallet>> walletCall = denariiService.verifyReset(usernameOrEmail, Integer.parseInt(resetId.getText().toString()));

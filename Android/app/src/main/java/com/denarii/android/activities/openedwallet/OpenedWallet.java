@@ -18,6 +18,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
+import com.denarii.android.util.DenariiServiceHandler;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -38,11 +39,13 @@ public class OpenedWallet extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opened_wallet);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
-        denariiService = retrofit.create(DenariiService.class);
+        denariiService = DenariiServiceHandler.returnDenariiService();
 
         Intent currentIntent = getIntent();
         UserDetails userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+        TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
+        seed.setText(String.format("Seed %s", userDetails.getWalletDetails().seed));
 
         getBalance(userDetails);
 
