@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,8 +25,6 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenedWallet extends AppCompatActivity {
 
@@ -73,20 +69,20 @@ public class OpenedWallet extends AppCompatActivity {
                     if (response.body() != null) {
                         // We only care about the first wallet.
                         finalUserDetails.getWalletDetails().balance = response.body().get(0).response.balance;
-                        createSuccessTextView("Got Balance",
+                        createSuccessToast("Got Balance",
                                 finalUserDetails.getWalletDetails().balance,
                                 finalUserDetails.getWalletDetails().walletAddress);
                     } else {
-                        createFailureTextView("Response body was null for get balance");
+                        createFailureToast("Response body was null for get balance");
                     }
                 } else {
-                    createFailureTextView("Response was not successful for get balance");
+                    createFailureToast("Response was not successful for get balance");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
-                createFailureTextView(String.format("%s %s", "Response failed for get balance", t));
+                createFailureToast(String.format("%s %s", "Response failed for get balance", t));
             }
         });
     }
@@ -99,6 +95,13 @@ public class OpenedWallet extends AppCompatActivity {
 
         EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
         EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
+
+        TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
+
+        if (Double.parseDouble(balance.getText().toString()) < Double.parseDouble(amount.getText().toString())) {
+            createFailureToast("Balance was less than the amount to send");
+            return;
+        }
 
         try {
             Call<List<Wallet>> walletCall = denariiService.sendDenarii(userDetails.getWalletDetails().userIdentifier,
@@ -114,28 +117,28 @@ public class OpenedWallet extends AppCompatActivity {
                             // Update the balance now that we sent denarii.
                             getBalance(finalUserDetails);
 
-                            createSuccessTextView("Sent Money",
+                            createSuccessToast("Sent Money",
                                     finalUserDetails.getWalletDetails().balance,
                                     finalUserDetails.getWalletDetails().walletAddress);
                         } else {
-                            createFailureTextView("Response body was null for send money");
+                            createFailureToast("Response body was null for send money");
                         }
                     } else {
-                        createFailureTextView("Response was not successful for send money");
+                        createFailureToast("Response was not successful for send money");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
-                    createFailureTextView(String.format("%s %s", "Response failed for send money", t));
+                    createFailureToast(String.format("%s %s", "Response failed for send money", t));
                 }
             });
         } catch (NumberFormatException e) {
-            createFailureTextView("Not a number provided for amount to send");
+            createFailureToast("Not a number provided for amount to send");
         }
     }
 
-    private void createSuccessTextView(String successMessage, double newBalance, String walletAddress) {
+    private void createSuccessToast(String successMessage, double newBalance, String walletAddress) {
         TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
 
         balance.setText(String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), newBalance));
@@ -152,7 +155,7 @@ public class OpenedWallet extends AppCompatActivity {
         toast.show();
     }
 
-    private void createFailureTextView(String failureMessage) {
+    private void createFailureToast(String failureMessage) {
         TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
 
         balance.setText(String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), 0.0d));

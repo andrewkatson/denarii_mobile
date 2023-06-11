@@ -58,4 +58,4 @@ N/A
 Run button in Android Studio either with a virtual device or a Wi-Fi connected one.
 
 ### IOS
-N/A
+Run button in Xcode either with a virtual device or a wired connected one.

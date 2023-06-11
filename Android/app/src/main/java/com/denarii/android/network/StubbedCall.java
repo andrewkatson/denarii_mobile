@@ -3,6 +3,7 @@ package com.denarii.android.network;
 import androidx.annotation.NonNull;
 
 import com.denarii.android.user.Wallet;
+import com.denarii.android.user.WalletDetails;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -21,8 +22,18 @@ public class StubbedCall implements Call<List<Wallet>> {
     }
 
     private Wallet getWallet() {
-        String responseStr = "{ \"responseCode\": 200\", \"responseCodeText\": \"No error\", \"response\": { \"balance\": 20, \"seed\": \"some seed here\", \"userIdentifier\": \"user\", \"walletName\": \"wallet\", \"walletPassword\": \"password\", \"walletAddress\": \"ABCXYZ\"}}";
-        return new Gson().fromJson(responseStr, Wallet.class);
+        Wallet wallet = new Wallet();
+        WalletDetails walletDetails = new WalletDetails();
+        walletDetails.userIdentifier = 123;
+        walletDetails.walletAddress = "ABCXYZ";
+        walletDetails.walletName = "wallet";
+        walletDetails.walletPassword = "password";
+        walletDetails.seed = "some seed here";
+        walletDetails.balance = 20;
+        wallet.response = walletDetails;
+        wallet.responseCode = 200;
+        wallet.responseCodeText = "No error";
+        return wallet;
     }
 
 

@@ -85,7 +85,7 @@ public class Login extends AppCompatActivity {
         Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(),
                 userDetails.getUserEmail(), userDetails.getUserPassword());
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<List<Wallet>>() {
+        walletCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
                 if (response.isSuccessful()) {
