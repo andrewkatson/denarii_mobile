@@ -46,9 +46,13 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.9'
     // Optional -- Mockito framework
     testImplementation "org.mockito:mockito-core:4.9.0"
+    // AndroidX used for UI Thread Tests
+    androidTestImplementation 'androidx.test:rules:1.5.0'
     // Optional -- Mockito framework
     androidTestImplementation "org.mockito:mockito-core:4.9.0"
+    // Optional -- but unknown
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    // Optional -- Android espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // Optional -- UI testing with UI Automator
     androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"

@@ -5,6 +5,7 @@ import static androidx.test.runner.lifecycle.Stage.RESUMED;
 
 import android.app.Activity;
 
+import androidx.test.annotation.UiThreadTest;
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 
 import org.junit.Test;
@@ -27,26 +28,31 @@ public class ComplexNavigationTest {
     }
 
     @Test
+    @UiThreadTest
     public void loginWithDenarii() {
 
     }
 
     @Test
+    @UiThreadTest
     public void registerWithDenarii() {
 
     }
 
     @Test
+    @UiThreadTest
     public void resetPassword() {
 
     }
 
     @Test
+    @UiThreadTest
     public void getBalance() {
 
     }
 
     @Test
+    @UiThreadTest
     public void sendDenarii() {
 
     }
