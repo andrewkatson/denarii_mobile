@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,9 @@ public class VerifyReset extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_reset);
+
+        EditText resetId = findViewById(R.id.verify_reset_reset_id_edit_text);
+        resetId.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         Button verifyResetButton = (Button) findViewById(R.id.verify_reset_verify_reset_button);
 

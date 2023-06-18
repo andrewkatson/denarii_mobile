@@ -45,10 +45,12 @@
         <Button
             android:id="@+id/wallet_decision_open_wallet_button"
             android:layout_width="138dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="338dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="136dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="135dp"
             android:text="@string/open_wallet_text"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/wallet_decision_restore_wallet_button" />

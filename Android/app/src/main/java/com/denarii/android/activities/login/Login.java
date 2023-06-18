@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         UserDetails userDetails = new UserDetails();
 
+        EditText password = findViewById(R.id.login_enter_password_edit_text);
+        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         Button submit = (Button)findViewById(R.id.login_submit_button);
 
@@ -46,7 +49,6 @@ public class Login extends AppCompatActivity {
 
             EditText name = (EditText)findViewById(R.id.login_enter_name_edit_text);
             EditText email = (EditText)findViewById(R.id.login_enter_email_edit_text);
-            EditText password = (EditText) findViewById(R.id.login_enter_password_edit_text);
 
             userDetails.setUserName(name.getText().toString());
             userDetails.setUserEmail(email.getText().toString());

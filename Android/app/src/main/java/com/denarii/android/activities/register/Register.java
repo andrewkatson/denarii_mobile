@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,12 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         UserDetails userDetails = new UserDetails();
 
+        EditText password = findViewById(R.id.register_enter_password_edit_text);
+        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        EditText confirmPassword = findViewById(R.id.register_confirm_password_edit_text);
+        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
 
         Button submit = (Button)findViewById(R.id.register_submit_button);
 
@@ -44,8 +51,6 @@ public class Register extends AppCompatActivity {
 
             EditText name = (EditText)findViewById(R.id.register_enter_name_edit_text);
             EditText email = (EditText)findViewById(R.id.register_enter_email_edit_text);
-            EditText password = (EditText) findViewById(R.id.register_enter_password_edit_text);
-            EditText confirmPassword = (EditText) findViewById(R.id.register_confirm_password_edit_text);
 
             if (!confirmPassword.getText().toString().equals(password.getText().toString())) {
                 createFailureToast("Passwords do not match");

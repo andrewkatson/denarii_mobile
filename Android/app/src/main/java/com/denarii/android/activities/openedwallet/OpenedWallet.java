@@ -21,6 +21,8 @@ import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,8 +42,10 @@ public class OpenedWallet extends AppCompatActivity {
         Intent currentIntent = getIntent();
         UserDetails userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
-        TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
-        seed.setText(String.format("Seed %s", userDetails.getWalletDetails().seed));
+        if (userDetails != null && userDetails.getWalletDetails() != null) {
+            TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
+            seed.setText(String.format("Seed %s", userDetails.getWalletDetails().seed));
+        }
 
         getBalance(userDetails);
 
@@ -98,7 +102,15 @@ public class OpenedWallet extends AppCompatActivity {
 
         TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
 
-        if (Double.parseDouble(balance.getText().toString()) < Double.parseDouble(amount.getText().toString())) {
+        Pattern pattern = Pattern.compile("Balance: (\\d+\\.\\d+)");
+        Matcher matcher = pattern.matcher(balance.getText().toString());
+        String balanceText = "0.0";
+
+        if (matcher.find()) {
+            balanceText = matcher.group(1);
+        }
+        assert balanceText != null;
+        if (Double.parseDouble(balanceText) < Double.parseDouble(amount.getText().toString())) {
             createFailureToast("Balance was less than the amount to send");
             return;
         }

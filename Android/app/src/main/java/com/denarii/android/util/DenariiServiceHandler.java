@@ -2,6 +2,7 @@ package com.denarii.android.util;
 
 import android.system.Os;
 
+import com.denarii.android.BuildConfig;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.network.StubbedDenariiService;
@@ -19,8 +20,8 @@ public class DenariiServiceHandler {
         }
 
         // Instrumented tests and prod use this.
-        String env = Os.getenv("UI-TESTING");
-        if (env != null && env.equals("True")) {
+        boolean debug = BuildConfig.DEBUG;
+        if (debug) {
             return new StubbedDenariiService();
         } else {
             Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();

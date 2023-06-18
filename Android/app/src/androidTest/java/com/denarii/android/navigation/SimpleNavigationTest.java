@@ -3,6 +3,7 @@ package com.denarii.android.navigation;
 
 import static org.junit.Assert.assertEquals;
 
+import android.system.ErrnoException;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,13 +25,20 @@ import com.denarii.android.activities.resetpassword.ResetPassword;
 import com.denarii.android.activities.restorewallet.RestoreDeterministicWallet;
 import com.denarii.android.activities.verifyreset.VerifyReset;
 import com.denarii.android.activities.walletdecision.WalletDecision;
+import com.denarii.android.constants.Constants;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
 @RunWith(AndroidJUnit4.class)
 public class SimpleNavigationTest {
+
+    @BeforeClass
+    public static void beforeClass() throws ErrnoException {
+        Constants.DEBUG = true;
+    }
 
     @Test
     public void toLoginOrRegisterFromMain() {
@@ -109,6 +117,9 @@ public class SimpleNavigationTest {
                 EditText password = activity.findViewById(R.id.register_enter_password_edit_text);
                 password.setText("password");
 
+                EditText confirmPassword = activity.findViewById(R.id.register_confirm_password_edit_text);
+                confirmPassword.setText("password");
+
                 Button submit = activity.findViewById(R.id.register_submit_button);
                 submit.performClick();
 
@@ -163,13 +174,13 @@ public class SimpleNavigationTest {
         try(ActivityScenario<ResetPassword> scenario = ActivityScenario.launch(ResetPassword.class)) {
             scenario.onActivity(activity -> {
 
-                EditText name = activity.findViewById(R.id.reset_password_enter_name_edit_text);
+                EditText name = activity.findViewById(R.id.rs_enter_name_edit_text);
                 name.setText("user");
 
-                EditText email = activity.findViewById(R.id.reset_password_enter_email_edit_text);
+                EditText email = activity.findViewById(R.id.rs_enter_email_edit_text);
                 email.setText("email@email.com");
 
-                EditText password = activity.findViewById(R.id.reset_password_new_password_edit_text);
+                EditText password = activity.findViewById(R.id.reset_password_enter_password_edit_text);
                 password.setText("password");
 
                 EditText confirmPassword = activity.findViewById(R.id.reset_password_confirm_password_edit_text);
@@ -299,7 +310,7 @@ public class SimpleNavigationTest {
                 refreshBalance.performClick();
 
                 TextView balance = activity.findViewById(R.id.opened_wallet_balance_text_view);
-                assertEquals("20", balance.getText().toString());
+                assertEquals("Balance: 20.000000", balance.getText().toString());
             });
         }
     }
