@@ -234,3 +234,45 @@ class ViewsTestCase(TestCase):
         user = get_user_with_username_and_email(dict_of_values['username'], dict_of_values['email'])
 
         self.assertEqual(user.password, new_password)
+
+    def test_get_prices_with_less_than_num_asks(self):
+        pass
+
+    def test_get_prices_with_more_than_num_asks(self):
+        pass
+
+    def test_buy_denarii_regardless_of_price_with_enough_to_buy(self):
+        pass
+
+    def test_buy_denarii_regardless_of_price_without_enough_to_buy(self):
+        pass
+
+    def test_buy_denarii_considering_price_with_enough_to_buy_within_asking_price(self):
+        pass
+
+    def test_buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price(self):
+        pass
+
+    def test_buy_denarii_considering_price_without_enough_to_buy(self):
+        pass
+
+    def test_transfer_denarii_with_exactly_amount(self):
+        pass
+
+    def test_transfer_denarii_with_less_than_amount(self):
+        pass
+
+    def test_transfer_denarii_with_ask_that_doesnt_exist(self):
+        pass
+
+    def test_make_denarii_ask(self):
+        pass
+
+    def test_poll_for_completed_transaction(self):
+        pass
+
+    def test_cancel_ask_that_still_exists(self):
+        pass
+
+    def test_cancel_ask_that_does_not_exist(self):
+        pass

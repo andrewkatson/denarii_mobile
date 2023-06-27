@@ -10,7 +10,7 @@ except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 from DenariiMobile.interface import wallet
-from DenariiMobile.models import DenariiUser
+from DenariiMobile.models import DenariiUser, DenariiAsk
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
@@ -69,10 +69,50 @@ def get_user_with_id(user_id):
         return None
 
 
+def get_ask_with_id(ask_id):
+    try:
+        existing = DenariiAsk.objects.get(ask_id=ask_id)
+        return existing
+    except DenariiAsk.DoesNotExist:
+        return None
+
+
 def get_wallet(user):
     # Only get the first wallet for now. In theory there could be many, but
     # we want to enforce one username + email per wallet.
     return user.walletdetails_set.all()[0]
+
+
+def get_user_asks(user):
+    return user.denariiask_set.all()
+
+
+def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of_price):
+    current_bought_amount = 0
+    current_ask_price = bid_price
+    asks_met = []
+    for ask in ordered_asks:
+
+        current_ask_price = ask.asking_price
+
+        if not buy_regardless_of_price and current_ask_price > bid_price:
+            return False, "Asking price was higher than bid price", asks_met
+
+        current_bought_amount += ask.amount
+
+        ask.in_escrow = True
+
+        if current_bought_amount > to_buy_amount:
+            ask.amount_bought = ask.amount - (current_bought_amount - to_buy_amount)
+        else:
+            ask.amount_bought = ask.amount
+
+        ask.save()
+
+        asks_met.append(ask)
+
+        if current_bought_amount > to_buy_amount:
+            return True, None, asks_met
 
 
 # In spite of its name this function handles login and registration
@@ -326,5 +366,145 @@ def send_denarii(request, user_id, wallet_name, address, amount):
         else:
             return HttpResponseBadRequest("Could not send denarii")
 
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def get_prices(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        filtered_asks = DenariiAsk.objects.filter(in_escrow=False)
+        total_asks = filtered_asks.count()
+        lowest_priced_asks = None
+        if total_asks < 100:
+            lowest_priced_asks = filtered_asks.order_by("asking_price")[:]
+        else:
+            lowest_priced_asks = filtered_asks.order_by("asking_price")[:100]
+
+        serialized_denarii_asks = serializers.serialize('json', lowest_priced_asks,
+                                                        fields=('ask_id', 'asking_price', 'amount'))
+
+        return JsonResponse({'denarii_asks': serialized_denarii_asks})
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        filtered_asks = DenariiAsk.objects.filter(in_escrow=False)
+        ordered_asks = filtered_asks.order_by('asking_price')
+
+        complete_purchase, error_message, asks_met = try_to_buy_denarii(ordered_asks, amount, bid_price,
+                                                                        buy_regardless_of_price)
+
+        if error_message is not None:
+            serialized_asks_met = serializers.serialize('json', asks_met, fields='ask_id')
+            return JsonResponse('denarii_asks', serialized_asks_met)
+        elif len(asks_met) == 0:
+            return HttpResponseBadRequest("No asks could be met with the bid price")
+        else:
+            serialized_asks_met = serializers.serialize('json', asks_met, fields='ask_id')
+            return JsonResponse('denarii_asks', serialized_asks_met)
+
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def transfer_denarii(request, user_id, ask_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+
+        if ask is not None:
+            asking_user = ask.user
+
+            ask_user_wallet = get_wallet(asking_user)
+
+            receiver_wallet = get_wallet(existing)
+
+            sender = wallet.Wallet(ask_user_wallet.wallet_name, ask_user_wallet.wallet_password)
+            receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
+            receiver.address = receiver_wallet.address
+
+            amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
+
+            original_amount_bought = ask.amount_bought
+
+            ask_user_wallet.balance = client.get_balance_of_wallet(sender)
+
+            ask_user_wallet.save()
+
+            receiver_wallet.balance = client.get_balance_of_wallet(receiver)
+
+            receiver_wallet.save()
+
+            ask.in_escrow = False
+            ask.amount = ask.amount - ask.amount_bought
+
+            serialized_ask = serializers.serialize('json', [ask], fields=('ask_id', 'amount_bought'))
+
+            if ask.amount == 0:
+                ask.delete()
+            else:
+                ask.save()
+
+            if amount_sent == original_amount_bought:
+                return JsonResponse({'denarii_asks', serialized_ask})
+            else:
+                return HttpResponseBadRequest("Could not transfer denarii")
+
+        else:
+            return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def make_denarii_ask(user_id, amount, asking_price):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        new_ask = existing.denariiask_set.create(user_identifier=existing.id)
+        new_ask.in_escrow = False
+        new_ask.amount = amount
+        new_ask.asking_price = asking_price
+        new_ask.save()
+
+        serialized_ask = serializers.serialize('json', [new_ask], fields=('ask_id', 'amount', 'asking_price'))
+        return JsonResponse({'denarii_asks', serialized_ask})
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def poll_for_completed_transaction(user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        current_asks = existing.denariiask_set.all()
+
+        serialized_asks = serializers.serialize('json', current_asks, fields=('ask_id', 'amount', 'asking_price'))
+        return JsonResponse('denarii_asks', serialized_asks)
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def cancel_ask(user_id, ask_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+        if ask is not None:
+            ask.delete()
+        else:
+            return HttpResponseBadRequest("No ask with id")
     else:
         return HttpResponseBadRequest("No user with id")
