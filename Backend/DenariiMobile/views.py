@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.db.models import Q
 
 try:
     from Backend.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
@@ -375,13 +376,14 @@ def get_prices(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
-        filtered_asks = DenariiAsk.objects.filter(in_escrow=False)
-        total_asks = filtered_asks.count()
+        filtered_by_escrow = DenariiAsk.objects.filter(in_escrow=False)
+        filtered_by_user_id = filtered_by_escrow.filter(~Q(user.id=user_id))
+        total_asks = filtered_by_user_id.count()
         lowest_priced_asks = None
         if total_asks < 100:
-            lowest_priced_asks = filtered_asks.order_by("asking_price")[:]
+            lowest_priced_asks = filtered_by_user_id.order_by("asking_price")[:]
         else:
-            lowest_priced_asks = filtered_asks.order_by("asking_price")[:100]
+            lowest_priced_asks = filtered_by_user_id.order_by("asking_price")[:100]
 
         serialized_denarii_asks = serializers.serialize('json', lowest_priced_asks,
                                                         fields=('ask_id', 'asking_price', 'amount'))
@@ -423,42 +425,47 @@ def transfer_denarii(request, user_id, ask_id):
         ask = get_ask_with_id(ask_id)
 
         if ask is not None:
-            asking_user = ask.user
 
-            ask_user_wallet = get_wallet(asking_user)
+            if ask.in_escrow is True:
+                asking_user = ask.user
 
-            receiver_wallet = get_wallet(existing)
+                ask_user_wallet = get_wallet(asking_user)
 
-            sender = wallet.Wallet(ask_user_wallet.wallet_name, ask_user_wallet.wallet_password)
-            receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
-            receiver.address = receiver_wallet.address
+                receiver_wallet = get_wallet(existing)
 
-            amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
+                sender = wallet.Wallet(ask_user_wallet.wallet_name, ask_user_wallet.wallet_password)
+                receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
+                receiver.address = receiver_wallet.address
 
-            original_amount_bought = ask.amount_bought
+                amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
 
-            ask_user_wallet.balance = client.get_balance_of_wallet(sender)
+                original_amount_bought = ask.amount_bought
 
-            ask_user_wallet.save()
+                ask_user_wallet.balance = client.get_balance_of_wallet(sender)
 
-            receiver_wallet.balance = client.get_balance_of_wallet(receiver)
+                ask_user_wallet.save()
 
-            receiver_wallet.save()
+                receiver_wallet.balance = client.get_balance_of_wallet(receiver)
 
-            ask.in_escrow = False
-            ask.amount = ask.amount - ask.amount_bought
+                receiver_wallet.save()
 
-            serialized_ask = serializers.serialize('json', [ask], fields=('ask_id', 'amount_bought'))
+                ask.in_escrow = False
+                ask.amount = ask.amount - ask.amount_bought
 
-            if ask.amount == 0:
-                ask.delete()
+                serialized_ask = serializers.serialize('json', [ask], fields=('ask_id', 'amount_bought'))
+
+                if ask.amount == 0:
+                    ask.delete()
+                else:
+                    ask.save()
+
+                if amount_sent == original_amount_bought:
+                    return JsonResponse({'denarii_asks', serialized_ask})
+                else:
+                    return HttpResponseBadRequest("Could not transfer denarii")
+
             else:
-                ask.save()
-
-            if amount_sent == original_amount_bought:
-                return JsonResponse({'denarii_asks', serialized_ask})
-            else:
-                return HttpResponseBadRequest("Could not transfer denarii")
+                return HttpResponseBadRequest("Ask was not bought")
 
         else:
             return HttpResponseBadRequest("No ask with id")
