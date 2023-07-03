@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import uuid
+
+# Namespace used for all uuid5
+DENARII_UUID5_NAMESPACE = uuid.UUID('6f00b0fc-d477-4e82-9d7a-1cb7d98e13eb')
+
+# Names for denarii uuid5 uuids
+DENARII_UUID5_WALLET_DETAILS_NAME = "wallet_details_id"
+DENARII_UUID5_DENARII_ASK_NAME = "denarii_ask_id"
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

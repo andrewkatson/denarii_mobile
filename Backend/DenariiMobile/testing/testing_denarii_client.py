@@ -23,15 +23,15 @@ def generate_address(num_letters):
     return ''.join(list_of_letters)
 
 
-class Wallet:
+class TestingWallet:
 
     def __init__(self, name, password, seed=''):
         self.name = name
         self.password = password
         self.seed = seed
         self.address = ''
-        # We make the balance 1 so that we can transfer some money.
-        self.balance = 1.0
+        # We make the balance 2 so that we can transfer some money.
+        self.balance = 2.0
 
 
 class DenariiClient:
@@ -45,7 +45,7 @@ class DenariiClient:
         if wallet.name in self.wallets:
             return False
 
-        self.wallets[wallet.name] = Wallet(wallet.name, wallet.password)
+        self.wallets[wallet.name] = TestingWallet(wallet.name, wallet.password)
         return True
 
     def restore_wallet(self, wallet):
@@ -70,7 +70,6 @@ class DenariiClient:
     def transfer_money(self, amount, sender, receiver):
         if sender.name in self.wallets:
             existing_wallet = self.wallets.get(sender.name)
-
             if existing_wallet.balance >= amount:
                 existing_wallet.balance -= amount
                 return True

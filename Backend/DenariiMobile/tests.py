@@ -17,12 +17,11 @@ def get_json_fields(response):
 
 
 def get_all_json_objects(response):
+    assert type(response) != HttpResponseBadRequest
     content = response.content
     text = content.decode('utf8')
     # TODO(katsonandrew): Figure out a better way to unpack the response.
-    series = pd.read_json(text, typ='series', orient='records')
-
-    return series
+    return pd.read_json(text, typ='series', orient='records')
 
 
 def get_all_json_objects_field(response, field):
@@ -42,13 +41,13 @@ def create_user(name, email, password):
     return fields['user_identifier']
 
 
-def create_ask(user_id, amount, asking_price):
-    response = make_denarii_ask(None, user_id, 1.0, 1.0)
+def create_ask(request, user_id, amount, asking_price):
+    response = make_denarii_ask(request, user_id, amount, asking_price)
     fields = get_json_fields(response)
     return Ask(fields['ask_id'], amount, asking_price)
 
 
-def create_asks(user_id):
+def create_asks(request, user_id):
     length = 6
     asks = []
     amount_and_asking_price = {
@@ -60,18 +59,18 @@ def create_asks(user_id):
         amount = amount_and_asking_price.get('amounts')[i]
         asking_price = amount_and_asking_price.get('asking_prices')[i]
 
-        asks.append(create_ask(user_id, amount, asking_price))
+        asks.append(create_ask(request, user_id, amount, asking_price))
 
     return asks
 
 
-def create_random_asks(user_id, num):
+def create_random_asks(request, user_id, num):
     asks = []
     for i in range(num):
         amount = random.uniform(0.0, 100.0)
         asking_price = random.uniform(0.0, 100.0)
 
-        asks.append(create_ask(user_id, amount, asking_price))
+        asks.append(create_ask(request, user_id, amount, asking_price))
 
     return asks
 
@@ -139,10 +138,12 @@ class ViewsTestCase(TestCase):
     def test_get_user_id_new_user_returns_empty_wallet(self):
         password = "my_password"
         response = get_user_id(None, self.user, self.email, password)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         new_user = get_user(self.user, self.email, password)
         new_wallet_fields = get_json_fields(response)
-
-        self.assertEqual(new_wallet_fields['user_identifier'], new_user.id)
+        self.assertEqual(new_wallet_fields['user_identifier'], str(new_user.id))
 
     def test_get_user_id_old_user_returns_existing_wallet(self):
         password = "other_password"
@@ -151,9 +152,10 @@ class ViewsTestCase(TestCase):
 
         response = get_user_id(None, self.user, self.email, password)
 
-        wallet_fields = get_json_fields(response)
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
 
-        self.assertEqual(wallet_fields['user_identifier'], new_user.id)
+        wallet_fields = get_json_fields(response)
+        self.assertEqual(wallet_fields['user_identifier'], str(new_user.id))
 
     def test_get_user_id_existing_username_clashes_returns_error(self):
         password = "lastpass"
@@ -177,6 +179,9 @@ class ViewsTestCase(TestCase):
 
         request = create_user_request(user_id)
         response = create_wallet(request, user_id, self.wallet_name, self.wallet_password)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         fields = get_json_fields(response)
 
         self.assertTrue('seed' in fields)
@@ -187,6 +192,9 @@ class ViewsTestCase(TestCase):
 
         response = open_wallet(dict_of_values['request'], dict_of_values['user_id'],
                                dict_of_values['wallet_name'], dict_of_values['wallet_password'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         fields = get_json_fields(response)
 
         self.assertTrue('seed' in fields)
@@ -197,6 +205,9 @@ class ViewsTestCase(TestCase):
 
         response = restore_wallet(dict_of_values['request'], dict_of_values['user_id'], dict_of_values['wallet_name'],
                                   dict_of_values['wallet_password'], self.seed)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         fields = get_json_fields(response)
 
         self.assertFalse('seed' in fields)
@@ -206,15 +217,21 @@ class ViewsTestCase(TestCase):
         dict_of_values = get_all_test_values("get_balance")
 
         response = get_balance(dict_of_values['request'], dict_of_values['user_id'], dict_of_values['wallet_name'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         fields = get_json_fields(response)
 
-        self.assertEquals(fields['balance'], 1.0)
+        self.assertEquals(fields['balance'], 2.0)
 
     def test_send_denarii_attempts_to_send_denarii(self):
         dict_of_values = get_all_test_values("send_denarii")
 
         response = send_denarii(dict_of_values['request'], dict_of_values['user_id'], dict_of_values['wallet_name'],
                                 self.other_address, self.amount_to_send)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
         fields = get_json_fields(response)
 
         self.assertFalse("balance" in fields)
@@ -289,11 +306,11 @@ class ViewsTestCase(TestCase):
     def test_get_prices_with_less_than_num_asks(self):
         seller_test_values = get_all_test_values("get_prices_with_less_than_num_asks_seller")
 
-        asks = create_random_asks(seller_test_values['user_id'], 10)
+        asks = create_random_asks(seller_test_values['request'], seller_test_values['user_id'], 10)
 
         buyer_test_values = get_all_test_values("get_prices_with_less_than_num_asks_buyer")
 
-        response = get_prices(None, buyer_test_values['user_id'])
+        response = get_prices(buyer_test_values['request'], buyer_test_values['user_id'])
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -301,12 +318,12 @@ class ViewsTestCase(TestCase):
 
         # every ask should be present since we only made 10
         for ask in asks:
-            self.assertTrue(ask.ask_id in ask_ids)
+            self.assertIn(ask.ask_id, ask_ids)
 
     def test_get_prices_with_more_than_num_asks(self):
         seller_test_values = get_all_test_values("get_prices_with_more_than_num_asks_seller")
 
-        asks = create_random_asks(seller_test_values['user_id'], 200)
+        asks = create_random_asks(seller_test_values['request'], seller_test_values['user_id'], 200)
 
         # sort and keep only the top 100 by price
         asks.sort(key=lambda x: x.asking_price)
@@ -314,23 +331,23 @@ class ViewsTestCase(TestCase):
 
         buyer_test_values = get_all_test_values("get_prices_with_more_than_num_asks_buyer")
 
-        response = get_prices(None, buyer_test_values['user_id'])
+        response = get_prices(buyer_test_values['request'], buyer_test_values['user_id'])
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
         ask_ids = get_all_json_objects_field(response, 'ask_id')
 
         for ask in low_asks:
-            self.assertTrue(ask.ask_id in ask_ids)
+            self.assertIn(ask.ask_id, ask_ids)
 
     def test_buy_denarii_regardless_of_price_with_enough_to_buy(self):
         test_values = get_all_test_values("buy_denarii_regardless_of_price_with_enough_to_buy")
 
-        asks = create_random_asks(test_values['user_id'], 200)
+        asks = create_random_asks(test_values['request'], test_values['user_id'], 200)
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 10.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 1.0, "True")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 1.0, "True", "True")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -343,14 +360,27 @@ class ViewsTestCase(TestCase):
 
         self.assertGreaterEqual(total_bought, amount_to_buy)
 
-    def test_buy_denarii_regardless_of_price_without_enough_to_buy(self):
-        test_values = get_all_test_values("buy_denarii_regardless_of_price_without_enough_to_buy")
+    def test_buy_denarii_regardless_of_price_without_enough_to_buy_fail_on_not_enough_to_buy_but_some_bought(self):
+        test_values = get_all_test_values(
+            "buy_denarii_regardless_of_price_without_enough_to_buy_fail_on_not_enough_to_buy_but_some_bought")
 
-        asks = create_random_asks(test_values['user_id'], 2)
+        asks = create_random_asks(test_values['request'], test_values['user_id'], 2)
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 10000.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 1.0, "True")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 1.0, "True", "True")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_buy_denarii_regardless_of_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought(self):
+        test_values = get_all_test_values(
+            "buy_denarii_regardless_of_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought")
+
+        asks = create_random_asks(test_values['request'], test_values['user_id'], 2)
+        asks.sort(key=lambda x: x.asking_price)
+
+        amount_to_buy = 10000.0
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 1.0, "True", "False")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -361,16 +391,17 @@ class ViewsTestCase(TestCase):
             if ask.ask_id in ask_ids:
                 total_bought += ask.amount
 
+        self.assertGreater(total_bought, 0)
         self.assertLessEqual(total_bought, amount_to_buy)
 
     def test_buy_denarii_considering_price_with_enough_to_buy_within_asking_price(self):
         test_values = get_all_test_values("buy_denarii_considering_price_with_enough_to_buy_within_asking_price")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 10.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 100.0, "False")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 100.0, "False", "True")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -383,14 +414,29 @@ class ViewsTestCase(TestCase):
 
         self.assertGreaterEqual(total_bought, amount_to_buy)
 
-    def test_buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price(self):
-        test_values = get_all_test_values("buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price")
+    def test_buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price_fail_on_not_enough_in_asking_price(
+            self):
+        test_values = get_all_test_values(
+            "buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price_fail_on_not_enough_in_asking_price")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 30.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 10.0, "False")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 10.0, "False", "True")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price_succeed_on_not_enough_in_asking_price(
+            self):
+        test_values = get_all_test_values(
+            "buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price_succeed_on_not_enough_in_asking_price")
+
+        asks = create_asks(test_values['request'], test_values['user_id'])
+        asks.sort(key=lambda x: x.asking_price)
+
+        amount_to_buy = 30.0
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 10.0, "False", "False")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -401,16 +447,18 @@ class ViewsTestCase(TestCase):
             if ask.ask_id in ask_ids:
                 total_bought += ask.amount
 
+        self.assertGreater(total_bought, 0)
         self.assertLessEqual(total_bought, amount_to_buy)
 
-    def test_buy_denarii_considering_price_without_enough_to_buy(self):
-        test_values = get_all_test_values("buy_denarii_considering_price_without_enough_to_buy")
+    def test_buy_denarii_considering_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought(self):
+        test_values = get_all_test_values(
+            "buy_denarii_considering_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 10000.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 100.0, "False")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 100.0, "False", "False")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -421,16 +469,29 @@ class ViewsTestCase(TestCase):
             if ask.ask_id in ask_ids:
                 total_bought += ask.amount
 
+        self.assertGreater(total_bought, 0)
         self.assertLessEqual(total_bought, amount_to_buy)
+
+    def test_buy_denarii_considering_price_without_enough_to_buy_fail_on_not_enough_to_buy_but_some_bought(self):
+        test_values = get_all_test_values(
+            "buy_denarii_considering_price_without_enough_to_buy_fail_on_not_enough_to_buy_but_some_bought")
+
+        asks = create_asks(test_values['request'], test_values['user_id'])
+        asks.sort(key=lambda x: x.asking_price)
+
+        amount_to_buy = 10000.0
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 100.0, "False", "True")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
 
     def test_buy_denarii_considering_price_with_zero_matches(self):
         test_values = get_all_test_values("buy_denarii_considering_price_with_zero_matches")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
         asks.sort(key=lambda x: x.asking_price)
 
         amount_to_buy = 10000.0
-        response = buy_denarii(None, test_values['user_id'], amount_to_buy, 0.0, "False")
+        response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 0.0, "False", "True")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -439,7 +500,7 @@ class ViewsTestCase(TestCase):
         # First we create the seller and some asks
         seller_test_values = get_all_test_values("transfer_denarii_with_exactly_amount_seller")
 
-        asks = create_asks(seller_test_values['user_id'])
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_exactly_amount_buyer")
@@ -447,7 +508,8 @@ class ViewsTestCase(TestCase):
         # Buy exactly one of the sellers lowest prices asks
         amount_to_buy = 2.0
         bid_price = 10.0
-        buy_response = buy_denarii(None, buyer_test_values['user_id'], amount_to_buy, bid_price, "False")
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
 
         self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
@@ -460,12 +522,12 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(ask_id, 0)
 
-        first_transfer_response = transfer_denarii(None, buyer_test_values['user_id'], ask_id)
+        first_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
         self.assertNotEqual(type(first_transfer_response), HttpResponseBadRequest)
 
         # If we try to look up ask it should be deleted.
-        poll_response = poll_for_completed_transaction(seller_test_values['user_id'])
+        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
 
         self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
 
@@ -477,7 +539,7 @@ class ViewsTestCase(TestCase):
         # First we create the seller and some asks
         seller_test_values = get_all_test_values("transfer_denarii_with_less_than_amount_seller")
 
-        asks = create_asks(seller_test_values['user_id'])
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_less_than_amount_buyer")
@@ -485,25 +547,26 @@ class ViewsTestCase(TestCase):
         # Buy exactly half of one of the sellers lowest prices asks
         amount_to_buy = 1.0
         bid_price = 10.0
-        buy_response = buy_denarii(None, buyer_test_values['user_id'], amount_to_buy, bid_price, "False")
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
 
         self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
-        # We want the ask id of the ask with 1.0 to offer (at 10.0 price)
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
         ask_id = 0
         for ask in asks:
-            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+            if ask.amount == 2.0 and ask.asking_price == bid_price:
                 ask_id = ask.ask_id
                 break
 
         self.assertNotEqual(ask_id, 0)
 
-        first_transfer_response = transfer_denarii(None, buyer_test_values['user_id'], ask_id)
+        first_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
         self.assertNotEqual(type(first_transfer_response), HttpResponseBadRequest)
 
         # If we try to look up ask it should be there still.
-        poll_response = poll_for_completed_transaction(seller_test_values['user_id'])
+        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
 
         self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
 
@@ -515,12 +578,12 @@ class ViewsTestCase(TestCase):
         # First we create the seller and some asks
         seller_test_values = get_all_test_values("transfer_denarii_with_ask_that_doesnt_exist_seller")
 
-        asks = create_asks(seller_test_values['user_id'])
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_ask_that_doesnt_exist_buyer")
 
-        response = transfer_denarii(None, buyer_test_values['user_id'], -1)
+        response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], -1)
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -528,7 +591,7 @@ class ViewsTestCase(TestCase):
         # First we create the seller and some asks
         seller_test_values = get_all_test_values("transfer_denarii_with_ask_not_in_escrow_seller")
 
-        asks = create_asks(seller_test_values['user_id'])
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_ask_not_in_escrow_buyer")
@@ -536,41 +599,42 @@ class ViewsTestCase(TestCase):
         # Buy exactly half of one of the sellers lowest prices asks
         amount_to_buy = 1.0
         bid_price = 10.0
-        buy_response = buy_denarii(None, buyer_test_values['user_id'], amount_to_buy, bid_price, "False")
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
 
         self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
-        # We want the ask id of the ask with 1.0 to offer (at 10.0 price)
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
         ask_id = 0
         for ask in asks:
-            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+            if ask.amount == 2.0 and ask.asking_price == bid_price:
                 ask_id = ask.ask_id
                 break
 
         self.assertNotEqual(ask_id, 0)
 
-        first_transfer_response = transfer_denarii(None, buyer_test_values['user_id'], ask_id)
+        first_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
         self.assertNotEqual(type(first_transfer_response), HttpResponseBadRequest)
 
-        # Transfering the ask a second time in a row will cause an error because it is already out of escrow
-        second_transfer_response = transfer_denarii(None, buyer_test_values['user_id'], ask_id)
+        # Transferring the ask a second time in a row will cause an error because it is already out of escrow
+        second_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
         self.assertEqual(type(second_transfer_response), HttpResponseBadRequest)
 
     def test_make_denarii_ask(self):
         test_values = get_all_test_values('make_denarii_ask')
 
-        response = make_denarii_asks(test_values['user_id'], 1.0, 10.0)
+        response = make_denarii_ask(test_values['request'], test_values['user_id'], 1.0, 10.0)
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
     def test_poll_for_completed_transaction(self):
         test_values = get_all_test_values("poll_for_completed_transaction")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
 
-        response = poll_for_completed_transaction(test_values['user_id'])
+        response = poll_for_completed_transaction(test_values['request'], test_values['user_id'])
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
@@ -582,16 +646,16 @@ class ViewsTestCase(TestCase):
             self.assertTrue(ask.ask_id in ask_ids)
 
     def test_cancel_ask_that_still_exists(self):
-        test_values = get_all_test_values("poll_for_completed_transaction")
+        test_values = get_all_test_values("cancel_ask_that_still_exists")
 
-        asks = create_asks(test_values['user_id'])
+        asks = create_asks(test_values['request'], test_values['user_id'])
         ask_id = asks[0].ask_id
-        response = cancel_ask(test_values['user_id'], ask_id)
+        response = cancel_ask(test_values['request'], test_values['user_id'], ask_id)
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
         # Now check to see if the ask is deleted
-        poll_response = poll_for_completed_transaction(test_values['user_id'])
+        poll_response = poll_for_completed_transaction(test_values['request'], test_values['user_id'])
 
         self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
 
@@ -600,10 +664,9 @@ class ViewsTestCase(TestCase):
         self.assertNotIn(ask_id, all_remaining_ask_ids)
 
     def test_cancel_ask_that_does_not_exist(self):
-        test_values = get_all_test_values("poll_for_completed_transaction")
+        test_values = get_all_test_values("cancel_ask_that_does_not_exist")
 
-        _ = create_asks(test_values['user_id'])
-        response = cancel_ask(test_values['user_id'], -1)
+        _ = create_asks(test_values['request'], test_values['user_id'])
+        response = cancel_ask(test_values['request'], test_values['user_id'], -1)
 
         self.assertEqual(type(response), HttpResponseBadRequest)
-

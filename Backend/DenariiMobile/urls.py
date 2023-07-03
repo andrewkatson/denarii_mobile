@@ -15,8 +15,8 @@ urlpatterns = [
     # This one the amount is a string but really is a double.
     path('<str:user_id>/<str:wallet_name>/<str:address>/<str:amount>/send/', views.send_denarii),
     path('<str:user_id>/get_prices/', views.get_prices),
-    # This one the amount is a string but really is a double. buy_regardless_of_price is a boolean.
-    path('<str:user_id>/<str:amount>/<str:bid_price>/<str:buy_regardless_of_price>/buy_denarii/', views.buy_denarii),
+    # This one the amount is a string but really is a double. buy_regardless_of_price is a boolean. fail_if_full_amount_isnt_met is a boolean
+    path('<str:user_id>/<str:amount>/<str:bid_price>/<str:buy_regardless_of_price>/<str:fail_if_full_amount_isnt_met>/buy_denarii/', views.buy_denarii),
     path('<str:user_id>/<str:ask_id>/transfer_denarii/', views.transfer_denarii),
     # This one the amount is a string but really is a double. The asking price is also really a double.
     path('<str:user_id>/<str:amount>/<str:asking_price>/make_denarii_ask/', views.make_denarii_ask),
