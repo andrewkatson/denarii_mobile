@@ -10,12 +10,19 @@ except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 from DenariiMobile.interface import wallet
-from DenariiMobile.models import DenariiUser, DenariiAsk
+from DenariiMobile.models import DenariiUser, DenariiAsk, Response, CreditCard
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
+    import DenariiMobile.testing.testing_stripe as stripe
+
+    stripe.default_http_client = stripe.StripeTestingClient()
 else:
     import denarii_client
+    import stripe
+
+    client = stripe.http_client.RequestsClient()
+    stripe.default_http_client = client
 
 client = denarii_client.DenariiClient()
 
@@ -129,9 +136,10 @@ def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
 
-        existing_wallet = get_wallet(existing)
-        serialized_wallet = serializers.serialize('json', [existing_wallet], fields='user_identifier')
-        return JsonResponse({'wallet': serialized_wallet})
+        response = Response.objects.create(user_identifier=str(existing.id))
+
+        serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
+        return JsonResponse({'response_list': serialized_response_list})
     else:
 
         # We first need to check no user has this email or username.
@@ -144,8 +152,10 @@ def get_user_id(request, username, email, password):
         new_wallet_details = new_user.walletdetails_set.create(user_identifier=str(new_user.id))
         new_wallet_details.save()
 
-        serialized_wallet = serializers.serialize('json', [new_wallet_details], fields='user_identifier')
-        return JsonResponse({'wallet': serialized_wallet})
+        response = Response.objects.create(user_identifier=str(new_user.id))
+
+        serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
+        return JsonResponse({'response_list': serialized_response_list})
 
 
 def request_reset(request, username_or_email):
@@ -161,13 +171,13 @@ def request_reset(request, username_or_email):
         user.reset_id = random_number
         user.save()
 
-        existing_wallet = get_wallet(user)
+        response = Response.objects.create()
 
         # We send no data back. Just a successful response.
-        serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                  fields=())
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields=())
 
-        return JsonResponse({'wallet': serialized_wallet})
+        return JsonResponse({'response_list': serialized_response_list})
 
     else:
         return HttpResponseBadRequest("No user with that username or email")
@@ -182,13 +192,13 @@ def verify_reset(request, username_or_email, reset_id):
             user.reset_id = 0
             user.save()
 
-            existing_wallet = get_wallet(user)
+            response = Response.objects.create()
 
             # We send no data back. Just a successful response.
-            serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                      fields=())
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields=())
 
-            return JsonResponse({'wallet': serialized_wallet})
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("That reset id does not match")
     else:
@@ -202,13 +212,13 @@ def reset_password(request, username, email, password):
         user.password = password
         user.save()
 
-        existing_wallet = get_wallet(user)
+        response = Response.objects.create()
 
         # We send no data back. Just a successful response.
-        serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                  fields=())
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields=())
 
-        return JsonResponse({'wallet': serialized_wallet})
+        return JsonResponse({'reponse_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with that username and email")
 
@@ -237,10 +247,13 @@ def create_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                              fields=('seed', 'wallet_address'))
+                    response = Response.objects.create(seed=existing.seed,
+                                                       wallet_address=existing_wallet.wallet_address)
 
-                    return JsonResponse({'wallet': serialized_wallet})
+                    serialized_response_list = serializers.serialize('json', [response],
+                                                                     fields=('seed', 'wallet_address'))
+
+                    return JsonResponse({'response_list': serialized_response_list})
                 else:
                     return HttpResponseBadRequest("Could not get wallet address")
             else:
@@ -275,10 +288,12 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 
                 existing_wallet.save()
 
-                serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                          fields='wallet_address')
+                response = Response.objects.create(wallet_address=existing_wallet.wallet_address)
 
-                return JsonResponse({'wallet': serialized_wallet})
+                serialized_response_list = serializers.serialize('json', [response],
+                                                                 fields='wallet_address')
+
+                return JsonResponse({'response_list': serialized_response_list})
             else:
                 return HttpResponseBadRequest("Could not get wallet address")
         else:
@@ -313,10 +328,13 @@ def open_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                              fields=('seed', 'wallet_address'))
+                    response = Response.objects.create(seed=existing.seed,
+                                                       wallet_address=existing_wallet.wallet_address)
 
-                    return JsonResponse({'wallet': serialized_wallet})
+                    serialized_response_list = serializers.serialize('json', [response],
+                                                                     fields=('seed', 'wallet_address'))
+
+                    return JsonResponse({'response_list': serialized_response_list})
                 else:
                     return HttpResponseBadRequest("Could not get wallet address")
             else:
@@ -340,10 +358,12 @@ def get_balance(request, user_id, wallet_name):
 
         existing_wallet.save()
 
-        serialized_wallet = serializers.serialize('json', [existing_wallet],
-                                                  fields='balance')
+        response = Response.objects.create(balance=existing_wallet.balance)
 
-        return JsonResponse({'wallet': serialized_wallet})
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields='balance')
+
+        return JsonResponse({'response_list': serialized_response_list})
 
     else:
         return HttpResponseBadRequest("No user with id")
@@ -368,10 +388,12 @@ def send_denarii(request, user_id, wallet_name, address, amount):
 
         # We explicitly send no fields when sending denarii because the client should know how much was sent
         # based on whether the call was successful or not.
-        serialized_wallet = serializers.serialize('json', [existing_wallet], fields=())
+        response = Response.objects.create()
+
+        serialized_response_list = serializers.serialize('json', [response], fields=())
 
         if amount_sent is True:
-            return JsonResponse({'wallet': serialized_wallet})
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("Could not send denarii")
 
@@ -393,10 +415,15 @@ def get_prices(request, user_id):
         else:
             lowest_priced_asks = filtered_by_user_id.order_by("asking_price")[:100]
 
-        serialized_denarii_asks = serializers.serialize('json', lowest_priced_asks,
-                                                        fields=('ask_id', 'asking_price', 'amount'))
+        responses = []
+        for ask in lowest_priced_asks:
+            response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount)
+            responses.append(response)
 
-        return JsonResponse({'denarii_asks': serialized_denarii_asks})
+        serialized_response_list = serializers.serialize('json', responses,
+                                                         fields=('ask_id', 'asking_price', 'amount'))
+
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -412,17 +439,23 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
         complete_purchase, error_message, asks_met = try_to_buy_denarii(ordered_asks, amount, bid_price,
                                                                         buy_regardless_of_price,
                                                                         fail_if_full_amount_isnt_met)
+
+        responses = []
+        for ask in asks_met:
+            response = Response.objects.create(ask_id=ask.ask_id)
+            responses.append(response)
+
         if error_message is None:
-            serialized_asks_met = serializers.serialize('json', asks_met, fields='ask_id')
-            return JsonResponse({'denarii_asks': serialized_asks_met})
+            serialized_response_list = serializers.serialize('json', responses, fields='ask_id')
+            return JsonResponse({'response_list': serialized_response_list})
         elif len(asks_met) == 0:
             return HttpResponseBadRequest("No asks could be met with the bid price")
         else:
             if fail_if_full_amount_isnt_met == "True":
                 return HttpResponseBadRequest("Could not buy the asked amount")
             else:
-                serialized_asks_met = serializers.serialize('json', asks_met, fields='ask_id')
-                return JsonResponse({'denarii_asks': serialized_asks_met})
+                serialized_response_list = serializers.serialize('json', responses, fields='ask_id')
+                return JsonResponse({'response_list': serialized_response_list})
 
     else:
         return HttpResponseBadRequest("No user with id")
@@ -462,7 +495,9 @@ def transfer_denarii(request, user_id, ask_id):
                 ask.amount = ask.amount - ask.amount_bought
                 ask.amount_bought = 0
 
-                serialized_ask = serializers.serialize('json', [ask], fields=('ask_id', 'amount_bought'))
+                response = Response.objects.create(ask_id=ask.ask_id, amount_bought=ask.amount_bought)
+
+                serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount_bought'))
 
                 if ask.amount == 0:
                     ask.delete()
@@ -470,7 +505,7 @@ def transfer_denarii(request, user_id, ask_id):
                     ask.save()
 
                 if amount_sent is True:
-                    return JsonResponse({'denarii_asks': serialized_ask})
+                    return JsonResponse({'response_list': serialized_response_list})
                 else:
                     return HttpResponseBadRequest("Could not transfer denarii")
 
@@ -495,8 +530,12 @@ def make_denarii_ask(request, user_id, amount, asking_price):
         new_ask.ask_id = new_ask.primary_key
         new_ask.save()
 
-        serialized_ask = serializers.serialize('json', [new_ask], fields=('ask_id', 'amount', 'asking_price'))
-        return JsonResponse({'denarii_asks': serialized_ask})
+        response = Response.objects.create(ask_id=new_ask.ask_id, asking_price=new_ask.asking_price,
+                                           amount=new_ask.amount)
+
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields=('ask_id', 'amount', 'asking_price'))
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -507,9 +546,15 @@ def poll_for_completed_transaction(request, user_id):
 
     if existing is not None:
         current_asks = existing.denariiask_set.all()
+        responses = []
 
-        serialized_asks = serializers.serialize('json', current_asks, fields=('ask_id', 'amount', 'asking_price'))
-        return JsonResponse({'denarii_asks': serialized_asks})
+        for ask in current_asks:
+            response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount)
+            responses.append(response)
+
+        serialized_response_list = serializers.serialize('json', responses,
+                                                         fields=('ask_id', 'amount', 'asking_price'))
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -521,11 +566,61 @@ def cancel_ask(request, user_id, ask_id):
     if existing is not None:
         ask = get_ask_with_id(ask_id)
         if ask is not None:
+            response = Response.objects.create(ask_id=ask.ask_id)
+
             ask.delete()
 
-            serialized_asks = serializers.serialize('json', [ask], fields='ask_id')
-            return JsonResponse({'denarii_asks': serialized_asks})
+            serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def has_credit_card_info(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        if len(existing.creditcard_set.all()) == 0:
+            response = Response.objects.create(has_credit_card_info=False)
+        else:
+            response = Response.objects.create(has_credit_card_info=True)
+        serialized_response_list = serializers.serialize('json', [response], fields=has_credit_card_info)
+
+        return JsonResponse({'response_list': serialized_response_list})
+
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def set_credit_card_info(request, user_id, card_number, expiration_date_month, expiration_date_year, security_code):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        pass
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def get_money_from_buyer(request, user_id, amount):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        pass
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def send_money_to_seller(request, user_id, amount):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        pass
     else:
         return HttpResponseBadRequest("No user with id")
