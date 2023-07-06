@@ -24,9 +24,9 @@ class CustomerClass:
 
         if name == "fail_user":
             raise Exception("Failed to create customer")
-        if name == "fail_setup_intent":
+        if name == "fail_setup_intent_user":
             return {'id': "cus_fail_intent"}
-        if name == "fail_delete":
+        if name == "fail_delete_user":
             return {'id': "cus_fail_delete"}
 
         return {'id': "cus_something"}
@@ -71,7 +71,7 @@ class TokenClass:
         self.expiration_year = card['exp_year']
         self.cvc = card['cvc']
 
-        if self.card_number == 0:
+        if self.card_number == "-1":
             raise Exception("Failed to create credit card token")
 
         return {'id': "tok_something"}
@@ -116,6 +116,9 @@ class PaymentIntentClass:
 
         if self.payment_id == 'pi_fail_confirm':
             raise Exception("Failed to confirm payment intent")
+
+        if self.payment_id == 'pi_fail_cancel':
+            return {'id': self.payment_id, 'next_action': "something"}
 
         return {'id': self.payment_id, 'next_action': None}
 

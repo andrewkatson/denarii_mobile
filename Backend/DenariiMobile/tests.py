@@ -672,43 +672,199 @@ class ViewsTestCase(TestCase):
         self.assertEqual(type(response), HttpResponseBadRequest)
 
     def test_has_credit_card_info_with_info(self):
-        pass
+        test_values = get_all_test_values("has_credit_card_info_with_info")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        has_response = has_credit_card_info(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(has_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(has_response)
+
+        self.assertEqual(fields['has_credit_card_info'], True)
 
     def test_has_credit_card_info_without_info(self):
-        pass
+        test_values = get_all_test_values("has_credit_card_info_without_info")
+
+        has_response = has_credit_card_info(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(has_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(has_response)
+
+        self.assertEqual(fields['has_credit_card_info'], False)
 
     def test_set_credit_card_info(self):
-        pass
+        test_values = get_all_test_values("set_credit_card_info")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
     def test_set_credit_card_info_fail_token_create(self):
-        pass
+        test_values = get_all_test_values("set_credit_card_info_fail_token_create")
+
+        # A -1 card number will cause token creation to fail
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "-1", "2", "1997",
+                                            "123")
+
+        self.assertEqual(type(set_response), HttpResponseBadRequest)
 
     def test_set_credit_card_info_fail_customer_create(self):
-        pass
+        # The prefix will cause a failure to create a customer
+        test_values = get_all_test_values("fail")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertEqual(type(set_response), HttpResponseBadRequest)
 
     def test_set_credit_card_info_fail_setup_intent_create(self):
-        pass
+        # The prefix will cause a failure to create a setup intent
+        test_values = get_all_test_values("fail_setup_intent")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertEqual(type(set_response), HttpResponseBadRequest)
+
+    def test_set_credit_card_info_with_info_already_set(self):
+        test_values = get_all_test_values("set_credit_card_info_with_info_already_set")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        set_response_two = set_credit_card_info(test_values['request'], test_values['user_id'], "other_card_number",
+                                                "3",
+                                                "2002", "456")
+
+        self.assertEqual(type(set_response_two), HttpResponseBadRequest)
 
     def test_clear_credit_card_info(self):
-        pass
+        test_values = get_all_test_values("clear_credit_card_info")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        clear_response = clear_credit_card_info(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(clear_response), HttpResponseBadRequest)
 
     def test_clear_credit_card_info_fail_customer_delete(self):
-        pass
+        # This prefix causes the customer deletion to fail
+        test_values = get_all_test_values("fail_delete")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        clear_response = clear_credit_card_info(test_values['request'], test_values['user_id'])
+
+        self.assertEqual(type(clear_response), HttpResponseBadRequest)
+
+    def test_clear_credit_card_info_without_credit_card(self):
+        test_values = get_all_test_values("clear_credit_card_info_without_credit_card")
+
+        clear_response = clear_credit_card_info(test_values['request'], test_values['user_id'])
+
+        self.assertEqual(type(clear_response), HttpResponseBadRequest)
 
     def test_get_money_from_buyer(self):
-        pass
+        test_values = get_all_test_values("get_money_from_buyer")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "1", "usd")
+
+        self.assertNotEqual(type(get_money_response), HttpResponseBadRequest)
 
     def test_get_money_from_buyer_fail_payment_intent_create(self):
-        pass
+        test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_create")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        # -3 amount will cause a payment intent creation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-3", "usd")
+
+        self.assertEqual(type(get_money_response), HttpResponseBadRequest)
 
     def test_get_money_from_buyer_fail_payment_intent_confirm(self):
-        pass
+        test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_confirm")
 
-    def test_money_from_buyer_fail_payment_intent_cancel(self):
-        pass
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        # -2 amount will cause a payment intent confirmation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-2", "usd")
+
+        self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+    def test_get_money_from_buyer_fail_payment_intent_cancel(self):
+        test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_cancel")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        # -1 amount will cause a payment intent cancellation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-1", "usd")
+
+        self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+    def test_get_money_from_buyer_without_credit_card(self):
+        test_values = get_all_test_values("get_money_from_buyer_without_credit_card")
+
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "1", "usd")
+
+        self.assertEqual(type(get_money_response), HttpResponseBadRequest)
 
     def test_send_money_to_seller(self):
-        pass
+        test_values = get_all_test_values("send_money_to_seller")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "1", "usd")
+
+        self.assertNotEqual(type(send_response), HttpResponseBadRequest)
 
     def test_send_money_to_seller_fail_payout_create(self):
-        pass
+        test_values = get_all_test_values("send_money_to_seller_fail_payout_create")
+
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+                                            "123")
+
+        self.assertNotEqual(type(set_response), HttpResponseBadRequest)
+
+        # -1 amount will cause a payout creation failure
+        send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "-1", "usd")
+
+        self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+    def test_send_money_to_seller_without_credit_card(self):
+        test_values = get_all_test_values("send_money_to_seller_without_credit_card")
+
+        send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "1", "usd")
+
+        self.assertEqual(type(send_response), HttpResponseBadRequest)

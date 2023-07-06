@@ -265,7 +265,7 @@ def create_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    response = Response.objects.create(seed=existing.seed,
+                    response = Response.objects.create(seed=existing_wallet.seed,
                                                        wallet_address=existing_wallet.wallet_address)
 
                     serialized_response_list = serializers.serialize('json', [response],
@@ -352,7 +352,7 @@ def open_wallet(request, user_id, wallet_name, password):
 
                     existing_wallet.save()
 
-                    response = Response.objects.create(seed=existing.seed,
+                    response = Response.objects.create(seed=existing_wallet.seed,
                                                        wallet_address=existing_wallet.wallet_address)
 
                     serialized_response_list = serializers.serialize('json', [response],
@@ -437,7 +437,7 @@ def get_prices(request, user_id):
 
     if existing is not None:
         filtered_by_escrow = DenariiAsk.objects.filter(in_escrow=False)
-        filtered_by_user_id = filtered_by_escrow.exclude(user_id_exact=user_id)
+        filtered_by_user_id = filtered_by_escrow.exclude(denarii_user=existing)
         total_asks = filtered_by_user_id.count()
         lowest_priced_asks = None
         if total_asks < 100:
@@ -624,7 +624,7 @@ def has_credit_card_info(request, user_id):
             response = Response.objects.create(has_credit_card_info=False)
         else:
             response = Response.objects.create(has_credit_card_info=True)
-        serialized_response_list = serializers.serialize('json', [response], fields=has_credit_card_info)
+        serialized_response_list = serializers.serialize('json', [response], fields='has_credit_card_info')
 
         return JsonResponse({'response_list': serialized_response_list})
 
@@ -637,6 +637,10 @@ def set_credit_card_info(request, user_id, card_number, expiration_date_month, e
     existing = get_user_with_id(user_id)
 
     if existing is not None:
+
+        if len(existing.creditcard_set.all()) != 0:
+            return HttpResponseBadRequest("User already has credit card info")
+
         new_credit_card = existing.creditcard_set.create()
 
         try:
