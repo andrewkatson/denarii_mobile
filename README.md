@@ -8,7 +8,8 @@ This code is the frontend and backend code for the Denarii cryptocurrency. It ru
 
 ### Backend 
 
-Before anything else run the commands for Linux, Windows, or Mac to install prerequsites needed for the denarii base applications. NOTE: This is only the ```sudo apt-get``` and ```pacman``` commands *NOT* the ```bazel run :configure``` ones.
+Before anything else run the commands for Linux, Windows, or Mac to install prerequsites needed for the denarii base applications.
+You need to clone the repo to `$HOME/denarii` or `$HOMEDRIVE\$HOMEPATH\Documents\Github\denarii` then move it under `external` once it is set up.
 See: https://github.com/andrewkatson/denarii
 
 In terminal or command prompt

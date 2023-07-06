@@ -34,6 +34,14 @@ with open(Path(f"{BASE_DIR}/Backend/secret_key.txt"), "rb") as secret_key_file:
         SECRET_KEY = line.decode('utf8')
         break
 
+API_KEY = ''
+# SECURITY WARNING: keep the secret key used in production secret!
+with open(Path(f"{BASE_DIR}/Backend/stripe_secret_key.txt"), "rb") as stripe_secret_key_file:
+    lines = stripe_secret_key_file.readlines()
+    for line in lines:
+        API_KEY = line.decode('utf8')
+        break
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

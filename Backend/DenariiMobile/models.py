@@ -18,9 +18,8 @@ class DenariiUser(AbstractUser):
 
 
 class CreditCard(models.Model):
-    credit_card_number = models.TextField(null=True)
-    expiration_date_month = models.IntegerField(default=-1)
-    expiration_date_year = models.IntegerField(default=-1)
+    customer_id = models.TextField(null=True)
+    source_token_id = models.TextField(null=True)
     denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=get_default_denarii_user)
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,

@@ -670,3 +670,45 @@ class ViewsTestCase(TestCase):
         response = cancel_ask(test_values['request'], test_values['user_id'], -1)
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_has_credit_card_info_with_info(self):
+        pass
+
+    def test_has_credit_card_info_without_info(self):
+        pass
+
+    def test_set_credit_card_info(self):
+        pass
+
+    def test_set_credit_card_info_fail_token_create(self):
+        pass
+
+    def test_set_credit_card_info_fail_customer_create(self):
+        pass
+
+    def test_set_credit_card_info_fail_setup_intent_create(self):
+        pass
+
+    def test_clear_credit_card_info(self):
+        pass
+
+    def test_clear_credit_card_info_fail_customer_delete(self):
+        pass
+
+    def test_get_money_from_buyer(self):
+        pass
+
+    def test_get_money_from_buyer_fail_payment_intent_create(self):
+        pass
+
+    def test_get_money_from_buyer_fail_payment_intent_confirm(self):
+        pass
+
+    def test_money_from_buyer_fail_payment_intent_cancel(self):
+        pass
+
+    def test_send_money_to_seller(self):
+        pass
+
+    def test_send_money_to_seller_fail_payout_create(self):
+        pass
