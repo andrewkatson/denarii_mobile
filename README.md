@@ -13,7 +13,7 @@ See: https://github.com/andrewkatson/denarii
 
 In terminal or command prompt
 ```bash
-pip install Django pytest django-debug-toolbar django-crispy-forms pytest-djagno pandas Pillow boto3 django-storages
+pip install Django pytest django-debug-toolbar django-crispy-forms pytest-djagno pandas Pillow boto3 django-storages stripe
 
 ```
 
