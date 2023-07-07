@@ -17,6 +17,27 @@ class DenariiUser(AbstractUser):
         return f"{self.username}::{self.email}"
 
 
+class CreditCard(models.Model):
+    customer_id = models.TextField(null=True)
+    source_token_id = models.TextField(null=True)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=get_default_denarii_user)
+    primary_key = models.UUIDField(primary_key=True,
+                                   default=uuid.uuid4,
+                                   editable=False)
+
+
+class Response(models.Model):
+    has_credit_card_info = models.BooleanField(null=True)
+    user_identifier = models.TextField(null=True)
+    seed = models.TextField(null=True)
+    wallet_address = models.TextField(null=True)
+    balance = models.FloatField(null=True)
+    ask_id = models.TextField(null=True)
+    amount = models.FloatField(null=True)
+    asking_price = models.FloatField(null=True)
+    amount_bought = models.FloatField(null=True)
+
+
 class WalletDetails(models.Model):
     wallet_name = models.TextField(null=True)
     wallet_password = models.TextField(null=True)
@@ -27,9 +48,6 @@ class WalletDetails(models.Model):
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
-    # TODO refactor to not need a separate user_identifier field
-    # We only have this field to maintain parity with what the frontends expect
-    user_identifier = models.TextField(null=True)
 
     def __str__(self):
         if self.wallet_name is None:
@@ -42,9 +60,6 @@ class DenariiAsk(models.Model):
                                    default=uuid.uuid4,
                                    editable=False)
     denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=get_default_denarii_user)
-    # TODO refactor to not need a separate user_identifier field
-    # We only have this field to maintain parity with what the frontends expect
-    user_identifier = models.TextField(null=True)
     ask_id = models.TextField(null=True)
     amount = models.FloatField(null=True)
     asking_price = models.FloatField(null=True)
