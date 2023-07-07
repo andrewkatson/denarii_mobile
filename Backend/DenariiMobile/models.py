@@ -36,6 +36,7 @@ class Response(models.Model):
     amount = models.FloatField(null=True)
     asking_price = models.FloatField(null=True)
     amount_bought = models.FloatField(null=True)
+    transaction_was_settled = models.BooleanField(null=True)
 
 
 class WalletDetails(models.Model):
@@ -65,6 +66,7 @@ class DenariiAsk(models.Model):
     asking_price = models.FloatField(null=True)
     in_escrow = models.BooleanField(null=True)
     amount_bought = models.FloatField(null=True)
+    is_settled = models.BooleanField(null=True)
 
     def __str__(self):
         return self.ask_id

@@ -671,6 +671,12 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+    def test_cancel_ask_that_is_in_escrow(self): 
+        pass
+
+    def test_cancel_ask_that_was_settled(self):
+        pass
+
     def test_has_credit_card_info_with_info(self):
         test_values = get_all_test_values("has_credit_card_info_with_info")
 
@@ -868,3 +874,12 @@ class ViewsTestCase(TestCase):
         send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+    def test_is_transaction_settled_that_is_settled():
+        pass
+
+    def test_is_transaction_settled_that_is_not_settled_yet():
+        pass
+
+    def test_is_transaction_settled_with_ask_that_doesnt_exist():
+        pass

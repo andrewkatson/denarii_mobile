@@ -33,9 +33,10 @@ urlpatterns = [
     # Make a new denarii ask.
     # This one the amount is a string but really is a double. The asking price is also really a double.
     path('<str:user_id>/<str:amount>/<str:asking_price>/make_denarii_ask/', views.make_denarii_ask),
-    # Retrieves all the current denarii asks for a user. Use this to diff against the current list to see which have been settled so they can be removed.
+    # Retrieves all the current denarii asks for a user. Use this to diff against the current list to see which have been settled so they can be removed and you can request 
+    # the payout -- i.e. send_money_to_seller.
     path('<str:user_id>/poll_for_completed_transaction/', views.poll_for_completed_transaction),
-    # Cancel an ask.
+    # Cancel an ask. Asks that are in escrow or settled cannot be cancelled.
     path('<str:user_id>/<str:ask_id>/cancel_denaii_ask/', views.cancel_ask),
     # Check whether the current user has any credit card info on file.
     path('<str:user_id>/has_credit_card_info/', views.has_credit_card_info),
@@ -48,5 +49,7 @@ urlpatterns = [
     path('<str:user_id>/<str:amount>/<str:currency>/get_money_from_buyer/', views.get_money_from_buyer),
     # Send the money from us to the selling user.
     # This one the amount is a string but really is a double.
-    path('<str:user_id>/<str:amount>/<str:currency>/send_money_to_seller/', views.send_money_to_seller)
+    path('<str:user_id>/<str:amount>/<str:currency>/send_money_to_seller/', views.send_money_to_seller),
+    # Checks if the ask passed is settled
+    path('<str:user_id>/<str:ask_id>/is_transaction_settled/')
 ]

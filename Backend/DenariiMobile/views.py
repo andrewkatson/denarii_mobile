@@ -466,7 +466,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
         filtered_asks = DenariiAsk.objects.filter(in_escrow=False)
         ordered_asks = filtered_asks.order_by('asking_price')
 
-        complete_purchase, error_message, asks_met = try_to_buy_denarii(ordered_asks, amount, bid_price,
+        _, error_message, asks_met = try_to_buy_denarii(ordered_asks, amount, bid_price,
                                                                         buy_regardless_of_price,
                                                                         fail_if_full_amount_isnt_met)
 
@@ -535,10 +535,9 @@ def transfer_denarii(request, user_id, ask_id):
 
                 serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount_bought'))
 
-                if ask.amount == 0:
-                    ask.delete()
-                else:
-                    ask.save()
+                # An ask is always settled if the transfer worked. It will get unsettled later on if it still has money in it. 
+                ask.is_settled = True
+                ask.save()
 
                 if amount_sent is True:
                     return JsonResponse({'response_list': serialized_response_list})
@@ -564,6 +563,7 @@ def make_denarii_ask(request, user_id, amount, asking_price):
         new_ask.amount = amount
         new_ask.asking_price = asking_price
         new_ask.ask_id = new_ask.primary_key
+        new_ask.is_settled = False
         new_ask.save()
 
         response = Response.objects.create(ask_id=new_ask.ask_id, asking_price=new_ask.asking_price,
@@ -581,10 +581,11 @@ def poll_for_completed_transaction(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
-        current_asks = existing.denariiask_set.all()
+        # We only want their transactions that were are settled.
+        settled_asks = existing.denariiask_set.filter(is_settled=True)
         responses = []
 
-        for ask in current_asks:
+        for ask in settled_asks:
             response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount)
             responses.append(response)
 
@@ -602,12 +603,16 @@ def cancel_ask(request, user_id, ask_id):
     if existing is not None:
         ask = get_ask_with_id(ask_id)
         if ask is not None:
-            response = Response.objects.create(ask_id=ask.ask_id)
 
-            ask.delete()
+            if ask.in_escrow or ask.is_settled:
+                return HttpResponseBadRequest('Ask was already purchased')
+            else:
+                response = Response.objects.create(ask_id=ask.ask_id)
 
-            serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
-            return JsonResponse({'response_list': serialized_response_list})
+                ask.delete()
+
+                serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
+                return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No ask with id")
     else:
@@ -804,3 +809,34 @@ def send_money_to_seller(request, user_id, amount, currency):
 
     else:
         return HttpResponseBadRequest("No user with id")
+
+@login_required
+def is_transaction_settled(request, user_id, ask_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+        if ask is not None:
+
+            if not ask.is_settled:
+                response = Response.objects.create(ask_id=ask_id, transaction_was_settled=False)
+
+                serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'transaction_was_settled'))
+                return JsonResponse({'response_list': serialized_response_list})
+
+            else:
+                response = Response.objects.create(ask_id=ask_id, transaction_was_settled=True)
+
+                if ask.amount == 0:
+                    ask.delete()
+                else:
+                    ask.is_settled = False
+                    ask.save()
+
+                serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'transaction_was_settled'))
+                return JsonResponse({'response_list': serialized_response_list})
+        else:
+            return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
