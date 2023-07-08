@@ -67,6 +67,7 @@ class DenariiAsk(models.Model):
     in_escrow = models.BooleanField(null=True)
     amount_bought = models.FloatField(null=True)
     is_settled = models.BooleanField(null=True)
+    has_been_seen_by_seller = models.BooleanField(null=True)
 
     def __str__(self):
         return self.ask_id

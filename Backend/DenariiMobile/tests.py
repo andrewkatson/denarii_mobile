@@ -522,18 +522,14 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(ask_id, 0)
 
-        first_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
-        self.assertNotEqual(type(first_transfer_response), HttpResponseBadRequest)
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
 
-        # If we try to look up ask it should be deleted.
-        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
+        ask = get_ask_with_id(ask_id)
 
-        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
-
-        all_remaining_ask_ids = get_all_json_objects_field(poll_response, 'ask_id')
-
-        self.assertNotIn(ask_id, all_remaining_ask_ids)
+        self.assertTrue(ask.is_settled)
+        self.assertFalse(ask.has_been_seen_by_seller)
 
     def test_transfer_denarii_with_less_than_amount(self):
         # First we create the seller and some asks
@@ -630,22 +626,45 @@ class ViewsTestCase(TestCase):
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
     def test_poll_for_completed_transaction(self):
-        test_values = get_all_test_values("poll_for_completed_transaction")
+        seller_test_values = get_all_test_values("poll_for_completed_transaction_seller")
 
-        asks = create_asks(test_values['request'], test_values['user_id'])
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
-        response = poll_for_completed_transaction(test_values['request'], test_values['user_id'])
+        buyer_test_values = get_all_test_values("poll_for_completed_transaction_buyer")
 
-        self.assertNotEqual(type(response), HttpResponseBadRequest)
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
 
-        ask_ids = get_all_json_objects_field(response, 'ask_id')
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
-        self.assertEqual(len(asks), len(ask_ids))
-
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        ask_id = 0
         for ask in asks:
-            self.assertTrue(ask.ask_id in ask_ids)
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                ask_id = ask.ask_id
+                break
 
-    def test_cancel_ask_that_still_exists(self):
+        self.assertNotEqual(ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(poll_response, 'ask_id')
+
+        self.assertNotEqual(len(asks), len(ask_ids))
+
+        for ask_id in ask_ids:
+            self.assertTrue(get_ask_with_id(ask_id).is_settled)
+
+    def test_cancel_ask_that_still_exists_but_isnt_settled(self):
         test_values = get_all_test_values("cancel_ask_that_still_exists")
 
         asks = create_asks(test_values['request'], test_values['user_id'])
@@ -654,14 +673,7 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
-        # Now check to see if the ask is deleted
-        poll_response = poll_for_completed_transaction(test_values['request'], test_values['user_id'])
-
-        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
-
-        all_remaining_ask_ids = get_all_json_objects_field(poll_response, 'ask_id')
-
-        self.assertNotIn(ask_id, all_remaining_ask_ids)
+        self.assertEqual(get_ask_with_id(ask_id), None)
 
     def test_cancel_ask_that_does_not_exist(self):
         test_values = get_all_test_values("cancel_ask_that_does_not_exist")
@@ -671,11 +683,46 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-    def test_cancel_ask_that_is_in_escrow(self): 
-        pass
+    def test_cancel_ask_that_is_in_escrow(self):
+        seller_test_values = get_all_test_values("cancel_ask_that_is_in_escrow_seller")
+
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("cancel_ask_that_is_in_escrow_buyer")
+
+        amount_to_buy = 1.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy,  10000.0, "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        cancel_response = cancel_ask(seller_test_values['request'], seller_test_values['user_id'], ask_ids[0])
+
+        self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
     def test_cancel_ask_that_was_settled(self):
-        pass
+        seller_test_values = get_all_test_values("cancel_ask_that_was_settled_seller")
+
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("cancel_ask_that_was_settled_buyer")
+
+        amount_to_buy = 1.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 10000.0,
+                                   "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        cancel_response = cancel_ask(seller_test_values['request'], seller_test_values['user_id'], ask_ids[0])
+
+        self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
     def test_has_credit_card_info_with_info(self):
         test_values = get_all_test_values("has_credit_card_info_with_info")
@@ -875,11 +922,113 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
 
-    def test_is_transaction_settled_that_is_settled():
-        pass
+    def test_is_transaction_settled_that_is_settled_with_remaining_ask(self):
+        seller_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_remaining_ask_seller")
 
-    def test_is_transaction_settled_that_is_not_settled_yet():
-        pass
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
 
-    def test_is_transaction_settled_with_ask_that_doesnt_exist():
-        pass
+        buyer_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_remaining_ask")
+
+        amount_to_buy = 0.5
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 1000,
+                                   "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
+
+        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+
+        self.assertNotEqual(type(is_settled_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(is_settled_response)
+        self.assertTrue(fields['transaction_was_settled'])
+
+    def test_is_transaction_settled_that_is_settled_with_deleted_ask(self):
+        seller_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_deleted_ask_seller")
+
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_deleted_ask")
+
+        amount_to_buy = 2.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 1000,
+                                   "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
+
+        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'],
+                                                     ask_ids[0])
+
+        self.assertNotEqual(type(is_settled_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(is_settled_response)
+        self.assertTrue(fields['transaction_was_settled'])
+
+    def test_is_transaction_settled_that_is_not_settled_yet(self):
+        seller_test_values = get_all_test_values("is_transaction_settled_that_is_not_settled_yet_seller")
+
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("is_transaction_settled_that_is_not_settled_yet_buyer")
+
+        amount_to_buy = 1.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 1000,
+                                   "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'],
+                                                     ask_ids[0])
+
+        self.assertNotEqual(type(is_settled_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(is_settled_response)
+        self.assertFalse(fields['transaction_was_settled'])
+
+    def test_is_transaction_settled_that_buyer_hasnt_seen(self):
+        seller_test_values = get_all_test_values("is_transaction_settled_that_buyer_hasnt_seen_seller")
+
+        _ = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("is_transaction_settled_that_buyer_hasnt_seen_buyer")
+
+        amount_to_buy = 1.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 1000,
+                                   "True", "True")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(buy_response, 'ask_id')
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'],
+                                                     ask_ids[0])
+
+        self.assertNotEqual(type(is_settled_response), HttpResponseBadRequest)
+
+        fields = get_json_fields(is_settled_response)
+        self.assertFalse(fields['transaction_was_settled'])

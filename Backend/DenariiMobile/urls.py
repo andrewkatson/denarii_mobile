@@ -51,5 +51,5 @@ urlpatterns = [
     # This one the amount is a string but really is a double.
     path('<str:user_id>/<str:amount>/<str:currency>/send_money_to_seller/', views.send_money_to_seller),
     # Checks if the ask passed is settled
-    path('<str:user_id>/<str:ask_id>/is_transaction_settled/')
+    path('<str:user_id>/<str:ask_id>/is_transaction_settled/', views.is_transaction_settled)
 ]
