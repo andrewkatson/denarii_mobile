@@ -844,3 +844,19 @@ def is_transaction_settled(request, user_id, ask_id):
             return HttpResponseBadRequest("No ask with id")
     else:
         return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def delete_user(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        existing.delete()
+
+        response = Response.objects.create()
+
+        serialized_response_list = serializers.serialize('json', [response], fields=())
+
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")

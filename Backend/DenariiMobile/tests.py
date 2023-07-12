@@ -691,7 +691,8 @@ class ViewsTestCase(TestCase):
         buyer_test_values = get_all_test_values("cancel_ask_that_is_in_escrow_buyer")
 
         amount_to_buy = 1.0
-        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy,  10000.0, "True", "True")
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, 10000.0,
+                                   "True", "True")
 
         self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
@@ -945,7 +946,8 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
 
-        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'], ask_ids[0])
+        is_settled_response = is_transaction_settled(buyer_test_values['request'], buyer_test_values['user_id'],
+                                                     ask_ids[0])
 
         self.assertNotEqual(type(is_settled_response), HttpResponseBadRequest)
 
@@ -1032,3 +1034,19 @@ class ViewsTestCase(TestCase):
 
         fields = get_json_fields(is_settled_response)
         self.assertFalse(fields['transaction_was_settled'])
+
+    def test_delete_user_with_existing_user(self):
+        test_values = get_all_test_values("delete_user_with_existing_user")
+
+        response = delete_user(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        self.assertIsNone(get_user_with_id(test_values['user_id']))
+
+    def test_delete_user_with_non_existent_user(self):
+        test_values = get_all_test_values("delete_user_with_non_existent_user")
+
+        response = delete_user(test_values['request'], -1)
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
