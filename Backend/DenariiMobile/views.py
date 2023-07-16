@@ -860,3 +860,107 @@ def delete_user(request, user_id):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
+
+@login_required
+def get_ask_with_identifier(request, user_id, ask_id):
+
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+
+        if ask is not None:
+            response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, amount_bought=ask.amount_bought)
+
+            serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount', 'amount_bought'))
+
+            return JsonResponse({'response_list'}, serialized_response_list)
+        else:
+            return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+@login_required
+def transfer_denarii_back_to_seller(request, user_id, ask_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+
+        if ask is not None:
+            if ask.in_escrow is True:
+                asking_user = ask.denarii_user
+
+                receiver_wallet = get_wallet(asking_user)
+
+                if receiver_wallet is None:
+                    return HttpResponseBadRequest("No wallet for receiving user")
+
+                sender_user_wallet = get_wallet(existing)
+
+                if sender_user_wallet is None:
+                    return HttpResponseBadRequest("No wallet for sending user")
+
+                sender = wallet.Wallet(sender_user_wallet.wallet_name, sender_user_wallet.wallet_password)
+                receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
+                receiver.address = receiver_wallet.wallet_address
+
+                amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
+
+                sender_user_wallet.balance = client.get_balance_of_wallet(sender)
+
+                sender_user_wallet.save()
+
+                receiver_wallet.balance = client.get_balance_of_wallet(receiver)
+
+                receiver_wallet.save()
+
+                ask.in_escrow = False
+                ask.amount_bought = 0
+
+                response = Response.objects.create(ask_id=ask.ask_id)
+
+                serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
+
+                ask.save()
+
+                if amount_sent is True:
+                    return JsonResponse({'response_list': serialized_response_list})
+                else:
+                    return HttpResponseBadRequest("Could not transfer denarii")
+
+            else:
+                return HttpResponseBadRequest("Ask was not bought")
+        else:
+            return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def send_money_back_to_buyer(request, user_id, amount, currency):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        existing_credit_card = get_credit_card(existing)
+
+        if existing_credit_card is None:
+            return HttpResponseBadRequest("No credit card for user")
+
+        try:
+            stripe.Payout.create(
+                amount=int(amount),
+                currency=currency,
+                destination=existing_credit_card.source_token_id
+            )
+        except Exception as payout_create_error:
+            print(payout_create_error)
+            return HttpResponseBadRequest("Could not create payout")
+
+        response = Response.objects.create()
+
+        # Just send a successful response
+        serialized_response_list = serializers.serialize('json', [response], fields=())
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")

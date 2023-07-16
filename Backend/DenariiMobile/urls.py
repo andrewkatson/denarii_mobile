@@ -51,5 +51,14 @@ urlpatterns = [
     # This one the amount is a string but really is a double.
     path('<str:user_id>/<str:amount>/<str:currency>/send_money_to_seller/', views.send_money_to_seller),
     # Checks if the ask passed is settled
-    path('<str:user_id>/<str:ask_id>/is_transaction_settled/', views.is_transaction_settled)
+    path('<str:user_id>/<str:ask_id>/is_transaction_settled/', views.is_transaction_settled),
+    # Allows a user to delete their account
+    path('<str:user_id>/delete_user/', views.delete_user),
+    # Gets the ask with the given identifier
+    path('<str:user_id>/<str:ask_id>/get_ask_with_identifier/', views.get_ask_with_identifier),
+    # Transfers denarii back to the original seller since a transaction failed
+    path('<str:user_id>/<str:ask_id>/transfer_denarii_back_to_seller/', views.transfer_denarii_back_to_seller),
+    # Sends the money put in escrow from a denarii buyer back  to them since a transaction failed
+    # Amount is really a double
+    path('<str:user_id>/<str:amount>/<str:currency>/send_money_back_to_buyer/', views.send_money_back_to_buyer)
 ]
