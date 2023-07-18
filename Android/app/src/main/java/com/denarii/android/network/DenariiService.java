@@ -13,39 +13,39 @@ import retrofit2.http.Path;
 public interface DenariiService {
 
     // Returns a single Wallet instance with a user identifier
-    @GET("users/{user}/{email}/{password}")
+    @GET("users/transfer/{user}/{email}/{password}")
     Call<List<Wallet>> getUserId(@Path("user") String userName, @Path("email") String email, @Path("password") String password);
 
     // Returns a single Wallet instance with nothing in it
-    @GET("users/{usernameOrEmail}/request_reset")
+    @GET("users/transfer/{usernameOrEmail}/request_reset")
     Call<List<Wallet>> requestPasswordReset(@Path("usernameOrEmail") String usernameOrEmail);
 
     // Returns a single Wallet instance with nothing in it
-    @POST("users/{usernameOrEmail}/{resetId}/verify_reset")
+    @POST("users/transfer/{usernameOrEmail}/{resetId}/verify_reset")
     Call<List<Wallet>> verifyReset(@Path("usernameOrEmail") String usernameOrEmail, @Path("resetId") int resetId);
 
     // Returns a single Wallet instance with nothing in it
-    @PATCH("users/{username}/{email}/{password}/reset_password")
+    @PATCH("users/transfer/{username}/{email}/{password}/reset_password")
     Call<List<Wallet>> resetPassword(@Path("username") String username, @Path("email") String email, @Path("password") String password);
 
     // Returns a single Wallet instance with a seed and address
-    @POST("users/{id}/{wallet}/{password}/create")
+    @POST("users/transfer/{id}/{wallet}/{password}/create")
     Call<List<Wallet>> createWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);
 
     // Returns a single Wallet instance with address
-    @PATCH("users/{id}/{wallet}/{password}/{seed}/restore")
+    @PATCH("users/transfer/{id}/{wallet}/{password}/{seed}/restore")
     Call<List<Wallet>> restoreWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password, @Path("seed") String seed);
 
     // Returns a single Wallet instance with a seed and address
-    @GET("users/{id}/{wallet}/{password}/open")
+    @GET("users/transfer/{id}/{wallet}/{password}/open")
     Call<List<Wallet>> openWallet(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("password") String password);
 
     // Returns a single Wallet instance with the balance of the main address
-    @GET("users/{id}/{wallet}/balance")
+    @GET("users/transfer/{id}/{wallet}/balance")
     Call<List<Wallet>> getBalance(@Path("id") int userIdentifier, @Path("wallet") String walletName);
 
     // Returns a single Wallet instance with nothing in it
-    @POST("users/{id}/{wallet}/{address}/{amount}/send")
+    @POST("users/transfer/{id}/{wallet}/{address}/{amount}/send")
     Call<List<Wallet>> sendDenarii(@Path("id") int userIdentifier, @Path("wallet") String walletName, @Path("address") String addressToSendTo, @Path("amount") double amountToSend);
 
     // Initializes the Denarii Service version to use
