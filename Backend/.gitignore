@@ -234,6 +234,7 @@ fabric.properties
 # Django 
 Backend/secret_key.txt
 Backend/stripe_secret_key.txt
+Backend/checkr_api_key.txt
 email_data.txt
 
 # Other
