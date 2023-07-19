@@ -1050,3 +1050,66 @@ class ViewsTestCase(TestCase):
         response = delete_user(test_values['request'], -1)
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_get_ask_with_identifier_with_existing_ask(selfs):
+        pass
+
+    def test_get_ask_with_identifier_with_non_existent_ask(self):
+        pass
+
+    def test_transfer_denarii_with_exactly_amount(self):
+        pass
+
+
+    def test_transfer_denarii_with_less_than_amount(self):
+        pass
+
+
+    def test_transfer_denarii_with_ask_that_doesnt_exist(self):
+        pass
+
+
+    def test_transfer_denarii_with_ask_not_in_escrow(self):
+        pass
+
+
+    def test_send_money_to_seller(self):
+        pass
+
+    def test_send_money_to_seller_fail_payout_create(self):
+        pass
+    def test_send_money_to_seller_without_credit_card(self):
+        pass
+
+    def test_cancel_buy_of_ask(self):
+        pass
+
+    def test_cancel_buy_of_ask_that_doesnt_exist(self):
+        pass
+
+    def test_cancel_buy_of_ask_not_in_escrow(self):
+        pass
+
+    def test_cancel_buy_of_ask_that_is_settled(self):
+        pass
+
+    def test_verify_identity(self):
+        pass
+
+    def test_verify_identity_but_cannot_create_candidate(self):
+        pass
+
+    def test_verify_identity_but_cannot_create_invitation(self):
+        pass
+
+    def test_is_a_verified_person_where_identity_is_verified(self):
+        pass
+
+    def test_is_a_verified_person_where_identity_was_not_verified(self):
+        pass
+
+    def test_is_a_verified_person_where_identity_verification_is_pending(self):
+        pass
+
+    def test_is_a_verified_person_with_no_verification_pending_at_all(self):
+        pass
