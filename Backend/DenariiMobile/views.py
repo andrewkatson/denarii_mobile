@@ -1,31 +1,37 @@
-from django.contrib.auth import authenticate
+import json
+
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponseBadRequest
 
 try:
-    from Backend.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, API_KEY
+    from Backend.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, API_KEY, CHECKR_API_KEY
 except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
-from DenariiMobile.interface import wallet
+from DenariiMobile.interface import wallet, work_location
 from DenariiMobile.models import DenariiUser, DenariiAsk, Response, CreditCard
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
     import DenariiMobile.testing.testing_stripe as stripe
+    import DenariiMobile.testing.testing_checkr as checkr
 
     stripe.default_http_client = stripe.StripeTestingClient()
 else:
     import denarii_client
     import stripe
+    import checkr
 
     client = stripe.http_client.RequestsClient()
     stripe.default_http_client = client
     stripe.api_key = API_KEY
 
 client = denarii_client.DenariiClient()
+
+checkr_client = checkr.CheckrClient(CHECKR_API_KEY)
 
 
 def get_user_with_username_and_email(username, email):
@@ -146,11 +152,22 @@ def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of
     return False, "Reached end of asks so not enough was bought", asks_met
 
 
+def update_user_verification_status(user):
+    if user.report_id is not None:
+        res, success = checkr_client.get_report(user.report_id)
+
+        if success and res["status"] == "complete":
+            user.identity_is_verified = res["result"] == "clear"
+        elif not success:
+            # We consider failing to get the report as identity verification failure
+            user.identity_is_verified = False
+
+
 # In spite of its name this function handles login and registration
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
-
+        login(request, existing)
         response = Response.objects.create(user_identifier=str(existing.id))
 
         serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
@@ -861,9 +878,9 @@ def delete_user(request, user_id):
     else:
         return HttpResponseBadRequest("No user with id")
 
+
 @login_required
 def get_ask_with_identifier(request, user_id, ask_id):
-
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -872,13 +889,15 @@ def get_ask_with_identifier(request, user_id, ask_id):
         if ask is not None:
             response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, amount_bought=ask.amount_bought)
 
-            serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount', 'amount_bought'))
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields=('ask_id', 'amount', 'amount_bought'))
 
             return JsonResponse({'response_list'}, serialized_response_list)
         else:
             return HttpResponseBadRequest("No ask with id")
     else:
         return HttpResponseBadRequest("No user with id")
+
 
 @login_required
 def transfer_denarii_back_to_seller(request, user_id, ask_id):
@@ -961,6 +980,107 @@ def send_money_back_to_buyer(request, user_id, amount, currency):
 
         # Just send a successful response
         serialized_response_list = serializers.serialize('json', [response], fields=())
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def cancel_buy_of_ask(request, user_id, ask_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        ask = get_ask_with_id(ask_id)
+
+        if ask is not None:
+            if ask.in_escrow:
+                if not ask.is_settled:
+
+                    ask.in_escrow = False
+                    ask.amount_bought = 0
+
+                    ask.save()
+
+                    response = Response.objects.create()
+
+                    # Just send a successful response
+                    serialized_response_list = serializers.serialize('json', [response], fields=())
+                    return JsonResponse({'response_list': serialized_response_list})
+                else:
+                    return HttpResponseBadRequest("Ask is settled it cannot be cancelled")
+            else:
+                return HttpResponseBadRequest("Ask is not in escrow nothing to do")
+        else:
+            return HttpResponseBadRequest("No ask with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def verify_identity(request, user_id, first_name, middle_name, last_name, email, dob, ssn, zipcode, phone,
+                    work_locations):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        res, success = checkr_client.create_candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode,
+                                                      phone, json.load(work_locations))
+
+        if success:
+
+            res_two, success_two = checkr_client.create_invitation(res["id"], json.load(work_locations))
+
+            if success_two:
+                existing.report_id = res_two["report_id"]
+
+                status = ""
+
+                update_user_verification_status(existing)
+
+                if existing.identity_is_verified is not None and existing.identity_is_verified:
+                    status = "is_verified"
+                elif existing.identity_is_verified is not None and not existing.identity_is_verified:
+                    status = "failed_verification"
+                elif existing.report_id is not None:
+                    status = "verification_pending"
+                else:
+                    status = "is_not_verified"
+
+                response = Response.objects.create(verification_status=status)
+
+                # Just send a successful response
+                serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
+                return JsonResponse({'response_list': serialized_response_list})
+            else:
+                return HttpResponseBadRequest("Could not create invitation")
+        else:
+            return HttpResponseBadRequest("Could not create candidate")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def is_a_verified_person(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        status = ""
+
+        update_user_verification_status(existing)
+
+        if existing.identity_is_verified is not None and existing.identity_is_verified:
+            status = "is_verified"
+        elif existing.identity_is_verified is not None and not existing.identity_is_verified:
+            status = "failed_verification"
+        elif existing.report_id is not None:
+            status = "verification_pending"
+        else:
+            status = "is_not_verified"
+
+        response = Response.objects.create(verification_status=status)
+
+        # Just send a successful response
+        serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")

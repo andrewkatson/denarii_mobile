@@ -10,6 +10,8 @@ def get_default_denarii_user():
 
 class DenariiUser(AbstractUser):
     reset_id = models.IntegerField(default=0)
+    report_id = models.TextField(null=True)
+    identity_is_verified = models.BooleanField(null=True)
 
     def __str__(self):
         if self.username is None or self.email is None:
@@ -37,6 +39,7 @@ class Response(models.Model):
     asking_price = models.FloatField(null=True)
     amount_bought = models.FloatField(null=True)
     transaction_was_settled = models.BooleanField(null=True)
+    verification_status = models.TextField(null=True)
 
 
 class WalletDetails(models.Model):

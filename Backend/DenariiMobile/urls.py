@@ -7,58 +7,66 @@ urlpatterns = [
     # Retrieves the user identifier if the user exists. Creates a user and retrieves identifier if they do not.
     path('<str:username>/<str:email>/<str:password>/', views.get_user_id),
     # Resets the user's password to the passed one. Assumes it has already been confirmed as the desired password.
-    path('<str:username>/<str:email>/<str:password>/reset/', views.reset_password),
+    path('reset/<str:username>/<str:email>/<str:password>/', views.reset_password),
     # Requests a password reset and sends the user an email.
-    path('<str:username_or_email>/request_reset/', views.request_reset),
+    path('request_reset/<str:username_or_email>/', views.request_reset),
     # Verify reset by checking that the reset identifier matches what was sent in the email.
-    path('<str:username_or_email>/<int:reset_id>/verify_reset/', views.verify_reset),
+    path('verify_reset/<str:username_or_email>/<int:reset_id>/', views.verify_reset),
     # Creates a wallet using the name and password. Users right now can only have one wallet.
-    path('<str:user_id>/<str:wallet_name>/<str:password>/create/', views.create_wallet),
+    path('create/<str:user_id>/<str:wallet_name>/<str:password>/', views.create_wallet),
     # Restores the wallet using the name, password, and seed.
-    path('<str:user_id>/<str:wallet_name>/<str:password>/<str:seed>/restore/', views.restore_wallet),
+    path('restore/<str:user_id>/<str:wallet_name>/<str:password>/<str:seed>/', views.restore_wallet),
     # Opens the wallet with the name and password passed.
-    path('<str:user_id>/<str:wallet_name>/<str:password>/open/', views.open_wallet),
+    path('open/<str:user_id>/<str:wallet_name>/<str:password>/', views.open_wallet),
     # Retrives the balance for the current open wallet.
-    path('<str:user_id>/str:wallet_name>/balance/', views.get_balance),
+    path('balance/<str:user_id>/str:wallet_name>/', views.get_balance),
     # Sends denarii between two wallets.
     # This one the amount is a string but really is a double.
-    path('<str:user_id>/<str:wallet_name>/<str:address>/<str:amount>/send/', views.send_denarii),
+    path('send/<str:user_id>/<str:wallet_name>/<str:address>/<str:amount>/', views.send_denarii),
     # Gets all the lowest priced denarii asks that are not the user's.
-    path('<str:user_id>/get_prices/', views.get_prices),
+    path('get_prices/<str:user_id>/', views.get_prices),
     # Puts the denarii someone has put up for sale into escrow. This can be either a full amount or a partial amount.
     # This one the amount is a string but really is a double. buy_regardless_of_price is a boolean. fail_if_full_amount_isnt_met is a boolean
-    path('<str:user_id>/<str:amount>/<str:bid_price>/<str:buy_regardless_of_price>/<str:fail_if_full_amount_isnt_met>/buy_denarii/', views.buy_denarii),
+    path('buy_denarii/<str:user_id>/<str:amount>/<str:bid_price>/<str:buy_regardless_of_price>/<str:fail_if_full_amount_isnt_met>/', views.buy_denarii),
     # Transfers denarii from an ask to the given user since they purchased it.
-    path('<str:user_id>/<str:ask_id>/transfer_denarii/', views.transfer_denarii),
+    path('transfer_denarii/<str:user_id>/<str:ask_id>/', views.transfer_denarii),
     # Make a new denarii ask.
     # This one the amount is a string but really is a double. The asking price is also really a double.
-    path('<str:user_id>/<str:amount>/<str:asking_price>/make_denarii_ask/', views.make_denarii_ask),
+    path('make_denarii_ask/<str:user_id>/<str:amount>/<str:asking_price>/', views.make_denarii_ask),
     # Retrieves all the current denarii asks for a user. Use this to diff against the current list to see which have been settled so they can be removed and you can request 
     # the payout -- i.e. send_money_to_seller.
-    path('<str:user_id>/poll_for_completed_transaction/', views.poll_for_completed_transaction),
+    path('poll_for_completed_transaction<str:user_id>//', views.poll_for_completed_transaction),
     # Cancel an ask. Asks that are in escrow or settled cannot be cancelled.
-    path('<str:user_id>/<str:ask_id>/cancel_denaii_ask/', views.cancel_ask),
+    path('cancel_denaii_ask/<str:user_id>/<str:ask_id>/', views.cancel_ask),
     # Check whether the current user has any credit card info on file.
-    path('<str:user_id>/has_credit_card_info/', views.has_credit_card_info),
+    path('has_credit_card_info/<str:user_id>/', views.has_credit_card_info),
     # Set the user's credit card info.
-    path('<str:user_id>/<str:card_number>/<str:expiration_date_month>/<str:expiration_date_year>/<str:security_code/set_credit_card_info/', views.set_credit_card_info),
+    path('set_credit_card_info/<str:user_id>/<str:card_number>/<str:expiration_date_month>/<str:expiration_date_year>/<str:security_code/', views.set_credit_card_info),
     # Clear credit card info. Note this will also delete them from our stripe database.
-    path('<str:user_id>/clear_credit_card_info', views.clear_credit_card_info),
+    path('clear_credit_card_info/<str:user_id>/', views.clear_credit_card_info),
     # Get the money from the buying user and send it to us.
     # This one the amount is a string but really is a double.
-    path('<str:user_id>/<str:amount>/<str:currency>/get_money_from_buyer/', views.get_money_from_buyer),
+    path('get_money_from_buyer/<str:user_id>/<str:amount>/<str:currency>/', views.get_money_from_buyer),
     # Send the money from us to the selling user.
     # This one the amount is a string but really is a double.
-    path('<str:user_id>/<str:amount>/<str:currency>/send_money_to_seller/', views.send_money_to_seller),
+    path('send_money_to_seller/<str:user_id>/<str:amount>/<str:currency>/', views.send_money_to_seller),
     # Checks if the ask passed is settled
-    path('<str:user_id>/<str:ask_id>/is_transaction_settled/', views.is_transaction_settled),
+    path('is_transaction_settled/<str:user_id>/<str:ask_id>/', views.is_transaction_settled),
     # Allows a user to delete their account
-    path('<str:user_id>/delete_user/', views.delete_user),
+    path('delete_user/<str:user_id>/', views.delete_user),
     # Gets the ask with the given identifier
-    path('<str:user_id>/<str:ask_id>/get_ask_with_identifier/', views.get_ask_with_identifier),
+    path('get_ask_with_identifier/<str:user_id>/<str:ask_id>/', views.get_ask_with_identifier),
     # Transfers denarii back to the original seller since a transaction failed
-    path('<str:user_id>/<str:ask_id>/transfer_denarii_back_to_seller/', views.transfer_denarii_back_to_seller),
+    path('transfer_denarii_back_to_seller/<str:user_id>/<str:ask_id>/', views.transfer_denarii_back_to_seller),
     # Sends the money put in escrow from a denarii buyer back  to them since a transaction failed
     # Amount is really a double
-    path('<str:user_id>/<str:amount>/<str:currency>/send_money_back_to_buyer/', views.send_money_back_to_buyer)
+    path('send_money_back_to_buyer/<str:user_id>/<str:amount>/<str:currency>/', views.send_money_back_to_buyer),
+    # Cancel a buy (by cancelling the purchase of one of the asks)
+    path('cancel_buy_of_ask/<str:user_id>/<str:ask_id>/', views.cancel_buy_of_ask),
+    # Returns if the individual user has been verified. It can will return one of three answers. "is_verified", "is_not_verified", "failed_verification", and "verification_pending".
+    path('is_a_verified_person/<str:user_id>/', views.is_a_verified_person),
+    # Tries to verify the person based on their status
+    # Work locations is assumed to be a list of dicts as a json dump.
+    # AKA [{"country": "US", "state": "VA", "city": "McLean"},{"country": "US", "state": "CA", "city": "San Francisco"}]
+    path('verify_identity/<str:user_id>/<str:first_name>/<str:middle_name>/<str:last_name>/<str:email>/<str:phone>/<str:zipcode>/<str:dob>/<str:ssn>/<str:work_locations>/', views.verify_identity)
 ]
