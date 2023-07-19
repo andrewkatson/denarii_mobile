@@ -1057,28 +1057,25 @@ class ViewsTestCase(TestCase):
     def test_get_ask_with_identifier_with_non_existent_ask(self):
         pass
 
-    def test_transfer_denarii_with_exactly_amount(self):
+    def test_transfer_denarii_back_to_seller_with_exactly_amount(self):
         pass
 
-
-    def test_transfer_denarii_with_less_than_amount(self):
+    def test_transfer_denarii_back_to_seller_with_less_than_amount(self):
         pass
 
-
-    def test_transfer_denarii_with_ask_that_doesnt_exist(self):
+    def test_transfer_denarii_back_to_seller_with_ask_that_doesnt_exist(self):
         pass
 
-
-    def test_transfer_denarii_with_ask_not_in_escrow(self):
+    def test_transfer_denarii_back_to_seller_with_ask_not_in_escrow(self):
         pass
 
-
-    def test_send_money_to_seller(self):
+    def test_send_money_back_to_buyer(self):
         pass
 
-    def test_send_money_to_seller_fail_payout_create(self):
+    def test_send_money_back_to_buyer_fail_payout_create(self):
         pass
-    def test_send_money_to_seller_without_credit_card(self):
+
+    def test_send_money_back_to_buyer_without_credit_card(self):
         pass
 
     def test_cancel_buy_of_ask(self):
