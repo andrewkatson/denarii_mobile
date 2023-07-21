@@ -926,6 +926,9 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
 
                 amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
 
+                if not amount_sent:
+                    return HttpResponseBadRequest("Could not transfer denarii")
+
                 sender_user_wallet.balance = client.get_balance_of_wallet(sender)
 
                 sender_user_wallet.save()
@@ -943,11 +946,7 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
 
                 ask.save()
 
-                if amount_sent is True:
-                    return JsonResponse({'response_list': serialized_response_list})
-                else:
-                    return HttpResponseBadRequest("Could not transfer denarii")
-
+                return JsonResponse({'response_list': serialized_response_list})
             else:
                 return HttpResponseBadRequest("Ask was not bought")
         else:
@@ -1024,11 +1023,11 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
     if existing is not None:
 
         res, success = checkr_client.create_candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode,
-                                                      phone, json.load(work_locations))
+                                                      phone, work_locations)
 
         if success:
 
-            res_two, success_two = checkr_client.create_invitation(res["id"], json.load(work_locations))
+            res_two, success_two = checkr_client.create_invitation(res["id"], work_locations)
 
             if success_two:
                 existing.report_id = res_two["report_id"]

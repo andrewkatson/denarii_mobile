@@ -71,7 +71,12 @@ class CheckrClient:
             if user.candidate is not None:
                 return False, {}
             else:
-                candidate_id = "id"
+
+                if first_name == "fail_candidate":
+                    return False, {}
+
+                candidate_id = first_name
+
                 user.candidate = Candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode, phone,
                                            work_locations, candidate_id)
 
@@ -91,6 +96,19 @@ class CheckrClient:
         if user_with_candidate.invitation is not None:
             return False, {}
         else:
+
+            if candidate_id == "fail_invitation":
+                return False, {}
+
+            if candidate_id == "fail_report":
+                return True, {"report_id": candidate_id, "status": "unknown"}
+
+            if candidate_id == "report_not_clear":
+                return True, {"report_id": candidate_id, "status": "complete"}
+
+            if candidate_id == "report_pending":
+                return True, {"report_id": candidate_id, "status": "pending"}
+
             report_id = "id"
             invitation = Invitation("tasker_plus", candidate_id, user_with_candidate.work_locations, report_id)
             user_with_candidate.invitation = invitation
@@ -101,9 +119,14 @@ class CheckrClient:
             return True, {"report_id": report_id, "status": "pending"}
 
     def get_report(self, report_id):
-        user_with_report = self.get_user_with_report(report_id)
 
-        if user_with_report.report is not None:
+        if report_id == "id":
             return True, {"status": "complete", "result": "clear"}
+        elif report_id == "fail_report":
+            return False, {}
+        elif report_id == "report_not_clear":
+            return True, {"status": "complete", "result": "not_clear"}
+        elif report_id == "report_pending":
+            return True, {"status": "pending", "result": "unclear"}
         else:
             return False, {}
