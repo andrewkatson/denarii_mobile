@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('asking_price', models.FloatField(null=True)),
                 ('in_escrow', models.BooleanField(null=True)),
                 ('amount_bought', models.FloatField(null=True)),
-                ('user', models.ForeignKey(default=DenariiMobile.models.get_default_denarii_user, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(default=DenariiMobile.models.DenariiUser.get_default_pk, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

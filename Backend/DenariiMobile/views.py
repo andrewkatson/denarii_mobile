@@ -165,9 +165,7 @@ def update_user_verification_status(user):
         success, res = checkr_client.get_report(user.report_id)
         if success and res["status"] == "complete":
             user.identity_is_verified = res["result"] == "clear"
-        elif not success:
-            # We consider failing to get the report as identity verification failure
-            user.identity_is_verified = False
+            user.verification_report_status = "complete"
 
         user.save()
 
@@ -1039,16 +1037,18 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
 
             if success_two:
                 existing.report_id = res_two["report_id"]
+                existing.verification_report_status = "pending"
 
                 status = ""
 
                 update_user_verification_status(existing)
 
-                if existing.identity_is_verified is not None and existing.identity_is_verified:
+                if existing.identity_is_verified:
                     status = "is_verified"
-                elif existing.identity_is_verified is not None and not existing.identity_is_verified:
+                    existing.verification_report_status = "complete"
+                elif not existing.identity_is_verified and existing.verification_report_status == "complete":
                     status = "failed_verification"
-                elif existing.report_id is not None:
+                elif existing.verification_report_status == "pending":
                     status = "verification_pending"
                 else:
                     status = "is_not_verified"
@@ -1057,6 +1057,9 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
 
                 # Just send a successful response
                 serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
+
+                existing.save()
+
                 return JsonResponse({'response_list': serialized_response_list})
             else:
                 return HttpResponseBadRequest("Could not create invitation")
@@ -1075,11 +1078,12 @@ def is_a_verified_person(request, user_id):
 
         update_user_verification_status(existing)
 
-        if existing.identity_is_verified is not None and existing.identity_is_verified:
+        if existing.identity_is_verified:
             status = "is_verified"
-        elif existing.identity_is_verified is not None and not existing.identity_is_verified:
+            existing.verification_report_status = "complete"
+        elif not existing.identity_is_verified and existing.verification_report_status == "complete":
             status = "failed_verification"
-        elif existing.report_id is not None:
+        elif existing.verification_report_status == "pending":
             status = "verification_pending"
         else:
             status = "is_not_verified"
@@ -1088,6 +1092,9 @@ def is_a_verified_person(request, user_id):
 
         # Just send a successful response
         serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
+
+        existing.save()
+
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
@@ -1123,6 +1130,7 @@ def create_support_ticket(request, user_id, title, description):
 
         support_ticket = existing.supportticket_set.create(title=title, description=description)
         support_ticket.support_id = support_ticket.primary_key
+        support_ticket.resolved = False
 
         response = Response.objects.create(support_ticket_id=support_ticket.support_id,
                                            creation_time_body=support_ticket.creation_time)
@@ -1187,25 +1195,32 @@ def delete_support_ticket(request, user_id, support_ticket_id):
 
 
 @login_required
-def get_support_tickets(request, user_id):
+def get_support_tickets(request, user_id, can_be_resolved):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
 
         response_list = []
 
-        for ticket in existing.supportticket_set.all():
+        support_tickets = None
+        if can_be_resolved == "True":
+            support_tickets = existing.supportticket_set.all()
+        else:
+            support_tickets = existing.supportticket_set.all().filter(resolved=False)
+
+        for ticket in support_tickets:
             response = Response.objects.create(support_ticket_id=ticket.support_id, author=existing.username,
                                                title=ticket.title, description=ticket.description,
                                                updated_time_body=ticket.updated_time,
-                                               creation_time_body=ticket.creation_time)
+                                               creation_time_body=ticket.creation_time,
+                                               is_resolved=ticket.resolved)
 
             response_list.append(response)
 
         serialized_response_list = serializers.serialize('json', response_list,
                                                          fields=('support_ticket_id', 'author', 'title',
                                                                  'description', 'updated_time_body',
-                                                                 'creation_time_body'))
+                                                                 'creation_time_body', 'resolved'))
 
         return JsonResponse({'response_list': serialized_response_list})
     else:
@@ -1234,6 +1249,32 @@ def get_comments_on_ticket(request, user_id, support_ticket_id):
             serialized_response_list = serializers.serialize('json', response_list,
                                                              fields=('author', 'content', 'updated_time_body',
                                                                      'creation_time_body'))
+
+            return JsonResponse({'response_list': serialized_response_list})
+        else:
+            return HttpResponseBadRequest("No support ticket with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def resolve_support_ticket(request, user_id, support_ticket_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        support_ticket = get_support_ticket_with_id(support_ticket_id)
+
+        if support_ticket is not None:
+
+            support_ticket.resolved = True
+
+            response = Response.objects.create(support_ticket_id=support_ticket.support_id,
+                                               updated_time_body=support_ticket.updated_time)
+
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields=('support_ticket_id', 'updated_time_body'))
+            support_ticket.save()
 
             return JsonResponse({'response_list': serialized_response_list})
         else:

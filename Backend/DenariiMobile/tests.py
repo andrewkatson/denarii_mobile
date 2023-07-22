@@ -1398,13 +1398,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(fields['verification_status'], "verification_pending")
 
     def test_is_a_verified_person_with_no_verification_pending_at_all(self):
-        test_values = get_all_test_values("is_a_verified_person_with_no_verification_pending_at_al")
-
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_report",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
-                                                   "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
-
-        self.assertNotEqual(type(verify_identity_response), HttpResponseBadRequest)
+        test_values = get_all_test_values("is_a_verified_person_with_no_verification_pending_at_all")
 
         is_verified_response = is_a_verified_person(test_values['request'], test_values['user_id'])
 
@@ -1550,7 +1544,7 @@ class ViewsTestCase(TestCase):
 
         fields_two = get_json_fields(response_two)
 
-        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'])
+        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'], "True")
 
         self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
 
@@ -1559,10 +1553,41 @@ class ViewsTestCase(TestCase):
         self.assertIn(fields['support_ticket_id'], ticket_ids)
         self.assertIn(fields_two['support_ticket_id'], ticket_ids)
 
+    def test_get_all_non_resolved_tickets(self):
+        test_values = get_all_test_values("get_all_non_resolved_tickets")
+
+        response_one = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response_one), HttpResponseBadRequest)
+
+        fields = get_json_fields(response_one)
+
+        response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
+                                             "other description")
+
+        self.assertNotEqual(type(response_two), HttpResponseBadRequest)
+
+        fields_two = get_json_fields(response_two)
+
+        # Resolve the second ticket
+        resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
+                                                  fields_two['support_ticket_id'])
+
+        self.assertNotEqual(type(resolve_response), HttpResponseBadRequest)
+
+        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'], "False")
+
+        self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
+
+        ticket_ids = get_all_json_objects_field(get_all_response, 'support_ticket_id')
+
+        self.assertIn(fields['support_ticket_id'], ticket_ids)
+        self.assertNotIn(fields_two['support_ticket_id'], ticket_ids)
+
     def test_get_all_tickets_when_there_are_none(self):
         test_values = get_all_test_values("get_all_tickets_when_there_are_none")
 
-        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'])
+        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'], "True")
 
         self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
 
@@ -1624,3 +1649,23 @@ class ViewsTestCase(TestCase):
                                                        -1)
 
         self.assertEqual(type(get_comments_response), HttpResponseBadRequest)
+
+    def test_resolve_support_ticket(self):
+        test_values = get_all_test_values("resolve_support_ticket")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        fields = get_json_fields(response)
+
+        resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
+                                                  fields['support_ticket_id'])
+        self.assertNotEqual(type(resolve_response), HttpResponseBadRequest)
+
+    def test_resolve_non_existent_support_ticket(self):
+        test_values = get_all_test_values("resolve_non_existent_support_ticket")
+
+        resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
+                                                  -1)
+        self.assertEqual(type(resolve_response), HttpResponseBadRequest)

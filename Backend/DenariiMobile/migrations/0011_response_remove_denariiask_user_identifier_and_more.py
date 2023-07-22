@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('expiration_date_month', models.IntegerField(default=-1)),
                 ('expiration_date_year', models.IntegerField(default=-1)),
                 ('primary_key', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('denarii_user', models.ForeignKey(default=DenariiMobile.models.get_default_denarii_user, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('denarii_user', models.ForeignKey(default=DenariiMobile.models.DenariiUser.get_default_pk, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

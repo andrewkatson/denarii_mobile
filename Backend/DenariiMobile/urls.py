@@ -77,7 +77,9 @@ urlpatterns = [
     # Deletes a customer support ticket
     path('delete_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.delete_support_ticket),
     # Gets all customer support tickets for a user
-    path('get_support_tickets/<str:user_id>/', views.get_support_tickets),
+    path('get_support_tickets/<str:user_id>/<str:can_be_resolved>/', views.get_support_tickets),
     # Get all comments on a support ticket
-    path('get_comments_on_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_comments_on_ticket)
+    path('get_comments_on_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_comments_on_ticket),
+    # Mark a support ticket as resolved
+    path('resolve_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.resolve_support_ticket)
 ]
