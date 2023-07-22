@@ -83,7 +83,11 @@ class CheckrClient:
                 return True, {"id": candidate_id}
 
         else:
-            candidate_id = "id"
+            if first_name == "fail_candidate":
+                return False, {}
+
+            candidate_id = first_name
+
             candidate = Candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode, phone,
                                   work_locations, candidate_id)
             self.users[identifier(first_name, last_name, email)] = User(candidate)
@@ -110,7 +114,7 @@ class CheckrClient:
                 return True, {"report_id": candidate_id, "status": "pending"}
 
             report_id = "id"
-            invitation = Invitation("tasker_plus", candidate_id, user_with_candidate.work_locations, report_id)
+            invitation = Invitation("tasker_plus", candidate_id, work_locations, report_id)
             user_with_candidate.invitation = invitation
 
             report = Report("complete", report_id)

@@ -52,7 +52,7 @@ class CheckrClient:
         except Exception as e:
             print("Ran into problem with the response " + str(e))
 
-        return res, ok
+        return ok, res
 
     def create_invitation(self, candidate_id, work_locations):
         # Empty json if there is no result
@@ -88,7 +88,7 @@ class CheckrClient:
         except Exception as e:
             print("Ran into problem with the response " + str(e))
 
-        return res, ok
+        return ok, res
 
     def get_report(self, report_id):
         # Empty json if there is no result
@@ -125,4 +125,4 @@ class CheckrClient:
         except Exception as e:
             print("Ran into problem with the response " + str(e))
 
-        return res, ok
+        return ok, res

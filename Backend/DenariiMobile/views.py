@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
@@ -162,20 +162,20 @@ def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of
 
 def update_user_verification_status(user):
     if user.report_id is not None:
-        res, success = checkr_client.get_report(user.report_id)
-
+        success, res = checkr_client.get_report(user.report_id)
         if success and res["status"] == "complete":
             user.identity_is_verified = res["result"] == "clear"
         elif not success:
             # We consider failing to get the report as identity verification failure
             user.identity_is_verified = False
 
+        user.save()
+
 
 # In spite of its name this function handles login and registration
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
-        login(request, existing)
         response = Response.objects.create(user_identifier=str(existing.id))
 
         serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
@@ -900,7 +900,7 @@ def get_ask_with_identifier(request, user_id, ask_id):
             serialized_response_list = serializers.serialize('json', [response],
                                                              fields=('ask_id', 'amount', 'amount_bought'))
 
-            return JsonResponse({'response_list'}, serialized_response_list)
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No ask with id")
     else:
@@ -1030,12 +1030,12 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
 
     if existing is not None:
 
-        res, success = checkr_client.create_candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode,
+        success, res = checkr_client.create_candidate(first_name, last_name, middle_name, email, dob, ssn, zipcode,
                                                       phone, work_locations)
 
         if success:
 
-            res_two, success_two = checkr_client.create_invitation(res["id"], work_locations)
+            success_two, res_two = checkr_client.create_invitation(res["id"], work_locations)
 
             if success_two:
                 existing.report_id = res_two["report_id"]
@@ -1110,7 +1110,7 @@ def get_all_asks(request, user_id):
         serialized_response_list = serializers.serialize('json', response_list,
                                                          fields='ask_id')
 
-        return JsonResponse({'response_list'}, serialized_response_list)
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -1121,7 +1121,7 @@ def create_support_ticket(request, user_id, title, description):
 
     if existing is not None:
 
-        support_ticket = existing.supportticket_Set.create(title=title, description=description)
+        support_ticket = existing.supportticket_set.create(title=title, description=description)
         support_ticket.support_id = support_ticket.primary_key
 
         response = Response.objects.create(support_ticket_id=support_ticket.support_id,
@@ -1131,7 +1131,7 @@ def create_support_ticket(request, user_id, title, description):
                                                          fields=('support_ticket_id', 'creation_time_body'))
         support_ticket.save()
 
-        return JsonResponse({'response_list'}, serialized_response_list)
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -1156,7 +1156,7 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
             support_ticket.save()
             comment.save()
 
-            return JsonResponse({'response_list'}, serialized_response_list)
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No support ticket with id")
     else:
@@ -1179,7 +1179,7 @@ def delete_support_ticket(request, user_id, support_ticket_id):
                                                              fields='support_ticket_id')
             support_ticket.delete()
 
-            return JsonResponse({'response_list'}, serialized_response_list)
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No support ticket with id")
     else:
@@ -1207,7 +1207,7 @@ def get_support_tickets(request, user_id):
                                                                  'description', 'updated_time_body',
                                                                  'creation_time_body'))
 
-        return JsonResponse({'response_list'}, serialized_response_list)
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -1235,7 +1235,7 @@ def get_comments_on_ticket(request, user_id, support_ticket_id):
                                                              fields=('author', 'content', 'updated_time_body',
                                                                      'creation_time_body'))
 
-            return JsonResponse({'response_list'}, serialized_response_list)
+            return JsonResponse({'response_list': serialized_response_list})
         else:
             return HttpResponseBadRequest("No support ticket with id")
     else:

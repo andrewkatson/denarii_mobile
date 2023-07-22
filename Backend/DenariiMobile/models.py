@@ -79,6 +79,7 @@ class Response(models.Model):
     content = models.TextField(null=True)
     description = models.TextField(null=True)
     title = models.TextField(null=True)
+    support_ticket_id = models.TextField(null=True)
 
     # Creation and update times of the message being sent back (i.e. a comment on a support ticket)
     creation_time_body = models.DateTimeField(null=True, blank=True)
