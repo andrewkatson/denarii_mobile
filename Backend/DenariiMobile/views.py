@@ -12,7 +12,7 @@ except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
 from DenariiMobile.interface import wallet, work_location
-from DenariiMobile.models import DenariiUser, DenariiAsk, Response, CreditCard
+from DenariiMobile.models import DenariiUser, DenariiAsk, Response, CreditCard, SupportTicket, SupportTicketComment
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
@@ -88,6 +88,14 @@ def get_ask_with_id(ask_id):
         existing = DenariiAsk.objects.get(ask_id=ask_id)
         return existing
     except DenariiAsk.DoesNotExist:
+        return None
+
+
+def get_support_ticket_with_id(support_ticket_id):
+    try:
+        existing = SupportTicket.objects.get(support_id=support_ticket_id)
+        return existing
+    except SupportTicket.DoesNotExist:
         return None
 
 
@@ -1081,5 +1089,154 @@ def is_a_verified_person(request, user_id):
         # Just send a successful response
         serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
         return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def get_all_asks(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        ask_set = existing.denariiask_set.all().filter(in_escrow=False).filter(is_settled=False)
+
+        response_list = []
+        for ask in ask_set:
+            response = Response.objects.create(ask_id=ask.ask_id)
+
+            response_list.append(response)
+
+        serialized_response_list = serializers.serialize('json', response_list,
+                                                         fields='ask_id')
+
+        return JsonResponse({'response_list'}, serialized_response_list)
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def create_support_ticket(request, user_id, title, description):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        support_ticket = existing.supportticket_Set.create(title=title, description=description)
+        support_ticket.support_id = support_ticket.primary_key
+
+        response = Response.objects.create(support_ticket_id=support_ticket.support_id,
+                                           creation_time_body=support_ticket.creation_time)
+
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields=('support_ticket_id', 'creation_time_body'))
+        support_ticket.save()
+
+        return JsonResponse({'response_list'}, serialized_response_list)
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def update_support_ticket(request, user_id, support_ticket_id, comment):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        support_ticket = get_support_ticket_with_id(support_ticket_id)
+
+        if support_ticket is not None:
+
+            comment = support_ticket.supportticketcomment_set.create(content=comment, author=existing.username)
+
+            response = Response.objects.create(support_ticket_id=support_ticket.support_id,
+                                               updated_time_body=comment.updated_time)
+
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields=('support_ticket_id', 'updated_time_body'))
+            support_ticket.save()
+            comment.save()
+
+            return JsonResponse({'response_list'}, serialized_response_list)
+        else:
+            return HttpResponseBadRequest("No support ticket with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def delete_support_ticket(request, user_id, support_ticket_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        support_ticket = get_support_ticket_with_id(support_ticket_id)
+
+        if support_ticket is not None:
+
+            response = Response.objects.create(support_ticket_id=support_ticket.support_id)
+
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields='support_ticket_id')
+            support_ticket.delete()
+
+            return JsonResponse({'response_list'}, serialized_response_list)
+        else:
+            return HttpResponseBadRequest("No support ticket with id")
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def get_support_tickets(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        response_list = []
+
+        for ticket in existing.supportticket_set.all():
+            response = Response.objects.create(support_ticket_id=ticket.support_id, author=existing.username,
+                                               title=ticket.title, description=ticket.description,
+                                               updated_time_body=ticket.updated_time,
+                                               creation_time_body=ticket.creation_time)
+
+            response_list.append(response)
+
+        serialized_response_list = serializers.serialize('json', response_list,
+                                                         fields=('support_ticket_id', 'author', 'title',
+                                                                 'description', 'updated_time_body',
+                                                                 'creation_time_body'))
+
+        return JsonResponse({'response_list'}, serialized_response_list)
+    else:
+        return HttpResponseBadRequest("No user with id")
+
+
+@login_required
+def get_comments_on_ticket(request, user_id, support_ticket_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        support_ticket = get_support_ticket_with_id(support_ticket_id)
+
+        if support_ticket is not None:
+
+            response_list = []
+
+            for comment in support_ticket.supportticketcomment_set.all():
+                response = Response.objects.create(author=comment.author, content=comment.content,
+                                                   creation_time_body=comment.creation_time,
+                                                   updated_time_body=comment.updated_time)
+
+                response_list.append(response)
+
+            serialized_response_list = serializers.serialize('json', response_list,
+                                                             fields=('author', 'content', 'updated_time_body',
+                                                                     'creation_time_body'))
+
+            return JsonResponse({'response_list'}, serialized_response_list)
+        else:
+            return HttpResponseBadRequest("No support ticket with id")
     else:
         return HttpResponseBadRequest("No user with id")

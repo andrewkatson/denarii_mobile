@@ -33,8 +33,7 @@ urlpatterns = [
     # Make a new denarii ask.
     # This one the amount is a string but really is a double. The asking price is also really a double.
     path('make_denarii_ask/<str:user_id>/<str:amount>/<str:asking_price>/', views.make_denarii_ask),
-    # Retrieves all the current denarii asks for a user. Use this to diff against the current list to see which have been settled so they can be removed and you can request 
-    # the payout -- i.e. send_money_to_seller.
+    # Retrieves all the current denarii asks that are settled so you can proceed with transaction -- i.e. send_money_to_seller.
     path('poll_for_completed_transaction<str:user_id>//', views.poll_for_completed_transaction),
     # Cancel an ask. Asks that are in escrow or settled cannot be cancelled.
     path('cancel_denaii_ask/<str:user_id>/<str:ask_id>/', views.cancel_ask),
@@ -61,12 +60,24 @@ urlpatterns = [
     # Sends the money put in escrow from a denarii buyer back  to them since a transaction failed
     # Amount is really a double
     path('send_money_back_to_buyer/<str:user_id>/<str:amount>/<str:currency>/', views.send_money_back_to_buyer),
-    # Cancel a buy (by cancelling the purchase of one of the asks)
+    # Cancel a buy (by cancelling the purchase of one of the asks). Only asks in escrow that are not settled can be cancelled.
     path('cancel_buy_of_ask/<str:user_id>/<str:ask_id>/', views.cancel_buy_of_ask),
     # Returns if the individual user has been verified. It can will return one of three answers. "is_verified", "is_not_verified", "failed_verification", and "verification_pending".
     path('is_a_verified_person/<str:user_id>/', views.is_a_verified_person),
     # Tries to verify the person based on their status
     # Work locations is assumed to be a list of dicts as a json dump.
     # AKA [{"country": "US", "state": "VA", "city": "McLean"},{"country": "US", "state": "CA", "city": "San Francisco"}]
-    path('verify_identity/<str:user_id>/<str:first_name>/<str:middle_name>/<str:last_name>/<str:email>/<str:phone>/<str:zipcode>/<str:dob>/<str:ssn>/<str:work_locations>/', views.verify_identity)
+    path('verify_identity/<str:user_id>/<str:first_name>/<str:middle_name>/<str:last_name>/<str:email>/<str:phone>/<str:zipcode>/<str:dob>/<str:ssn>/<str:work_locations>/', views.verify_identity),
+    # Tries to get all the asks for a user
+    path('get_all_asks/<str:user_id>/', views.get_all_asks),
+    # Creates a customer support ticket
+    path('create_support_ticket/<str:user_id>/<str:title>/<str:description>/', views.create_support_ticket),
+    # Updates a customer support ticket
+    path('update_support_ticket/<str:user_id>/<str:support_ticket_id>/str:comment>/', views.update_support_ticket),
+    # Deletes a customer support ticket
+    path('delete_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.delete_support_ticket),
+    # Gets all customer support tickets for a user
+    path('get_support_tickets/<str:user_id>/', views.get_support_tickets),
+    # Get all comments on a support ticket
+    path('get_comments_on_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_comments_on_ticket)
 ]

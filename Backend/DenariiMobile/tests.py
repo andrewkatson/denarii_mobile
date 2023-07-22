@@ -1327,7 +1327,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(fields['verification_status'], "is_verified")
 
     def test_verify_identity_but_cannot_create_candidate(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("verify_identity_but_cannot_create_candidate")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_candidate",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1336,7 +1336,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
 
     def test_verify_identity_but_cannot_create_invitation(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("verify_identity_but_cannot_create_invitation")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_invitation",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1345,7 +1345,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
 
     def test_is_a_verified_person_where_identity_is_verified(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("is_a_verified_person_where_identity_is_verified")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "first_name",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1360,7 +1360,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(fields['verification_status'], "is_verified")
 
     def test_is_a_verified_person_where_identity_was_not_verified(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("is_a_verified_person_where_identity_was_not_verified")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "report_not_clear",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1375,7 +1375,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(fields['verification_status'], "failed_verification")
 
     def test_is_a_verified_person_where_identity_verification_is_pending(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("is_a_verified_person_where_identity_verification_is_pending")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "report_pending",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1390,7 +1390,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(fields['verification_status'], "verification_pending")
 
     def test_is_a_verified_person_with_no_verification_pending_at_all(self):
-        test_values = get_all_test_values("verify_identity")
+        test_values = get_all_test_values("is_a_verified_person_with_no_verification_pending_at_al")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_report",
                                                    "middle", "last_name", "email@email.com", "1999-02-07",
@@ -1403,3 +1403,217 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(is_verified_response)
 
         self.assertEqual(fields['verification_status'], "is_not_verified")
+
+    def test_get_all_asks(self):
+        seller_test_values = get_all_test_values("get_all_asks_seller")
+
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        # buy one and settle it
+        buyer_test_values = get_all_test_values("get_all_asks_buyer")
+
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        first_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                first_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(first_ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # buy another so it is in escrow
+        amount_to_buy = 20
+        bid_price = 11.5
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 34.0 to offer (at 11.5 price)
+        second_ask_id = 0
+        for ask in asks:
+            # we only bought part of it
+            if ask.amount == 34.0 and ask.asking_price == bid_price:
+                second_ask_id = ask.ask_id
+                break
+
+        response = get_all_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(response, "ask_id")
+
+        for ask in asks:
+            self.assertIn(ask.ask_id, ask_ids)
+
+        self.assertNotIn(first_ask_id, ask_ids)
+        self.assertNotIn(second_ask_id, ask_ids)
+
+    def test_get_all_asks_with_no_asks(self):
+        test_values = get_all_test_values("get_all_asks_with_no_asks")
+
+        response = get_all_asks(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(response, "ask_id")
+
+        self.assertEqual(len(ask_ids), 0)
+
+    def test_create_support_ticket(self):
+        test_values = get_all_test_values("create_support_ticket")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+    def test_update_support_ticket(self):
+        test_values = get_all_test_values("update_support_ticket")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        fields = get_json_fields(response)
+
+        update_response = update_support_ticket(test_values['request'], test_values['user_id'],
+                                                fields['support_ticket_id'], "update comment")
+
+        self.assertNotEqual(type(update_response), HttpResponseBadRequest)
+
+    def test_update_non_existent_support_ticket(self):
+        test_values = get_all_test_values("update_non_existent_support_ticket")
+
+        update_response = update_support_ticket(test_values['request'], test_values['user_id'],
+                                                -1, "update comment")
+
+        self.assertEqual(type(update_response), HttpResponseBadRequest)
+
+    def test_delete_support_ticket(self):
+        test_values = get_all_test_values("delete_support_ticket")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        fields = get_json_fields(response)
+
+        delete_response = delete_support_ticket(test_values['request'], test_values['user_id'],
+                                                fields['support_ticket_id'])
+
+        self.assertNotEqual(type(delete_response), HttpResponseBadRequest)
+
+    def test_delete_non_existent_support_ticket(self):
+        test_values = get_all_test_values("delete_non_existent_support_ticket")
+
+        delete_response = delete_support_ticket(test_values['request'], test_values['user_id'],
+                                                -1)
+
+        self.assertEqual(type(delete_response), HttpResponseBadRequest)
+
+    def test_get_all_tickets(self):
+        test_values = get_all_test_values("get_all_tickets")
+
+        response_one = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response_one), HttpResponseBadRequest)
+
+        fields = get_json_fields(response_one)
+
+        response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
+                                             "other description")
+
+        self.assertNotEqual(type(response_two), HttpResponseBadRequest)
+
+        fields_two = get_json_fields(response_two)
+
+        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
+
+        ticket_ids = get_all_json_objects_field(get_all_response, 'support_ticket_id')
+
+        self.assertIn(fields['support_ticket_id'], ticket_ids)
+        self.assertIn(fields_two['support_ticket_id'], ticket_ids)
+
+    def test_get_all_tickets_when_there_are_none(self):
+        test_values = get_all_test_values("get_all_tickets_when_there_are_none")
+
+        get_all_response = get_support_tickets(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
+
+        ticket_ids = get_all_json_objects_field(get_all_response, 'support_ticket_id')
+
+        self.assertEqual(len(ticket_ids), 0)
+
+    def test_get_support_ticket_comments(self):
+        test_values = get_all_test_values("get_support_ticket_comments")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        response_fields = get_json_fields(response)
+
+        comment_response_one = update_support_ticket(test_values['request'], test_values['user_id'],
+                                                     response_fields['support_ticket_id'], "some_comment")
+
+        self.assertNotEqual(type(comment_response_one), HttpResponseBadRequest)
+
+        comment_fields_one = get_json_fields(comment_response_one)
+
+        comment_response_two = update_support_ticket(test_values['request'], test_values['user_id'],
+                                                     response_fields['support_ticket_id'], "other_comment")
+
+        self.assertNotEqual(type(comment_response_two), HttpResponseBadRequest)
+
+        comment_fields_two = get_json_fields(comment_response_two)
+
+        get_comments_response = get_comments_on_ticket(test_values['request'], test_values['user_id'],
+                                                       response_fields['support_ticket_id'])
+
+        self.assertNotEqual(type(get_comments_response), HttpResponseBadRequest)
+
+        support_ticket_ids = get_all_json_objects_field(get_comments_response, 'support_ticket_id')
+
+        self.assertIn(comment_fields_one['support_ticket_id'], support_ticket_ids)
+        self.assertIn(comment_fields_two['support_ticket_id'], support_ticket_ids)
+
+    def test_get_support_ticket_comments_when_there_are_none(self):
+        test_values = get_all_test_values("get_support_ticket_comments_when_there_are_none")
+
+        response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        response_fields = get_json_fields(response)
+
+        get_comments_response = get_comments_on_ticket(test_values['request'], test_values['user_id'],
+                                                       response_fields['support_ticket_id'])
+
+        self.assertNotEqual(type(get_comments_response), HttpResponseBadRequest)
+
+        support_ticket_ids = get_all_json_objects_field(get_comments_response, 'support_ticket_id')
+
+        self.assertEqual(len(support_ticket_ids), 0)
+
+    def test_get_support_ticket_comments_for_non_existent_support_ticket(self):
+        test_values = get_all_test_values("get_support_ticket_comments_for_non_existent_support_ticket")
+
+        get_comments_response = get_comments_on_ticket(test_values['request'], test_values['user_id'],
+                                                       -1)
+
+        self.assertEqual(type(get_comments_response), HttpResponseBadRequest)

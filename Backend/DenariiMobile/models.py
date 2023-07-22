@@ -1,3 +1,4 @@
+import datetime
 import uuid
 
 from django.contrib.auth.models import AbstractUser
@@ -5,13 +6,21 @@ from django.db import models
 
 
 def get_default_denarii_user():
-    return DenariiUser(username="test", email="test@test.com")
+    user, created = DenariiUser.objects.get_or_create(username="Test", email="test@email.com")
+    return user.id
+
+
+def get_default_support_ticket():
+    ticket, created = SupportTicket.objects.get_or_create(title="Title", description="description")
+    return ticket.primary_key
 
 
 class DenariiUser(AbstractUser):
     reset_id = models.IntegerField(default=0)
     report_id = models.TextField(null=True)
     identity_is_verified = models.BooleanField(null=True)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         if self.username is None or self.email is None:
@@ -26,6 +35,32 @@ class CreditCard(models.Model):
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+
+class SupportTicket(models.Model):
+    primary_key = models.UUIDField(primary_key=True,
+                                   default=uuid.uuid4,
+                                   editable=False)
+    support_id = models.TextField(null=True)
+    description = models.TextField(null=True)
+    title = models.TextField(null=True)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=get_default_denarii_user)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+
+class SupportTicketComment(models.Model):
+    primary_key = models.UUIDField(primary_key=True,
+                                   default=uuid.uuid4,
+                                   editable=False)
+    support_ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, default=get_default_support_ticket)
+    # Same as username of a DenariiUser
+    author = models.TextField(null=True)
+    content = models.TextField(null=True)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class Response(models.Model):
@@ -40,6 +75,18 @@ class Response(models.Model):
     amount_bought = models.FloatField(null=True)
     transaction_was_settled = models.BooleanField(null=True)
     verification_status = models.TextField(null=True)
+    author = models.TextField(null=True)
+    content = models.TextField(null=True)
+    description = models.TextField(null=True)
+    title = models.TextField(null=True)
+
+    # Creation and update times of the message being sent back (i.e. a comment on a support ticket)
+    creation_time_body = models.DateTimeField(null=True, blank=True)
+    updated_time_body = models.DateTimeField(null=True, blank=True)
+
+    # Creation and update times of the response
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
 
 
 class WalletDetails(models.Model):
@@ -52,6 +99,8 @@ class WalletDetails(models.Model):
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         if self.wallet_name is None:
@@ -71,6 +120,8 @@ class DenariiAsk(models.Model):
     amount_bought = models.FloatField(null=True)
     is_settled = models.BooleanField(null=True)
     has_been_seen_by_seller = models.BooleanField(null=True)
+    creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return self.ask_id
