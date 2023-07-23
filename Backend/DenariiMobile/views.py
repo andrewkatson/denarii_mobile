@@ -171,6 +171,7 @@ def update_user_verification_status(user):
 
 
 # In spite of its name this function handles login and registration
+# TODO: split up
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
@@ -256,7 +257,7 @@ def reset_password(request, username, email, password):
         serialized_response_list = serializers.serialize('json', [response],
                                                          fields=())
 
-        return JsonResponse({'reponse_list': serialized_response_list})
+        return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with that username and email")
 

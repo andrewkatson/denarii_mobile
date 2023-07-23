@@ -73,6 +73,7 @@ class SupportTicketComment(models.Model):
 
 class Response(models.Model):
     has_credit_card_info = models.BooleanField(default=False)
+    # TODO refactor so we don't pass this around
     user_identifier = models.TextField(null=True)
     seed = models.TextField(null=True)
     wallet_address = models.TextField(null=True)
