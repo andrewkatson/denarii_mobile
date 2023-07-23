@@ -1056,7 +1056,6 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
 
                 response = Response.objects.create(verification_status=status)
 
-                # Just send a successful response
                 serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
 
                 existing.save()
@@ -1091,7 +1090,6 @@ def is_a_verified_person(request, user_id):
 
         response = Response.objects.create(verification_status=status)
 
-        # Just send a successful response
         serialized_response_list = serializers.serialize('json', [response], fields="verification_status")
 
         existing.save()
