@@ -139,5 +139,5 @@ with open(Path(f"{BASE_DIR}/email_data.txt"), "rb") as email_file:
             EMAIL_HOST_PASSWORD = line.decode('utf8').strip()
             break
 
-DATETIME_FORMAT = f"%Y-%m-%d%H:%M:%S"
+DATETIME_FORMAT = f"iso-8601"
 L10N=False
