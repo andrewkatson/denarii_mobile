@@ -2,6 +2,7 @@ package com.denarii.android.network;
 
 import androidx.annotation.NonNull;
 
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.WalletDetails;
 
 import java.io.IOException;
@@ -13,38 +14,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StubbedCall implements Call<List<Wallet>> {
+public class StubbedCall implements Call<List<DenariiResponse>> {
     private boolean hasBeenExecuted = false;
 
     StubbedCall() {
     }
 
-    private Wallet getWallet() {
-        Wallet wallet = new Wallet();
+    private DenariiResponse getWallet() {
+        DenariiResponse wallet = new DenariiResponse();
         WalletDetails walletDetails = new WalletDetails();
-        walletDetails.userIdentifier = 123;
-        walletDetails.walletAddress = "ABCXYZ";
-        walletDetails.walletName = "wallet";
-        walletDetails.walletPassword = "password";
-        walletDetails.seed = "some seed here";
-        walletDetails.balance = 20;
-        wallet.response = walletDetails;
-        wallet.responseCode = 200;
-        wallet.responseCodeText = "No error";
+        walletDetails.setWalletAddress("ABCXYZ");
+        walletDetails.setWalletName("wallet");
+        walletDetails.setWalletPassword("password");
+        walletDetails.setSeed("some seed here");
+        walletDetails.setBalance(20);
         return wallet;
     }
 
 
     @NonNull
     @Override
-    public Response<List<Wallet>> execute() throws IOException {
+    public Response<List<DenariiResponse>> execute() throws IOException {
         hasBeenExecuted = true;
         return Response.success(List.of(getWallet()));
     }
 
     @Override
     public void enqueue(Callback callback) {
-        Call<List<Wallet>> call = new StubbedCall();
+        Call<List<DenariiResponse>> call = new StubbedCall();
         try {
             callback.onResponse(call, this.execute());
         } catch (IOException e) {
