@@ -42,6 +42,14 @@ with open(Path(f"{BASE_DIR}/Backend/stripe_secret_key.txt"), "rb") as stripe_sec
         API_KEY = line.decode('utf8')
         break
 
+CHECKR_API_KEY = ''
+# SECURITY WARNING: keep the secret key used in production secret!
+with open(Path(f"{BASE_DIR}/Backend/checkr_api_key.txt"), "rb") as stripe_secret_key_file:
+    lines = stripe_secret_key_file.readlines()
+    for line in lines:
+        CHECKR_API_KEY = line.decode('utf8')
+        break
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -166,3 +174,7 @@ with open(Path(f"{BASE_DIR}/email_data.txt"), "rb") as email_file:
         else:
             EMAIL_HOST_PASSWORD = line.decode('utf8').strip()
             break
+
+
+DATETIME_FORMAT = f"iso-8601"
+L10N=False
