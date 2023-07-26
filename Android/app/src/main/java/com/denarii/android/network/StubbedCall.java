@@ -2,9 +2,7 @@ package com.denarii.android.network;
 
 import androidx.annotation.NonNull;
 
-import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;

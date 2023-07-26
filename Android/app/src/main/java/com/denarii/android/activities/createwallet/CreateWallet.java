@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,20 +18,14 @@ import com.denarii.android.activities.openedwallet.OpenedWallet;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
-import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CreateWallet extends AppCompatActivity {
 

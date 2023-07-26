@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.denarii.android.R;
 import com.denarii.android.activities.login.Login;
 import com.denarii.android.network.DenariiService;
-import com.denarii.android.user.Wallet;
 import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;

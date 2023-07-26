@@ -15,7 +15,6 @@ import com.denarii.android.R;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.UserDetails;
-import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 

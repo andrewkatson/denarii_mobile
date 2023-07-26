@@ -1,7 +1,5 @@
 package com.denarii.android.network;
 
-import com.denarii.android.user.Wallet;
-
 import java.util.List;
 
 import retrofit2.Call;

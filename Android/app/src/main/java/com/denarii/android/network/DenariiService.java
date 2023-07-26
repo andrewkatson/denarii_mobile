@@ -1,7 +1,5 @@
 package com.denarii.android.network;
 
-import com.denarii.android.user.Wallet;
-
 import java.util.List;
 
 import retrofit2.Call;
@@ -13,11 +11,11 @@ import retrofit2.http.Path;
 public interface DenariiService {
 
     // Returns a single Wallet instance with a user identifier
-    @GET("users/transfer/{user}/{email}/{password}")
+    @GET("users/{user}/{email}/{password}")
     Call<List<Wallet>> getUserId(@Path("user") String userName, @Path("email") String email, @Path("password") String password);
 
     // Returns a single Wallet instance with nothing in it
-    @GET("users/transfer/{usernameOrEmail}/request_reset")
+    @GET("users/{usernameOrEmail}/request_reset")
     Call<List<Wallet>> requestPasswordReset(@Path("usernameOrEmail") String usernameOrEmail);
 
     // Returns a single Wallet instance with nothing in it

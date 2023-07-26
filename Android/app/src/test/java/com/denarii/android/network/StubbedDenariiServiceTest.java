@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import androidx.annotation.NonNull;
 
 import com.denarii.android.constants.Constants;
-import com.denarii.android.user.Wallet;
 import com.denarii.android.user.WalletDetails;
 
 import org.junit.Before;

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.denarii.android.constants.Constants;
-import com.denarii.android.user.Wallet;
 
 import org.junit.Before;
 import org.junit.Test;
