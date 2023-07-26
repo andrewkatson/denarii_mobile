@@ -1,24 +1,35 @@
 package com.denarii.android.user;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-public class WalletDetails implements Serializable
+public class WalletDetails
 {
-    @SerializedName("wallet_name")
-    public String walletName;
+    private String walletName;
 
-    @SerializedName("wallet_password")
-    public String walletPassword;
+    private String walletPassword;
 
-    @SerializedName("seed")
-    public String seed;
+    private String seed;
 
-    @SerializedName("balance")
-    public double balance;
+    private double balance;
 
-    @SerializedName("wallet_address")
-    public String walletAddress;
+    private String walletAddress;
+
+    public String getWalletName(){return walletName;}
+
+    public String getWalletPassword(){return walletPassword;}
+
+    public String getSeed(){return seed;}
+
+    public double getBalance(){return balance;}
+
+    public String getWalletAddress(){return walletAddress;}
+
+    public void setWalletName(String newName){walletName = newName;}
+
+    public void setWalletPassword(String newPassword){walletPassword = newPassword};
+
+    public void setSeed(String newSeed){seed = newSeed;}
+
+    public void setBalance(double newBalance){balance = newBalance;}
+
+    public void setWalletAddress(String newAddress){walletAddress = newAddress;}
 
 }

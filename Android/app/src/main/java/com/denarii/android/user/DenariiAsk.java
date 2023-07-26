@@ -1,29 +1,48 @@
 package com.denarii.android.user;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-public class DenariiAsk implements Serializable
+public class DenariiAsk
 {
-    @SerializedName("ask_id")
-    public String askID;
+    private String askID;
 
-    @SerializedName("amount")
-    public double amount;
+    private double amount;
 
-    @SerializedName("asking_price")
-    public double askingPrice;
+    private double askingPrice;
 
-    @SerializedName("in_escrow")
-    public boolean inEscrow;
+    private boolean inEscrow;
 
-    @SerializedName("amount_bought")
-    public double amountBought;
+    private double amountBought;
 
-    @SerializedName("is_settled")
-    public boolean isSettled;
+    private boolean isSettled;
 
-    @SerializedName("has_been_seen_by_seller")
-    public boolean hasBeenSeenBySeller;
+    private boolean seenBySeller;
+
+    public void setAskID(String newID){ askID = newID;}
+
+    public void setAmount(double newAmount){ amount = newAmount;}
+
+    public void setAskingPrice(double newAskingPrice){ askingPrice = newAskingPrice;}
+
+    public void setInEscrow(boolean newEscrow){ inEscrow = newEscrow;}
+
+    public void setAmountBought(double newAmountBought){ amountBought = newAmountBought;}
+
+    public void setIsSettled(boolean newSettled){ isSettled = newSettled;}
+
+    public void setHasBeenSeenBySeller(boolean newSeller){ seenBySeller = newSeller;}
+
+    public String getAskID(){ return askID;}
+
+    public double getAmount(){return amount;}
+
+    public double getAskingPrice(){return askingPrice;}
+
+    public boolean getInEscrow(){return inEscrow;}
+
+    public double getAmountBought(){ return amountBought;}
+
+    public boolean getIsSettled(){return isSettled;}
+
+    public boolean getSeenBySeller(){return seenBySeller;}
+
+
 }
