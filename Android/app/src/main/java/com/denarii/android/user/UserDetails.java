@@ -8,11 +8,8 @@ public class UserDetails implements Serializable {
     private String userEmail;
     private String userPassword;
     private WalletDetails walletDetails;
-
     private CreditCard creditCard;
-
     private List<SupportTicket> supportTicketList;
-
     private List<DenariiAsk> denariiAskList;
 
     public void setUserName(String userName) {
