@@ -17,9 +17,11 @@ import com.denarii.android.R;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.UnpackDenariiResponse;
 
 import java.util.List;
 
@@ -70,22 +72,21 @@ public class CreateWallet extends AppCompatActivity {
         EditText walletName = (EditText) findViewById(R.id.create_wallet_enter_name);
         EditText walletPassword = (EditText) findViewById(R.id.create_wallet_enter_password);
 
-        userDetails.getWalletDetails().walletName = walletName.getText().toString();
-        userDetails.getWalletDetails().walletPassword = walletPassword.getText().toString();
+        userDetails.getWalletDetails().setWalletName(walletName.getText().toString());
+        userDetails.getWalletDetails().setWalletPassword(walletPassword.getText().toString());
 
         DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
-        Call<List<Wallet>> walletCall = denariiService.createWallet(userDetails.getWalletDetails().userIdentifier, walletName.getText().toString(), walletPassword.getText().toString());
+        Call<List<DenariiResponse>> walletCall = denariiService.createWallet(userDetails.getUserID(), walletName.getText().toString(), walletPassword.getText().toString());
 
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<List<Wallet>>() {
+        walletCall.enqueue(new Callback<List<DenariiResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         // We only care about the first wallet.
-                        finalUserDetails.getWalletDetails().seed = response.body().get(0).response.seed;
-                        finalUserDetails.getWalletDetails().walletAddress = response.body().get(0).response.walletAddress;
-                        createSuccessToast(finalUserDetails.getWalletDetails().seed);
+                        UnpackDenariiResponse.unpackCreateWallet(finalUserDetails, response.body());
+                        createSuccessToast(finalUserDetails.getWalletDetails().getSeed());
                     } else {
                         createFailureToast("No response body");
                     }
@@ -95,7 +96,7 @@ public class CreateWallet extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 createFailureToast(String.format("%s %s", "Response failed", t));
             }
         });

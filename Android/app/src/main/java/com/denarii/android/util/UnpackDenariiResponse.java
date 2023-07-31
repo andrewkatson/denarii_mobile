@@ -26,8 +26,14 @@ public class UnpackDenariiResponse {
         user.getWalletDetails().setSeed(response.get(0).seed);
     }
 
-    public static void unpackSetupRetroFit(UserDetails user, List<DenariiResponse> response)
+    public static void unpackRestoreDeterministicWallet(UserDetails user, List<DenariiResponse> response)
     {
         user.getWalletDetails().setWalletAddress(response.get(0).walletAddress);
+    }
+
+    public static void unpackCreateWallet(UserDetails user, List<DenariiResponse> response)
+    {
+        user.getWalletDetails().setWalletAddress(response.get(0).walletAddress);
+        user.getWalletDetails().setSeed(response.get(0).seed);
     }
 }
