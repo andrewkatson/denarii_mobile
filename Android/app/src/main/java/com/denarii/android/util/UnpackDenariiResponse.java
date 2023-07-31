@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UnpackDenariiResponse {
     public static void unpackLoginOrRegister(UserDetails user, List<DenariiResponse> response){
-        user.setUserID(response.get(0).userID);
+        user.setUserID(response.get(0).userIdentifier);
         //creating a wallet details so we can set its values in the other scenes
         WalletDetails newWallet = new WalletDetails();
         user.setWalletDetails(newWallet);

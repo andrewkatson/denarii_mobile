@@ -20,15 +20,13 @@ public class StubbedCall implements Call<List<DenariiResponse>> {
     StubbedCall() {
     }
 
-    private DenariiResponse getWallet() {
-        DenariiResponse wallet = new DenariiResponse();
-        WalletDetails walletDetails = new WalletDetails();
-        walletDetails.setWalletAddress("ABCXYZ");
-        walletDetails.setWalletName("wallet");
-        walletDetails.setWalletPassword("password");
-        walletDetails.setSeed("some seed here");
-        walletDetails.setBalance(20);
-        return wallet;
+    private DenariiResponse getDenariiResponse() {
+        DenariiResponse denariiResponse = new DenariiResponse();
+        denariiResponse.userIdentifier = 123;
+        denariiResponse.walletAddress = "ABCXYZ";
+        denariiResponse.seed = "some seed here";
+        denariiResponse.balance = 20;
+        return denariiResponse;
     }
 
 
@@ -36,7 +34,7 @@ public class StubbedCall implements Call<List<DenariiResponse>> {
     @Override
     public Response<List<DenariiResponse>> execute() throws IOException {
         hasBeenExecuted = true;
-        return Response.success(List.of(getWallet()));
+        return Response.success(List.of(getDenariiResponse()));
     }
 
     @Override

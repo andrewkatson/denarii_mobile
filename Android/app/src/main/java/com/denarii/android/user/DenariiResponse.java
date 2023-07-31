@@ -9,9 +9,6 @@ public class DenariiResponse implements Serializable {
     @SerializedName("has_credit_card_info")
     public boolean hasCreditCardInfo;
 
-    @SerializedName("user_identifier")
-    public int userID;
-
     @SerializedName("balance")
     public double balance;
 
@@ -20,7 +17,6 @@ public class DenariiResponse implements Serializable {
 
     @SerializedName("user_identifier")
     public int userIdentifier;
-
     @SerializedName("wallet_address")
     public String walletAddress;
 
