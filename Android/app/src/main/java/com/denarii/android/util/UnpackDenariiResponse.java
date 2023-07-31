@@ -20,5 +20,10 @@ public class UnpackDenariiResponse {
         user.getWalletDetails().setBalance(response.get(0).balance);
     }
 
+    public static void unpackOpenWallet(UserDetails user, List<DenariiResponse> response)
+    {
+        user.getWalletDetails().setWalletAddress(response.get(0).walletAddress);
+        user.getWalletDetails().setSeed(response.get(0).seed);
+    }
 
 }
