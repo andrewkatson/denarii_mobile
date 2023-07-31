@@ -14,9 +14,11 @@ import android.widget.Toast;
 import com.denarii.android.R;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.UnpackDenariiResponse;
 
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +45,7 @@ public class OpenedWallet extends AppCompatActivity {
 
         if (userDetails != null && userDetails.getWalletDetails() != null) {
             TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
-            seed.setText(String.format("Seed %s", userDetails.getWalletDetails().seed));
+            seed.setText(String.format("Seed %s", userDetails.getWalletDetails().getSeed()));
         }
 
         getBalance(userDetails);
@@ -62,19 +64,19 @@ public class OpenedWallet extends AppCompatActivity {
             userDetails = new UserDetails();
             userDetails.setWalletDetails(new WalletDetails());
         }
-        Call<List<Wallet>> walletCall = denariiService.getBalance(userDetails.getWalletDetails().userIdentifier, userDetails.getWalletDetails().walletName);
+        Call<List<DenariiResponse>> walletCall = denariiService.getBalance(userDetails.getUserID(), userDetails.getWalletDetails().getWalletName());
 
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<List<Wallet>>() {
+        walletCall.enqueue(new Callback<List<DenariiResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         // We only care about the first wallet.
-                        finalUserDetails.getWalletDetails().balance = response.body().get(0).response.balance;
+                        UnpackDenariiResponse.unpackOpenedWallet(finalUserDetails, response.body());
                         createSuccessToast("Got Balance",
-                                finalUserDetails.getWalletDetails().balance,
-                                finalUserDetails.getWalletDetails().walletAddress);
+                                finalUserDetails.getWalletDetails().getBalance(),
+                                finalUserDetails.getWalletDetails().getWalletAddress());
                     } else {
                         createFailureToast("Response body was null for get balance");
                     }
@@ -84,7 +86,7 @@ public class OpenedWallet extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 createFailureToast(String.format("%s %s", "Response failed for get balance", t));
             }
         });
@@ -115,22 +117,22 @@ public class OpenedWallet extends AppCompatActivity {
         }
 
         try {
-            Call<List<Wallet>> walletCall = denariiService.sendDenarii(userDetails.getWalletDetails().userIdentifier,
-                    userDetails.getWalletDetails().walletName, sendTo.getText().toString(),
+            Call<List<DenariiResponse>> walletCall = denariiService.sendDenarii(userDetails.getUserID(),
+                    userDetails.getWalletDetails().getWalletName(), sendTo.getText().toString(),
                     Double.parseDouble(amount.getText().toString()));
 
             UserDetails finalUserDetails = userDetails;
-            walletCall.enqueue(new Callback<List<Wallet>>() {
+            walletCall.enqueue(new Callback<List<DenariiResponse>>() {
                 @Override
-                public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+                public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
                             // Update the balance now that we sent denarii.
                             getBalance(finalUserDetails);
 
                             createSuccessToast("Sent Money",
-                                    finalUserDetails.getWalletDetails().balance,
-                                    finalUserDetails.getWalletDetails().walletAddress);
+                                    finalUserDetails.getWalletDetails().getBalance(),
+                                    finalUserDetails.getWalletDetails().getWalletAddress());
                         } else {
                             createFailureToast("Response body was null for send money");
                         }
@@ -140,7 +142,7 @@ public class OpenedWallet extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                     createFailureToast(String.format("%s %s", "Response failed for send money", t));
                 }
             });

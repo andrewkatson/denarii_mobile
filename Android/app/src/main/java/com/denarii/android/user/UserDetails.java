@@ -11,7 +11,6 @@ public class UserDetails implements Serializable {
     private CreditCard creditCard;
     private List<SupportTicket> supportTicketList;
     private List<DenariiAsk> denariiAskList;
-
     private int userID;
 
     public void setUserName(String userName) {
