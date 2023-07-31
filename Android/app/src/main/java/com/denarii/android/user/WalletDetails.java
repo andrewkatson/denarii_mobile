@@ -24,7 +24,7 @@ public class WalletDetails
 
     public void setWalletName(String newName){walletName = newName;}
 
-    public void setWalletPassword(String newPassword){walletPassword = newPassword};
+    public void setWalletPassword(String newPassword){walletPassword = newPassword;}
 
     public void setSeed(String newSeed){seed = newSeed;}
 

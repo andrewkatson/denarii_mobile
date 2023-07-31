@@ -12,6 +12,8 @@ public class UserDetails implements Serializable {
     private List<SupportTicket> supportTicketList;
     private List<DenariiAsk> denariiAskList;
 
+    private int userID;
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -27,6 +29,7 @@ public class UserDetails implements Serializable {
     public void setWalletDetails(WalletDetails walletDetails) {
         this.walletDetails = walletDetails;
     }
+    public void setUserID(int newID){ userID = newID;}
     public void addSupportTicket(SupportTicket newTicket){
         supportTicketList.add(newTicket);
     }
@@ -51,6 +54,8 @@ public class UserDetails implements Serializable {
     public WalletDetails getWalletDetails() {
         return this.walletDetails;
     }
+
+    public int getUserID(){return userID;}
 
     public List<SupportTicket> getSupportTicketList() {return supportTicketList;}
 
