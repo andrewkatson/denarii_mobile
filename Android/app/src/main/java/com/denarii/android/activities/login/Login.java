@@ -90,7 +90,7 @@ public class Login extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         // We only care about the first wallet.
-                        UnpackDenariiResponse.unpackLogin(finalUserDetails, response.body());
+                        UnpackDenariiResponse.unpackLoginOrRegister(finalUserDetails, response.body());
                         //finalUserDetails.setWalletDetails(response.body());
                         createSuccessToast();
                     } else {

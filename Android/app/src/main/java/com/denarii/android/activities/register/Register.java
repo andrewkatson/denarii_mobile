@@ -16,9 +16,11 @@ import com.denarii.android.R;
 import com.denarii.android.activities.login.Login;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.UnpackDenariiResponse;
 
 import java.util.List;
 
@@ -78,16 +80,16 @@ public class Register extends AppCompatActivity {
             userDetails.setWalletDetails(new WalletDetails());
         }
         DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
-        Call<List<Wallet>> walletCall = denariiService.getUserId(userDetails.getUserName(),
+        Call<List<DenariiResponse>> walletCall = denariiService.getUserId(userDetails.getUserName(),
                 userDetails.getUserEmail(), userDetails.getUserPassword());
         UserDetails finalUserDetails = userDetails;
-        walletCall.enqueue(new Callback<List<Wallet>>() {
+        walletCall.enqueue(new Callback<List<DenariiResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         // We only care about the first wallet.
-                        finalUserDetails.setWalletDetails(response.body().get(0).response);
+                        UnpackDenariiResponse.unpackLoginOrRegister(finalUserDetails, response.body());
                         createSuccessToast();
                     } else {
                         createFailureToast("No response body");
@@ -98,7 +100,7 @@ public class Register extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 createFailureToast(String.format("%s %s", "Response failed", t));
             }
         });

@@ -7,7 +7,7 @@ import com.denarii.android.user.WalletDetails;
 import java.util.List;
 
 public class UnpackDenariiResponse {
-    public static void unpackLogin(UserDetails user, List<DenariiResponse> response){
+    public static void unpackLoginOrRegister(UserDetails user, List<DenariiResponse> response){
         user.setUserID(response.get(0).userID);
         //creating a wallet details so we can set its values in the other scenes
         WalletDetails newWallet = new WalletDetails();
@@ -26,4 +26,8 @@ public class UnpackDenariiResponse {
         user.getWalletDetails().setSeed(response.get(0).seed);
     }
 
+    public static void unpackSetupRetroFit(UserDetails user, List<DenariiResponse> response)
+    {
+        user.getWalletDetails().setWalletAddress(response.get(0).walletAddress);
+    }
 }

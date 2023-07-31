@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.denarii.android.R;
 import com.denarii.android.activities.login.Login;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
@@ -64,10 +65,10 @@ public class ResetPassword extends AppCompatActivity {
         }
 
         DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
-        Call<List<Wallet>> walletCall = denariiService.resetPassword(username.getText().toString(), email.getText().toString(), password.getText().toString());
-        walletCall.enqueue(new Callback<List<Wallet>>() {
+        Call<List<DenariiResponse>> walletCall = denariiService.resetPassword(username.getText().toString(), email.getText().toString(), password.getText().toString());
+        walletCall.enqueue(new Callback<List<DenariiResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         createSuccessToast();
@@ -80,7 +81,7 @@ public class ResetPassword extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 createFailureToast(String.format("%s %s", "Response failed", t));
             }
         });
