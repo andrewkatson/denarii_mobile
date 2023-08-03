@@ -44,7 +44,7 @@ public class DenariiServiceTest {
             DenariiResponse responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
-            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, 1);
+            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, "1");
         } catch (IOException e) {
             assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
         }
@@ -61,7 +61,7 @@ public class DenariiServiceTest {
             DenariiResponse responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
-            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, 1);
+            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, "1");
         } catch (IOException e) {
             assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
         }
@@ -78,7 +78,7 @@ public class DenariiServiceTest {
             DenariiResponse responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
-            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, 1);
+            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, "1");
         } catch (IOException e) {
             assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
         }
@@ -96,7 +96,7 @@ public class DenariiServiceTest {
             DenariiResponse responseWallet = response.body().get(0);
 
             assertTrue(response.isSuccessful());
-            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, 1);
+            assertEquals(Objects.requireNonNull(responseWallet).userIdentifier, "1");
         } catch (IOException e) {
             assertEquals(e.getMessage(), "Unable to resolve host \"denariimobilebackend.com\": No address associated with hostname");
         }
@@ -105,7 +105,7 @@ public class DenariiServiceTest {
 
     @Test
     public void createWallet_fails() {
-        Call<List<DenariiResponse>> wallet = denariiService.createWallet(1, "wallet_name", "wallet_password");
+        Call<List<DenariiResponse>> wallet = denariiService.createWallet("1", "wallet_name", "wallet_password");
 
         try {
             Response<List<DenariiResponse>> response = wallet.execute();
@@ -122,7 +122,7 @@ public class DenariiServiceTest {
 
     @Test
     public void openWallet_fails() {
-        Call<List<DenariiResponse>> wallet = denariiService.openWallet(1, "wallet_name", "wallet_password");
+        Call<List<DenariiResponse>> wallet = denariiService.openWallet("1", "wallet_name", "wallet_password");
 
         try {
             Response<List<DenariiResponse>> response = wallet.execute();
@@ -139,7 +139,7 @@ public class DenariiServiceTest {
 
     @Test
     public void restoreWallet_fails() {
-        Call<List<DenariiResponse>> wallet = denariiService.restoreWallet(1, "wallet_name", "wallet_password", "do re me");
+        Call<List<DenariiResponse>> wallet = denariiService.restoreWallet("1", "wallet_name", "wallet_password", "do re me");
 
         try {
             Response<List<DenariiResponse>> response = wallet.execute();
@@ -155,7 +155,7 @@ public class DenariiServiceTest {
 
     @Test
     public void getBalance_fails() {
-        Call<List<DenariiResponse>> wallet = denariiService.getBalance(1, "wallet_name");
+        Call<List<DenariiResponse>> wallet = denariiService.getBalance("1", "wallet_name");
 
         try {
             Response<List<DenariiResponse>> response = wallet.execute();
@@ -172,7 +172,7 @@ public class DenariiServiceTest {
 
     @Test
     public void sendDenarii_fails() {
-        Call<List<DenariiResponse>> wallet = denariiService.sendDenarii(1, "wallet_name", "other_address", 1.0);
+        Call<List<DenariiResponse>> wallet = denariiService.sendDenarii("1", "wallet_name", "other_address", 1.0);
 
         try {
             Response<List<DenariiResponse>> response = wallet.execute();

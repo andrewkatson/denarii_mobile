@@ -1,8 +1,9 @@
 package com.denarii.android.user;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SupportTicket{
+public class SupportTicket implements Serializable {
 
     private String supportID;
 
