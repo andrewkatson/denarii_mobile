@@ -7,7 +7,7 @@ urlpatterns = [
     # Retrieves the user identifier if the user exists. Creates a user and retrieves identifier if they do not.
     path('<str:username>/<str:email>/<str:password>/', views.get_user_id),
     # Resets the user's password to the passed one. Assumes it has already been confirmed as the desired password.
-    path('reset/<str:username>/<str:email>/<str:password>/', views.reset_password),
+    path('reset_password/<str:username>/<str:email>/<str:password>/', views.reset_password),
     # Requests a password reset and sends the user an email.
     path('request_reset/<str:username_or_email>/', views.request_reset),
     # Verify reset by checking that the reset identifier matches what was sent in the email.
