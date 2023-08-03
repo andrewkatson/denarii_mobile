@@ -2,9 +2,8 @@ package com.denarii.android.network;
 
 import androidx.annotation.NonNull;
 
-import com.denarii.android.user.Wallet;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.WalletDetails;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,38 +14,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StubbedCall implements Call<List<Wallet>> {
+public class StubbedCall implements Call<List<DenariiResponse>> {
     private boolean hasBeenExecuted = false;
 
     StubbedCall() {
     }
 
-    private Wallet getWallet() {
-        Wallet wallet = new Wallet();
-        WalletDetails walletDetails = new WalletDetails();
-        walletDetails.userIdentifier = 123;
-        walletDetails.walletAddress = "ABCXYZ";
-        walletDetails.walletName = "wallet";
-        walletDetails.walletPassword = "password";
-        walletDetails.seed = "some seed here";
-        walletDetails.balance = 20;
-        wallet.response = walletDetails;
-        wallet.responseCode = 200;
-        wallet.responseCodeText = "No error";
-        return wallet;
+    private DenariiResponse getDenariiResponse() {
+        DenariiResponse denariiResponse = new DenariiResponse();
+        denariiResponse.userIdentifier = "123";
+        denariiResponse.walletAddress = "ABCXYZ";
+        denariiResponse.seed = "some seed here";
+        denariiResponse.balance = 20;
+        return denariiResponse;
     }
 
 
     @NonNull
     @Override
-    public Response<List<Wallet>> execute() throws IOException {
+    public Response<List<DenariiResponse>> execute() throws IOException {
         hasBeenExecuted = true;
-        return Response.success(List.of(getWallet()));
+        return Response.success(List.of(getDenariiResponse()));
     }
 
     @Override
     public void enqueue(Callback callback) {
-        Call<List<Wallet>> call = new StubbedCall();
+        Call<List<DenariiResponse>> call = new StubbedCall();
         try {
             callback.onResponse(call, this.execute());
         } catch (IOException e) {

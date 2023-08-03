@@ -13,12 +13,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.denarii.android.R;
-import com.denarii.android.activities.login.Login;
 import com.denarii.android.activities.resetpassword.ResetPassword;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
-import com.denarii.android.user.UserDetails;
-import com.denarii.android.user.Wallet;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
 
 import java.util.List;
@@ -26,8 +24,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerifyReset extends AppCompatActivity {
 
@@ -64,10 +60,10 @@ public class VerifyReset extends AppCompatActivity {
         DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
 
         try {
-            Call<List<Wallet>> walletCall = denariiService.verifyReset(usernameOrEmail, Integer.parseInt(resetId.getText().toString()));
-            walletCall.enqueue(new Callback<List<Wallet>>() {
+            Call<List<DenariiResponse>> walletCall = denariiService.verifyReset(usernameOrEmail, Integer.parseInt(resetId.getText().toString()));
+            walletCall.enqueue(new Callback<List<DenariiResponse>>() {
                 @Override
-                public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+                public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
                             createSuccessToast();
@@ -80,7 +76,7 @@ public class VerifyReset extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                     createFailureToast(String.format("%s %s", "Response failed", t));
                 }
             });
