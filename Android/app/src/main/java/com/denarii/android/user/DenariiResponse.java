@@ -16,7 +16,7 @@ public class DenariiResponse implements Serializable {
     public String seed;
 
     @SerializedName("user_identifier")
-    public int userIdentifier;
+    public String userIdentifier;
     @SerializedName("wallet_address")
     public String walletAddress;
 

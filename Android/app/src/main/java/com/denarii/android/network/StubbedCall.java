@@ -22,7 +22,7 @@ public class StubbedCall implements Call<List<DenariiResponse>> {
 
     private DenariiResponse getDenariiResponse() {
         DenariiResponse denariiResponse = new DenariiResponse();
-        denariiResponse.userIdentifier = 123;
+        denariiResponse.userIdentifier = "123";
         denariiResponse.walletAddress = "ABCXYZ";
         denariiResponse.seed = "some seed here";
         denariiResponse.balance = 20;

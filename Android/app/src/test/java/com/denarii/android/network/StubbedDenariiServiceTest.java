@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.annotation.NonNull;
 
 import com.denarii.android.constants.Constants;
+import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.WalletDetails;
 
 import org.junit.Before;
@@ -33,16 +34,16 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void getUserId_returnsWalletWithUserId() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.getUserId("user", "email@email.com", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.getUserId("user", "email@email.com", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        WalletDetails walletDetails = response.body().get(0).response;
+                        DenariiResponse walletDetails = response.body().get(0);
 
-                        assertEquals(123, walletDetails.userIdentifier);
+                        assertEquals("123", walletDetails.userIdentifier);
                     } else {
                         throw new IllegalStateException("Response Body Should never be null");
                     }
@@ -52,7 +53,7 @@ public class StubbedDenariiServiceTest {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -60,16 +61,16 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void requestReset_requestsReset() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.requestPasswordReset("user");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.requestPasswordReset("user");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 assertTrue(response.isSuccessful());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -77,16 +78,16 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void verifyReset_verifiesReset() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.verifyReset("user", 123);
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.verifyReset("user", 123);
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 assertTrue(response.isSuccessful());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -94,16 +95,16 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void resetPassword_resetsPassword() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.resetPassword("user", "email@email.com", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.resetPassword("user", "email@email.com", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 assertTrue(response.isSuccessful());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -111,14 +112,14 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void createWallet_createsWallet() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.createWallet(123, "wallet", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.createWallet(123, "wallet", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        WalletDetails walletDetails = response.body().get(0).response;
+                        DenariiResponse walletDetails = response.body().get(0);
 
                         assertEquals("some seed here", walletDetails.seed);
                         assertEquals("ABCXYZ", walletDetails.walletAddress);
@@ -131,7 +132,7 @@ public class StubbedDenariiServiceTest {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -139,14 +140,14 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void openWallet_opensWallet() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.openWallet(123, "wallet", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.openWallet(123, "wallet", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        WalletDetails walletDetails = response.body().get(0).response;
+                        DenariiResponse walletDetails = response.body().get(0);
 
                         assertEquals("some seed here", walletDetails.seed);
                         assertEquals("ABCXYZ", walletDetails.walletAddress);
@@ -159,7 +160,7 @@ public class StubbedDenariiServiceTest {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -167,14 +168,14 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void restoreWallet_restoresWallet() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.restoreWallet(123, "wallet", "password", "some seed here");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.restoreWallet(123, "wallet", "password", "some seed here");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        WalletDetails walletDetails = response.body().get(0).response;
+                        DenariiResponse walletDetails = response.body().get(0);
 
                         assertEquals("ABCXYZ", walletDetails.walletAddress);
                     } else {
@@ -186,7 +187,7 @@ public class StubbedDenariiServiceTest {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -194,14 +195,14 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void getBalance_getsBalance() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.getBalance(123, "wallet");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.getBalance(123, "wallet");
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        WalletDetails walletDetails = response.body().get(0).response;
+                        DenariiResponse walletDetails = response.body().get(0);
 
                         assertEquals(20, walletDetails.balance, 1);
                     } else {
@@ -213,7 +214,7 @@ public class StubbedDenariiServiceTest {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
@@ -221,16 +222,16 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void sendDenarii_sendsDenarii() {
-        Call<List<Wallet>> wallets = stubbedDenariiService.sendDenarii(123, "wallet", "XYZABC", 10);
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.sendDenarii(123, "wallet", "XYZABC", 10);
 
         wallets.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<List<Wallet>> call, @NonNull Response<List<Wallet>> response) {
+            public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
                 assertTrue(response.isSuccessful());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Wallet>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
                 throw new IllegalStateException("Response should never fail");
             }
         });
