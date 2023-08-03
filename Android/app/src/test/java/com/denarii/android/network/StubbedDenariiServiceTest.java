@@ -112,7 +112,7 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void createWallet_createsWallet() {
-        Call<List<DenariiResponse>> wallets = stubbedDenariiService.createWallet(123, "wallet", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.createWallet("123", "wallet", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
@@ -140,7 +140,7 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void openWallet_opensWallet() {
-        Call<List<DenariiResponse>> wallets = stubbedDenariiService.openWallet(123, "wallet", "password");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.openWallet("123", "wallet", "password");
 
         wallets.enqueue(new Callback<>() {
             @Override
@@ -168,7 +168,7 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void restoreWallet_restoresWallet() {
-        Call<List<DenariiResponse>> wallets = stubbedDenariiService.restoreWallet(123, "wallet", "password", "some seed here");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.restoreWallet("123", "wallet", "password", "some seed here");
 
         wallets.enqueue(new Callback<>() {
             @Override
@@ -195,7 +195,7 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void getBalance_getsBalance() {
-        Call<List<DenariiResponse>> wallets = stubbedDenariiService.getBalance(123, "wallet");
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.getBalance("123", "wallet");
 
         wallets.enqueue(new Callback<>() {
             @Override
@@ -222,7 +222,7 @@ public class StubbedDenariiServiceTest {
 
     @Test
     public void sendDenarii_sendsDenarii() {
-        Call<List<DenariiResponse>> wallets = stubbedDenariiService.sendDenarii(123, "wallet", "XYZABC", 10);
+        Call<List<DenariiResponse>> wallets = stubbedDenariiService.sendDenarii("123", "wallet", "XYZABC", 10);
 
         wallets.enqueue(new Callback<>() {
             @Override

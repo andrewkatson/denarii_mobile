@@ -1,6 +1,8 @@
 package com.denarii.android.user;
 
-public class CreditCard
+import java.io.Serializable;
+
+public class CreditCard implements Serializable
 {
     private String customerID;
 

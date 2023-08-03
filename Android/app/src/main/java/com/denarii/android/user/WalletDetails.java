@@ -1,6 +1,8 @@
 package com.denarii.android.user;
 
-public class WalletDetails
+import java.io.Serializable;
+
+public class WalletDetails implements Serializable
 {
     private String walletName;
 

@@ -1,6 +1,8 @@
 package com.denarii.android.user;
 
-public class DenariiAsk
+import java.io.Serializable;
+
+public class DenariiAsk implements Serializable
 {
     private String askID;
 

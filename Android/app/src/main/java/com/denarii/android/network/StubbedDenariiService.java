@@ -23,23 +23,23 @@ public class StubbedDenariiService implements DenariiService {
         return new StubbedCall();
     }
 
-    public Call<List<DenariiResponse>> createWallet(int userIdentifier, String walletName, String password) {
+    public Call<List<DenariiResponse>> createWallet(String userIdentifier, String walletName, String password) {
         return new StubbedCall();
     }
 
-    public Call<List<DenariiResponse>> restoreWallet(int userIdentifier, String walletName, String password, String seed) {
+    public Call<List<DenariiResponse>> restoreWallet(String userIdentifier, String walletName, String password, String seed) {
         return new StubbedCall();
     }
 
-    public Call<List<DenariiResponse>> openWallet(int userIdentifier, String walletName, String password) {
+    public Call<List<DenariiResponse>> openWallet(String userIdentifier, String walletName, String password) {
         return new StubbedCall();
     }
 
-    public Call<List<DenariiResponse>> getBalance(int userIdentifier, String walletName) {
+    public Call<List<DenariiResponse>> getBalance(String userIdentifier, String walletName) {
         return new StubbedCall();
     }
 
-    public Call<List<DenariiResponse>> sendDenarii(int userIdentifier, String walletName, String addressToSendTo, double amountToSend) {
+    public Call<List<DenariiResponse>> sendDenarii(String userIdentifier, String walletName, String addressToSendTo, double amountToSend) {
         return new StubbedCall();
     }
 
