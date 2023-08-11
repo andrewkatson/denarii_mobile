@@ -34,7 +34,7 @@ urlpatterns = [
     # This one the amount is a string but really is a double. The asking price is also really a double.
     path('make_denarii_ask/<str:user_id>/<str:amount>/<str:asking_price>/', views.make_denarii_ask),
     # Retrieves all the current denarii asks that are settled so you can proceed with transaction -- i.e. send_money_to_seller.
-    path('poll_for_completed_transaction<str:user_id>//', views.poll_for_completed_transaction),
+    path('poll_for_completed_transaction/<str:user_id>/', views.poll_for_completed_transaction),
     # Cancel an ask. Asks that are in escrow or settled cannot be cancelled.
     path('cancel_denaii_ask/<str:user_id>/<str:ask_id>/', views.cancel_ask),
     # Check whether the current user has any credit card info on file.
@@ -81,5 +81,5 @@ urlpatterns = [
     # Get all comments on a support ticket
     path('get_comments_on_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_comments_on_ticket),
     # Mark a support ticket as resolved
-    path('resolve_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.resolve_support_ticket)
+    path('resolve_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.resolve_support_ticket),
 ]
