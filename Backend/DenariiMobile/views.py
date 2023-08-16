@@ -606,7 +606,7 @@ def poll_for_completed_transaction(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
-        # We only want their transactions that were are settled.
+        # We only want their transactions that are settled.
         settled_asks = existing.denariiask_set.filter(is_settled=True)
         responses = []
 
