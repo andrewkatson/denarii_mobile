@@ -6,4 +6,294 @@
     android:layout_height="match_parent"
     tools:context=".activities.buydenarii.BuyDenarii">
 
+    <TextView
+        android:id="@+id/buyDenarii"
+        android:layout_width="156dp"
+        android:layout_height="47dp"
+        android:text="Buy Denarii"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="117dp"
+        tools:layout_editor_absoluteY="27dp" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Amount"
+        tools:layout_editor_absoluteX="73dp"
+        tools:layout_editor_absoluteY="91dp" />
+
+    <EditText
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Price"
+        tools:layout_editor_absoluteX="73dp"
+        tools:layout_editor_absoluteY="152dp" />
+
+    <RadioButton
+        android:id="@+id/falseTrue"
+        android:layout_width="69dp"
+        android:layout_height="26dp"
+        android:text="True"
+        tools:layout_editor_absoluteX="60dp"
+        tools:layout_editor_absoluteY="229dp" />
+
+    <RadioButton
+        android:id="@+id/falseTrue2"
+        android:layout_width="69dp"
+        android:layout_height="26dp"
+        android:checked="true"
+        android:text="True"
+        tools:layout_editor_absoluteX="239dp"
+        tools:layout_editor_absoluteY="229dp" />
+
+    <RadioButton
+        android:id="@+id/falsePrice"
+        android:layout_width="71dp"
+        android:layout_height="25dp"
+        android:checked="true"
+        android:text="False"
+        tools:layout_editor_absoluteX="60dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <RadioButton
+        android:id="@+id/falsePrice2"
+        android:layout_width="71dp"
+        android:layout_height="25dp"
+        android:checked="false"
+        android:text="False"
+        tools:layout_editor_absoluteX="239dp"
+        tools:layout_editor_absoluteY="265dp" />
+
+    <TextView
+        android:id="@+id/buyRegardlessPrice"
+        android:layout_width="181dp"
+        android:layout_height="22dp"
+        android:text="Buy Regardless of Price"
+        android:textAlignment="center"
+        tools:layout_editor_absoluteX="14dp"
+        tools:layout_editor_absoluteY="206dp" />
+
+    <TextView
+        android:id="@+id/failIfFullAmountIsntMet"
+        android:layout_width="197dp"
+        android:layout_height="21dp"
+        android:text="Fail if Full Amount Isn't Met"
+        android:textAlignment="center"
+        tools:layout_editor_absoluteX="198dp"
+        tools:layout_editor_absoluteY="206dp" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="193dp"
+        android:layout_height="43dp"
+        android:text="Submit"
+        tools:layout_editor_absoluteX="90dp"
+        tools:layout_editor_absoluteY="302dp" />
+
+    <TextView
+        android:id="@+id/asks"
+        android:layout_width="146dp"
+        android:layout_height="36dp"
+        android:text="Asks"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="117dp"
+        tools:layout_editor_absoluteY="347dp" />
+
+    <TextView
+        android:id="@+id/queuedBuys"
+        android:layout_width="165dp"
+        android:layout_height="34dp"
+        android:text="Queued Buys"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="108dp"
+        tools:layout_editor_absoluteY="499dp" />
+
+    <TableLayout
+        android:layout_width="291dp"
+        android:layout_height="116dp"
+        android:background="#FFFFFF"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        tools:layout_editor_absoluteX="49dp"
+        tools:layout_editor_absoluteY="383dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:drawable/bottom_bar"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/askTableAmount"
+                android:layout_width="137dp"
+                android:layout_height="match_parent"
+                android:text="Amount"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/priceAskTable"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:text="Price"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="182dp"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/askAmountOne"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/askPriceOne"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/askAmountTwo"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/askPriceTwo"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/askAmountThree"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+
+            <EditText
+                android:id="@+id/askPriceThree"
+                android:layout_width="136dp"
+                android:layout_height="21dp"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:textAlignment="center"
+                android:verticalScrollbarPosition="left" />
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="332dp"
+        android:layout_height="116dp"
+        tools:layout_editor_absoluteX="29dp"
+        tools:layout_editor_absoluteY="533dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/buyAmountTotal"
+                android:layout_width="99dp"
+                android:layout_height="wrap_content"
+                android:text="Total Amount"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyPrice"
+                android:layout_width="51dp"
+                android:layout_height="wrap_content"
+                android:text="Price"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyAmountBought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount Bought"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyCancelBuy"
+                android:layout_width="79dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel Buy"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/editTextNumberDecimal7"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/editTextNumberDecimal8"
+                android:layout_width="58dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/editTextNumberDecimal9"
+                android:layout_width="84dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="44dp"
+                android:layout_height="35dp"
+                android:text="X" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
