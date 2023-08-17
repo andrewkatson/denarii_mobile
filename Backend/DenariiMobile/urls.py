@@ -81,5 +81,7 @@ urlpatterns = [
     # Get all comments on a support ticket
     path('get_comments_on_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_comments_on_ticket),
     # Mark a support ticket as resolved
-    path('resolve_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.resolve_support_ticket)
+    path('resolve_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.resolve_support_ticket),
+    # Get all the transactions that are in escrow but not settled
+    path('poll_for_escrowed_transaction/<str:user_id>/', views.poll_for_escrowed_transaction)
 ]

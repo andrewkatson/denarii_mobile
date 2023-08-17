@@ -1280,3 +1280,22 @@ def resolve_support_ticket(request, user_id, support_ticket_id):
             return HttpResponseBadRequest("No support ticket with id")
     else:
         return HttpResponseBadRequest("No user with id")
+
+@login_required
+def poll_for_escrowed_transaction(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        # We only want their transactions that are in escrow.
+        in_escrow_asks = existing.denariiask_set.filter(in_escrow=True).filter(is_settled=False)
+        responses = []
+
+        for ask in in_escrow_asks:
+            response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount, amount_bought=ask.amount_bought)
+            responses.append(response)
+
+        serialized_response_list = serializers.serialize('json', responses,
+                                                         fields=('ask_id', 'amount', 'asking_price', 'amount_bought'))
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")
