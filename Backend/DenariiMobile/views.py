@@ -1109,12 +1109,12 @@ def get_all_asks(request, user_id):
 
         response_list = []
         for ask in ask_set:
-            response = Response.objects.create(ask_id=ask.ask_id)
+            response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, asking_price=ask.asking_price, amount_bought=ask.amount_bought)
 
             response_list.append(response)
 
         serialized_response_list = serializers.serialize('json', response_list,
-                                                         fields='ask_id')
+                                                         fields=('ask_id', 'amount', 'asking_price', 'amount_bought'))
 
         return JsonResponse({'response_list': serialized_response_list})
     else:
