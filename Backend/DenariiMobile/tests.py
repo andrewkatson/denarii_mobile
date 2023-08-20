@@ -645,17 +645,35 @@ class ViewsTestCase(TestCase):
         self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
 
         # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
-        ask_id = 0
+        first_ask_id = 0
         for ask in asks:
             if ask.amount == amount_to_buy and ask.asking_price == bid_price:
-                ask_id = ask.ask_id
+                first_ask_id = ask.ask_id
                 break
 
-        self.assertNotEqual(ask_id, 0)
+        self.assertNotEqual(first_ask_id, 0)
 
-        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
 
         self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # We want to buy (but not transfer) an ask with 34.0 at 11.5 price
+        amount_to_buy_two = 34.0
+        bid_price_two = 11.5
+        buy_response_two = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy_two,
+                                       bid_price_two,
+                                       "False", "False")
+
+        self.assertNotEqual(type(buy_response_two), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 34.0 to offer (at 11.5 price)
+        second_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy_two and ask.asking_price == bid_price_two:
+                second_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(second_ask_id, 0)
 
         poll_response = poll_for_completed_transaction(seller_test_values['request'], seller_test_values['user_id'])
 
@@ -667,6 +685,7 @@ class ViewsTestCase(TestCase):
 
         for ask_id in ask_ids:
             self.assertTrue(get_ask_with_id(ask_id).is_settled)
+            self.assertFalse(get_ask_with_id(ask_id).in_escrow)
 
     def test_cancel_ask_that_still_exists_but_isnt_settled(self):
         test_values = get_all_test_values("cancel_ask_that_still_exists")
@@ -1669,3 +1688,60 @@ class ViewsTestCase(TestCase):
         resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
                                                   -1)
         self.assertEqual(type(resolve_response), HttpResponseBadRequest)
+
+    def test_poll_for_escrowed_transaction(self):
+        seller_test_values = get_all_test_values("poll_for_escrowed_transaction_seller")
+
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        buyer_test_values = get_all_test_values("poll_for_escrowed_transaction_buyer")
+
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        first_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                first_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(first_ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # We want to buy (but not transfer) an ask with 34.0 at 11.5 price
+        amount_to_buy_two = 34.0
+        bid_price_two = 11.5
+        buy_response_two = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy_two, bid_price_two,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response_two), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 34.0 to offer (at 11.5 price)
+        second_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy_two and ask.asking_price == bid_price_two:
+                second_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(second_ask_id, 0)
+
+        poll_response = poll_for_escrowed_transaction(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(poll_response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(poll_response, 'ask_id')
+
+        self.assertNotEqual(len(asks), len(ask_ids))
+
+        for ask_id in ask_ids:
+            self.assertFalse(get_ask_with_id(ask_id).is_settled)
+            self.assertTrue(get_ask_with_id(ask_id).in_escrow)

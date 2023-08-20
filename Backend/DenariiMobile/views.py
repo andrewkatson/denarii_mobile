@@ -606,8 +606,8 @@ def poll_for_completed_transaction(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
-        # We only want their transactions that are settled.
-        settled_asks = existing.denariiask_set.filter(is_settled=True)
+        # We only want their transactions that are settled but not in escrow
+        settled_asks = existing.denariiask_set.filter(is_settled=True).filter(in_escrow=False)
         responses = []
 
         for ask in settled_asks:
@@ -1109,7 +1109,8 @@ def get_all_asks(request, user_id):
 
         response_list = []
         for ask in ask_set:
-            response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, asking_price=ask.asking_price, amount_bought=ask.amount_bought)
+            response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, asking_price=ask.asking_price,
+                                               amount_bought=ask.amount_bought)
 
             response_list.append(response)
 
@@ -1281,6 +1282,7 @@ def resolve_support_ticket(request, user_id, support_ticket_id):
     else:
         return HttpResponseBadRequest("No user with id")
 
+
 @login_required
 def poll_for_escrowed_transaction(request, user_id):
     existing = get_user_with_id(user_id)
@@ -1291,7 +1293,8 @@ def poll_for_escrowed_transaction(request, user_id):
         responses = []
 
         for ask in in_escrow_asks:
-            response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount, amount_bought=ask.amount_bought)
+            response = Response.objects.create(ask_id=ask.ask_id, asking_price=ask.asking_price, amount=ask.amount,
+                                               amount_bought=ask.amount_bought)
             responses.append(response)
 
         serialized_response_list = serializers.serialize('json', responses,
