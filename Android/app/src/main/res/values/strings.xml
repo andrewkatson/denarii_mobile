@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Android</string>
     <string name="user_info_next">Next</string>
     <string name="user_info_enter_name_text">Name</string>
@@ -75,11 +75,27 @@
     <string name="restore_wallet_next_text">Next</string>
     <string name="opened_wallet_seed_text">Seed: </string>
     <string name="title_activity_buy_denarii">BuyDenarii</string>
+    <string name="buy_amount_header">Amount: </string>
+    <string name="buy_price_header">Price: </string>
+    <string name="buy_denarii_header">Buy Denarii</string>
+    <string name="buy_regardless_of_price">Buy Regardless of Price</string>
+    <string name="fail_if_full_amount">Fail If Full Amount Not Met</string>
+    <string name="ask_header">Asks</string>
+    <string name="ask_amount">Amount</string>
+    <string name="ask_price">Price</string>
+    <string name="queued_buys">Queued Buys</string>
+    <string name="queued_buy_total_amount">Total Amount</string>
+    <string name="queued_buy_price">Price</string>
+    <string name="queued_buy_amount_bought">Amount Bought</string>
+    <string name="queued_buy_cancel_buy">Cancel Buy</string>
+
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

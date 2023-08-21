@@ -6,4 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".activities.selldenarii.SellDenarii">
 
+    <TextView
+        android:id="@+id/sellDenarii"
+        android:layout_width="184dp"
+        android:layout_height="24dp"
+        android:text="Sell Denarii"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="113dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TextView
+        android:id="@+id/goingPrices"
+        android:layout_width="98dp"
+        android:layout_height="19dp"
+        android:text="Going Price:"
+        android:textAlignment="center"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="40dp" />
+
+    <EditText
+        android:id="@+id/currentPriceSell"
+        android:layout_width="67dp"
+        android:layout_height="18dp"
+        android:ems="10"
+        android:inputType="number"
+        tools:layout_editor_absoluteX="240dp"
+        tools:layout_editor_absoluteY="40dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
