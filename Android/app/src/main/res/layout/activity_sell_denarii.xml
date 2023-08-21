@@ -8,30 +8,305 @@
 
     <TextView
         android:id="@+id/sellDenarii"
-        android:layout_width="184dp"
-        android:layout_height="24dp"
-        android:text="Sell Denarii"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="688dp"
+        android:text="@string/sell_denarii"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="113dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="113dp" />
 
     <TextView
         android:id="@+id/goingPrices"
-        android:layout_width="98dp"
-        android:layout_height="19dp"
-        android:text="Going Price:"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/going_price"
         android:textAlignment="center"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="40dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="142dp" />
+
+    <TextView
+        android:id="@+id/asks_sell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="61dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="170dp"
+        tools:text="@string/asks_sell_header" />
+
+    <TableLayout
+        android:id="@+id/sellAsksTable"
+        android:layout_width="308dp"
+        android:layout_height="117dp"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginBottom="526dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sellAsksAmount"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/asks_sell_amount"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sellAsksPrice"
+                android:layout_width="159dp"
+                android:layout_height="wrap_content"
+                android:text="@string/asks_sell_price"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
 
     <EditText
-        android:id="@+id/currentPriceSell"
-        android:layout_width="67dp"
-        android:layout_height="18dp"
+        android:id="@+id/sellAmount"
+        android:layout_width="153dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="205dp"
+        android:layout_marginEnd="207dp"
+        android:layout_marginBottom="476dp"
         android:ems="10"
         android:inputType="number"
-        tools:layout_editor_absoluteX="240dp"
-        tools:layout_editor_absoluteY="40dp" />
+        android:text="@string/new_sell_amount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/sellPrice"
+        android:layout_width="156dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="203dp"
+        android:layout_marginTop="205dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginBottom="476dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="@string/new_sell_price"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/submitSell"
+        android:layout_width="221dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="265dp"
+        android:layout_marginEnd="95dp"
+        android:layout_marginBottom="404dp"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ownAsks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="327dp"
+        android:text="@string/own_asks"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="152dp" />
+
+    <TableLayout
+        android:id="@+id/sellOwnAsksTable"
+        android:layout_width="380dp"
+        android:layout_height="121dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="359dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="251dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/ownAsksAmount"
+                android:layout_width="113dp"
+                android:layout_height="wrap_content"
+                android:text="@string/own_asks_amount"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/ownAsksPrice"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:text="@string/own_asks_price"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/ownAsksCancelBuy"
+                android:layout_width="174dp"
+                android:layout_height="wrap_content"
+                android:text="@string/own_asks_cancel_buy"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="67dp">
+
+            <TextView
+                android:id="@+id/ownAsksAmountOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/ownAsksPriceOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/ownAsksCancelBuyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="14dp" />
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/pendingSales"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="480dp"
+        android:text="@string/pending_sales"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="176dp" />
+
+    <TableLayout
+        android:layout_width="380dp"
+        android:layout_height="173dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="526dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/pendingSalesAmount"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pending_sales_amount"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pendingSalesPrice"
+                android:layout_width="109dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pending_sales_price"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pendingSalesAmountBought"
+                android:layout_width="149dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pending_sales_amount_bought"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/pendingSalesAmountOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/pendingSalesPriceOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/pendingSalesAmountBoughtOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
