@@ -108,6 +108,13 @@
     <string name="create_support_ticket_description">Description</string>
     <string name="create_support_ticket_submit">Submit</string>
     <string name="support_ticket_header">Support Tickets</string>
+    <string name="credit_card_info_header">Credit Card Info</string>
+    <string name="credit_card_info_status">Status: Not Set</string>
+    <string name="credit_card_info_number">Card Number</string>
+    <string name="credit_card_info_expiration">Expiration Date</string>
+    <string name="credit_card_info_security">Security Code</string>
+    <string name="credit_card_info_submit">Submit</string>
+    <string name="credit_card_info_clear">Clear Card Info</string>
 
 
     <!-- Strings used for fragments for navigation -->
