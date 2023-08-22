@@ -107,6 +107,7 @@
     <string name="create_support_ticket_title">Title</string>
     <string name="create_support_ticket_description">Description</string>
     <string name="create_support_ticket_submit">Submit</string>
+    <string name="support_ticket_header">Support Tickets</string>
 
 
     <!-- Strings used for fragments for navigation -->

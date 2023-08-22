@@ -20,7 +20,7 @@
         tools:layout_editor_absoluteX="91dp" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/supportTicketTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="93dp"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/supportTicketDescription"
         android:layout_width="211dp"
         android:layout_height="280dp"
         android:layout_marginStart="93dp"
