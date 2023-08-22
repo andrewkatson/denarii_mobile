@@ -103,6 +103,10 @@
     <string name="pending_sales_amount">Amount</string>
     <string name="pending_sales_price">Price</string>
     <string name="pending_sales_amount_bought">Amount Bought</string>
+    <string name="create_support_ticket_header">Create Support Ticket</string>
+    <string name="create_support_ticket_title">Title</string>
+    <string name="create_support_ticket_description">Description</string>
+    <string name="create_support_ticket_submit">Submit</string>
 
 
     <!-- Strings used for fragments for navigation -->
