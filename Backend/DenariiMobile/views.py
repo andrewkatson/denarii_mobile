@@ -1225,7 +1225,8 @@ def get_support_tickets(request, user_id, can_be_resolved):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
-    
+
+
 @login_required
 def get_support_ticket(request, user_id, support_ticket_id):
     existing = get_user_with_id(user_id)
@@ -1236,6 +1237,9 @@ def get_support_ticket(request, user_id, support_ticket_id):
 
         # Should only be one
         support_tickets = existing.supportticket_set.all().filter(support_id=support_ticket_id)
+
+        if len(support_tickets) == 0:
+            return HttpResponseBadRequest("No support ticket with that id")
 
         for ticket in support_tickets:
             response = Response.objects.create(support_ticket_id=ticket.support_id, author=existing.username,
@@ -1253,7 +1257,7 @@ def get_support_ticket(request, user_id, support_ticket_id):
 
         return JsonResponse({'response_list': serialized_response_list})
     else:
-        return HttpResponseBadRequest("No user with id") 
+        return HttpResponseBadRequest("No user with id")
 
 
 @login_required

@@ -1745,3 +1745,46 @@ class ViewsTestCase(TestCase):
         for ask_id in ask_ids:
             self.assertFalse(get_ask_with_id(ask_id).is_settled)
             self.assertTrue(get_ask_with_id(ask_id).in_escrow)
+
+    def test_get_support_ticket(self):
+
+        test_values = get_all_test_values("get_support_ticket")
+
+        response_one = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response_one), HttpResponseBadRequest)
+
+        fields = get_json_fields(response_one)
+
+        response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
+                                             "other description")
+
+        self.assertNotEqual(type(response_two), HttpResponseBadRequest)
+
+        fields_two = get_json_fields(response_two)
+
+        get_all_response = get_support_ticket(test_values['request'], test_values['user_id'], fields['support_ticket_id'])
+
+        self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
+
+        ticket_ids = get_all_json_objects_field(get_all_response, 'support_ticket_id')
+
+        self.assertIn(fields['support_ticket_id'], ticket_ids)
+        self.assertNotIn(fields_two['support_ticket_id'], ticket_ids)
+
+    def test_get_support_ticket_does_not_exist(self):
+        test_values = get_all_test_values("get_support_ticket_does_not_exist")
+
+        response_one = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
+
+        self.assertNotEqual(type(response_one), HttpResponseBadRequest)
+
+        response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
+                                             "other description")
+
+        self.assertNotEqual(type(response_two), HttpResponseBadRequest)
+
+        get_all_response = get_support_ticket(test_values['request'], test_values['user_id'],
+                                              -1)
+
+        self.assertEqual(type(get_all_response), HttpResponseBadRequest)
