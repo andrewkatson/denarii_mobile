@@ -115,8 +115,20 @@
     <string name="credit_card_info_security">Security Code</string>
     <string name="credit_card_info_submit">Submit</string>
     <string name="credit_card_info_clear">Clear Card Info</string>
-
-
+    <string name="verification_header">Verification</string>
+    <string name="verification_status">Status: Not Verified</string>
+    <string name="verification_firstname">First Name</string>
+    <string name="verification_middle">Middile Initial</string>
+    <string name="verification_lastname">Last Name</string>
+    <string name="verification_email">Email</string>
+    <string name="verification_dob">Date of Birth</string>
+    <string name="verification_ssn">Social Security Number</string>
+    <string name="verification_zipcode">Zip Code</string>
+    <string name="verification_phone">Phone Number</string>
+    <string name="verification_workcity">Work City</string>
+    <string name="verification_workstate">Work State</string>
+    <string name="verification_workcountry">Work Country</string>
+    <string name="verification_submit">Submit</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
