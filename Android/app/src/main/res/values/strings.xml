@@ -129,6 +129,10 @@
     <string name="verification_workstate">Work State</string>
     <string name="verification_workcountry">Work Country</string>
     <string name="verification_submit">Submit</string>
+    <string name="support_ticket_details_header">Support Ticket Details</string>
+    <string name="support_ticket_details_name">I Cannot Get Verified</string>
+    <string name="support_ticket_details_comment_box">Add Comment Here</string>
+    <string name="support_ticket_details_comment_box_submit">Submit</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
