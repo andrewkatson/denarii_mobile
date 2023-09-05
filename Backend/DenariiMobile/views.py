@@ -497,6 +497,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
         responses = []
         for ask in asks_met:
             ask.buyer = existing
+            ask.save()
             response = Response.objects.create(ask_id=ask.ask_id)
             responses.append(response)
 

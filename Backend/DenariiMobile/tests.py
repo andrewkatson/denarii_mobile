@@ -1541,7 +1541,7 @@ class ViewsTestCase(TestCase):
                 second_ask_id = ask.ask_id
                 break
 
-        response = get_all_buys(seller_test_values['request'], seller_test_values['user_id'])
+        response = get_all_buys(buyer_test_values['request'], buyer_test_values['user_id'])
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
