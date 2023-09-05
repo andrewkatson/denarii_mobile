@@ -136,6 +136,7 @@ class DenariiAsk(models.Model):
     has_been_seen_by_seller = models.BooleanField(default=False)
     creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
+    buyer = models.ForeignKey(DenariiUser, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.ask_id

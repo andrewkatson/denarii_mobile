@@ -496,6 +496,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
 
         responses = []
         for ask in asks_met:
+            ask.buyer = existing
             response = Response.objects.create(ask_id=ask.ask_id)
             responses.append(response)
 
@@ -506,6 +507,11 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
             return HttpResponseBadRequest("No asks could be met with the bid price")
         else:
             if fail_if_full_amount_isnt_met == "True":
+
+                for ask in asks_met:
+                    ask.in_escrow = False 
+                    ask.buyer = None
+                    ask.save()
                 return HttpResponseBadRequest("Could not buy the asked amount")
             else:
                 serialized_response_list = serializers.serialize('json', responses, fields='ask_id')
@@ -552,6 +558,7 @@ def transfer_denarii(request, user_id, ask_id):
                 receiver_wallet.save()
 
                 ask.in_escrow = False
+                ask.buyer = None
                 ask.amount = ask.amount - ask.amount_bought
                 ask.amount_bought = 0
 
@@ -585,6 +592,7 @@ def make_denarii_ask(request, user_id, amount, asking_price):
         new_ask = existing.denariiask_set.create()
         new_ask.in_escrow = False
         new_ask.amount = amount
+        new_ask.buyer = None
         new_ask.asking_price = asking_price
         new_ask.ask_id = new_ask.primary_key
         new_ask.is_settled = False
@@ -945,6 +953,7 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
                 receiver_wallet.save()
 
                 ask.in_escrow = False
+                ask.buyer = None
                 ask.amount_bought = 0
 
                 response = Response.objects.create(ask_id=ask.ask_id)
@@ -1003,6 +1012,7 @@ def cancel_buy_of_ask(request, user_id, ask_id):
                 if not ask.is_settled:
 
                     ask.in_escrow = False
+                    ask.buyer = None
                     ask.amount_bought = 0
 
                     ask.save()
@@ -1120,7 +1130,29 @@ def get_all_asks(request, user_id):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
+    
 
+@login_required
+def get_all_buys(request, user_id):
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+
+        ask_set = DenariiAsk.objects.all().filter(buyer=existing).filter(is_settled=False)
+
+        response_list = []
+        for ask in ask_set:
+            response = Response.objects.create(ask_id=ask.ask_id, amount=ask.amount, asking_price=ask.asking_price,
+                                               amount_bought=ask.amount_bought)
+
+            response_list.append(response)
+
+        serialized_response_list = serializers.serialize('json', response_list,
+                                                         fields=('ask_id', 'amount', 'asking_price', 'amount_bought'))
+
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")
 
 @login_required
 def create_support_ticket(request, user_id, title, description):

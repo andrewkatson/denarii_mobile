@@ -1496,6 +1496,77 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(len(ask_ids), 0)
 
+    def test_get_all_buys(self):
+        seller_test_values = get_all_test_values("get_all_buys_seller")
+
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        # buy one and settle it
+        buyer_test_values = get_all_test_values("get_all_buys_buyer")
+
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        first_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                first_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(first_ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # buy another so it is in escrow
+        amount_to_buy = 20
+        bid_price = 11.5
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 34.0 to offer (at 11.5 price)
+        second_ask_id = 0
+        for ask in asks:
+            # we only bought part of it
+            if ask.amount == 34.0 and ask.asking_price == bid_price:
+                second_ask_id = ask.ask_id
+                break
+
+        response = get_all_buys(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(response, "ask_id")
+
+        for ask in asks:
+
+            if ask.ask_id == first_ask_id:
+                self.assertNotIn(ask.ask_id, ask_ids)
+            elif ask.ask_id == second_ask_id:
+                self.assertIn(ask.ask_id, ask_ids)
+            else:
+                self.assertNotIn(ask.ask_id, ask_ids)
+
+    def test_get_all_buys_with_no_buys(self):
+        test_values = get_all_test_values("get_all_buys_with_no_buys")
+
+        response = get_all_buys(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        ask_ids = get_all_json_objects_field(response, "ask_id")
+
+        self.assertEqual(len(ask_ids), 0)
+
     def test_create_support_ticket(self):
         test_values = get_all_test_values("create_support_ticket")
 
