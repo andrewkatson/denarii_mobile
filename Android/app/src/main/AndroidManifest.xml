@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Android"
         tools:targetApi="31">
         <activity
+            android:name=".user.UserSettings"
+            android:exported="false" />
+        <activity
             android:name=".activities.supportticketdetails.SupportTicketDetails"
             android:exported="false" />
         <activity
