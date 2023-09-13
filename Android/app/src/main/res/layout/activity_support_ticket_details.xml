@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adminResponse"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.supportticketdetails.SupportTicketDetails">
+
+    <TextView
+        android:id="@+id/supportTicketDetailsHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/support_ticket_details_header"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="172dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="613dp"
+        android:text="@string/support_ticket_details_name"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="172dp" />
+
+    <EditText
+        android:id="@+id/supportTicketDetailsCommentBox"
+        android:layout_width="241dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="403dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="204dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/support_ticket_details_comment_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/commentBoxSubmit"
+        android:layout_width="181dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginTop="567dp"
+        android:layout_marginEnd="115dp"
+        android:layout_marginBottom="92dp"
+        android:text="@string/support_ticket_details_comment_box_submit"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:layout_width="243dp"
+        android:layout_height="161dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="177dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="393dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/adminResponseHeaderOne"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:text="Admin" />
+
+            <TextView
+                android:id="@+id/adminResponseBody"
+                android:layout_width="183dp"
+                android:layout_height="36dp"
+                android:text="placeholder response" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

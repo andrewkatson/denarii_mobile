@@ -16,6 +16,30 @@
         android:theme="@style/Theme.Android"
         tools:targetApi="31">
         <activity
+            android:name=".user.UserSettings"
+            android:exported="false" />
+        <activity
+            android:name=".activities.supportticketdetails.SupportTicketDetails"
+            android:exported="false" />
+        <activity
+            android:name=".activities.createsupportticket.CreateSupportTicket"
+            android:exported="false" />
+        <activity
+            android:name=".activities.supportticket.SupportTicket"
+            android:exported="false" />
+        <activity
+            android:name=".activities.creditcardinfo.CreditCardInfo"
+            android:exported="false" />
+        <activity
+            android:name=".activities.verification.Verification"
+            android:exported="false" />
+        <activity
+            android:name=".activities.selldenarii.SellDenarii"
+            android:exported="false" />
+        <activity
+            android:name=".activities.buydenarii.BuyDenarii"
+            android:exported="false" />
+        <activity
             android:name=".activities.verifyreset.VerifyReset"
             android:exported="false">
             <meta-data

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.buydenarii.BuyDenarii">
+
+    <TextView
+        android:id="@+id/buyDenarii"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/buy_denarii_header"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="117dp" />
+
+    <EditText
+        android:id="@+id/amount"
+        android:layout_width="237dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="114dp"
+        android:layout_marginBottom="597dp"
+        android:height="48dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/buy_amount_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buyDenarii"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/price"
+        android:layout_width="238dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="73dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="534dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/buy_price_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <RadioButton
+        android:id="@+id/trueBuyAnyPrice"
+        android:layout_width="84dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="237dp"
+        android:layout_marginEnd="313dp"
+        android:layout_marginBottom="445dp"
+        android:text="True"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioButton
+        android:id="@+id/trueFailIfNotFull"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="237dp"
+        android:layout_marginEnd="117dp"
+        android:layout_marginBottom="446dp"
+        android:checked="true"
+        android:text="True"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioButton
+        android:id="@+id/falseBuyAnyPrice"
+        android:layout_width="79dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="237dp"
+        android:layout_marginEnd="224dp"
+        android:layout_marginBottom="443dp"
+        android:checked="true"
+        android:text="False"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioButton
+        android:id="@+id/falseFailIfNotFull"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="302dp"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="446dp"
+        android:checked="false"
+        android:text="False"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/buyRegardlessPrice"
+        android:layout_width="181dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="206dp"
+        android:layout_marginEnd="216dp"
+        android:layout_marginBottom="503dp"
+        android:text="@string/buy_regardless_of_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/failIfFullAmountIsntMet"
+        android:layout_width="197dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="198dp"
+        android:layout_marginTop="206dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="504dp"
+        android:text="@string/fail_if_full_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="189dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="288dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="386dp"
+        android:text="Submit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/asks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="347dp"
+        android:text="@string/ask_header"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="117dp" />
+
+    <TextView
+        android:id="@+id/queuedBuys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="499dp"
+        android:text="@string/queued_buys"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="108dp" />
+
+    <TableLayout
+        android:layout_width="291dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="383dp"
+        android:layout_marginEnd="71dp"
+        android:layout_marginBottom="232dp"
+        android:background="#FFFFFF"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:drawable/bottom_bar"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/askTableAmount"
+                android:layout_width="137dp"
+                android:layout_height="match_parent"
+                android:text="@string/ask_amount"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/priceAskTable"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ask_price"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="182dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/askAmountOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/askPriceOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="332dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="533dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="82dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/buyAmountTotal"
+                android:layout_width="99dp"
+                android:layout_height="wrap_content"
+                android:text="Total Amount"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyPrice"
+                android:layout_width="51dp"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_price"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyAmountBought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_amount_bought"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/buyCancelBuy"
+                android:layout_width="79dp"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_cancel_buy"
+                android:textAlignment="center" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/totalAmountOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/totalPriceBuyOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/totalAmountBoughtOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="44dp"
+                android:layout_height="62dp"
+                android:text="X" />
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
