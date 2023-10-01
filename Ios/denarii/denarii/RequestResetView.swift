@@ -56,8 +56,10 @@ struct RequestResetView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.requestPasswordReset(usernameOrEmail)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.requestPasswordReset(usernameOrEmail)
+            // We only expect one
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to request password reset due to a server side error")
                 return false
             }

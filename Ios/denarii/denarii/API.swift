@@ -8,202 +8,220 @@
 import Foundation
 
 protocol API {
-    // Returns a Wallet instance with a user identifier
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Wallet
+    // Returns a DenariiResponse instance with a user identifier
+    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with nothing in it
-    func requestPasswordReset(_ usernameOrEmail: String) -> Wallet
+    // Returns a DenariiResponse instance with nothing in it
+    func requestPasswordReset(_ usernameOrEmail: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with nothing in it
-    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Wallet
+    // Returns a DenariiResponse instance with nothing in it
+    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with nothing in it
-    func resetPassword(_ username: String, _ email: String, _ password: String) -> Wallet
+    // Returns a DenariiResponse instance with nothing in it
+    func resetPassword(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with seed and address
-    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet
+    // Returns a DenariiResponse instance with seed and address
+    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with address
-    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Wallet
+    // Returns a DenariiResponse instance with address
+    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with seed and address
-    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet
+    // Returns a DenariiResponse instance with seed and address
+    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with balance
-    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Wallet
+    // Returns a DenariiResponse instance with balance
+    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Array<DenariiResponse>
     
-    // Returns a Wallet instance with nothing in it
-    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Wallet
+    // Returns a DenariiResponse instance with nothing in it
+    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Array<DenariiResponse>
 }
 
 class RealAPI: API {
     
     private var urlBase: String = "https://denariimobilebackend.com"
     
-    func makeApiCall(_ urlStr: String) -> Wallet {
+    func makeApiCall(_ urlStr: String) -> Array<DenariiResponse> {
         
         let url = URL(string: urlStr)
         
-        var wallet = Wallet()
+        var denariiResponses = Array<DenariiResponse>()
         
-        var errorString = ""
         var responseCode = 200
 
         let task = URLSession.shared.dataTask(with: url!, completionHandler: { (data, response, error) in
-            if let err = error {
-                errorString = String(error!.localizedDescription)
-                responseCode = 400
+            if error != nil {
+                // TODO log here and pick a better error code
+                responseCode = -1
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse,
                       (200...299).contains(httpResponse.statusCode) else {
-              errorString = "Problem with the http response"
-              responseCode = 400
+                // TODO log here and pick a better error code
+                responseCode = -1
               return
             }
             
             if let data = data,
-                    let walletData = try? JSONDecoder().decode(Wallet.self, from: data) {
-                    wallet = walletData
-                  }
+                    var singleDenariiResponse = try? JSONDecoder().decode(DenariiResponse.self, from: data) {
+                singleDenariiResponse.responseCode = responseCode
+                denariiResponses.append(singleDenariiResponse)
+            }
         })
 
         task.resume()
         
-        if responseCode != 200 {
-            wallet.responseCode = responseCode
-            wallet.responseCodeText = errorString
+        if denariiResponses.isEmpty {
+            var emptyResponse = DenariiResponse()
+            emptyResponse.responseCode = responseCode
+            denariiResponses.append(emptyResponse)
         }
         
-        return wallet
+        return denariiResponses
     }
 
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(username)/\(email)/\(password)"
+    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/\(username)/\(email)/\(password)"
         return makeApiCall(urlString)
     }
     
-    func requestPasswordReset(_ usernameOrEmail: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(usernameOrEmail)/request_reset"
+    func requestPasswordReset(_ usernameOrEmail: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/request_reset/\(usernameOrEmail)"
         return makeApiCall(urlString)
     }
     
-    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Wallet {
-        var urlString = "\(urlBase)/users/\(usernameOrEmail)/\(resetId)/verify_reset"
+    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/verify_reset/\(usernameOrEmail)/\(resetId)"
         return makeApiCall(urlString)
     }
     
-    func resetPassword(_ username: String, _ email: String, _ password: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(username)/\(email)/\(password)/reset_password"
+    func resetPassword(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/reset_password/\(username)/\(email)/\(password)"
         return makeApiCall(urlString)
     }
     
-    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/create"
+    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/create/\(userIdentifier)/\(walletName)/\(password)"
         return makeApiCall(urlString)
     }
     
-    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/\(seed)/restore"
+    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/restore/\(userIdentifier)/\(walletName)/\(password)/\(seed)"
         return makeApiCall(urlString)
     }
     
-    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(password)/open"
+    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/open/\(userIdentifier)/\(walletName)/\(password)"
         return makeApiCall(urlString)
     }
     
-    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Wallet {
-        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/balance"
+    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/balance/\(userIdentifier)/\(walletName)"
         return makeApiCall(urlString)
     }
     
-    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Wallet {
-        var urlString = "\(urlBase)/users/\(userIdentifier)/\(walletName)/\(adddressToSendTo)/\(amountToSend)/send"
+    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/send/\(userIdentifier)/\(walletName)/\(adddressToSendTo)/\(amountToSend)"
         return makeApiCall(urlString)
     }
 }
 
 class StubbedAPI: API {
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
+    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
         
-        var walletDetails = WalletDetails()
-        walletDetails.userIdentifier = 1
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        denariiResponse.userIdentifier = "1"
         
-        wallet.response = walletDetails
-        return wallet
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func requestPasswordReset(_ usernameOrEmail: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
-        return wallet
+    func requestPasswordReset(_ usernameOrEmail: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+        
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
-        return wallet
+    func verifyReset(_ usernameOrEmail: String, _ resetId: Int) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func resetPassword(_ username: String, _ email: String, _ password: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
-        return wallet
+    func resetPassword(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
+    func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
         
-        var walletDetails = WalletDetails()
-        walletDetails.walletAddress = "123"
-        walletDetails.seed = "some seed here"
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+
+        denariiResponse.walletAddress = "123"
+        denariiResponse.seed = "some seed here"
         
-        wallet.response = walletDetails
-        return wallet
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
+    func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
         
-        var walletDetails = WalletDetails()
-        walletDetails.walletAddress = "123"
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        denariiResponse.walletAddress = "123"
         
-        wallet.response = walletDetails
-        return wallet
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
+    func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
         
-        var walletDetails = WalletDetails()
-        walletDetails.walletAddress = "123"
-        walletDetails.seed = "some seed here"
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        denariiResponse.walletAddress = "123"
+        denariiResponse.seed = "some seed here"
         
-        wallet.response = walletDetails
-        return wallet
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
+    func getBalance(_ userIdentifier: Int, _ walletName: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
         
-        var walletDetails = WalletDetails()
-        walletDetails.balance = 3.0
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        denariiResponse.balance = 3.0
         
-        wallet.response = walletDetails
-        return wallet
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
     
-    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Wallet {
-        var wallet = Wallet()
-        wallet.responseCode = 200
-        return wallet
+    func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        
+        denariiResponses.append(denariiResponse)
+        return denariiResponses
     }
 }

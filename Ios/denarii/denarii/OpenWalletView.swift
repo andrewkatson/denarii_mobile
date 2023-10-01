@@ -71,13 +71,17 @@ struct OpenWalletView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.openWallet(userIdentifier.getValue(),walletName, walletPassword)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.openWallet(userIdentifier.getValue(),walletName, walletPassword)
+            
+            // We only expect one response
+            let response = denariiResponses.first!
+            
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to open wallet due a server side error")
                 return false
             }
             successOrFailure.setValue("Opened wallet")
-            seed.setValue(wallet.response.seed)
+            seed.setValue(response.seed)
             return true
         }
     }

@@ -65,8 +65,11 @@ struct RestoreDeterministicWalletView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.restoreWallet(userIdentifier.getValue(),walletName, walletPassword, walletSeed)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.restoreWallet(userIdentifier.getValue(),walletName, walletPassword, walletSeed)
+            
+            // We only expect one
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to restore wallet due to a server side error")
                 return false
             }

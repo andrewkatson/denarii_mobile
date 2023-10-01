@@ -59,12 +59,6 @@
 		244E38DA2A23A3C40011B999 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38D92A23A3C40011B999 /* API.swift */; };
 		244E38DB2A23A3C40011B999 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38D92A23A3C40011B999 /* API.swift */; };
 		244E38DC2A23A3C40011B999 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38D92A23A3C40011B999 /* API.swift */; };
-		244E38DE2A23A5DB0011B999 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38DD2A23A5DB0011B999 /* Wallet.swift */; };
-		244E38DF2A23A5DB0011B999 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38DD2A23A5DB0011B999 /* Wallet.swift */; };
-		244E38E02A23A5DB0011B999 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38DD2A23A5DB0011B999 /* Wallet.swift */; };
-		244E38E22A23A5EF0011B999 /* WalletDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E12A23A5EF0011B999 /* WalletDetails.swift */; };
-		244E38E32A23A5EF0011B999 /* WalletDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E12A23A5EF0011B999 /* WalletDetails.swift */; };
-		244E38E42A23A5EF0011B999 /* WalletDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E12A23A5EF0011B999 /* WalletDetails.swift */; };
 		244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E52A23B32B0011B999 /* ObservableInt.swift */; };
 		244E38E72A23B32B0011B999 /* ObservableInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E52A23B32B0011B999 /* ObservableInt.swift */; };
 		244E38E82A23B32B0011B999 /* ObservableInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38E52A23B32B0011B999 /* ObservableInt.swift */; };
@@ -74,6 +68,14 @@
 		244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38ED2A27E5B60011B999 /* ChangingTextView.swift */; };
 		244E38EF2A27E5B60011B999 /* ChangingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38ED2A27E5B60011B999 /* ChangingTextView.swift */; };
 		244E38F02A27E5B60011B999 /* ChangingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38ED2A27E5B60011B999 /* ChangingTextView.swift */; };
+		24FDF7BA2AC8BFEA00EF9822 /* CreditCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7B92AC8BFEA00EF9822 /* CreditCard.swift */; };
+		24FDF7BC2AC8BFFB00EF9822 /* DenariiAsk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */; };
+		24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */; };
+		24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BF2AC8C01500EF9822 /* DenariiUser.swift */; };
+		24FDF7C22AC8C01D00EF9822 /* SupportTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C12AC8C01D00EF9822 /* SupportTicket.swift */; };
+		24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C32AC8C02700EF9822 /* SupportTicketComment.swift */; };
+		24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C52AC8C0DB00EF9822 /* UserDetails.swift */; };
+		24FDF7C82AC8C0E400EF9822 /* WalletDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,11 +121,17 @@
 		244E38CD2A1ED1B80011B999 /* ObservableString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableString.swift; sourceTree = "<group>"; };
 		244E38D52A23A3A60011B999 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		244E38D92A23A3C40011B999 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
-		244E38DD2A23A5DB0011B999 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
-		244E38E12A23A5EF0011B999 /* WalletDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetails.swift; sourceTree = "<group>"; };
 		244E38E52A23B32B0011B999 /* ObservableInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableInt.swift; sourceTree = "<group>"; };
 		244E38E92A23BB8B0011B999 /* ObservableBool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableBool.swift; sourceTree = "<group>"; };
 		244E38ED2A27E5B60011B999 /* ChangingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangingTextView.swift; sourceTree = "<group>"; };
+		24FDF7B92AC8BFEA00EF9822 /* CreditCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditCard.swift; sourceTree = "<group>"; };
+		24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenariiAsk.swift; sourceTree = "<group>"; };
+		24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenariiResponse.swift; sourceTree = "<group>"; };
+		24FDF7BF2AC8C01500EF9822 /* DenariiUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenariiUser.swift; sourceTree = "<group>"; };
+		24FDF7C12AC8C01D00EF9822 /* SupportTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTicket.swift; sourceTree = "<group>"; };
+		24FDF7C32AC8C02700EF9822 /* SupportTicketComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTicketComment.swift; sourceTree = "<group>"; };
+		24FDF7C52AC8C0DB00EF9822 /* UserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetails.swift; sourceTree = "<group>"; };
+		24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetails.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +182,7 @@
 		244E386E2A113D1A0011B999 /* denarii */ = {
 			isa = PBXGroup;
 			children = (
+				24FDF7B82AC8BFC400EF9822 /* user */,
 				244E38D52A23A3A60011B999 /* Config.swift */,
 				244E38D92A23A3C40011B999 /* API.swift */,
 				244E386F2A113D1A0011B999 /* denariiApp.swift */,
@@ -193,8 +202,6 @@
 				244E38752A113D1B0011B999 /* Preview Content */,
 				244E38C92A1EC33B0011B999 /* Constants.swift */,
 				244E38CD2A1ED1B80011B999 /* ObservableString.swift */,
-				244E38DD2A23A5DB0011B999 /* Wallet.swift */,
-				244E38E12A23A5EF0011B999 /* WalletDetails.swift */,
 				244E38E52A23B32B0011B999 /* ObservableInt.swift */,
 				244E38E92A23BB8B0011B999 /* ObservableBool.swift */,
 				244E38ED2A27E5B60011B999 /* ChangingTextView.swift */,
@@ -225,6 +232,21 @@
 				244E388C2A113D1B0011B999 /* denariiUITestsLaunchTests.swift */,
 			);
 			path = denariiUITests;
+			sourceTree = "<group>";
+		};
+		24FDF7B82AC8BFC400EF9822 /* user */ = {
+			isa = PBXGroup;
+			children = (
+				24FDF7B92AC8BFEA00EF9822 /* CreditCard.swift */,
+				24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */,
+				24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */,
+				24FDF7BF2AC8C01500EF9822 /* DenariiUser.swift */,
+				24FDF7C12AC8C01D00EF9822 /* SupportTicket.swift */,
+				24FDF7C32AC8C02700EF9822 /* SupportTicketComment.swift */,
+				24FDF7C52AC8C0DB00EF9822 /* UserDetails.swift */,
+				24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */,
+			);
+			path = user;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,7 +313,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					244E386B2A113D1A0011B999 = {
 						CreatedOnToolsVersion = 14.3;
@@ -362,23 +384,29 @@
 				244E38A22A1144660011B999 /* RegisterView.swift in Sources */,
 				244E38CE2A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E38702A113D1A0011B999 /* denariiApp.swift in Sources */,
+				24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */,
 				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
-				244E38DE2A23A5DB0011B999 /* Wallet.swift in Sources */,
+				24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */,
+				24FDF7BA2AC8BFEA00EF9822 /* CreditCard.swift in Sources */,
 				244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */,
 				244E38B62A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
+				24FDF7C22AC8C01D00EF9822 /* SupportTicket.swift in Sources */,
 				244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38B22A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				244E389A2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				24FDF7BC2AC8BFFB00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */,
 				244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				244E38D62A23A3A60011B999 /* Config.swift in Sources */,
 				244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
+				24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */,
 				244E38EA2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
+				24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */,
 				244E38BA2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38DA2A23A3C40011B999 /* API.swift in Sources */,
+				24FDF7C82AC8C0E400EF9822 /* WalletDetails.swift in Sources */,
 				244E38A62A116DF10011B999 /* WalletDecisionView.swift in Sources */,
-				244E38E22A23A5EF0011B999 /* WalletDetails.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,7 +425,6 @@
 				244E38E72A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */,
-				244E38E32A23A5EF0011B999 /* WalletDetails.swift in Sources */,
 				244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38CF2A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E38AB2A116E040011B999 /* CreateWalletView.swift in Sources */,
@@ -405,7 +432,6 @@
 				244E38812A113D1B0011B999 /* denariiTests.swift in Sources */,
 				244E38DB2A23A3C40011B999 /* API.swift in Sources */,
 				244E38EF2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
-				244E38DF2A23A5DB0011B999 /* Wallet.swift in Sources */,
 				244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -420,7 +446,6 @@
 				244E38D02A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				244E388D2A113D1B0011B999 /* denariiUITestsLaunchTests.swift in Sources */,
 				244E38A02A1144570011B999 /* LoginView.swift in Sources */,
-				244E38E02A23A5DB0011B999 /* Wallet.swift in Sources */,
 				244E38AC2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E38C82A116E710011B999 /* ResetPasswordView.swift in Sources */,
 				244E38B82A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
@@ -435,7 +460,6 @@
 				244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38DC2A23A3C40011B999 /* API.swift in Sources */,
 				244E38A82A116DF10011B999 /* WalletDecisionView.swift in Sources */,
-				244E38E42A23A5EF0011B999 /* WalletDetails.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,6 +515,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -551,6 +576,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

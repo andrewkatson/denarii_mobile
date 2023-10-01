@@ -60,8 +60,11 @@ struct VerifyResetView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
+            
+            // We only expect one
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to verify password reset due to a server side error")
                 return false
             }

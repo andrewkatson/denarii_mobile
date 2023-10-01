@@ -78,13 +78,16 @@ struct OpenedWalletView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.getBalance(userIdentifier.getValue(), walletName.getValue())
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.getBalance(userIdentifier.getValue(), walletName.getValue())
+            
+            // We only expect one response
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailureForRefreshBalance.setValue("Failed to refresh balance becasue of a server error")
                 return false
             }
             
-            self.balance.setValue(String(wallet.response.balance))
+            self.balance.setValue(String(response.balance))
             successOrFailureForRefreshBalance.setValue("Refreshed balance")
             return true
         }
@@ -107,9 +110,11 @@ struct OpenedWalletView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.sendDenarii(userIdentifier.getValue(), walletName.getValue(), addressToSendTo, Double(amountToSend)!)
+            let denariiResponses = api.sendDenarii(userIdentifier.getValue(), walletName.getValue(), addressToSendTo, Double(amountToSend)!)
             
-            if wallet.responseCode != 200 {
+            // We only expect one response
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailureForSendDenarii.setValue("Failed to send denarii because of a server error")
                 return false
             }

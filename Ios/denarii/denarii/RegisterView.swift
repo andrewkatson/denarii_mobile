@@ -68,12 +68,14 @@ struct RegisterView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.getUserId(username, email, password)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.getUserId(username, email, password)
+            // We only expect one response
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to register due to a server side error")
                 return false
             }
-            userIdentifier.setValue(wallet.response.userIdentifier)
+            userIdentifier.setValue(Int(response.userIdentifier)!)
             successOrFailure.setValue("Registered")
             return true
         }

@@ -82,13 +82,16 @@ struct CreateWalletView: View {
             return true
         } else {
             let api = Config().api
-            let wallet = api.createWallet(userIdentifier.getValue(),walletName, walletPassword)
-            if wallet.responseCode != 200 {
+            let denariiResponses = api.createWallet(userIdentifier.getValue(),walletName, walletPassword)
+            
+            // We only expect one response
+            let response = denariiResponses.first!
+            if response.responseCode != 200 {
                 successOrFailure.setValue("Failed to create wallet due to a server side error")
                 return false
             }
             successOrFailure.setValue("Created wallet")
-            seed.setValue(wallet.response.seed)
+            seed.setValue(response.seed)
             return true
         }
     }
