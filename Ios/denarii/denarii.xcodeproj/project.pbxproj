@@ -76,6 +76,13 @@
 		24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C32AC8C02700EF9822 /* SupportTicketComment.swift */; };
 		24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C52AC8C0DB00EF9822 /* UserDetails.swift */; };
 		24FDF7C82AC8C0E400EF9822 /* WalletDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */; };
+		24FDF7CA2ACA428300EF9822 /* BuyDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C92ACA428300EF9822 /* BuyDenarii.swift */; };
+		24FDF7CC2ACA429A00EF9822 /* SellDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CB2ACA429A00EF9822 /* SellDenarii.swift */; };
+		24FDF7CE2ACA42B000EF9822 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CD2ACA42B000EF9822 /* Verification.swift */; };
+		24FDF7D02ACA42C400EF9822 /* CreditCardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CF2ACA42C400EF9822 /* CreditCardInfo.swift */; };
+		24FDF7D22ACA42D800EF9822 /* SupportTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */; };
+		24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */; };
+		24FDF7D62ACA430200EF9822 /* SupportTicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +139,13 @@
 		24FDF7C32AC8C02700EF9822 /* SupportTicketComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTicketComment.swift; sourceTree = "<group>"; };
 		24FDF7C52AC8C0DB00EF9822 /* UserDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetails.swift; sourceTree = "<group>"; };
 		24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetails.swift; sourceTree = "<group>"; };
+		24FDF7C92ACA428300EF9822 /* BuyDenarii.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyDenarii.swift; sourceTree = "<group>"; };
+		24FDF7CB2ACA429A00EF9822 /* SellDenarii.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellDenarii.swift; sourceTree = "<group>"; };
+		24FDF7CD2ACA42B000EF9822 /* Verification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verification.swift; sourceTree = "<group>"; };
+		24FDF7CF2ACA42C400EF9822 /* CreditCardInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditCardInfo.swift; sourceTree = "<group>"; };
+		24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTickets.swift; sourceTree = "<group>"; };
+		24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSupportTicket.swift; sourceTree = "<group>"; };
+		24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTicketDetails.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,9 +196,11 @@
 		244E386E2A113D1A0011B999 /* denarii */ = {
 			isa = PBXGroup;
 			children = (
+				24FDF7DA2ACA43A500EF9822 /* constants */,
+				24FDF7D92ACA439A00EF9822 /* uiviews */,
+				24FDF7D72ACA433D00EF9822 /* wrappedprimitives */,
 				24FDF7B82AC8BFC400EF9822 /* user */,
-				244E38D52A23A3A60011B999 /* Config.swift */,
-				244E38D92A23A3C40011B999 /* API.swift */,
+				24FDF7D82ACA438400EF9822 /* api */,
 				244E386F2A113D1A0011B999 /* denariiApp.swift */,
 				244E38712A113D1A0011B999 /* ContentView.swift */,
 				244E38992A1141F60011B999 /* LoginOrRegisterView.swift */,
@@ -200,11 +216,13 @@
 				244E38A12A1144660011B999 /* RegisterView.swift */,
 				244E38732A113D1B0011B999 /* Assets.xcassets */,
 				244E38752A113D1B0011B999 /* Preview Content */,
-				244E38C92A1EC33B0011B999 /* Constants.swift */,
-				244E38CD2A1ED1B80011B999 /* ObservableString.swift */,
-				244E38E52A23B32B0011B999 /* ObservableInt.swift */,
-				244E38E92A23BB8B0011B999 /* ObservableBool.swift */,
-				244E38ED2A27E5B60011B999 /* ChangingTextView.swift */,
+				24FDF7C92ACA428300EF9822 /* BuyDenarii.swift */,
+				24FDF7CB2ACA429A00EF9822 /* SellDenarii.swift */,
+				24FDF7CD2ACA42B000EF9822 /* Verification.swift */,
+				24FDF7CF2ACA42C400EF9822 /* CreditCardInfo.swift */,
+				24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */,
+				24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */,
+				24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */,
 			);
 			path = denarii;
 			sourceTree = "<group>";
@@ -247,6 +265,41 @@
 				24FDF7C72AC8C0E400EF9822 /* WalletDetails.swift */,
 			);
 			path = user;
+			sourceTree = "<group>";
+		};
+		24FDF7D72ACA433D00EF9822 /* wrappedprimitives */ = {
+			isa = PBXGroup;
+			children = (
+				244E38CD2A1ED1B80011B999 /* ObservableString.swift */,
+				244E38E52A23B32B0011B999 /* ObservableInt.swift */,
+				244E38E92A23BB8B0011B999 /* ObservableBool.swift */,
+			);
+			path = wrappedprimitives;
+			sourceTree = "<group>";
+		};
+		24FDF7D82ACA438400EF9822 /* api */ = {
+			isa = PBXGroup;
+			children = (
+				244E38D52A23A3A60011B999 /* Config.swift */,
+				244E38D92A23A3C40011B999 /* API.swift */,
+			);
+			path = api;
+			sourceTree = "<group>";
+		};
+		24FDF7D92ACA439A00EF9822 /* uiviews */ = {
+			isa = PBXGroup;
+			children = (
+				244E38ED2A27E5B60011B999 /* ChangingTextView.swift */,
+			);
+			path = uiviews;
+			sourceTree = "<group>";
+		};
+		24FDF7DA2ACA43A500EF9822 /* constants */ = {
+			isa = PBXGroup;
+			children = (
+				244E38C92A1EC33B0011B999 /* Constants.swift */,
+			);
+			path = constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -386,7 +439,9 @@
 				244E38702A113D1A0011B999 /* denariiApp.swift in Sources */,
 				24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */,
 				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
+				24FDF7D22ACA42D800EF9822 /* SupportTickets.swift in Sources */,
 				24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */,
+				24FDF7CC2ACA429A00EF9822 /* SellDenarii.swift in Sources */,
 				24FDF7BA2AC8BFEA00EF9822 /* CreditCard.swift in Sources */,
 				244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */,
@@ -394,15 +449,20 @@
 				24FDF7C22AC8C01D00EF9822 /* SupportTicket.swift in Sources */,
 				244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38B22A116E210011B999 /* OpenedWalletView.swift in Sources */,
+				24FDF7D02ACA42C400EF9822 /* CreditCardInfo.swift in Sources */,
 				244E389A2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				24FDF7D62ACA430200EF9822 /* SupportTicketDetails.swift in Sources */,
 				24FDF7BC2AC8BFFB00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */,
+				24FDF7CE2ACA42B000EF9822 /* Verification.swift in Sources */,
 				244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */,
+				24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */,
 				244E38D62A23A3A60011B999 /* Config.swift in Sources */,
 				244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
 				24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */,
 				244E38EA2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
 				24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */,
+				24FDF7CA2ACA428300EF9822 /* BuyDenarii.swift in Sources */,
 				244E38BA2A116E440011B999 /* RequestResetView.swift in Sources */,
 				244E38DA2A23A3C40011B999 /* API.swift in Sources */,
 				24FDF7C82AC8C0E400EF9822 /* WalletDetails.swift in Sources */,
