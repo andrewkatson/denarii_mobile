@@ -76,6 +76,10 @@ struct ResetPasswordView: View {
         } else {
             let api = Config().api
             let denariiResponses = api.resetPassword(username, email, password)
+            if denariiResponses.isEmpty {
+                successOrFailure.setValue("Failed to login there were no responses from server")
+                return false
+            }
             // We only expect one response
             let response = denariiResponses.first!
             if response.responseCode != 200 {

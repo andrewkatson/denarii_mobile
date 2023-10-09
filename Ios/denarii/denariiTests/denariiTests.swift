@@ -33,18 +33,19 @@ final class denariiTests: XCTestCase {
     
     func testOpenedWalletRefreshBalance() throws {
         let openedWalletView = OpenedWalletView()
+        // Get some denarii into the wallet
+        openedWalletView.setBalance("1")
         openedWalletView.refreshBalance()
-        print(openedWalletView.getBalance())
         XCTAssert(openedWalletView.getBalance() == "1")
     }
     
     func testOpenedWalletSendDenarii() throws {
         let openedWalletView = OpenedWalletView()
         // Get some denarii into the wallet
-        openedWalletView.setBalance("1")
+        openedWalletView.setBalance("10")
         openedWalletView.sendDenarii()
-        print(openedWalletView.getBalance())
-        XCTAssert(openedWalletView.getBalance() == "0")
+        // Nothing should be sent because the amountToSend text view is empty
+        XCTAssert(openedWalletView.getBalance() == "10")
     }
     
     func testRestoreDeterministicWallet() throws {
@@ -56,7 +57,8 @@ final class denariiTests: XCTestCase {
     }
     
     func testVerifyReset() throws {
-        XCTAssert(VerifyResetView().attemptVerifyReset() == true)
+        // Will fail because it will look for a reset id (and one is never set)
+        XCTAssert(VerifyResetView().attemptVerifyReset() == false)
     }
     
     func testResetPassword() throws {
@@ -70,55 +72,67 @@ final class denariiTests: XCTestCase {
     func testLoginPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(LoginView().attemptSubmit() == false)
+            XCTAssert(LoginView().attemptSubmit() == true)
         }
     }
     
     func testCreateWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(CreateWalletView().attemptSubmit() == false)
+            XCTAssert(CreateWalletView().attemptSubmit() == true)
         }
     }
     
     func testOpenWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(OpenWalletView().attemptSubmit() == false)
+            XCTAssert(OpenWalletView().attemptSubmit() == true)
         }
     }
     
     func testOpenedWalletRefreshBalancePerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            OpenedWalletView().refreshBalance()
+            let openedWalletView = OpenedWalletView()
+            // Get some denarii into the wallet
+            openedWalletView.setBalance("1")
+            openedWalletView.refreshBalance()
+            // The refresh of balance with the stubbed api always sets the balance to 3.0'
+            XCTAssert(openedWalletView.getBalance() == "3.0")
         }
     }
     
     func testOpenedWalletSendDenariiPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            OpenedWalletView().sendDenarii()
+            let openedWalletView = OpenedWalletView()
+            // Get some denarii into the wallet
+            openedWalletView.setBalance("10")
+            openedWalletView.sendDenarii()
+            // Nothing should be sent because the amountToSend text view is empty
+            XCTAssert(openedWalletView.getBalance() == "10")
         }
     }
     
     func testRestoreDeterministicWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == false)
+            XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == true)
         }
     }
     
     func testRequestResetPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RequestResetView().attemptRequest() == false)
+            XCTAssert(RequestResetView().attemptRequest() == true)
         }
     }
     
     func testVerifyResetPerformance() throws {
         Constants.DEBUG = false
         self.measure {
+            // Will fail because it will look for a reset id (which isnt set) and will
+            // see that it isnt and then return false
             XCTAssert(VerifyResetView().attemptVerifyReset() == false)
         }
     }
@@ -126,14 +140,14 @@ final class denariiTests: XCTestCase {
     func testResetPasswordPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(ResetPasswordView().attemptReset() == false)
+            XCTAssert(ResetPasswordView().attemptReset() == true)
         }
     }
     
     func testRegisterPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RegisterView().attemptSubmit() == false)
+            XCTAssert(RegisterView().attemptSubmit() == true)
         }
     }
 

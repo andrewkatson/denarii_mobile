@@ -10,19 +10,21 @@ import Foundation
 struct DenariiAsk {
     private(set) var askID : String = ""
 
-    private(set) var amount : Double = 0.0
+    var amount : Double = 0.0
 
     private(set) var askingPrice : Double = 0.0
 
-    private(set) var inEscrow : Bool = false
+    var inEscrow : Bool = false
 
-    private(set) var amountBought : Double = 0.0
+    var amountBought : Double = 0.0
 
-    private(set) var isSettled : Bool = false
+    var isSettled : Bool = false
 
-    private(set) var seenBySeller : Bool = false
+    var seenBySeller : Bool = false
     
-    init(askID: String, amount: Double, askingPrice: Double, inEscrow: Bool, amountBought: Double, isSettled: Bool, seenBySeller: Bool) {
+    var buyerId : String = ""
+    
+    init(askID: String, amount: Double, askingPrice: Double, inEscrow: Bool, amountBought: Double, isSettled: Bool, seenBySeller: Bool, buyerId: String) {
         self.askID = askID
         self.amount = amount
         self.askingPrice = askingPrice
@@ -30,5 +32,17 @@ struct DenariiAsk {
         self.amountBought = amountBought
         self.isSettled = isSettled
         self.seenBySeller = seenBySeller
+        self.buyerId = buyerId
+    }
+    
+    init() {
+        self.askID = "-1"
+        self.amount = 0.0
+        self.askingPrice = 0.0
+        self.isSettled = false
+        self.amountBought = 0.0
+        self.inEscrow = false
+        self.seenBySeller = false
+        self.buyerId = ""
     }
 }

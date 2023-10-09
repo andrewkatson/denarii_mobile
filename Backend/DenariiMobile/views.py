@@ -955,6 +955,7 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
 
                 ask.in_escrow = False
                 ask.buyer = None
+                ask.amount += ask.amount_bought
                 ask.amount_bought = 0
 
                 response = Response.objects.create(ask_id=ask.ask_id)

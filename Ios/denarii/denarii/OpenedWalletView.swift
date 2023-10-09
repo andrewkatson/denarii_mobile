@@ -79,7 +79,10 @@ struct OpenedWalletView: View {
         } else {
             let api = Config().api
             let denariiResponses = api.getBalance(userIdentifier.getValue(), walletName.getValue())
-            
+            if denariiResponses.isEmpty {
+                successOrFailureForRefreshBalance.setValue("Failed to login there were no responses from server")
+                return false
+            }
             // We only expect one response
             let response = denariiResponses.first!
             if response.responseCode != 200 {
@@ -94,8 +97,16 @@ struct OpenedWalletView: View {
     }
     
     func sendDenarii() -> Bool {
-        
-        if Double(self.balance.getValue())! < Double(amountToSend)! {
+        let balanceVal = self.balance.getValue()
+        if balanceVal == "" {
+            successOrFailureForSendDenarii.setValue("Failed to send denarii because there is no balance set")
+            return false
+        }
+        else if amountToSend == "" {
+            successOrFailureForSendDenarii.setValue("Failed to send denarii because no amount to send is set")
+            return false
+        }
+        else if Double(balanceVal)! < Double(amountToSend)! {
             successOrFailureForSendDenarii.setValue("Failed to send denarii because you don't have enough to send")
             return false
         }
@@ -111,7 +122,10 @@ struct OpenedWalletView: View {
         } else {
             let api = Config().api
             let denariiResponses = api.sendDenarii(userIdentifier.getValue(), walletName.getValue(), addressToSendTo, Double(amountToSend)!)
-            
+            if denariiResponses.isEmpty {
+                successOrFailureForSendDenarii.setValue("Failed to login there were no responses from server")
+                return false
+            }
             // We only expect one response
             let response = denariiResponses.first!
             if response.responseCode != 200 {

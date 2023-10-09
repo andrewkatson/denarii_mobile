@@ -23,10 +23,12 @@ struct WalletDecisionView: View {
             VStack {
                 NavigationLink(destination: CreateWalletView(userIdentifier.getValue())) {
                     Text("Create Wallet")
-                }.padding(.bottom, 10)
+                }
+                Spacer()
                 NavigationLink(destination: RestoreDeterministicWalletView(userIdentifier.getValue())) {
                     Text("Restore Deterministic Wallet")
-                }.padding(.bottom, 10)
+                }
+                Spacer()
                 NavigationLink(destination: OpenWalletView(userIdentifier.getValue())) {
                     Text("Open Wallet")
                 }

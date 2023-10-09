@@ -14,7 +14,7 @@ struct WalletDetails {
 
     private(set) var seed : String = ""
 
-    private(set) var balance : Double = 0.0
+    var balance : Double = 0.0
 
     private(set) var walletAddress : String = ""
     

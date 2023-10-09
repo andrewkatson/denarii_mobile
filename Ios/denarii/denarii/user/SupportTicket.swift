@@ -14,9 +14,9 @@ struct SupportTicket {
 
     private(set) var title : String = ""
 
-    private(set) var resolved : Bool = false
+    var resolved : Bool = false
 
-    private(set) var supportTicketCommentList : Array<SupportTicketComment> = Array()
+    var supportTicketCommentList : Array<SupportTicketComment> = Array()
     
     init(supportID: String, description: String, title: String, resolved: Bool, supportTicketCommentList: Array<SupportTicketComment>) {
         self.supportID = supportID
@@ -24,5 +24,13 @@ struct SupportTicket {
         self.title = title
         self.resolved = resolved
         self.supportTicketCommentList = supportTicketCommentList
+    }
+    
+    init() {
+        self.supportID = ""
+        self.description = ""
+        self.title = ""
+        self.resolved = false
+        self.supportTicketCommentList = Array()
     }
 }

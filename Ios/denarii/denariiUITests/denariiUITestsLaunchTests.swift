@@ -15,7 +15,7 @@ extension XCUIElement {
             self.tap()
         }
         else {
-            var coordinate: XCUICoordinate = self.coordinate(withNormalizedOffset: CGVectorMake(0.0, 0.0))
+            let coordinate: XCUICoordinate = self.coordinate(withNormalizedOffset: CGVectorMake(0.0, 0.0))
             coordinate.tap()
         }
     }
@@ -35,12 +35,15 @@ final class denariiUITestsLaunchTests: XCTestCase {
         // Have to do redundant tapping becuase the popover in landscape is harder to tap
         if app.staticTexts["Popover"].exists {
             app.staticTexts["Popover"].tap()
+            XCTAssert(!app.staticTexts["Popover"].exists, "Popover still exists")
         }
         if app.staticTexts["Refresh Balance Popover"].exists {
             app.staticTexts["Refresh Balance Popover"].tap()
+            XCTAssert(!app.staticTexts["Refresh Balance Popover"].exists, "Popover still exists")
         }
         if app.staticTexts["Send Denarii Popover"].exists {
             app.staticTexts["Send Denarii Popover"].tap()
+            XCTAssert(!app.staticTexts["Send Denarii Popover"].exists, "Popover still exists")
         }
     }
     
@@ -91,9 +94,19 @@ final class denariiUITestsLaunchTests: XCTestCase {
         passwordSecureTextField.element.tap()
         passwordSecureTextField.element.typeText("Password")
         
+        // After we type things in we need to dismiss the keyboard
+        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
+        dismissKeyboardIfPresent(app)
+        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
+        
         let confirmPasswordSecureTextField = app.secureTextFields.matching(confirmPasswordPredicate)
         confirmPasswordSecureTextField.element.tap()
         confirmPasswordSecureTextField.element.typeText("Password")
+        
+        // After we type things in we need to dismiss the keyboard
+        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
+        dismissKeyboardIfPresent(app)
+        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
 
         let submitButton = app.buttons.matching(submitButtonPredicate)
         submitButton.element.tap()
@@ -193,9 +206,19 @@ final class denariiUITestsLaunchTests: XCTestCase {
         walletNameTextField.tap()
         walletNameTextField.typeText("wallet")
         
+        // After we type things in we need to dismiss the keyboard
+        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
+        dismissKeyboardIfPresent(app)
+        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
+        
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
         walletPasswordSecureTextField.typeText("password")
+        
+        // After we type things in we need to dismiss the keyboard
+        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
+        dismissKeyboardIfPresent(app)
+        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let confirmWalletPasswordSecureTextField = app.secureTextFields["Confirm Wallet Password"]
         confirmWalletPasswordSecureTextField.tap()

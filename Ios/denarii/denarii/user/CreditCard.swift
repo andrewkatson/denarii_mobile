@@ -9,8 +9,8 @@ import Foundation
 
 struct CreditCard {
 
-    private(set) var customerId : String = ""
-    private(set) var sourceTokenId : String = ""
+    var customerId : String = ""
+    var sourceTokenId : String = ""
     
     init(customerId: String, sourceTokenId: String) {
         self.customerId = customerId

@@ -55,13 +55,22 @@ struct VerifyResetView: View {
     }
     
     func attemptVerifyReset() -> Bool {
+        
+        if resetId == "" {
+            successOrFailure.setValue("Failed to verify password reset because reset id was not set")
+            return false
+        }
+        
         if Constants.DEBUG {
             successOrFailure.setValue("Verified password reset in DEBUG mode")
             return true
         } else {
             let api = Config().api
             let denariiResponses = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
-            
+            if denariiResponses.isEmpty {
+                successOrFailure.setValue("Failed to login there were no responses from server")
+                return false
+            }
             // We only expect one
             let response = denariiResponses.first!
             if response.responseCode != 200 {

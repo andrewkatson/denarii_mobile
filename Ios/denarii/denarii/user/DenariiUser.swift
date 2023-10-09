@@ -8,7 +8,7 @@
 import Foundation
 
 struct DenariiUser {
-    private(set) var resetID : Int = 0
+    var resetID : Int = 0
     private(set) var reportID : String = ""
     private(set) var verificationReportStatus : String = ""
     private(set) var isVerified : Bool = false
@@ -18,5 +18,12 @@ struct DenariiUser {
         self.reportID = reportID
         self.verificationReportStatus = verificationReportStatus
         self.isVerified = isVerified
+    }
+    
+    init() {
+        self.resetID = 0
+        self.reportID = ""
+        self.verificationReportStatus = ""
+        self .isVerified = false
     }
 }
