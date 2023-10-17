@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SupportTicketComment {
+class SupportTicketComment {
     private(set) var author : String = ""
     
     private(set) var content : String = ""

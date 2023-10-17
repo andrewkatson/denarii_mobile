@@ -67,7 +67,7 @@ struct RegisterView: View {
             successOrFailure.setValue("Registered in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.getUserId(username, email, password)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
@@ -79,7 +79,15 @@ struct RegisterView: View {
                 successOrFailure.setValue("Failed to register due to a server side error")
                 return false
             }
-            userIdentifier.setValue(Int(response.userIdentifier)!)
+            
+            let userIdentifierOptional = Int(response.userIdentifier)
+            
+            if userIdentifierOptional == nil {
+                successOrFailure.setValue("Failed to register due to a client side error")
+                return false
+            }
+            
+            userIdentifier.setValue(userIdentifierOptional!)
             successOrFailure.setValue("Registered")
             return true
         }

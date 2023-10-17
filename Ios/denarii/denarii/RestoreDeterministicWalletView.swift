@@ -64,7 +64,7 @@ struct RestoreDeterministicWalletView: View {
             successOrFailure.setValue("Restored wallet in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.restoreWallet(userIdentifier.getValue(),walletName, walletPassword, walletSeed)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")

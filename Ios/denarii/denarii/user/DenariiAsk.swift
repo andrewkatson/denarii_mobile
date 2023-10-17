@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DenariiAsk {
+class DenariiAsk {
     private(set) var askID : String = ""
 
     var amount : Double = 0.0

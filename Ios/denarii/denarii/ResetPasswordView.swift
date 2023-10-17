@@ -74,7 +74,7 @@ struct ResetPasswordView: View {
             successOrFailure.setValue("Reset password in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.resetPassword(username, email, password)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")

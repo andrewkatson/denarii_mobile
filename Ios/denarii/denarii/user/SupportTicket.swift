@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SupportTicket {
+class SupportTicket {
     private(set) var supportID : String = ""
 
     private(set) var description : String = ""

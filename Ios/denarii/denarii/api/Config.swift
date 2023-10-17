@@ -8,9 +8,12 @@
 import Foundation
 
 struct Config {
-    var api: API {
+    
+    static let _api : API = UITesting() ? StubbedAPI() : RealAPI()
+    
+    static var api: API {
         get {
-            return UITesting() ? StubbedAPI() : RealAPI()
+            return _api
         }
     }
 }

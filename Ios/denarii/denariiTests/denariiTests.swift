@@ -94,11 +94,11 @@ final class denariiTests: XCTestCase {
         Constants.DEBUG = false
         self.measure {
             let openedWalletView = OpenedWalletView()
-            // Get some denarii into the wallet
+            // Get some denarii into the wallet text view
             openedWalletView.setBalance("1")
             openedWalletView.refreshBalance()
-            // The refresh of balance with the stubbed api always sets the balance to 3.0'
-            XCTAssert(openedWalletView.getBalance() == "3.0")
+            // The refresh of balance with the stubbed api always sets the balance to 0.0'
+            XCTAssert(openedWalletView.getBalance() == "0.0")
         }
     }
     
@@ -106,7 +106,7 @@ final class denariiTests: XCTestCase {
         Constants.DEBUG = false
         self.measure {
             let openedWalletView = OpenedWalletView()
-            // Get some denarii into the wallet
+            // Get some denarii into the wallet text view
             openedWalletView.setBalance("10")
             openedWalletView.sendDenarii()
             // Nothing should be sent because the amountToSend text view is empty

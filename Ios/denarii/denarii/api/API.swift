@@ -362,64 +362,16 @@ class StubbedAPI: API {
         
     var users : Array<UserDetails> = Array()
     
-    var lastAskId = 4
+    var lastAskId = 1
     
     var lastUserId = 1
     
-    func findSupportTicket(_ supportTicketId: String) -> SupportTicket {
-        for user in self.users {
-            for supportTicket in user.supportTicketList {
-                return supportTicket
-            }
-        }
-        return SupportTicket()
-    }
-    
-    func findUser(_ usernameOrEmail: String) -> UserDetails {
-        for user in self.users {
-            if user.userName == usernameOrEmail || user.userEmail == usernameOrEmail {
-                return user
-            }
-        }
-        return UserDetails()
-    }
-    
-    func findUserWithId(_ userIdentifier: String) -> UserDetails {
-        for user in self.users {
-            if user.userID == userIdentifier {
-                return user
-            }
-        }
-        return UserDetails()
-    }
-    
-    func findUserWithWalletAddress(_ walletAddress: String) -> UserDetails {
-        for user in self.users {
-            if user.walletDetails.walletAddress == walletAddress {
-                return user
-            }
-        }
-        return UserDetails()
-    }
-    
-    func deleteAsk(_ userIdentifier: String, _ askId: String) {
-        for var user in self.users {
-            if user.userID == userIdentifier {
-                var finalAsks = Array<DenariiAsk>()
-                for ask in user.denariiAskList {
-                    if ask.askID != askId {
-                        finalAsks.append(ask)
-                    }
-                }
-                user.denariiAskList = finalAsks
-            }
-        }
-    }
-    
     func deleteAskById(_ askId: String) {
-        for var user in self.users {
+        for index in self.users.indices {
+            let user = self.users[index]
             var finalAsks = Array<DenariiAsk>()
-            for ask in user.denariiAskList {
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
                 if ask.askID != askId {
                     finalAsks.append(ask)
                 }
@@ -428,24 +380,11 @@ class StubbedAPI: API {
         }
     }
     
-    func findAsk(_ askId: String) -> DenariiAsk {
-        for user in self.users {
-            for ask in user.denariiAskList {
-                if ask.askID != askId {
-                    return ask
-                }
-            }
-        }
-        return DenariiAsk()
-    }
-    
     func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
- 
-        denariiResponses.append(denariiResponse)
         
         var foundUser = false
         var aUser = UserDetails()
@@ -462,11 +401,14 @@ class StubbedAPI: API {
         } else {
             denariiResponse.userIdentifier = String(lastUserId)
             
-            var newUser = UserDetails(userName: username, userEmail: email, userPassword: password, walletDetails: WalletDetails(), creditCard: CreditCard(), userID: denariiResponse.userIdentifier, denariiUser: DenariiUser())
+            let newUser = UserDetails(userName: username, userEmail: email, userPassword: password, walletDetails: WalletDetails(), creditCard: CreditCard(), userID: denariiResponse.userIdentifier, denariiUser: DenariiUser())
             users.append(newUser)
             
             lastUserId += 1
         }
+        
+        
+        denariiResponses.append(denariiResponse)
         
         return denariiResponses
     }
@@ -477,9 +419,14 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUser(usernameOrEmail)
-        
-        user.denariiUser.resetID = Int.random(in: 1..<100)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userName == usernameOrEmail || user.userEmail == usernameOrEmail {
+                // A static resetID to make testing easier
+                user.denariiUser.resetID = 123
+                break
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -491,12 +438,16 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = -1
         
-        let user = findUser(usernameOrEmail)
-        
-        if user.denariiUser.resetID == resetId {
-            denariiResponse.responseCode = 200
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userName == usernameOrEmail || user.userEmail == usernameOrEmail {
+                if user.denariiUser.resetID == resetId {
+                    denariiResponse.responseCode = 200
+                    break
+                }
+            }
         }
-        
+ 
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
@@ -507,10 +458,14 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUser(username)
-        
-        if user.userName == username && user.userEmail == email {
-            user.userPassword = password
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userName == username && user.userEmail == email {
+                if user.userName == username && user.userEmail == email {
+                    user.userPassword = password
+                    break
+                }
+            }
         }
         
         denariiResponses.append(denariiResponse)
@@ -526,9 +481,14 @@ class StubbedAPI: API {
         denariiResponse.walletAddress = String(Int.random(in: 1..<100))
         denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
         
-        var user = findUserWithId(String(userIdentifier))
-        user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 0.0, walletAddress: denariiResponse.walletAddress)
-        
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 3.0, walletAddress: denariiResponse.walletAddress)
+                break
+            }
+        }
+
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
@@ -540,9 +500,14 @@ class StubbedAPI: API {
         denariiResponse.responseCode = 200
         denariiResponse.walletAddress = "123 \(Int.random(in: 1..<100))"
         
-        var user = findUserWithId(String(userIdentifier))
-        user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: seed, balance: 10.0, walletAddress: denariiResponse.walletAddress)
-        
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: seed, balance: 10.0, walletAddress: denariiResponse.walletAddress)
+                break
+            }
+        }
+ 
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
@@ -555,9 +520,14 @@ class StubbedAPI: API {
         denariiResponse.walletAddress = String(Int.random(in: 1..<100))
         denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
         
-        var user = findUserWithId(String(userIdentifier))
-        user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 0.0, walletAddress: denariiResponse.walletAddress)
-        
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 0.0, walletAddress: denariiResponse.walletAddress)
+                break
+            }
+        }
+
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
@@ -568,9 +538,13 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        denariiResponse.balance = user.walletDetails.balance
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                denariiResponse.balance = user.walletDetails.balance
+                break
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -582,15 +556,23 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var sendingUser = findUserWithId(String(userIdentifier))
-
-        if sendingUser.walletDetails.balance >= amountToSend {
-            sendingUser.walletDetails.balance -= amountToSend
-            
-            var receivingUser = findUserWithWalletAddress(adddressToSendTo)
-            receivingUser.walletDetails.balance += amountToSend
-            
+        for index in self.users.indices {
+            let sendingUser = self.users[index]
+            if sendingUser.userID == String(userIdentifier) {
+                if sendingUser.walletDetails.balance >= amountToSend {
+                    sendingUser.walletDetails.balance -= amountToSend
+                    
+                    for otherIndex in self.users.indices {
+                        let receivingUser = self.users[otherIndex]
+                        if receivingUser.walletDetails.walletAddress == adddressToSendTo {
+                            receivingUser.walletDetails.balance += amountToSend
+                        }
+                    }
+                }
+                break
+            }
         }
+
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
@@ -622,15 +604,18 @@ class StubbedAPI: API {
         
         var allAsks = Array<DenariiAsk>()
         
-        for user in self.users {
-            for ask in user.denariiAskList {
+        for userIndex in self.users.indices {
+            let user = self.users[userIndex]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
                 if !ask.inEscrow && !ask.isSettled {
                     allAsks.append(ask)
                 }
             }
         }
         
-        for var ask in allAsks {
+        for askIndex in allAsks.indices {
+            let ask = allAsks[askIndex]
             if currentAmountBought >= amount {
                 break
             }
@@ -680,7 +665,8 @@ class StubbedAPI: API {
         
         if failIfFullAmountIsntMet && currentAmountBought < amount {
             
-            for var ask in boughtAsks {
+            for askIndex in boughtAsks.indices {
+                let ask = boughtAsks[askIndex]
                 ask.inEscrow = false
                 ask.buyerId = ""
                 ask.amount += ask.amountBought
@@ -695,8 +681,10 @@ class StubbedAPI: API {
     func transferDenarii(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        for user in self.users {
-            for var ask in user.denariiAskList {
+        for userIndex in self.users.indices {
+            let user = self.users[userIndex]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
                 if ask.askID == askId {
                     var denariiResponse = DenariiResponse()
                     denariiResponse.responseCode = 200
@@ -726,12 +714,16 @@ class StubbedAPI: API {
         denariiResponse.askingPrice = askingPrice
         denariiResponse.askID = String(lastAskId)
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        var newAsk = DenariiAsk(askID: denariiResponse.askID, amount: denariiResponse.amount, askingPrice: denariiResponse.askingPrice, inEscrow: false, amountBought: 0.0, isSettled: false, seenBySeller: false, buyerId: "")
-        
-        user.denariiAskList.append(newAsk)
-        
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                let newAsk = DenariiAsk(askID: denariiResponse.askID, amount: denariiResponse.amount, askingPrice: denariiResponse.askingPrice, inEscrow: false, amountBought: 0.0, isSettled: false, seenBySeller: false, buyerId: "")
+                
+                user.denariiAskList.append(newAsk)
+                break
+            }
+        }
+
         lastAskId += 1
         
         denariiResponses.append(denariiResponse)
@@ -741,18 +733,23 @@ class StubbedAPI: API {
     func pollForCompletedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        var user = findUserWithId(String(userIdentifier))
-        
-        for var ask in user.denariiAskList {
-            if ask.isSettled && !ask.inEscrow {
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.askID = ask.askID
-                denariiResponse.askingPrice = ask.askingPrice
-                denariiResponse.amount = ask.amount
-                
-                ask.seenBySeller = true
-                denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for askIndex in user.denariiAskList.indices {
+                    let ask = user.denariiAskList[askIndex]
+                    if ask.isSettled && !ask.inEscrow {
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.askID = ask.askID
+                        denariiResponse.askingPrice = ask.askingPrice
+                        denariiResponse.amount = ask.amount
+                        
+                        ask.seenBySeller = true
+                        denariiResponses.append(denariiResponse)
+                    }
+                }
+                break
             }
         }
         
@@ -766,22 +763,31 @@ class StubbedAPI: API {
         denariiResponse.responseCode = -1
         denariiResponse.askID = askId
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        var doDeleteAsk = false
-        for ask in user.denariiAskList {
-            if ask.askID == askId {
-                if !ask.inEscrow && !ask.isSettled {
-                    doDeleteAsk = true
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                var doDeleteAsk = false
+                for ask in user.denariiAskList {
+                    if ask.askID == askId {
+                        if !ask.inEscrow && !ask.isSettled {
+                            doDeleteAsk = true
+                        }
+                    }
                 }
+                if doDeleteAsk {
+                    var finalAsks = Array<DenariiAsk>()
+                    for askIndex in user.denariiAskList.indices {
+                        let ask = user.denariiAskList[askIndex]
+                        if ask.askID != askId {
+                            finalAsks.append(ask)
+                        }
+                    }
+                    user.denariiAskList = finalAsks                   
+                    denariiResponse.responseCode = 200
+                }
+                break
             }
         }
-        
-        if doDeleteAsk {
-            deleteAsk(String(userIdentifier), askId)
-            denariiResponse.responseCode = 200
-        }
-        
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -793,10 +799,13 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        let user = findUserWithId(String(userIdentifier))
-        
-        if user.creditCard.customerId != "" {
-            denariiResponse.hasCreditCardInfo = true
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                if user.creditCard.customerId != "" {
+                    denariiResponse.hasCreditCardInfo = true
+                }
+            }
         }
         
         denariiResponses.append(denariiResponse)
@@ -809,9 +818,12 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        user.creditCard = CreditCard(customerId: String(Int.random(in: 1..<100)), sourceTokenId: String(Int.random(in: 1..<100)))
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                user.creditCard = CreditCard(customerId: String(Int.random(in: 1..<100)), sourceTokenId: String(Int.random(in: 1..<100)))
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -823,8 +835,12 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUserWithId(String(userIdentifier))
-        user.creditCard = CreditCard()
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                user.creditCard = CreditCard()
+            }
+        }        
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -857,21 +873,30 @@ class StubbedAPI: API {
         denariiResponse.responseCode = 200
         denariiResponse.askID = askId
         
-        var ask = findAsk(askId)
-        if !ask.isSettled || !ask.seenBySeller {
-            denariiResponse.transactionWasSettled = false
-        }
-        else {
-            denariiResponse.transactionWasSettled = true
-            if ask.amount == 0 {
-                deleteAskById(askId)
+        for index in self.users.indices {
+            let user = self.users[index]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
+                if ask.askID != askId {
+                    if !ask.isSettled || !ask.seenBySeller {
+                        denariiResponse.transactionWasSettled = false
+                    }
+                    else {
+                        denariiResponse.transactionWasSettled = true
+                        if ask.amount == 0 {
+                            deleteAskById(askId)
+                        }
+                        else {
+                            ask.isSettled = false
+                            ask.seenBySeller = false
+                        }
+                    }
+                    denariiResponses.append(denariiResponse)
+                    break
+                }
             }
-            else {
-                ask.isSettled = false
-                ask.seenBySeller = false
-            }
         }
-        denariiResponses.append(denariiResponse)
+
         return denariiResponses
     }
     
@@ -900,13 +925,22 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        let ask = findAsk(askId)
-        denariiResponse.askID = ask.askID
-        denariiResponse.amount = ask.amount
-        denariiResponse.amountBought = ask.amountBought
-        denariiResponse.askingPrice = ask.askingPrice
-        
-        denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
+                if ask.askID != askId {
+                    denariiResponse.askID = ask.askID
+                    denariiResponse.amount = ask.amount
+                    denariiResponse.amountBought = ask.amountBought
+                    denariiResponse.askingPrice = ask.askingPrice
+                    
+                    denariiResponses.append(denariiResponse)
+                    break
+                }
+            }
+        }
+
         return denariiResponses
     }
     
@@ -916,27 +950,32 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        for var otherUser in self.users {
-            for var ask in user.denariiAskList {
-                if ask.askID == askId {
-                    var denariiResponse = DenariiResponse()
-                    denariiResponse.responseCode = 200
-                    denariiResponse.askID = ask.askID
-                    denariiResponse.amountBought = ask.amountBought
-                    
-                    user.walletDetails.balance -= ask.amountBought
-                    otherUser.walletDetails.balance += ask.amountBought
-                    
-                    ask.amount += ask.amountBought
-                    ask.amountBought = 0.0
-                    ask.inEscrow = false
-                    ask.buyerId = ""
-                    ask.isSettled = false
-                    
-                    denariiResponses.append(denariiResponse)
-                    break
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for otherIndex in self.users.indices {
+                    let otherUser = self.users[otherIndex]
+                    for askIndex in user.denariiAskList.indices {
+                        let ask = user.denariiAskList[askIndex]
+                        if ask.askID == askId {
+                            var denariiResponse = DenariiResponse()
+                            denariiResponse.responseCode = 200
+                            denariiResponse.askID = ask.askID
+                            denariiResponse.amountBought = ask.amountBought
+                            
+                            user.walletDetails.balance -= ask.amountBought
+                            otherUser.walletDetails.balance += ask.amountBought
+                            
+                            ask.amount += ask.amountBought
+                            ask.amountBought = 0.0
+                            ask.inEscrow = false
+                            ask.buyerId = ""
+                            ask.isSettled = false
+                            
+                            denariiResponses.append(denariiResponse)
+                            break
+                        }
+                    }
                 }
             }
         }
@@ -961,18 +1000,25 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = -1
         
-        var ask = findAsk(askId)
-        
-        if ask.inEscrow {
-            if !ask.isSettled {
-                ask.inEscrow = false
-                ask.buyerId = ""
-                ask.amountBought = 0
-                denariiResponse.responseCode = 200
+        for index in self.users.indices {
+            let user = self.users[index]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
+                if ask.askID != askId {
+                    if ask.inEscrow {
+                        if !ask.isSettled {
+                            ask.inEscrow = false
+                            ask.buyerId = ""
+                            ask.amountBought = 0
+                            denariiResponse.responseCode = 200
+                            denariiResponses.append(denariiResponse)
+                            break
+                        }
+                    }
+                }
             }
         }
         
-        denariiResponses.append(denariiResponse)
         return denariiResponses
     }
     
@@ -1001,19 +1047,25 @@ class StubbedAPI: API {
     func getAllAsks(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        let user = findUserWithId(String(userIdentifier))
-        for ask in user.denariiAskList {
-            if !ask.inEscrow && !ask.isSettled {
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.askID = ask.askID
-                denariiResponse.amount = ask.amount
-                denariiResponse.amountBought = ask.amountBought
-                denariiResponse.askingPrice = ask.askingPrice
-                
-                denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for askIndex in user.denariiAskList.indices {
+                    let ask = user.denariiAskList[askIndex]
+                    if !ask.inEscrow && !ask.isSettled {
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.askID = ask.askID
+                        denariiResponse.amount = ask.amount
+                        denariiResponse.amountBought = ask.amountBought
+                        denariiResponse.askingPrice = ask.askingPrice
+                        
+                        denariiResponses.append(denariiResponse)
+                    }
+                }
             }
         }
+
         return denariiResponses
     }
     
@@ -1022,8 +1074,10 @@ class StubbedAPI: API {
         
         var allBuys = Array<DenariiAsk>()
         
-        for user in self.users {
-            for ask in user.denariiAskList {
+        for userIndex in self.users.indices {
+            let user = self.users[userIndex]
+            for askIndex in user.denariiAskList.indices {
+                let ask = user.denariiAskList[askIndex]
                 if ask.buyerId == String(userIdentifier) {
                     allBuys.append(ask)
                 }
@@ -1047,13 +1101,18 @@ class StubbedAPI: API {
     func createSupportTicket(_ userIdentifier: Int, _ title: String, _ description: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        var user = findUserWithId(String(userIdentifier))
-        
         let supportTicketId = String(Int.random(in: 0..<100))
-        var newTicket = SupportTicket(supportID: supportTicketId, description: description, title: title, resolved: false, supportTicketCommentList: Array())
         
-        user.supportTicketList.append(newTicket)
-        
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                let newTicket = SupportTicket(supportID: supportTicketId, description: description, title: title, resolved: false, supportTicketCommentList: Array())
+                
+                user.supportTicketList.append(newTicket)
+                break
+            }
+        }
+
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
@@ -1069,13 +1128,17 @@ class StubbedAPI: API {
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
         
-        var user = findUserWithId(String(userIdentifier))
-        
-        var supportTicket = findSupportTicket(supportTicketId)
-        
-        var newComment = SupportTicketComment(author: user.userName, content: comment)
-        
-        supportTicket.supportTicketCommentList.append(newComment)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for supportTicketIndex in user.supportTicketList.indices {
+                    let supportTicket = user.supportTicketList[supportTicketIndex]
+                    let newComment = SupportTicketComment(author: user.userName, content: comment)
+                    
+                    supportTicket.supportTicketCommentList.append(newComment)
+                }
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -1088,9 +1151,11 @@ class StubbedAPI: API {
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
         
-        for var user in self.users {
+        for index in self.users.indices {
+            let user = self.users[index]
             var finalSupportTickets = Array<SupportTicket>()
-            for supportTicket in user.supportTicketList {
+            for supportTicketIndex in user.supportTicketList.indices {
+                let supportTicket = user.supportTicketList[supportTicketIndex]
                 if supportTicket.supportID != supportTicketId {
                     finalSupportTickets.append(supportTicket)
                 }
@@ -1105,41 +1170,53 @@ class StubbedAPI: API {
     func getSupportTickets(_ userIdentifier: Int, _ canBeResolved: Bool) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         
-        let user = findUserWithId(String(userIdentifier))
-        
-        for supportTicket in user.supportTicketList {
-            if !supportTicket.resolved || canBeResolved {
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.supportTicketID = supportTicket.supportID
-                denariiResponse.author = user.userName
-                denariiResponse.description = supportTicket.description
-                denariiResponse.updatedTimeBody = ""
-                denariiResponse.creationTimeBody = ""
-                denariiResponse.isResolved = supportTicket.resolved
-                
-                denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for supportTicketIndex in user.supportTicketList.indices {
+                    let supportTicket = user.supportTicketList[supportTicketIndex]
+                    if !supportTicket.resolved || canBeResolved {
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.supportTicketID = supportTicket.supportID
+                        denariiResponse.author = user.userName
+                        denariiResponse.description = supportTicket.description
+                        denariiResponse.updatedTimeBody = ""
+                        denariiResponse.creationTimeBody = ""
+                        denariiResponse.isResolved = supportTicket.resolved
+                        
+                        denariiResponses.append(denariiResponse)
+                    }
+                }
+                break
             }
         }
+
         return denariiResponses
     }
 
     func getSupportTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        var user = findUserWithId(String(userIdentifier))
-        for supportTicket in user.supportTicketList {
-            if supportTicket.supportID == supportTicketId{
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.supportTicketID = supportTicket.supportID
-                denariiResponse.author = user.userName
-                denariiResponse.description = supportTicket.description
-                denariiResponse.updatedTimeBody = ""
-                denariiResponse.creationTimeBody = ""
-                denariiResponse.isResolved = supportTicket.resolved
-                
-                denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for supportTicketIndex in user.supportTicketList.indices {
+                    let supportTicket = user.supportTicketList[supportTicketIndex]
+                    if supportTicket.supportID == supportTicketId{
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.supportTicketID = supportTicket.supportID
+                        denariiResponse.author = user.userName
+                        denariiResponse.description = supportTicket.description
+                        denariiResponse.updatedTimeBody = ""
+                        denariiResponse.creationTimeBody = ""
+                        denariiResponse.isResolved = supportTicket.resolved
+                        
+                        denariiResponses.append(denariiResponse)
+                        break
+                    }
+                }
             }
         }
 
@@ -1149,49 +1226,71 @@ class StubbedAPI: API {
     func getCommentsOnTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        var supportTicket = findSupportTicket(supportTicketId)
-        for comment in supportTicket.supportTicketCommentList {
-            var denariiResponse = DenariiResponse()
-            denariiResponse.responseCode = 200
-            denariiResponse.author = comment.author
-            denariiResponse.content = comment.content
-            denariiResponse.updatedTimeBody = ""
-            denariiResponse.creationTimeBody = ""
-            
-            denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            for stIndex in user.supportTicketList.indices {
+                let supportTicket = user.supportTicketList[stIndex]
+                if supportTicket.supportID == supportTicketId {
+                    for comment in supportTicket.supportTicketCommentList {
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.author = comment.author
+                        denariiResponse.content = comment.content
+                        denariiResponse.updatedTimeBody = ""
+                        denariiResponse.creationTimeBody = ""
+                        
+                        denariiResponses.append(denariiResponse)
+                    }
+                    break
+                }
+            }
         }
         return denariiResponses
     }
     
     func resolveSupportTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
-        var supportTicket = findSupportTicket(supportTicketId)
+                
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for supportTicketIndex in user.supportTicketList.indices {
+                    let supportTicket = user.supportTicketList[supportTicketIndex]
+                    if supportTicket.supportID == supportTicketId{
+                        supportTicket.resolved = true
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.supportTicketID = supportTicketId
+                        denariiResponse.updatedTimeBody = ""
+                        denariiResponses.append(denariiResponse)
+                        break
+                    }
+                }
+            }
+        }
         
-        var denariiResponse = DenariiResponse()
-        denariiResponse.responseCode = 200
-        denariiResponse.supportTicketID = supportTicketId
-        denariiResponse.updatedTimeBody = ""
-        
-        denariiResponses.append(denariiResponse)
         return denariiResponses
     }
 
     func pollForEscrowedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
 
-        let user = findUserWithId(String(userIdentifier))
-        
-        for ask in user.denariiAskList {
-            if ask.inEscrow && !ask.isSettled {
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.askID = ask.askID
-                denariiResponse.amount = ask.amount
-                denariiResponse.askingPrice = ask.askingPrice
-                denariiResponse.amountBought = ask.amountBought
-                
-                denariiResponses.append(denariiResponse)
+        for index in self.users.indices {
+            let user = self.users[index]
+            if user.userID == String(userIdentifier) {
+                for askIndex in user.denariiAskList.indices {
+                    let ask = user.denariiAskList[askIndex]
+                    if ask.inEscrow && !ask.isSettled {
+                        var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+                        denariiResponse.askID = ask.askID
+                        denariiResponse.amount = ask.amount
+                        denariiResponse.askingPrice = ask.askingPrice
+                        denariiResponse.amountBought = ask.amountBought
+                        
+                        denariiResponses.append(denariiResponse)
+                    }
+                }
             }
         }
 

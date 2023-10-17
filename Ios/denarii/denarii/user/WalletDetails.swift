@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WalletDetails {
+class WalletDetails {
     private(set) var walletName : String = ""
 
     private(set) var walletPassword : String = ""

@@ -42,6 +42,8 @@ Just open Ios/ folder with XCode
 
 Go to "Edit Scheme" and add "UI-TESTING" to Arguments Passed on Launch
 
+Go to the Simulator when you run a test and go to "I/O > Keyboard" and uncheck "Connect Hardware Keboard"
+
 ## Running 
 
 ### Backend

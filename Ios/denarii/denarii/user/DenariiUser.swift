@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DenariiUser {
+class DenariiUser {
     var resetID : Int = 0
     private(set) var reportID : String = ""
     private(set) var verificationReportStatus : String = ""

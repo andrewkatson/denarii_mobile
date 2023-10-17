@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserDetails {
+class UserDetails {
     
     private(set) var userName : String = ""
     private(set) var userEmail : String = ""
@@ -35,7 +35,6 @@ struct UserDetails {
         self.userPassword = ""
         self.walletDetails = WalletDetails()
         self.creditCard = CreditCard()
-        self.userID = "-1"
         self.userID = "-1"
         self.denariiUser = DenariiUser()
     }

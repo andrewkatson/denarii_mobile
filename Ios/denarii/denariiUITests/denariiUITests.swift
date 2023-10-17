@@ -10,6 +10,8 @@ import XCTest
 
 final class denariiUITests: XCTestCase {
     
+    var currentTestName = ""
+    
     func dismissKeyboardIfPresent(_ app: XCUIApplication) {
         if app.keyboards.buttons["Return"].exists {
             app.keyboards.buttons["Return"].tap()
@@ -18,21 +20,44 @@ final class denariiUITests: XCTestCase {
     
     func tapAway(_ app: XCUIApplication) {
         app.tap()
+        
+        // Have to do redundant tapping becuase the popover in landscape is harder to tap
+        if app.staticTexts["Popover"].exists {
+            app.staticTexts["Popover"].tap()
+            if app.staticTexts["Popover"].exists {
+                app.staticTexts["Popover"].swipeDown()
+            }
+            XCTAssert(!app.staticTexts["Popover"].exists, "Popover still exists")
+        }
+        if app.staticTexts["Refresh Balance Popover"].exists {
+            app.staticTexts["Refresh Balance Popover"].tap()
+            if app.staticTexts["Refresh Balance Popover"].exists {
+                app.staticTexts["Refresh Balance Popover"].swipeDown()
+            }
+            XCTAssert(!app.staticTexts["Refresh Balance Popover"].exists, "Popover still exists")
+        }
+        if app.staticTexts["Send Denarii Popover"].exists {
+            app.staticTexts["Send Denarii Popover"].tap()
+            if app.staticTexts["Send Denarii Popover"].exists {
+                app.staticTexts["Send Denarii Popover"].swipeDown()
+            }
+            XCTAssert(!app.staticTexts["Send Denarii Popover"].exists, "Popover still exists")
+        }
     }
     
     func navigateToLoginOrRegister(_ app: XCUIApplication) {
-        let contentViewToLoginOrRegisterPredicate = NSPredicate(format: "label beginswith 'Next'")
-        app.buttons.matching(contentViewToLoginOrRegisterPredicate).element.tap()
+        let nextButton = app.buttons["Next"]
+        nextButton.tap()
     }
     
     func navigateToLogin(_ app: XCUIApplication) {
-        let loginPredicate = NSPredicate(format: "label beginswith 'Login'")
-        app.buttons.matching(loginPredicate).element.tap()
+        let loginButton = app.buttons["Login"]
+        loginButton.tap()
     }
     
     func navigateToRegister(_ app: XCUIApplication) {
-        let registerPredicate = NSPredicate(format: "label beginswith 'Register'")
-        app.buttons.matching(registerPredicate).element.tap()
+        let registerButton = app.buttons["Register"]
+        registerButton.tap()
     }
     
     func navigateToLoginFromLoginOrRegister(_ app: XCUIApplication) {
@@ -41,44 +66,53 @@ final class denariiUITests: XCTestCase {
     }
     
     func loginWithDenarii(_ app: XCUIApplication) {
-        navigateToLoginFromLoginOrRegister(app)
+        registerWithDenarii(app)
         
-        let usernamePredicate = NSPredicate(format: "placeholderValue beginswith 'Name'")
-        let emailPredicate = NSPredicate(format: "placeholderValue beginswith 'Email'")
-        let passwordPredicate = NSPredicate(format: "placeholderValue beginswith 'Password'")
-        let confirmPasswordPredicate = NSPredicate(format: "placeholderValue beginswith 'Confirm Password'")
-        let submitButtonPredicate = NSPredicate(format: "label beginswith 'Submit'")
-        let nextButtonPredicate = NSPredicate(format: "label beginswith 'Next'")
+        // Then navigate back
+        let backButton = app.buttons["Back"]
+        backButton.tap()
         
-        let loginTextField = app.textFields.matching(usernamePredicate)
-        loginTextField.element.tap()
-        loginTextField.element.typeText("User")
+        let backButtonTwo = app.buttons["Back"]
+        backButtonTwo.tap()
         
-        let emailTextField = app.textFields.matching(emailPredicate)
-        emailTextField.element.tap()
-        emailTextField.element.typeText("Email@email.com")
+        navigateToLogin(app)
         
-        let passwordSecureTextField = app.secureTextFields.matching(passwordPredicate)
-        passwordSecureTextField.element.tap()
-        passwordSecureTextField.element.typeText("Password")
+        let loginTextField = app.textFields["Name"]
+        loginTextField.tap()
+        loginTextField.typeText("User_\(self.currentTestName)")
         
-        let confirmPasswordSecureTextField = app.secureTextFields.matching(confirmPasswordPredicate)
-        confirmPasswordSecureTextField.element.tap()
-        confirmPasswordSecureTextField.element.typeText("Password")
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let emailTextField = app.textFields["Email"]
+        emailTextField.tap()
+        emailTextField.typeText("Email_\(self.currentTestName)@email.com")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let passwordSecureTextField = app.secureTextFields["Password"]
+        passwordSecureTextField.tap()
+        passwordSecureTextField.typeText("Password_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
+        confirmPasswordSecureTextField.tap()
+        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)")
 
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
-        let submitButton = app.buttons.matching(submitButtonPredicate)
-        submitButton.element.tap()
+        let submitButton = app.buttons["Submit"]
+        submitButton.tap()
         
         // A popover appears and we need to tap it away
         tapAway(app)
         
-        let nextButton = app.buttons.matching(nextButtonPredicate)
-        nextButton.element.tap()
+        let nextButton = app.buttons["Next"]
+        nextButton.tap()
     }
     
     func registerWithDenarii(_ app: XCUIApplication) {
@@ -86,46 +120,55 @@ final class denariiUITests: XCTestCase {
 
         navigateToRegister(app)
         
-        let usernamePredicate = NSPredicate(format: "placeholderValue beginswith 'Name'")
-        let emailPredicate = NSPredicate(format: "placeholderValue beginswith 'Email'")
-        let passwordPredicate = NSPredicate(format: "placeholderValue beginswith 'Password'")
-        let confirmPasswordPredicate = NSPredicate(format: "placeholderValue beginswith 'Confirm Password'")
-        let submitButtonPredicate = NSPredicate(format: "label beginswith 'Submit'")
-        let nextButtonPredicate = NSPredicate(format: "label beginswith 'Next'")
+        let loginTextField = app.textFields["Name"]
+        loginTextField.tap()
+        loginTextField.typeText("User_\(self.currentTestName)")
         
-        let loginTextField = app.textFields.matching(usernamePredicate)
-        loginTextField.element.tap()
-        loginTextField.element.typeText("User")
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
-        let emailTextField = app.textFields.matching(emailPredicate)
-        emailTextField.element.tap()
-        emailTextField.element.typeText("Email@email.com")
+        let emailTextField = app.textFields["Email"]
+        emailTextField.tap()
+        emailTextField.typeText("Email_\(self.currentTestName)@email.com")
         
-        let passwordSecureTextField = app.secureTextFields.matching(passwordPredicate)
-        passwordSecureTextField.element.tap()
-        passwordSecureTextField.element.typeText("Password")
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
-        let confirmPasswordSecureTextField = app.secureTextFields.matching(confirmPasswordPredicate)
-        confirmPasswordSecureTextField.element.tap()
-        confirmPasswordSecureTextField.element.typeText("Password")
+        let passwordSecureTextField = app.secureTextFields["Password"]
+        passwordSecureTextField.tap()
+        passwordSecureTextField.typeText("Password_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
+        confirmPasswordSecureTextField.tap()
+        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)")
 
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
-        let submitButton = app.buttons.matching(submitButtonPredicate)
-        submitButton.element.tap()
+        let submitButton = app.buttons["Submit"]
+        submitButton.tap()
         
         // A popover appears and we need to tap it away
         tapAway(app)
         
-        let nextButton = app.buttons.matching(nextButtonPredicate)
-        nextButton.element.tap()
+        let nextButton = app.buttons["Next"]
+        nextButton.tap()
     }
     
     func resetPassword(_ app: XCUIApplication) {
-        navigateToLoginFromLoginOrRegister(app)
+        registerWithDenarii(app)
+        
+        // Then navigate back
+        let backButton = app.buttons["Back"]
+        backButton.tap()
+        
+        let backButtonTwo = app.buttons["Back"]
+        backButtonTwo.tap()
+        
+        navigateToLogin(app)
         
         let forgotPasswordButton = app.buttons["Forgot Password"]
         forgotPasswordButton.tap()
@@ -134,12 +177,10 @@ final class denariiUITests: XCTestCase {
         
         let usernameOrEmailTextField = app.textFields.matching(userNameOrEmailPredicate)
         usernameOrEmailTextField.element.tap()
-        usernameOrEmailTextField.element.typeText("User")
+        usernameOrEmailTextField.element.typeText("User_\(self.currentTestName)")
 
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let submitButton = app.buttons["Request Reset"]
         submitButton.tap()
@@ -155,9 +196,7 @@ final class denariiUITests: XCTestCase {
         resetIdTextField.typeText("123")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let verifyResetButton = app.buttons["Verify Reset"]
         verifyResetButton.tap()
@@ -173,22 +212,29 @@ final class denariiUITests: XCTestCase {
         usernameTextField.tap()
         usernameTextField.typeText("User")
         
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
         let emailTextField = app.textFields["Email"]
         emailTextField.tap()
         emailTextField.typeText("Email@email.com")
         
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
         let passwordTextField = app.secureTextFields["Password"]
         passwordTextField.tap()
         passwordTextField.typeText("password")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let confirmPasswordTextField = app.secureTextFields["Confirm Password"]
         confirmPasswordTextField.tap()
         confirmPasswordTextField.typeText("password")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let resetPasswordButton = app.buttons["Reset Password"]
         resetPasswordButton.tap()
@@ -209,20 +255,24 @@ final class denariiUITests: XCTestCase {
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("password")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let confirmWalletPasswordSecureTextField = app.secureTextFields["Confirm Wallet Password"]
         confirmWalletPasswordSecureTextField.tap()
-        confirmWalletPasswordSecureTextField.typeText("password")
+        confirmWalletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let submitButton = app.buttons["Submit"]
         submitButton.tap()
@@ -235,23 +285,31 @@ final class denariiUITests: XCTestCase {
     }
     
     func openWallet(_ app: XCUIApplication) {
-        loginWithDenarii(app)
+        createWallet(app)
+        
+        // Then navigate back
+        let backButton = app.buttons["Back"]
+        backButton.tap()
+        
+        let backButtonTwo = app.buttons["Back"]
+        backButtonTwo.tap()
         
         let openWalletButton = app.buttons["Open Wallet"]
         openWalletButton.tap()
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("password")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let submitButton = app.buttons["Submit"]
         submitButton.tap()
@@ -264,27 +322,38 @@ final class denariiUITests: XCTestCase {
     }
     
     func restoreDeterministicWallet(_ app: XCUIApplication) {
-        loginWithDenarii(app)
+        createWallet(app)
+        
+        // Then navigate back
+        let backButton = app.buttons["Back"]
+        backButton.tap()
+        
+        let backButtonTwo = app.buttons["Back"]
+        backButtonTwo.tap()
         
         let restoreWalletButton = app.buttons["Restore Deterministic Wallet"]
         restoreWalletButton.tap()
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("password")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
         
         let walletSeedTextField = app.textFields["Wallet Seed"]
         walletSeedTextField.tap()
         walletSeedTextField.typeText("some seed here")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         let submitButton = app.buttons["Submit"]
         submitButton.tap()
@@ -318,9 +387,7 @@ final class denariiUITests: XCTestCase {
         sendToTextField.typeText("345")
         
         // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
         dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
         
         
         let sendDenariiButton = app.buttons["Send"]
@@ -368,6 +435,12 @@ final class denariiUITests: XCTestCase {
         // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        
+        // get the name and remove the class name and what comes before the class name
+        self.currentTestName = self.name.replacingOccurrences(of: "-[denariiUITests ", with: "")
+
+        // And then you'll need to remove the closing square bracket at the end of the test name
+        self.currentTestName = self.currentTestName.replacingOccurrences(of: "]", with: "")
     }
 
     override func tearDownWithError() throws {

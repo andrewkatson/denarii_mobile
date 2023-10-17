@@ -81,7 +81,7 @@ struct CreateWalletView: View {
             successOrFailure.setValue("Created wallet in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.createWallet(userIdentifier.getValue(),walletName, walletPassword)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CreditCard {
+class CreditCard {
 
     var customerId : String = ""
     var sourceTokenId : String = ""

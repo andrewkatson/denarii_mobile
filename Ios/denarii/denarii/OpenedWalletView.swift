@@ -77,7 +77,7 @@ struct OpenedWalletView: View {
             successOrFailureForRefreshBalance.setValue("Refreshed balance in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.getBalance(userIdentifier.getValue(), walletName.getValue())
             if denariiResponses.isEmpty {
                 successOrFailureForRefreshBalance.setValue("Failed to login there were no responses from server")
@@ -120,7 +120,7 @@ struct OpenedWalletView: View {
             successOrFailureForSendDenarii.setValue("Sent denarii in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.sendDenarii(userIdentifier.getValue(), walletName.getValue(), addressToSendTo, Double(amountToSend)!)
             if denariiResponses.isEmpty {
                 successOrFailureForSendDenarii.setValue("Failed to login there were no responses from server")

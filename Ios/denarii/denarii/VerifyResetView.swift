@@ -65,7 +65,7 @@ struct VerifyResetView: View {
             successOrFailure.setValue("Verified password reset in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")

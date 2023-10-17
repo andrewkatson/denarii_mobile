@@ -70,7 +70,7 @@ struct OpenWalletView: View {
             successOrFailure.setValue("Opened wallet in DEBUG mode")
             return true
         } else {
-            let api = Config().api
+            let api = Config.api
             let denariiResponses = api.openWallet(userIdentifier.getValue(),walletName, walletPassword)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
