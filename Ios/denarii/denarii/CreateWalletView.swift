@@ -25,27 +25,25 @@ struct CreateWalletView: View {
     }
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 140)
-            VStack {
+        HStack(alignment: .center) {
+            Spacer()
+            VStack(alignment: .center) {
+                Text("Create Wallet").font(.largeTitle)
                 Spacer()
                 TextField("Wallet Name", text: $walletName)
                 SecureField("Wallet Password", text: $walletPassword).textContentType(.newPassword)
                 SecureField("Confirm Wallet Password", text: $confirmWalletPassword)
                     .textContentType(.newPassword)
-                HStack {
+                HStack(alignment: .center) {
                     Text("Seed: ")
                     Spacer()
                     ChangingTextView(value: $seed.value)
-                }.padding(.trailing, 200)
-                HStack {
+                }
+                HStack(alignment: .center) {
                     Button("Submit") {
                         isSubmitted = attemptSubmit()
                         showingPopover = true
                     }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 25)
                     .popover(isPresented: $showingPopover) {
                         Text(successOrFailure.getValue())
                             .font(.headline)
@@ -64,7 +62,7 @@ struct CreateWalletView: View {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100).padding(.top, 40)
+                }
                 Spacer()
             }
         }

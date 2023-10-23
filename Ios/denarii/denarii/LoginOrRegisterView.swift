@@ -9,7 +9,8 @@ import SwiftUI
 
 struct LoginOrRegisterView: View {
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
+            Text("Login or Register").font(.largeTitle)
             Spacer(minLength: 300)
             NavigationLink(destination: LoginView()) {
                 Text("Login")

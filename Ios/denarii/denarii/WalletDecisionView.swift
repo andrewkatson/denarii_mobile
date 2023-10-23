@@ -18,9 +18,11 @@ struct WalletDecisionView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack (alignment: .center) {
             Spacer()
-            VStack {
+            VStack(alignment: .center) {
+                Text("Wallet Decision").font(.largeTitle)
+                Spacer()
                 NavigationLink(destination: CreateWalletView(userIdentifier.getValue())) {
                     Text("Create Wallet")
                 }
@@ -32,6 +34,7 @@ struct WalletDecisionView: View {
                 NavigationLink(destination: OpenWalletView(userIdentifier.getValue())) {
                     Text("Open Wallet")
                 }
+                Spacer()
             }
             Spacer()
         }

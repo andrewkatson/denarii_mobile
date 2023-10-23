@@ -27,40 +27,32 @@ struct ResetPasswordView: View {
     
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 100)
-            VStack {
+            VStack(alignment: .center) {
+                Text("Reset Password").font(.largeTitle)
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
                 SecureField("Password", text: $password)
                 SecureField("Confirm Password", text: $confirmPassword)
-                HStack {
-                    Button("Reset Password") {
-                        isReset = attemptReset()
-                        showingPopover = true
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 25).popover(isPresented: $showingPopover) {
-                        Text(successOrFailure.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopover = false
-                            }
-                            .accessibilityIdentifier("Popover")
-                    }
-                    Spacer()
+                Button("Reset Password") {
+                    isReset = attemptReset()
+                    showingPopover = true
+                }.popover(isPresented: $showingPopover) {
+                    Text(successOrFailure.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopover = false
+                        }
+                        .accessibilityIdentifier("Popover")
                 }
                 Spacer()
                 NavigationLink(destination: LoginView(userIdentifier.getValue())) {
                     if (isReset) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
+                }
                 Spacer()
             }
-        }
     }
     
     func attemptReset() -> Bool {

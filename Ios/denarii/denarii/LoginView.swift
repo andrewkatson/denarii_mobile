@@ -25,41 +25,37 @@ struct LoginView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Spacer()
-            VStack {
+            VStack(alignment: .center) {
+                Text("Login").font(.largeTitle)
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
                 SecureField("Password", text: $password).textContentType(.password)
                 SecureField("Confirm Password", text: $confirmPassword).textContentType(.password)
-                HStack {
-                    Button("Submit") {
-                        isSubmitted = attemptSubmit()
-                        showingPopover = true
-                    }.popover(isPresented: $showingPopover) {
-                        Text(successOrFailure.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopover = false
-                            }.accessibilityIdentifier("Popover")
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 75)
-                    Spacer()
+                Button("Submit") {
+                    isSubmitted = attemptSubmit()
+                    showingPopover = true
+                }.popover(isPresented: $showingPopover) {
+                    Text(successOrFailure.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopover = false
+                        }.accessibilityIdentifier("Popover")
+                Spacer()
                 }
-                HStack {
+                HStack(alignment: .center) {
                     NavigationLink(destination: RequestResetView(userIdentifier.getValue())) {
                         Text("Forgot Password")
-                    }.padding(.trailing, 70)
+                    }
                 }
                 Spacer()
                 NavigationLink(destination: WalletDecisionView(userIdentifier.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
+                }
                 Spacer()
             }
         }

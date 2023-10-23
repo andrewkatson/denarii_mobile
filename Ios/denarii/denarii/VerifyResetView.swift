@@ -25,16 +25,14 @@ struct VerifyResetView: View {
     }
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 125)
-            VStack {
+            VStack(alignment: .center) {
+                Text("Verify Request").font(.largeTitle)
                 Spacer()
                 TextField("Reset id", text: $resetId)
-                    .padding(.leading, 40)
                 Button("Verify Reset") {
                     isVerified = attemptVerifyReset()
                     showingPopover = true
-                }.padding(.trailing, 120).popover(isPresented: $showingPopover) {
+                }.popover(isPresented: $showingPopover) {
                     Text(successOrFailure.getValue())
                         .font(.headline)
                         .padding().onTapGesture {
@@ -47,10 +45,7 @@ struct VerifyResetView: View {
                     if (isVerified) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
-                    .padding(.bottom, 25)
-                
-            }
+                }
         }
     }
     

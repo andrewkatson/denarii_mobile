@@ -24,37 +24,28 @@ struct RestoreDeterministicWalletView: View {
     }
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 140)
-            VStack {
+            VStack(alignment: .center) {
+                Text("Restore Wallet").font(.largeTitle)
                 Spacer()
                 TextField("Wallet Name", text: $walletName)
                 SecureField("Wallet Password", text: $walletPassword).textContentType(.password)
                 TextField("Wallet Seed", text: $walletSeed)
-                HStack {
                     Button("Submit") {
                         isSubmitted = attemptSubmit()
                         showingPopover = true
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 25).popover(isPresented: $showingPopover) {
+                    }.popover(isPresented: $showingPopover) {
                         Text(successOrFailure.getValue())
                             .font(.headline)
-                            .padding().onTapGesture {
+                            .onTapGesture {
                                 showingPopover = false
                             }
                             .accessibilityIdentifier("Popover")
-                    }
-                    Spacer()
                 }
                 Spacer()
                 NavigationLink(destination: OpenedWalletView(userIdentifier.getValue(), walletName, walletSeed)) {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100).padding(.top, 60)
-                Spacer()
             }
         }
     }

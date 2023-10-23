@@ -23,15 +23,14 @@ struct RequestResetView: View {
     }
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 125)
-            VStack {
+            VStack(alignment: .center) {
+                Text("Request Reset").font(.largeTitle)
                 Spacer()
                 TextField("Username or Email", text: $usernameOrEmail)
                 Button("Request Reset") {
                     isRequested = attemptRequest()
                     showingPopover = true
-                }.padding(.trailing, 120).popover(isPresented: $showingPopover) {
+                }.popover(isPresented: $showingPopover) {
                     Text(successOrFailure.getValue())
                         .font(.headline)
                         .padding().onTapGesture {
@@ -44,10 +43,8 @@ struct RequestResetView: View {
                     if (isRequested) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
-                 .padding(.bottom, 25)
+                }
             }
-        }
     }
     
     func attemptRequest() -> Bool {

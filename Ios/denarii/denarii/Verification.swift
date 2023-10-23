@@ -8,8 +8,57 @@
 import SwiftUI
 
 struct Verification: View {
+    @State private var firstName: String = ""
+    @State private var middleName: String = ""
+    @State private var lastName: String = ""
+    @State private var email: String = ""
+    @State private var dob: String = ""
+    @State private var ssn: String = ""
+    @State private var zipcode: String = ""
+    @State private var phone: String = ""
+    @State private var workCity: String = ""
+    @State private var workState: String = ""
+    @State private var workCountry: String = ""
+
+    @State private var isSubmitted: Bool = false
+    @State private var showingPopover = false
+    
+    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var status: ObservableString = ObservableString("Not verified")
+    
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .center) {
+            Text("Verification").font(.largeTitle)
+            Spacer()
+            Text("Status: \(status.getValue())")
+            TextField("First Name", text: $firstName)
+            TextField("Middle Initial", text: $middleName)
+            TextField("Last Name", text: $lastName)
+            TextField("Email", text: $email)
+            TextField("Date of Birth", text: $dob)
+            TextField("Social Security Number", text: $ssn)
+            TextField("Zipcode", text: $zipcode)
+            TextField("Phone Number", text: $phone)
+            TextField("Work City", text: $workCity)
+            TextField("Work State", text: $workState)
+            TextField("Work Country", text: $workCountry)
+            Button("Submit") {
+                isSubmitted = attemptSubmit()
+                showingPopover = true
+            }.popover(isPresented: $showingPopover) {
+                Text(successOrFailure.getValue())
+                    .font(.headline)
+                    .padding().onTapGesture {
+                        showingPopover = false
+                    }.accessibilityIdentifier("Popover")
+            }
+            Spacer()
+        }
+    }
+    
+    func attemptSubmit() -> Bool {
+        return false
     }
 }
 

@@ -24,42 +24,33 @@ struct OpenWalletView: View {
     }
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 140)
-            VStack {
+        HStack(alignment: .center) {
+            Spacer()
+            VStack(alignment: .center) {
+                Text("Open Wallet").font(.largeTitle)
                 Spacer()
                 TextField("Wallet Name", text: $walletName)
                 SecureField("Wallet Password", text: $walletPassword).textContentType(.password)
-                HStack {
-                    Spacer(minLength: 150)
                     Text("Seed: ")
                     Spacer()
                     ChangingTextView(value: $seed.value)
-                    Spacer(minLength: 150)
-                }.padding(.trailing, 200)
-                HStack {
                     Button("Submit") {
                         isSubmitted = attemptSubmit()
                         showingPopover = true
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 25).popover(isPresented: $showingPopover) {
+                    }.popover(isPresented: $showingPopover) {
                         Text(successOrFailure.getValue())
                             .font(.headline)
-                            .padding().onTapGesture {
+                            .onTapGesture {
                                 showingPopover = false
                             }
                             .accessibilityIdentifier("Popover")
-                    }
-                    Spacer()
                 }
                 Spacer()
                 NavigationLink(destination: OpenedWalletView(userIdentifier.getValue(), walletName, seed.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100).padding(.top, 80)
+                }
                 Spacer()
             }
         }

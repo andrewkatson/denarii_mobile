@@ -32,6 +32,8 @@ struct OpenedWalletView: View {
     
     var body: some View {
         VStack(alignment: .center) {
+            Text("Wallet").font(.largeTitle)
+            Spacer()
             Text("Wallet Name").accessibilityLabel("Wallet Name")
             Text("Seed: " + seed.getValue()).accessibilityIdentifier("Seed")
             Text("Address: " + ownAddress.getValue()).accessibilityIdentifier("Address")
@@ -66,6 +68,7 @@ struct OpenedWalletView: View {
                     }
                     .accessibilityIdentifier("Send Denarii Popover")
             }
+            Spacer()
         }
     }
     

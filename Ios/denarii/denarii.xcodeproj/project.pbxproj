@@ -82,8 +82,6 @@
 		24FDF7D22ACA42D800EF9822 /* SupportTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */; };
 		24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */; };
 		24FDF7D62ACA430200EF9822 /* SupportTicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */; };
-		24FDF7DC2ACA459500EF9822 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DB2ACA459500EF9822 /* RadioButton.swift */; };
-		24FDF7DE2ACA45D100EF9822 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DD2ACA45D100EF9822 /* CheckBox.swift */; };
 		24FDF7E22ACB9A5000EF9822 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
 		24FDF7E32ACB9A5100EF9822 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
 		24FDF7E42ACB9A5500EF9822 /* denariiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E386F2A113D1A0011B999 /* denariiApp.swift */; };
@@ -105,10 +103,6 @@
 		24FDF7F42ACB9A5E00EF9822 /* DenariiAsk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */; };
 		24FDF7F52ACB9A5E00EF9822 /* DenariiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */; };
 		24FDF7F82ACB9A6700EF9822 /* ChangingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38ED2A27E5B60011B999 /* ChangingTextView.swift */; };
-		24FDF7F92ACB9A6700EF9822 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DD2ACA45D100EF9822 /* CheckBox.swift */; };
-		24FDF7FA2ACB9A6700EF9822 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DB2ACA459500EF9822 /* RadioButton.swift */; };
-		24FDF7FB2ACB9A6700EF9822 /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DD2ACA45D100EF9822 /* CheckBox.swift */; };
-		24FDF7FC2ACB9A6700EF9822 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7DB2ACA459500EF9822 /* RadioButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,8 +166,6 @@
 		24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTickets.swift; sourceTree = "<group>"; };
 		24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSupportTicket.swift; sourceTree = "<group>"; };
 		24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportTicketDetails.swift; sourceTree = "<group>"; };
-		24FDF7DB2ACA459500EF9822 /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
-		24FDF7DD2ACA45D100EF9822 /* CheckBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,8 +310,6 @@
 			isa = PBXGroup;
 			children = (
 				244E38ED2A27E5B60011B999 /* ChangingTextView.swift */,
-				24FDF7DB2ACA459500EF9822 /* RadioButton.swift */,
-				24FDF7DD2ACA45D100EF9822 /* CheckBox.swift */,
 			);
 			path = uiviews;
 			sourceTree = "<group>";
@@ -486,11 +476,9 @@
 				244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */,
 				24FDF7CE2ACA42B000EF9822 /* Verification.swift in Sources */,
 				244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */,
-				24FDF7DE2ACA45D100EF9822 /* CheckBox.swift in Sources */,
 				24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */,
 				244E38D62A23A3A60011B999 /* Config.swift in Sources */,
 				244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
-				24FDF7DC2ACA459500EF9822 /* RadioButton.swift in Sources */,
 				24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */,
 				244E38EA2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
 				24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */,
@@ -507,7 +495,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				244E38B32A116E210011B999 /* OpenedWalletView.swift in Sources */,
-				24FDF7FA2ACB9A6700EF9822 /* RadioButton.swift in Sources */,
 				244E389F2A1144570011B999 /* LoginView.swift in Sources */,
 				24FDF7E92ACB9A5E00EF9822 /* WalletDetails.swift in Sources */,
 				244E38D72A23A3A60011B999 /* Config.swift in Sources */,
@@ -521,7 +508,6 @@
 				244E38A72A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 				244E38E72A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */,
-				24FDF7F92ACB9A6700EF9822 /* CheckBox.swift in Sources */,
 				244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */,
 				24FDF7E62ACB9A5E00EF9822 /* SupportTicket.swift in Sources */,
 				24FDF7F82ACB9A6700EF9822 /* ChangingTextView.swift in Sources */,
@@ -567,9 +553,7 @@
 				244E38D82A23A3A60011B999 /* Config.swift in Sources */,
 				244E38F02A27E5B60011B999 /* ChangingTextView.swift in Sources */,
 				24FDF7F22ACB9A5E00EF9822 /* CreditCard.swift in Sources */,
-				24FDF7FC2ACB9A6700EF9822 /* RadioButton.swift in Sources */,
 				244E38EC2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
-				24FDF7FB2ACB9A6700EF9822 /* CheckBox.swift in Sources */,
 				244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */,
 				24FDF7F52ACB9A5E00EF9822 /* DenariiResponse.swift in Sources */,
 				24FDF7F12ACB9A5E00EF9822 /* WalletDetails.swift in Sources */,

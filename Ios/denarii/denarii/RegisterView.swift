@@ -19,41 +19,33 @@ struct RegisterView: View {
     @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
     
     var body: some View {
-        HStack {
-            Spacer(minLength: 100)
-            VStack {
+            VStack(alignment: .center) {
+                Text("Register").font(.largeTitle)
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
                 SecureField("Password", text: $password).textContentType(.newPassword)
                 SecureField("Confirm Password", text: $confirmPassword).textContentType(.newPassword)
-                HStack {
-                    Button("Submit") {
-                        isSubmitted = attemptSubmit()
-                        showingPopover = true
-                    }
-                    .padding(.top, 15)
-                    .padding(.bottom, 15)
-                    .padding(.leading, 75)
-                    .popover(isPresented: $showingPopover) {
-                        Text(successOrFailure.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopover = false
-                            }
-                            .accessibilityIdentifier("Popover")
-                    }
-                    Spacer()
+                Button("Submit") {
+                    isSubmitted = attemptSubmit()
+                    showingPopover = true
+                }
+                .popover(isPresented: $showingPopover) {
+                    Text(successOrFailure.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopover = false
+                        }
+                        .accessibilityIdentifier("Popover")
                 }
                 Spacer()
                 NavigationLink(destination: WalletDecisionView(userIdentifier.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
-                }.padding(.leading, 100)
+                }
                 Spacer()
             }
-        }
     }
     
     func attemptSubmit() -> Bool {
