@@ -16,12 +16,12 @@ struct LoginView: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user = ObservableUser()
     
     init() {}
     
-    init(_ userIdentifier: Int) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
     
     var body: some View {
@@ -46,12 +46,12 @@ struct LoginView: View {
                 Spacer()
                 }
                 HStack(alignment: .center) {
-                    NavigationLink(destination: RequestResetView(userIdentifier.getValue())) {
+                    NavigationLink(destination: RequestResetView(user.getValue())) {
                         Text("Forgot Password")
                     }
                 }
                 Spacer()
-                NavigationLink(destination: WalletDecisionView(userIdentifier.getValue())) {
+                NavigationLink(destination: WalletDecisionView(user.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
@@ -90,7 +90,7 @@ struct LoginView: View {
                 return false
             }
             
-            userIdentifier.setValue(userIdentifierOptional!)
+            user.getValue().userID = String(userIdentifierOptional!)
             successOrFailure.setValue("Logged In")
             return true
         }

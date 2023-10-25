@@ -16,12 +16,12 @@ struct CreateWalletView: View {
     
     @ObservedObject private var seed: ObservableString = ObservableString()
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
     init() {}
 
-    init(_ userIdentifier: Int) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
     
     var body: some View {
@@ -58,7 +58,7 @@ struct CreateWalletView: View {
                     Spacer()
                 }
                 Spacer()
-                NavigationLink(destination: OpenedWalletView(userIdentifier.getValue(), walletName, seed.getValue())) {
+                NavigationLink(destination: OpenedWalletView(user.getValue(), walletName, seed.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
@@ -80,7 +80,13 @@ struct CreateWalletView: View {
             return true
         } else {
             let api = Config.api
-            let denariiResponses = api.createWallet(userIdentifier.getValue(),walletName, walletPassword)
+            var userId = -1
+            
+            if !user.getValue().userID.isEmpty {
+                userId = Int(user.getValue().userID)!
+            }
+            
+            let denariiResponses = api.createWallet(userId,walletName, walletPassword)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
                 return false

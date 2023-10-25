@@ -14,12 +14,12 @@ struct RequestResetView: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
     init() {}
     
-    init(_ userIdentifier: Int) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
     
     var body: some View {
@@ -39,7 +39,7 @@ struct RequestResetView: View {
                         .accessibilityIdentifier("Popover")
                 }
                 Spacer()
-                NavigationLink(destination: VerifyResetView(userIdentifier.getValue(), usernameOrEmail)) {
+                NavigationLink(destination: VerifyResetView(user.getValue(), usernameOrEmail)) {
                     if (isRequested) {
                         Text("Next")
                     }

@@ -8,15 +8,15 @@
 import Foundation
 
 class WalletDetails {
-    private(set) var walletName : String = ""
+    var walletName : String = ""
 
     private(set) var walletPassword : String = ""
 
-    private(set) var seed : String = ""
+    var seed : String = ""
 
     var balance : Double = 0.0
 
-    private(set) var walletAddress : String = ""
+    var walletAddress : String = ""
     
     init(walletName: String, walletPassword: String, seed: String, balance: Double, walletAddress: String) {
         self.walletName = walletName

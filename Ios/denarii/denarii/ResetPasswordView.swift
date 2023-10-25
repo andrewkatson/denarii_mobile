@@ -17,12 +17,12 @@ struct ResetPasswordView: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
     init() {}
     
-    init(_ userIdentifier: Int) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
     
     
@@ -46,7 +46,7 @@ struct ResetPasswordView: View {
                         .accessibilityIdentifier("Popover")
                 }
                 Spacer()
-                NavigationLink(destination: LoginView(userIdentifier.getValue())) {
+                NavigationLink(destination: LoginView(user.getValue())) {
                     if (isReset) {
                         Text("Next")
                     }

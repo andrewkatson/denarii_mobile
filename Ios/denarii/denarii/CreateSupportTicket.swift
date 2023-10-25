@@ -16,6 +16,14 @@ struct CreateSupportTicket: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
+    
+    init() {}
+
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
+    }
+    
     
     var body: some View {
         VStack(alignment: .center) {

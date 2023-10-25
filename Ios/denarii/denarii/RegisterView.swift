@@ -16,7 +16,7 @@ struct RegisterView: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
     var body: some View {
             VStack(alignment: .center) {
@@ -39,7 +39,7 @@ struct RegisterView: View {
                         .accessibilityIdentifier("Popover")
                 }
                 Spacer()
-                NavigationLink(destination: WalletDecisionView(userIdentifier.getValue())) {
+                NavigationLink(destination: WalletDecisionView(user.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }
@@ -79,7 +79,9 @@ struct RegisterView: View {
                 return false
             }
             
-            userIdentifier.setValue(userIdentifierOptional!)
+            var userDetails = UserDetails()
+            userDetails.userID = String(userIdentifierOptional!)
+            user.setValue(userDetails)
             successOrFailure.setValue("Registered")
             return true
         }

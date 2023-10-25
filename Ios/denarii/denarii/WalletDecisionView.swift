@@ -9,12 +9,12 @@ import SwiftUI
 
 struct WalletDecisionView: View {
     
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
     init() {}
     
-    init(_ userIdentifier: Int) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
     
     var body: some View {
@@ -23,15 +23,15 @@ struct WalletDecisionView: View {
             VStack(alignment: .center) {
                 Text("Wallet Decision").font(.largeTitle)
                 Spacer()
-                NavigationLink(destination: CreateWalletView(userIdentifier.getValue())) {
+                NavigationLink(destination: CreateWalletView(user.getValue())) {
                     Text("Create Wallet")
                 }
                 Spacer()
-                NavigationLink(destination: RestoreDeterministicWalletView(userIdentifier.getValue())) {
+                NavigationLink(destination: RestoreDeterministicWalletView(user.getValue())) {
                     Text("Restore Deterministic Wallet")
                 }
                 Spacer()
-                NavigationLink(destination: OpenWalletView(userIdentifier.getValue())) {
+                NavigationLink(destination: OpenWalletView(user.getValue())) {
                     Text("Open Wallet")
                 }
                 Spacer()

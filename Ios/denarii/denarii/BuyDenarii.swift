@@ -17,9 +17,12 @@ struct BuyDenarii: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     
-    private let failIfFullAmountIsntMetUIAction: UIAction = UIAction(title: "Fail if fullAmountIsntMet") { action in
-        print("Hello")
+    init() {}
+
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
     }
 
     var body: some View {
@@ -60,6 +63,24 @@ struct BuyDenarii: View {
                     Text("Price")
                     Text("Amount Bought")
                     Text("Cancel Buy")
+                }
+            }
+            Spacer()
+            HStack {
+                NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                    Text("Wallet")
+                }
+                NavigationLink(destination: SellDenarii(user.getValue())) {
+                    Text("Sell Denarii")
+                }
+                NavigationLink(destination: Verification(user.getValue())) {
+                    Text("Verification")
+                }
+                NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                    Text("Credit Card")
+                }
+                NavigationLink(destination: UserSettings(user.getValue())) {
+                    Text("Settings")
                 }
             }
             Spacer()

@@ -9,11 +9,8 @@ import SwiftUI
 
 struct OpenedWalletView: View {
     
-    @ObservedObject private var seed: ObservableString = ObservableString()
-    @ObservedObject private var ownAddress: ObservableString =  ObservableString()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var balance: ObservableString =  ObservableString("0")
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
-    @ObservedObject private var walletName: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForRefreshBalance: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForSendDenarii: ObservableString = ObservableString()
     
@@ -24,10 +21,16 @@ struct OpenedWalletView: View {
 
     init() {}
     
-    init(_ userIdentifier: Int, _ walletName: String, _ seed: String) {
-        self.userIdentifier.setValue(userIdentifier)
-        self.walletName.setValue(walletName)
-        self.seed.setValue(seed)
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
+    }
+    
+    init(_ user: UserDetails, _ walletName: String, _ seed: String) {
+        
+        user.walletDetails.walletName = walletName
+        user.walletDetails.seed = seed
+        
+        self.user.setValue(user)
     }
     
     var body: some View {
@@ -35,8 +38,8 @@ struct OpenedWalletView: View {
             Text("Wallet").font(.largeTitle)
             Spacer()
             Text("Wallet Name").accessibilityLabel("Wallet Name")
-            Text("Seed: " + seed.getValue()).accessibilityIdentifier("Seed")
-            Text("Address: " + ownAddress.getValue()).accessibilityIdentifier("Address")
+            Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
+            Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
             HStack {
                 Spacer(minLength: 150)
                 Text("Balance: ").accessibilityIdentifier("Balance")
@@ -69,6 +72,24 @@ struct OpenedWalletView: View {
                     .accessibilityIdentifier("Send Denarii Popover")
             }
             Spacer()
+            HStack {
+                NavigationLink(destination: BuyDenarii(user.getValue())) {
+                    Text("Buy Denarii")
+                }
+                NavigationLink(destination: SellDenarii(user.getValue())) {
+                    Text("Sell Denarii")
+                }
+                NavigationLink(destination: Verification(user.getValue())) {
+                    Text("Verification")
+                }
+                NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                    Text("Credit Card")
+                }
+                NavigationLink(destination: UserSettings(user.getValue())) {
+                    Text("Settings")
+                }
+            }
+            Spacer()
         }
     }
     
@@ -81,7 +102,13 @@ struct OpenedWalletView: View {
             return true
         } else {
             let api = Config.api
-            let denariiResponses = api.getBalance(userIdentifier.getValue(), walletName.getValue())
+            
+            var userId = -1
+            if !user.getValue().userID.isEmpty {
+                userId = Int(user.getValue().userID)!
+            }
+            
+            let denariiResponses = api.getBalance(userId, user.getValue().walletDetails.walletName)
             if denariiResponses.isEmpty {
                 successOrFailureForRefreshBalance.setValue("Failed to login there were no responses from server")
                 return false
@@ -124,7 +151,13 @@ struct OpenedWalletView: View {
             return true
         } else {
             let api = Config.api
-            let denariiResponses = api.sendDenarii(userIdentifier.getValue(), walletName.getValue(), addressToSendTo, Double(amountToSend)!)
+            
+            var userId = -1
+            if !user.getValue().userID.isEmpty {
+                userId = Int(user.getValue().userID)!
+            }
+            
+            let denariiResponses = api.sendDenarii(userId, user.getValue().walletDetails.walletName, addressToSendTo, Double(amountToSend)!)
             if denariiResponses.isEmpty {
                 successOrFailureForSendDenarii.setValue("Failed to login there were no responses from server")
                 return false

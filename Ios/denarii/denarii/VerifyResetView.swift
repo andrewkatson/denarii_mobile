@@ -14,13 +14,13 @@ struct VerifyResetView: View {
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var userIdentifier: ObservableInt = ObservableInt()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var usernameOrEmail: ObservableString = ObservableString()
     
     init() {}
 
-    init(_ userIdentifier: Int, _ usernameOrEmail: String) {
-        self.userIdentifier.setValue(userIdentifier)
+    init(_ user: UserDetails, _ usernameOrEmail: String) {
+        self.user.setValue(user)
         self.usernameOrEmail.setValue(usernameOrEmail)
     }
     
@@ -41,7 +41,7 @@ struct VerifyResetView: View {
                         .accessibilityIdentifier("Popover")
                 }
                 Spacer()
-                NavigationLink(destination: ResetPasswordView(userIdentifier.getValue())) {
+                NavigationLink(destination: ResetPasswordView(user.getValue())) {
                     if (isVerified) {
                         Text("Next")
                     }

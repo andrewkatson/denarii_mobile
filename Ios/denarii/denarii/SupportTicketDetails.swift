@@ -18,6 +18,14 @@ struct SupportTicketDetails: View {
     @ObservedObject private var title: ObservableString = ObservableString()
     @ObservedObject private var description: ObservableString = ObservableString()
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
+    
+    init() {}
+
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
+    }
+    
     
     var body: some View {
         VStack(alignment: .center) {

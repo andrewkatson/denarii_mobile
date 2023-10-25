@@ -16,7 +16,7 @@ class UserDetails {
     var creditCard : CreditCard = CreditCard()
     var supportTicketList : Array<SupportTicket> = Array()
     var denariiAskList : Array<DenariiAsk> = Array()
-    private(set) var userID : String = ""
+    var userID : String = ""
     var denariiUser: DenariiUser = DenariiUser()
     
     init(userName: String, userEmail: String, userPassword: String, walletDetails: WalletDetails, creditCard: CreditCard, userID: String, denariiUser: DenariiUser) {

@@ -16,6 +16,13 @@ struct SellDenarii: View {
     
     @ObservedObject private var goingPrice: ObservableString = ObservableString("0.00")
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var user: ObservableUser = ObservableUser()
+    
+    init() {}
+
+    init(_ user: UserDetails) {
+        self.user.setValue(user)
+    }
     
     
     var body: some View {
@@ -56,6 +63,24 @@ struct SellDenarii: View {
                     Text("Amount")
                     Text("Price")
                     Text("Amount Bought")
+                }
+            }
+            Spacer()
+            HStack {
+                NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                    Text("Wallet")
+                }
+                NavigationLink(destination: BuyDenarii(user.getValue())) {
+                    Text("Buy Denarii")
+                }
+                NavigationLink(destination: Verification(user.getValue())) {
+                    Text("Verification")
+                }
+                NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                    Text("Credit Card")
+                }
+                NavigationLink(destination: UserSettings(user.getValue())) {
+                    Text("Settings")
                 }
             }
             Spacer()
