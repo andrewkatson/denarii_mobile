@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2427B7802AF08B900020E1E0 /* ObservableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B77F2AF08B900020E1E0 /* ObservableArray.swift */; };
 		244E38702A113D1A0011B999 /* denariiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E386F2A113D1A0011B999 /* denariiApp.swift */; };
 		244E38722A113D1A0011B999 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
 		244E38742A113D1B0011B999 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244E38732A113D1B0011B999 /* Assets.xcassets */; };
@@ -125,6 +126,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2427B77F2AF08B900020E1E0 /* ObservableArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableArray.swift; sourceTree = "<group>"; };
 		244E386C2A113D1A0011B999 /* denarii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = denarii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		244E386F2A113D1A0011B999 /* denariiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiApp.swift; sourceTree = "<group>"; };
 		244E38712A113D1A0011B999 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 				244E38E52A23B32B0011B999 /* ObservableInt.swift */,
 				244E38E92A23BB8B0011B999 /* ObservableBool.swift */,
 				2463910C2AE9518F00EC840F /* ObservableUser.swift */,
+				2427B77F2AF08B900020E1E0 /* ObservableArray.swift */,
 			);
 			path = wrappedprimitives;
 			sourceTree = "<group>";
@@ -482,6 +485,7 @@
 				24FDF7D62ACA430200EF9822 /* SupportTicketDetails.swift in Sources */,
 				24FDF7BC2AC8BFFB00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38CA2A1EC33B0011B999 /* Constants.swift in Sources */,
+				2427B7802AF08B900020E1E0 /* ObservableArray.swift in Sources */,
 				24FDF7CE2ACA42B000EF9822 /* Verification.swift in Sources */,
 				244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */,

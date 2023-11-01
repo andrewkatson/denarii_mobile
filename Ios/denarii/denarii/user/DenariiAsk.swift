@@ -8,11 +8,11 @@
 import Foundation
 
 class DenariiAsk {
-    private(set) var askID : String = ""
+    var askID : String = ""
 
     var amount : Double = 0.0
 
-    private(set) var askingPrice : Double = 0.0
+    var askingPrice : Double = 0.0
 
     var inEscrow : Bool = false
 

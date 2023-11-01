@@ -581,14 +581,16 @@ class StubbedAPI: API {
         var denariiResponses = Array<DenariiResponse>()
 
         for user in self.users {
-            for ask in user.denariiAskList {
-                var denariiResponse = DenariiResponse()
-                denariiResponse.responseCode = 200
-                denariiResponse.askID = ask.askID
-                denariiResponse.amount = ask.amount
-                denariiResponse.askingPrice = ask.askingPrice
-                
-                denariiResponses.append(denariiResponse)
+            if user.userID != String(userIdentifier) {
+                for ask in user.denariiAskList {
+                    var denariiResponse = DenariiResponse()
+                    denariiResponse.responseCode = 200
+                    denariiResponse.askID = ask.askID
+                    denariiResponse.amount = ask.amount
+                    denariiResponse.askingPrice = ask.askingPrice
+                    
+                    denariiResponses.append(denariiResponse)
+                }
             }
         }
         
