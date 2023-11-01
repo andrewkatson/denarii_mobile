@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DenariiAsk {
+class DenariiAsk : Equatable, Hashable {
     var askID : String = ""
 
     var amount : Double = 0.0
@@ -44,5 +44,12 @@ class DenariiAsk {
         self.inEscrow = false
         self.seenBySeller = false
         self.buyerId = ""
+    }
+    
+    static func ==(lhs: DenariiAsk, rhs: DenariiAsk) -> Bool {
+        return lhs.askID == rhs.askID
+    }
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(askID)
     }
 }

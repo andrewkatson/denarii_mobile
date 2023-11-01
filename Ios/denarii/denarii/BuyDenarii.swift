@@ -15,10 +15,13 @@ struct BuyDenarii: View {
     @State private var price: String = ""
     @State private var failIfFullAmountIsntMet = true
     @State private var buyRegardlessOfPrice = false
-    @State private var isSubmitted: Bool = false
-    @State private var showingPopover = false
+    @State private var isBought: Bool = false
+    @State private var isCancelled: Bool = false
+    @State private var showingPopoverForBuyDenarii = false
+    @State private var showingPopoverForCancelBuyDenarii = false
     
-    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var successOrFailureForBuyDenarii: ObservableString = ObservableString()
+    @ObservedObject private var successOrFailureForCancelBuyDenarii: ObservableString = ObservableString()
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var keepRefreshing: ObservableBool = ObservableBool()
     @ObservedObject private var queuedBuys: ObservableArray<DenariiAsk> = ObservableArray()
@@ -128,18 +131,18 @@ struct BuyDenarii: View {
             VStack {
                 Toggle("Fail if full amount isnt met", isOn: $failIfFullAmountIsntMet)
             }.toggleStyle(.switch)
-            Button("Submit") {
-                isSubmitted = attemptSubmit()
-                if isSubmitted {
-                    self.successOrFailure.setValue("Successfully bought some denarii")
+            Button("Buy Denarii") {
+                isBought = attemptBuy()
+                if isBought {
+                    self.successOrFailureForBuyDenarii.setValue("Successfully bought some denarii")
                 }
-                showingPopover = true
-            }.popover(isPresented: $showingPopover) {
-                Text(successOrFailure.getValue())
+                showingPopoverForBuyDenarii = true
+            }.popover(isPresented: $showingPopoverForBuyDenarii) {
+                Text(successOrFailureForBuyDenarii.getValue())
                     .font(.headline)
                     .padding().onTapGesture {
-                        showingPopover = false
-                    }.accessibilityIdentifier("Popover")
+                        showingPopoverForBuyDenarii = false
+                    }.accessibilityIdentifier("Buy Denarii Popover")
             }
             Spacer()
             Text("Asks").font(.title)
@@ -147,6 +150,14 @@ struct BuyDenarii: View {
                 GridRow {
                     Text("Amount")
                     Text("Price")
+                }
+                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                 */
+                ForEach(self.currentAsks.getValue(), id: \.self) {ask in
+                    GridRow {
+                        Text("\(ask.amount)")
+                        Text("\(ask.askingPrice)")
+                    }
                 }
                 
             }
@@ -159,6 +170,29 @@ struct BuyDenarii: View {
                     Text("Amount Bought")
                     Text("Cancel Buy")
                 }
+                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                 */
+                ForEach(self.queuedBuys.getValue(), id: \.self) {buy in
+                    GridRow {
+                        Text("\(buy.amount)")
+                        Text("\(buy.askingPrice)")
+                        Text("\(buy.amountBought)")
+                        Button("Cancel") {
+                            isCancelled = attemptCancel(buy)
+                            if isCancelled {
+                                self.successOrFailureForCancelBuyDenarii.setValue("Successfully cancelled an ask to buy denarii")
+                            }
+                            showingPopoverForCancelBuyDenarii = true
+                        }.popover(isPresented: $showingPopoverForCancelBuyDenarii) {
+                            Text(successOrFailureForCancelBuyDenarii.getValue())
+                                .font(.headline)
+                                .padding().onTapGesture {
+                                    showingPopoverForCancelBuyDenarii = false
+                                }.accessibilityIdentifier("Cancel Buy Denarii Popover")
+                        }
+                    }
+                }
+
             }
             Spacer()
             HStack {
@@ -184,8 +218,43 @@ struct BuyDenarii: View {
         })
     }
     
+    func attemptCancel(_ buy: DenariiAsk) -> Bool {
+        // unlock at end of scope
+        defer {
+            lock.unlock()
+        }
+        lock.lock()
+        
+        if Constants.DEBUG {
+            self.successOrFailureForCancelBuyDenarii.setValue("Cancelled buy of denarii in DEBUG mode")
+            return true
+        } else {
+            
+            let api = Config.api
+            
+            let userId = self.user.getValue().userID
+            if userId.isEmpty {
+                self.successOrFailureForCancelBuyDenarii.setValue("Failed to cancel buy of denarii. Server side error")
+                return false
+            }
+            
+            var arrayOfSingleBuy: Array<DenariiAsk> = Array()
+            arrayOfSingleBuy.append(buy)
+            
+            let arrayOfFailedSingleBuy = self.tryToCancelBuys(api, userId, arrayOfSingleBuy)
+            
+            if arrayOfFailedSingleBuy.isEmpty {
+                self.successOrFailureForCancelBuyDenarii.setValue("Successfully canclled a buy of denarii")
+                return true
+            } else {
+                self.successOrFailureForCancelBuyDenarii.setValue("Failed to cancel buy of denarii.  ")
+                return false
+            }
+            
+        }
+    }
     
-    func attemptSubmit() -> Bool {
+    func attemptBuy() -> Bool {
         
         // unlock at end of scope
         defer {
@@ -194,14 +263,14 @@ struct BuyDenarii: View {
         lock.lock()
         
         if Constants.DEBUG {
-            self.successOrFailure.setValue("Bought denarii in DEBUG mode")
+            self.successOrFailureForBuyDenarii.setValue("Bought denarii in DEBUG mode")
             return true
         } else {
             let api = Config.api
             
             let userId = self.user.getValue().userID
             if userId.isEmpty {
-                self.successOrFailure.setValue("Failed to buy denarii. Server side error")
+                self.successOrFailureForBuyDenarii.setValue("Failed to buy denarii. Server side error")
                 return false
             }
             
@@ -240,29 +309,29 @@ struct BuyDenarii: View {
                             let failedReversals = tryToReverseTransactions(api, userId, asksToReverse)
                             
                             for failed in failedReversals {
-                                self.successOrFailure.setValue("Create a new support ticket with id \(failed.askID) because it failed to reverse")
+                                self.successOrFailureForBuyDenarii.setValue("Create a new support ticket with id \(failed.askID) because it failed to reverse")
                             }
                                 
                             return false
                         }
                         
                     } else {
-                        self.successOrFailure.setValue("Failed to get money from buyer.")
+                        self.successOrFailureForBuyDenarii.setValue("Failed to get money from buyer.")
                        let failedCancels = tryToCancelBuys(api, userId, asksBought)
                         
                         for ask in failedCancels {
-                            self.successOrFailure.setValue("Create a  new support ticket with id \(ask.askID) because it failed to cancel")
+                            self.successOrFailureForBuyDenarii.setValue("Create a  new support ticket with id \(ask.askID) because it failed to cancel")
                         }
                         return false
                     }
                     
                 } else {
-                    self.successOrFailure.setValue("Failed to buy denarii from other user.")
+                    self.successOrFailureForBuyDenarii.setValue("Failed to buy denarii from other user.")
                     return false
                 }
                 
             } else {
-                self.successOrFailure.setValue("Failed to buy denarii. No credit card info")
+                self.successOrFailureForBuyDenarii.setValue("Failed to buy denarii. No credit card info")
                 return false
             }
         }
@@ -389,8 +458,8 @@ struct BuyDenarii: View {
         let responses = api.transferDenariiBackToSeller(Int(userId)!, buy.askID)
         
         if responses.isEmpty {
-            self.successOrFailure.setValue("Failed to completely reverse transaction. File a support ticket with this id \(buy.askID)")
-            self.showingPopover = true
+            self.successOrFailureForBuyDenarii.setValue("Failed to completely reverse transaction. File a support ticket with this id \(buy.askID)")
+            self.showingPopoverForBuyDenarii = true
             return false
         }
         
@@ -400,8 +469,8 @@ struct BuyDenarii: View {
         let emptyAskIfFailed = self.tryToReverseTransactions(api, userId, asksToReverse)
         
         if emptyAskIfFailed.isEmpty {
-            self.successOrFailure.setValue("Failed to completely reverse transaction. File a support ticket with this id \(buy.askID)")
-            self.showingPopover = true
+            self.successOrFailureForBuyDenarii.setValue("Failed to completely reverse transaction. File a support ticket with this id \(buy.askID)")
+            self.showingPopoverForBuyDenarii = true
             return false
         } else {
             return true
