@@ -100,10 +100,15 @@ struct BuyDenarii: View {
                      
                      let onlyResponse = responses.first!
                      
-                     if onlyResponse.transactionWasSettled {
+                     if onlyResponse.responseCode != 200 {
                          // TODO what do we do here?
                      } else {
-                         remainingBuys.append(buy)
+                         
+                         if onlyResponse.transactionWasSettled {
+                             // TODO what do we do here?
+                         } else {
+                             remainingBuys.append(buy)
+                         }
                      }
                  }
                  
@@ -346,6 +351,11 @@ struct BuyDenarii: View {
         
         if !responses.isEmpty {
             let onlyResponse = responses.first!
+            
+            if onlyResponse.responseCode != 200 {
+                return false
+            }
+            
             return onlyResponse.hasCreditCardInfo
         } else {
             return false
@@ -489,6 +499,10 @@ struct BuyDenarii: View {
         
         let onlyResponse = responses.first!
         
+        if onlyResponse.responseCode != 200 {
+            return DenariiAsk()
+        }
+        
         let askWithMoreDetails = tryToGetCurrentAsk(api, userId, ask)
         
         let newAsk: DenariiAsk = DenariiAsk()
@@ -515,6 +529,10 @@ struct BuyDenarii: View {
         }
         
         let onlyResponse = responses.first!
+        
+        if onlyResponse.responseCode != 200 {
+            return DenariiAsk()
+        }
         
         let newAsk = DenariiAsk()
         

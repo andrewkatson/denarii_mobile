@@ -54,7 +54,11 @@ struct Verification: View {
                 } else {
                     let response = responses.first!
                     
-                    status = formatStatus(response.verificationStatus)
+                    if response.responseCode != 200 {
+                        status = formatStatus("unknown")
+                    } else {
+                        status = formatStatus(response.verificationStatus)
+                    }
                 }
             }
         }
