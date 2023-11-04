@@ -30,6 +30,7 @@ struct BuyDenarii: View {
     init() {
         self.keepRefreshing.setValue(true)
         getNewAsks()
+        refreshSettledTransactions()
     }
 
     init(_ user: UserDetails) {
@@ -276,7 +277,7 @@ struct BuyDenarii: View {
             
             if hasCreditCardInfo(api, userId) {
                 
-                var asksBought = tryToBuyDenarii(api, userId)
+                let asksBought = tryToBuyDenarii(api, userId)
                 
                 if !asksBought.isEmpty {
                     
@@ -363,7 +364,7 @@ struct BuyDenarii: View {
             var asks: Array<DenariiAsk> = Array()
             
             for response in responses {
-                var ask: DenariiAsk = DenariiAsk()
+                let ask: DenariiAsk = DenariiAsk()
                 ask.askID = response.askID
                 asks.append(ask)
             }
@@ -490,7 +491,7 @@ struct BuyDenarii: View {
         
         let askWithMoreDetails = tryToGetCurrentAsk(api, userId, ask)
         
-        var newAsk: DenariiAsk = DenariiAsk()
+        let newAsk: DenariiAsk = DenariiAsk()
         newAsk.askID = ask.askID
         newAsk.amountBought = onlyResponse.amountBought
         newAsk.amount = askWithMoreDetails.amount
@@ -515,7 +516,7 @@ struct BuyDenarii: View {
         
         let onlyResponse = responses.first!
         
-        var newAsk = DenariiAsk()
+        let newAsk = DenariiAsk()
         
         newAsk.askID = onlyResponse.askID
         newAsk.amount = onlyResponse.amount

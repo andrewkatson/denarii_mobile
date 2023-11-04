@@ -47,7 +47,7 @@ protocol API {
     // Returns a DenariiResponse with ask_id, asking_price, and amount
     func makeDenariiAsk(_ userIdentifier: Int, _ amount: Double, _ askingPrice: Double) -> Array<DenariiResponse>
     
-    // Returns a DenariiResponse with ask_id, asking_price, and amount
+    // Returns a DenariiResponse with ask_id, asking_price, amount, and amount_bought
     func pollForCompletedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse>
     
     // Returns a DenariiResponse with ask_id
@@ -746,6 +746,7 @@ class StubbedAPI: API {
                         denariiResponse.askID = ask.askID
                         denariiResponse.askingPrice = ask.askingPrice
                         denariiResponse.amount = ask.amount
+                        denariiResponse.amountBought = ask.amountBought
                         
                         ask.seenBySeller = true
                         denariiResponses.append(denariiResponse)

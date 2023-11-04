@@ -626,7 +626,7 @@ def poll_for_completed_transaction(request, user_id):
             ask.save()
 
         serialized_response_list = serializers.serialize('json', responses,
-                                                         fields=('ask_id', 'amount', 'asking_price'))
+                                                         fields=('ask_id', 'amount', 'asking_price', 'amount_bought'))
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")

@@ -19,26 +19,44 @@ struct Verification: View {
     @State private var workCity: String = ""
     @State private var workState: String = ""
     @State private var workCountry: String = ""
-
+    @State private var status: String = ""
+    
     @State private var isSubmitted: Bool = false
     @State private var showingPopover = false
     
     @ObservedObject private var successOrFailure: ObservableString = ObservableString()
-    @ObservedObject private var status: ObservableString = ObservableString("Not verified")
     @ObservedObject private var user: ObservableUser = ObservableUser()
+    @ObservedObject private var keepRefreshing: ObservableBool = ObservableBool()
     
-    init() {}
+    init() {
+        refreshStatus()
+    }
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        refreshStatus()
     }
     
-    
+    func refreshStatus() {
+        if !self.user.getValue().userID.isEmpty {
+            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
+
+                if self.keepRefreshing.getValue()  {
+                    timer.invalidate()
+                }
+                
+                let api = Config.api
+                
+                
+            }
+        }
+    }
+
     var body: some View {
         VStack(alignment: .center) {
             Text("Verification").font(.largeTitle)
             Spacer()
-            Text("Status: \(status.getValue())")
+            Text("Status: \(status)")
             TextField("First Name", text: $firstName)
             TextField("Middle Initial", text: $middleName)
             TextField("Last Name", text: $lastName)
