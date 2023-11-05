@@ -1189,12 +1189,14 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
         if support_ticket is not None:
 
             comment = support_ticket.supportticketcomment_set.create(content=comment, author=existing.username)
+            comment.comment_id = comment.primary_key
 
             response = Response.objects.create(support_ticket_id=support_ticket.support_id,
-                                               updated_time_body=comment.updated_time)
+                                               updated_time_body=comment.updated_time, 
+                                               comment_id = comment.comment_id)
 
             serialized_response_list = serializers.serialize('json', [response],
-                                                             fields=('support_ticket_id', 'updated_time_body'))
+                                                             fields=('support_ticket_id', 'updated_time_body', 'comment_id'))
             support_ticket.save()
             comment.save()
 

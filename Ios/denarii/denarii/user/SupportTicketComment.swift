@@ -7,13 +7,31 @@
 
 import Foundation
 
-class SupportTicketComment {
-    private(set) var author : String = ""
+class SupportTicketComment: Equatable, Hashable {
+    var author : String = ""
     
-    private(set) var content : String = ""
+    var content : String = ""
     
-    init(author: String, content: String) {
+    var commentID: String = ""
+    
+    init() {
+        self.author = ""
+        self.content = ""
+        self.commentID = ""
+    }
+    
+    init(author: String, content: String, commentID: String) {
         self.author = author
         self.content = content
+        self.commentID = commentID
+    }
+    
+    
+    static func ==(lhs: SupportTicketComment, rhs: SupportTicketComment) -> Bool {
+        return lhs.author == rhs.author && lhs.commentID == rhs.commentID
+    }
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(author)
+     hasher.combine(commentID)
     }
 }

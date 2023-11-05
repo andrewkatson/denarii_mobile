@@ -138,6 +138,7 @@ struct CreditCardInfo: View {
                 return false
             } else {
                 self.successOrFailureForSet.setValue("Successfully set credit card info")
+                status = "Status: Set"
                 return true
             }
         }
@@ -170,6 +171,7 @@ struct CreditCardInfo: View {
                 return false
             } else {
                 self.successOrFailureForClear.setValue("Successfully cleared credit card info")
+                status = "Status: Not Set"
                 return true
             }
         }

@@ -1130,15 +1130,19 @@ class StubbedAPI: API {
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
+        denariiResponse.commentID = String(Int.random(in: 1..<100))
         
         for index in self.users.indices {
             let user = self.users[index]
             if user.userID == String(userIdentifier) {
                 for supportTicketIndex in user.supportTicketList.indices {
                     let supportTicket = user.supportTicketList[supportTicketIndex]
-                    let newComment = SupportTicketComment(author: user.userName, content: comment)
                     
-                    supportTicket.supportTicketCommentList.append(newComment)
+                    if supportTicket.supportID == supportTicketId {
+                        let newComment = SupportTicketComment(author: user.userName, content: comment, commentID: denariiResponse.commentID)
+                        
+                        supportTicket.supportTicketCommentList.append(newComment)
+                    }
                 }
             }
         }

@@ -47,4 +47,6 @@ struct DenariiResponse : Codable {
     var updatedTimeBody : String = ""
     
     var responseCode : Int = -1
+    
+    var commentID: String = ""
 }

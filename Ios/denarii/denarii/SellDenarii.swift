@@ -24,13 +24,11 @@ struct SellDenarii: View {
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var successOrFailureForSellDenarii: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForCancelSellDenarii: ObservableString = ObservableString()
-    @ObservedObject private var keepRefreshing: ObservableBool = ObservableBool()
     @ObservedObject private var currentAsks: ObservableArray<DenariiAsk> = ObservableArray()
     @ObservedObject private var ownAsks: ObservableArray<DenariiAsk>   = ObservableArray()
     @ObservedObject private var boughtAsks : ObservableArray<DenariiAsk>  = ObservableArray()
     
     init() {
-        self.keepRefreshing.setValue(true)
         getNewAsks()
         refreshCompletedTransactions()
         getOwnAsks()
@@ -39,7 +37,6 @@ struct SellDenarii: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.keepRefreshing.setValue(true)
         getNewAsks()
         refreshCompletedTransactions()
         getOwnAsks()
@@ -49,17 +46,11 @@ struct SellDenarii: View {
     
     func getNewAsks() {
         if !self.user.getValue().userID.isEmpty {
-             Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                 
                  // unlock at end of scope
                  defer {
                      lock.unlock()
                  }
                  lock.lock()
-                
-                 if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
                 
                 var newAsks: Array<DenariiAsk> = Array()
                 
@@ -74,22 +65,15 @@ struct SellDenarii: View {
                 
                 self.currentAsks.setValue(newAsks)
             }
-        }
     }
     func refreshCompletedTransactions() {
         if !self.user.getValue().userID.isEmpty {
-            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                
                 // unlock at end of scope
                 defer {
                     lock.unlock()
                 }
                 lock.lock()
-                
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
-                
+
                 let api = Config.api
                 
                 let responses = api.pollForCompletedTransaction(Int(self.user.getValue().userID)!)
@@ -120,23 +104,16 @@ struct SellDenarii: View {
                     
                     self.boughtAsks.setValue(newBoughtAsks)
                 }
-                
-            }
         }
     }
     func getOwnAsks() {
         if !self.user.getValue().userID.isEmpty {
-            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                
+
                 // unlock at end of scope
                 defer {
                     lock.unlock()
                 }
                 lock.lock()
-                
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
                 
                 let api = Config.api
                 
@@ -154,22 +131,16 @@ struct SellDenarii: View {
                 }
                 
                 self.ownAsks.setValue(ownAsks)
-            }
         }
     }
     func refreshAsksInEscrow() {
         if !self.user.getValue().userID.isEmpty {
-            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                
+
                 // unlock at end of scope
                 defer {
                     lock.unlock()
                 }
                 lock.lock()
-                
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
                 
                 let api = Config.api
                 
@@ -189,28 +160,21 @@ struct SellDenarii: View {
                 
                 self.boughtAsks.setValue(escrowedAsks)
             }
-        }
     }
     
     func refreshGoingPrice() {
         if !self.user.getValue().userID.isEmpty {
-            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                
-                // unlock at end of scope
-                defer {
-                    lock.unlock()
-                }
-                lock.lock()
-                
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
-                
-                var goingPrice = Double.greatestFiniteMagnitude
-                for ask in self.currentAsks.getValue() {
-                    if goingPrice > ask.askingPrice {
-                        goingPrice = ask.askingPrice
-                    }
+            
+            // unlock at end of scope
+            defer {
+                lock.unlock()
+            }
+            lock.lock()
+            
+            var goingPrice = Double.greatestFiniteMagnitude
+            for ask in self.currentAsks.getValue() {
+                if goingPrice > ask.askingPrice {
+                    goingPrice = ask.askingPrice
                 }
             }
         }
@@ -222,7 +186,9 @@ struct SellDenarii: View {
         VStack(alignment: .center) {
             Text("Sell Denarii").font(.largeTitle)
             Spacer()
-            Text("Going Price: \(goingPrice)")
+            Text("Going Price: \(goingPrice)").refreshable {
+                refreshGoingPrice()
+            }
             Text("Asks").font(.title)
             Grid {
                 GridRow {
@@ -237,6 +203,8 @@ struct SellDenarii: View {
                         Text("\(ask.askingPrice)")
                     }
                 }
+            }.refreshable {
+                getNewAsks()
             }
             TextField("Amount", text: $amount)
             TextField("Price", text: $price)
@@ -277,6 +245,8 @@ struct SellDenarii: View {
                                 }.accessibilityIdentifier("Cancel Sell Denarii Popover")
                         }
                     }
+                }.refreshable {
+                    getOwnAsks()
                 }
             }
             Text("Bought Asks").font(.title)
@@ -294,6 +264,9 @@ struct SellDenarii: View {
                         Text("\(ask.askingPrice)")
                         Text("\(ask.amountBought)")
                     }
+                }.refreshable {
+                    refreshCompletedTransactions()
+                    refreshAsksInEscrow()
                 }
             }
             Spacer()

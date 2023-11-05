@@ -7,12 +7,12 @@
 
 import Foundation
 
-class SupportTicket {
-    private(set) var supportID : String = ""
+class SupportTicket:  Equatable, Hashable {
+    var supportID : String = ""
 
-    private(set) var description : String = ""
+    var description : String = ""
 
-    private(set) var title : String = ""
+    var title : String = ""
 
     var resolved : Bool = false
 
@@ -32,5 +32,12 @@ class SupportTicket {
         self.title = ""
         self.resolved = false
         self.supportTicketCommentList = Array()
+    }
+    
+    static func ==(lhs: SupportTicket, rhs: SupportTicket) -> Bool {
+        return lhs.supportID == rhs.supportID
+    }
+    func hash(into hasher: inout Hasher) {
+      hasher.combine(supportID)
     }
 }

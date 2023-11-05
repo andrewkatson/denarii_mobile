@@ -23,36 +23,27 @@ struct BuyDenarii: View {
     @ObservedObject private var successOrFailureForBuyDenarii: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForCancelBuyDenarii: ObservableString = ObservableString()
     @ObservedObject private var user: ObservableUser = ObservableUser()
-    @ObservedObject private var keepRefreshing: ObservableBool = ObservableBool()
     @ObservedObject private var queuedBuys: ObservableArray<DenariiAsk> = ObservableArray()
     @ObservedObject private var currentAsks: ObservableArray<DenariiAsk> = ObservableArray()
     
     init() {
-        self.keepRefreshing.setValue(true)
         getNewAsks()
         refreshSettledTransactions()
     }
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.keepRefreshing.setValue(true)
         getNewAsks()
         refreshSettledTransactions()
     }
     
     func getNewAsks() {
         if !self.user.getValue().userID.isEmpty {
-             Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                 
                  // unlock at end of scope
                  defer {
                      lock.unlock()
                  }
                  lock.lock()
-                
-                 if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
                 
                 var newAsks: Array<DenariiAsk> = Array()
                 
@@ -67,22 +58,16 @@ struct BuyDenarii: View {
                 
                 self.currentAsks.setValue(newAsks)
             }
-        }
     }
     
     func refreshSettledTransactions() {
         if !self.user.getValue().userID.isEmpty {
-             Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-                 
+
                  // unlock at end of scope
                  defer {
                      lock.unlock()
                  }
                  lock.lock()
-                
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
                 
                 var remainingBuys: Array<DenariiAsk> = Array()
                  
@@ -122,7 +107,6 @@ struct BuyDenarii: View {
                  
                  self.queuedBuys.setValue(remainingBuys)
             }
-        }
     }
 
     var body: some View {
@@ -163,7 +147,11 @@ struct BuyDenarii: View {
                     GridRow {
                         Text("\(ask.amount)")
                         Text("\(ask.askingPrice)")
+                    }.refreshable {
+                        
                     }
+                }.refreshable {
+                    getNewAsks()
                 }
                 
             }
@@ -197,6 +185,8 @@ struct BuyDenarii: View {
                                 }.accessibilityIdentifier("Cancel Buy Denarii Popover")
                         }
                     }
+                }.refreshable {
+                    refreshSettledTransactions()
                 }
 
             }
@@ -219,9 +209,7 @@ struct BuyDenarii: View {
                 }
             }
             Spacer()
-        }.onDisappear(perform: {
-            self.keepRefreshing.setValue(false)
-        })
+        }
     }
     
     func attemptCancel(_ buy: DenariiAsk) -> Bool {
