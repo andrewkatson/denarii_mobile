@@ -132,7 +132,7 @@ struct BuyDenarii: View {
                     .font(.headline)
                     .padding().onTapGesture {
                         showingPopoverForBuyDenarii = false
-                    }.accessibilityIdentifier("Buy Denarii Popover")
+                    }.accessibilityIdentifier(Constants.BUY_DENARII_POPOVER)
             }
             Spacer()
             Text("Asks").font(.title)
@@ -182,7 +182,7 @@ struct BuyDenarii: View {
                                 .font(.headline)
                                 .padding().onTapGesture {
                                     showingPopoverForCancelBuyDenarii = false
-                                }.accessibilityIdentifier("Cancel Buy Denarii Popover")
+                                }.accessibilityIdentifier(Constants.CANCEL_BUY_DENARII_POPOVER)
                         }
                     }
                 }.refreshable {

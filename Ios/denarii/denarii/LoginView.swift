@@ -42,7 +42,7 @@ struct LoginView: View {
                         .font(.headline)
                         .padding().onTapGesture {
                             showingPopover = false
-                        }.accessibilityIdentifier("Popover")
+                        }.accessibilityIdentifier(Constants.POPOVER)
                 Spacer()
                 }
                 HStack(alignment: .center) {

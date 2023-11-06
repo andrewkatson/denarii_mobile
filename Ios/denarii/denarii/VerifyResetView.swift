@@ -38,7 +38,7 @@ struct VerifyResetView: View {
                         .padding().onTapGesture {
                             showingPopover = false
                         }
-                        .accessibilityIdentifier("Popover")
+                        .accessibilityIdentifier(Constants.POPOVER)
                 }
                 Spacer()
                 NavigationLink(destination: ResetPasswordView(user.getValue())) {

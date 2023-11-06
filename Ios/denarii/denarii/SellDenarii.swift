@@ -216,7 +216,7 @@ struct SellDenarii: View {
                     .font(.headline)
                     .padding().onTapGesture {
                         showingPopoverForSellDenarii = false
-                    }.accessibilityIdentifier("Sell Denarii Popover")
+                    }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
             }
             Text("Own Asks").font(.title)
             Grid {
@@ -242,7 +242,7 @@ struct SellDenarii: View {
                                 .font(.headline)
                                 .padding().onTapGesture {
                                     showingPopoverForCancelSellDenarii = false
-                                }.accessibilityIdentifier("Cancel Sell Denarii Popover")
+                                }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
                         }
                     }
                 }.refreshable {

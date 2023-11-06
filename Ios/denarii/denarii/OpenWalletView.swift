@@ -43,7 +43,7 @@ struct OpenWalletView: View {
                             .onTapGesture {
                                 showingPopover = false
                             }
-                            .accessibilityIdentifier("Popover")
+                            .accessibilityIdentifier(Constants.POPOVER)
                 }
                 Spacer()
                 NavigationLink(destination: OpenedWalletView(user.getValue(), walletName, seed.getValue())) {

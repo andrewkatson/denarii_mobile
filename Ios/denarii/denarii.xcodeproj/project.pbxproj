@@ -8,6 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		2427B7802AF08B900020E1E0 /* ObservableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B77F2AF08B900020E1E0 /* ObservableArray.swift */; };
+		2427B7812AF7BA3F0020E1E0 /* ObservableUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910C2AE9518F00EC840F /* ObservableUser.swift */; };
+		2427B7822AF7BA400020E1E0 /* ObservableUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910C2AE9518F00EC840F /* ObservableUser.swift */; };
+		2427B7832AF7BA430020E1E0 /* ObservableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B77F2AF08B900020E1E0 /* ObservableArray.swift */; };
+		2427B7842AF7BA430020E1E0 /* ObservableArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B77F2AF08B900020E1E0 /* ObservableArray.swift */; };
+		2427B7852AF7BA620020E1E0 /* CreateSupportTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */; };
+		2427B7862AF7BA620020E1E0 /* SupportTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */; };
+		2427B7872AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */; };
+		2427B7882AF7BA620020E1E0 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910E2AE9566300EC840F /* UserSettings.swift */; };
+		2427B7892AF7BA620020E1E0 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CD2ACA42B000EF9822 /* Verification.swift */; };
+		2427B78A2AF7BA620020E1E0 /* CreditCardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CF2ACA42C400EF9822 /* CreditCardInfo.swift */; };
+		2427B78B2AF7BA620020E1E0 /* BuyDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C92ACA428300EF9822 /* BuyDenarii.swift */; };
+		2427B78C2AF7BA620020E1E0 /* SellDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CB2ACA429A00EF9822 /* SellDenarii.swift */; };
+		2427B78D2AF7BA620020E1E0 /* CreateSupportTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */; };
+		2427B78E2AF7BA620020E1E0 /* SupportTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D12ACA42D800EF9822 /* SupportTickets.swift */; };
+		2427B78F2AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */; };
+		2427B7902AF7BA620020E1E0 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910E2AE9566300EC840F /* UserSettings.swift */; };
+		2427B7912AF7BA620020E1E0 /* Verification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CD2ACA42B000EF9822 /* Verification.swift */; };
+		2427B7922AF7BA620020E1E0 /* CreditCardInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CF2ACA42C400EF9822 /* CreditCardInfo.swift */; };
+		2427B7932AF7BA620020E1E0 /* BuyDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7C92ACA428300EF9822 /* BuyDenarii.swift */; };
+		2427B7942AF7BA620020E1E0 /* SellDenarii.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7CB2ACA429A00EF9822 /* SellDenarii.swift */; };
 		244E38702A113D1A0011B999 /* denariiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E386F2A113D1A0011B999 /* denariiApp.swift */; };
 		244E38722A113D1A0011B999 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
 		244E38742A113D1B0011B999 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244E38732A113D1B0011B999 /* Assets.xcassets */; };
@@ -508,33 +528,43 @@
 			files = (
 				244E38B32A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				244E389F2A1144570011B999 /* LoginView.swift in Sources */,
+				2427B7872AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */,
 				24FDF7E92ACB9A5E00EF9822 /* WalletDetails.swift in Sources */,
 				244E38D72A23A3A60011B999 /* Config.swift in Sources */,
 				244E38A32A1144660011B999 /* RegisterView.swift in Sources */,
 				244E38EB2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
 				244E38C72A116E710011B999 /* ResetPasswordView.swift in Sources */,
+				2427B7862AF7BA620020E1E0 /* SupportTickets.swift in Sources */,
+				2427B7832AF7BA430020E1E0 /* ObservableArray.swift in Sources */,
 				24FDF7E22ACB9A5000EF9822 /* ContentView.swift in Sources */,
+				2427B7852AF7BA620020E1E0 /* CreateSupportTicket.swift in Sources */,
 				24FDF7E42ACB9A5500EF9822 /* denariiApp.swift in Sources */,
 				244E38C32A116E620011B999 /* VerifyResetView.swift in Sources */,
 				24FDF7EC2ACB9A5E00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38A72A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 				244E38E72A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				244E38BB2A116E440011B999 /* RequestResetView.swift in Sources */,
+				2427B7882AF7BA620020E1E0 /* UserSettings.swift in Sources */,
 				244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */,
 				24FDF7E62ACB9A5E00EF9822 /* SupportTicket.swift in Sources */,
 				24FDF7F82ACB9A6700EF9822 /* ChangingTextView.swift in Sources */,
 				244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				24FDF7E72ACB9A5E00EF9822 /* SupportTicketComment.swift in Sources */,
+				2427B7892AF7BA620020E1E0 /* Verification.swift in Sources */,
 				244E38CF2A1ED1B80011B999 /* ObservableString.swift in Sources */,
 				24FDF7E82ACB9A5E00EF9822 /* UserDetails.swift in Sources */,
 				244E38AB2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E389B2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				2427B78B2AF7BA620020E1E0 /* BuyDenarii.swift in Sources */,
 				244E38812A113D1B0011B999 /* denariiTests.swift in Sources */,
 				244E38DB2A23A3C40011B999 /* API.swift in Sources */,
 				24FDF7ED2ACB9A5E00EF9822 /* DenariiResponse.swift in Sources */,
 				24FDF7EA2ACB9A5E00EF9822 /* CreditCard.swift in Sources */,
+				2427B78A2AF7BA620020E1E0 /* CreditCardInfo.swift in Sources */,
 				24FDF7EB2ACB9A5E00EF9822 /* DenariiUser.swift in Sources */,
 				244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
+				2427B7812AF7BA3F0020E1E0 /* ObservableUser.swift in Sources */,
+				2427B78C2AF7BA620020E1E0 /* SellDenarii.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,23 +578,32 @@
 				24FDF7E32ACB9A5100EF9822 /* ContentView.swift in Sources */,
 				24FDF7F02ACB9A5E00EF9822 /* UserDetails.swift in Sources */,
 				244E38A42A1144660011B999 /* RegisterView.swift in Sources */,
+				2427B7912AF7BA620020E1E0 /* Verification.swift in Sources */,
 				244E38D02A1ED1B80011B999 /* ObservableString.swift in Sources */,
+				2427B7942AF7BA620020E1E0 /* SellDenarii.swift in Sources */,
 				244E388D2A113D1B0011B999 /* denariiUITestsLaunchTests.swift in Sources */,
 				244E38A02A1144570011B999 /* LoginView.swift in Sources */,
 				244E38AC2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				244E38C82A116E710011B999 /* ResetPasswordView.swift in Sources */,
 				244E38B82A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
 				24FDF7E52ACB9A5500EF9822 /* denariiApp.swift in Sources */,
+				2427B7902AF7BA620020E1E0 /* UserSettings.swift in Sources */,
 				24FDF7F42ACB9A5E00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38B02A116E160011B999 /* OpenWalletView.swift in Sources */,
 				244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */,
+				2427B7822AF7BA400020E1E0 /* ObservableUser.swift in Sources */,
 				244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
 				244E38CC2A1EC33B0011B999 /* Constants.swift in Sources */,
+				2427B78F2AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */,
 				24FDF7EE2ACB9A5E00EF9822 /* SupportTicket.swift in Sources */,
+				2427B7842AF7BA430020E1E0 /* ObservableArray.swift in Sources */,
+				2427B78E2AF7BA620020E1E0 /* SupportTickets.swift in Sources */,
 				244E38E82A23B32B0011B999 /* ObservableInt.swift in Sources */,
+				2427B7922AF7BA620020E1E0 /* CreditCardInfo.swift in Sources */,
 				244E38D82A23A3A60011B999 /* Config.swift in Sources */,
 				244E38F02A27E5B60011B999 /* ChangingTextView.swift in Sources */,
 				24FDF7F22ACB9A5E00EF9822 /* CreditCard.swift in Sources */,
+				2427B7932AF7BA620020E1E0 /* BuyDenarii.swift in Sources */,
 				244E38EC2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
 				244E38BC2A116E440011B999 /* RequestResetView.swift in Sources */,
 				24FDF7F52ACB9A5E00EF9822 /* DenariiResponse.swift in Sources */,
@@ -572,6 +611,7 @@
 				244E38DC2A23A3C40011B999 /* API.swift in Sources */,
 				244E38A82A116DF10011B999 /* WalletDecisionView.swift in Sources */,
 				24FDF7F32ACB9A5E00EF9822 /* DenariiUser.swift in Sources */,
+				2427B78D2AF7BA620020E1E0 /* CreateSupportTicket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

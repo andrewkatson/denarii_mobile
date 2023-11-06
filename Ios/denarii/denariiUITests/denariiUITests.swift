@@ -22,26 +22,89 @@ final class denariiUITests: XCTestCase {
         app.tap()
         
         // Have to do redundant tapping becuase the popover in landscape is harder to tap
-        if app.staticTexts["Popover"].exists {
-            app.staticTexts["Popover"].tap()
-            if app.staticTexts["Popover"].exists {
-                app.staticTexts["Popover"].swipeDown()
+        if app.staticTexts[Constants.POPOVER].exists {
+            app.staticTexts[Constants.POPOVER].tap()
+            if app.staticTexts[Constants.POPOVER].exists {
+                app.staticTexts[Constants.POPOVER].swipeDown()
             }
-            XCTAssert(!app.staticTexts["Popover"].exists, "Popover still exists")
+            XCTAssert(!app.staticTexts[Constants.POPOVER].exists, "\(Constants.POPOVER) still exists")
         }
-        if app.staticTexts["Refresh Balance Popover"].exists {
-            app.staticTexts["Refresh Balance Popover"].tap()
-            if app.staticTexts["Refresh Balance Popover"].exists {
-                app.staticTexts["Refresh Balance Popover"].swipeDown()
+        if app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists {
+            app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].tap()
+            if app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists {
+                app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].swipeDown()
             }
-            XCTAssert(!app.staticTexts["Refresh Balance Popover"].exists, "Popover still exists")
+            XCTAssert(!app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists, "\(Constants.REFRESH_BALANCE_POPOVER) still exists")
         }
-        if app.staticTexts["Send Denarii Popover"].exists {
-            app.staticTexts["Send Denarii Popover"].tap()
-            if app.staticTexts["Send Denarii Popover"].exists {
-                app.staticTexts["Send Denarii Popover"].swipeDown()
+        if app.staticTexts[Constants.SEND_DENARII_POPOVER].exists {
+            app.staticTexts[Constants.SEND_DENARII_POPOVER].tap()
+            if app.staticTexts[Constants.SEND_DENARII_POPOVER].exists {
+                app.staticTexts[Constants.SEND_DENARII_POPOVER].swipeDown()
             }
-            XCTAssert(!app.staticTexts["Send Denarii Popover"].exists, "Popover still exists")
+            XCTAssert(!app.staticTexts[Constants.SEND_DENARII_POPOVER].exists, "\(Constants.SEND_DENARII_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.BUY_DENARII_POPOVER].exists {
+            app.staticTexts[Constants.BUY_DENARII_POPOVER].tap()
+            if app.staticTexts[Constants.BUY_DENARII_POPOVER].exists {
+                app.staticTexts[Constants.BUY_DENARII_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.BUY_DENARII_POPOVER].exists, "\(Constants.BUY_DENARII_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists {
+            app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].tap()
+            if app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists {
+                app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists, "\(Constants.CANCEL_BUY_DENARII_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.SELL_DENARII_POPOVER].exists {
+            app.staticTexts[Constants.SELL_DENARII_POPOVER].tap()
+            if app.staticTexts[Constants.SELL_DENARII_POPOVER].exists {
+                app.staticTexts[Constants.SELL_DENARII_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.SELL_DENARII_POPOVER].exists, "\(Constants.SELL_DENARII_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists {
+            app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].tap()
+            if app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists {
+                app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists, "\(Constants.CANCEL_SELL_DENARII_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists {
+            app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].tap()
+            if app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists {
+                app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists, "\(Constants.SET_CREDIT_CARD_INFO_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists {
+            app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].tap()
+            if app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists {
+                app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists, "\(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists {
+            app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].tap()
+            if app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists {
+                app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists, "\(Constants.CREATE_NEW_COMMENT_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists {
+            app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].tap()
+            if app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists {
+                app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists, "\(Constants.RESOLVE_TICKET_POPOVER) still exists")
+        }
+        if app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists {
+            app.staticTexts[Constants.DELETE_TICKET_POPOVER].tap()
+            if app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists {
+                app.staticTexts[Constants.DELETE_TICKET_POPOVER].swipeDown()
+            }
+            XCTAssert(!app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists, "\(Constants.DELETE_TICKET_POPOVER) still exists")
         }
     }
     
@@ -543,6 +606,54 @@ final class denariiUITests: XCTestCase {
         checkForUpdatedBalance(app, 1.0)
     }
     
+    func testBuyDenarii() throws {
+        
+    }
+    
+    func testCancelBuyOfDenarii() throws {
+        
+    }
+    
+    func testSellDenarii() throws {
+        
+    }
+    
+    func testCancelSellDenarii() throws {
+        
+    }
+    
+    func testVerifyIdentity() throws {
+        
+    }
+    
+    func testSetCreditCardInfo() throws {
+        
+    }
+    
+    func testClearCreditCardInfo() throws {
+        
+    }
+    
+    func testSupportTickets() throws {
+        
+    }
+    
+    func testCreateSupportTicket() throws {
+        
+    }
+    
+    func testDeleteSupportTicket() throws {
+        
+    }
+    
+    func testResolveSupportTicket() throws {
+        
+    }
+    
+    func testDeleteAccount() throws {
+        
+    }
+    
     
     func testLaunchLoginPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
@@ -646,5 +757,53 @@ final class denariiUITests: XCTestCase {
                 sendDenarii(app)
             }
         }
+    }
+    
+    func testBuyDenariiPerformance() throws {
+        
+    }
+    
+    func testCancelBuyOfDenariiPerformance() throws {
+        
+    }
+    
+    func testSellDenariiPerformance() throws {
+        
+    }
+    
+    func testCancelSellDenariiPerformance() throws {
+        
+    }
+    
+    func testVerifyIdentityPerformance() throws {
+        
+    }
+    
+    func testSetCreditCardInfoPerformance() throws {
+        
+    }
+    
+    func testClearCreditCardInfoPerformance() throws {
+        
+    }
+    
+    func testSupportTicketsPerformance() throws {
+        
+    }
+    
+    func testCreateSupportTicketPerformance() throws {
+        
+    }
+    
+    func testDeleteSupportTicketPerformance() throws {
+        
+    }
+    
+    func testResolveSupportTicketPerformance() throws {
+        
+    }
+    
+    func testDeleteAccountPerformance() throws {
+        
     }
 }

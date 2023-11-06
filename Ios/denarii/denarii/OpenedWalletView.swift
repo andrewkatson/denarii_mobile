@@ -56,7 +56,7 @@ struct OpenedWalletView: View {
                     .padding().onTapGesture {
                         showingPopoverForRefreshBalance = false
                     }
-                    .accessibilityIdentifier("Refresh Balance Popover")
+                    .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
             }
             TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
             TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
@@ -69,7 +69,7 @@ struct OpenedWalletView: View {
                     .padding().onTapGesture {
                         showingPopoverForSendDenarii = false
                     }
-                    .accessibilityIdentifier("Send Denarii Popover")
+                    .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
             }
             Spacer()
             HStack {

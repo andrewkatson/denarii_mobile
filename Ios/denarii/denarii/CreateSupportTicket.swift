@@ -42,7 +42,7 @@ struct CreateSupportTicket: View {
                         .font(.headline)
                         .padding().onTapGesture {
                             showingPopover = false
-                        }.accessibilityIdentifier("Popover")
+                        }.accessibilityIdentifier(Constants.POPOVER)
                 }
             }.navigationDestination(isPresented: $isCreated) {
                 return SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())

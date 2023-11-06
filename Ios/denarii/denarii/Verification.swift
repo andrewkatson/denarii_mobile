@@ -107,7 +107,7 @@ struct Verification: View {
                         .font(.headline)
                         .padding().onTapGesture {
                             showingPopover = false
-                        }.accessibilityIdentifier("Popover")
+                        }.accessibilityIdentifier(Constants.POPOVER)
                 }
             }
             Spacer()

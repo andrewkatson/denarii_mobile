@@ -12,12 +12,18 @@ struct SupportTicketDetails: View {
     
     
     @State private var comment: String = ""
-    @State private var isSubmitted: Bool = false
-    @State private var showingPopover = false
+    @State private var isCreated: Bool = false
+    @State private var isResolved: Bool = false
+    @State private var isDeleted: Bool = false
+    @State private var showingPopoverForCreateNewComment = false
+    @State private var showingPopoverForResolveTicket = false
+    @State private var showingPopoverForDeleteTicket = false
     
     @ObservedObject private var title: ObservableString = ObservableString()
     @ObservedObject private var description: ObservableString = ObservableString()
-    @ObservedObject private var successOrFailure: ObservableString = ObservableString()
+    @ObservedObject private var successOrFailureForCreateNewComment: ObservableString = ObservableString()
+    @ObservedObject private var successOrFailureForResolveTicket: ObservableString = ObservableString()
+    @ObservedObject private var successOrFailureForDeleteTicket: ObservableString = ObservableString()
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var comments: ObservableArray<SupportTicketComment> = ObservableArray()
     @ObservedObject private var supportTicketID = ObservableString()
@@ -91,45 +97,128 @@ struct SupportTicketDetails: View {
             }
             TextField("New Comment", text: $comment, axis: Axis.vertical)
             Button("Submit") {
-                isSubmitted = attemptSubmit()
-                showingPopover = true
-            }.popover(isPresented: $showingPopover) {
-                Text(successOrFailure.getValue())
+                isCreated = attemptCreateNewComment()
+                showingPopoverForCreateNewComment = true
+            }.popover(isPresented: $showingPopoverForCreateNewComment) {
+                Text(successOrFailureForCreateNewComment.getValue())
                     .font(.headline)
                     .padding().onTapGesture {
-                        showingPopover = false
-                    }.accessibilityIdentifier("Popover")
+                        showingPopoverForCreateNewComment = false
+                    }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
+            }
+            Spacer()
+            Button("Resolve") {
+                isResolved = attemptResolveTicket()
+                showingPopoverForResolveTicket = true
+            }.popover(isPresented: $showingPopoverForResolveTicket) {
+                Text(successOrFailureForResolveTicket.getValue())
+                    .font(.headline)
+                    .padding().onTapGesture {
+                        showingPopoverForResolveTicket = false
+                    }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+            }
+            Button("Delete") {
+                isDeleted = attemptDeleteTicket()
+                showingPopoverForDeleteTicket = true
+            }.popover(isPresented: $showingPopoverForDeleteTicket) {
+                Text(successOrFailureForDeleteTicket.getValue())
+                    .font(.headline)
+                    .padding().onTapGesture {
+                        showingPopoverForDeleteTicket = false
+                    }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
             }
             Spacer()
         }
     }
     
-    func attemptSubmit() -> Bool {
+    func attemptCreateNewComment() -> Bool {
         if Constants.DEBUG {
-            successOrFailure.setValue("Successfully added a new comment in DEBUG mode")
+            successOrFailureForCreateNewComment.setValue("Successfully added a new comment in DEBUG mode")
             return true
         } else {
             let api = Config.api
             
             if self.user.getValue().userID.isEmpty {
-                self.successOrFailure.setValue("Failed to create a new comment")
+                self.successOrFailureForCreateNewComment.setValue("Failed to create a new comment")
                 return false
             }
             
             let responses = api.updateSupportTicket(Int(self.user.getValue().userID)!, self.supportTicketID.getValue(), comment)
             
             if responses.isEmpty {
-                successOrFailure.setValue("Failed to create a new comment server error")
+                successOrFailureForCreateNewComment.setValue("Failed to create a new comment server error")
                 return false
             } else {
                 let response = responses.first!
                 
                 if response.responseCode != 200 {
-                    successOrFailure.setValue("Failed to create a new comment server error")
+                    successOrFailureForCreateNewComment.setValue("Failed to create a new comment server error")
                     return false
                 }
                 
-                successOrFailure.setValue("Successfully created a new comment")
+                successOrFailureForCreateNewComment.setValue("Successfully created a new comment")
+                return true
+            }
+        }
+    }
+    
+    func attemptResolveTicket() -> Bool {
+        if Constants.DEBUG {
+            successOrFailureForResolveTicket.setValue("Successfully resolved ticket in DEBUG mode")
+            return true
+        } else {
+            let api = Config.api
+            
+            if self.user.getValue().userID.isEmpty {
+                self.successOrFailureForResolveTicket.setValue("Failed to resolve ticekt")
+                return false
+            }
+            
+            let responses = api.resolveSupportTicket(Int(self.user.getValue().userID)!, self.supportTicketID.getValue())
+            
+            if responses.isEmpty {
+                successOrFailureForResolveTicket.setValue("Failed to resolve ticket server error")
+                return false
+            }
+            
+            let response = responses.first!
+            
+            if response.responseCode != 200 {
+                successOrFailureForResolveTicket.setValue("Failed to resolve ticket server error")
+                return true
+            } else {
+                successOrFailureForResolveTicket.setValue("Successfully resolved support ticket")
+                return true
+            }
+        }
+    }
+    
+    func attemptDeleteTicket() -> Bool {
+        if Constants.DEBUG {
+            successOrFailureForDeleteTicket.setValue("Successfully deleted ticket in DEBUG mode")
+            return true
+        } else {
+            let api = Config.api
+            
+            if self.user.getValue().userID.isEmpty {
+                self.successOrFailureForDeleteTicket.setValue("Failed to delete ticekt")
+                return false
+            }
+            
+            let responses = api.deleteSupportTicket(Int(self.user.getValue().userID)!, self.supportTicketID.getValue())
+            
+            if responses.isEmpty {
+                successOrFailureForDeleteTicket.setValue("Failed to delete ticket server error")
+                return false
+            }
+            
+            let response = responses.first!
+            
+            if response.responseCode != 200 {
+                successOrFailureForDeleteTicket.setValue("Failed to delete ticket server error")
+                return true
+            } else {
+                successOrFailureForDeleteTicket.setValue("Successfully deleted support ticket")
                 return true
             }
         }

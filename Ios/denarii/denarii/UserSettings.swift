@@ -34,7 +34,7 @@ struct UserSettings: View {
                         .font(.headline)
                         .padding().onTapGesture {
                             showingPopover = false
-                        }.accessibilityIdentifier("Popover")
+                        }.accessibilityIdentifier(Constants.POPOVER)
                 }
             }.navigationDestination(isPresented: $isDeleted) {
                 return ContentView()
@@ -66,7 +66,34 @@ struct UserSettings: View {
     }
     
     func attemptDeleteAccount() -> Bool {
-        return false
+        if Constants.DEBUG {
+            successOrFailure.setValue("Successfully deleted account in DEBUG mode")
+            return true
+        } else {
+            let api = Config.api
+            
+            if self.user.getValue().userID.isEmpty {
+                successOrFailure.setValue("Failed to delete account")
+                return false
+            }
+            
+            let responses = api.deleteUser(Int(self.user.getValue().userID)!)
+            
+            if responses.isEmpty {
+                successOrFailure.setValue("Failed to delete account server error")
+                return false
+            }
+            
+            let response = responses.first!
+            
+            if response.responseCode != 200 {
+                successOrFailure.setValue("Failed to delete account server error")
+                return false
+            }
+            
+            successOrFailure.setValue("Successfully deleted account")
+            return true
+        }
     }
 }
 

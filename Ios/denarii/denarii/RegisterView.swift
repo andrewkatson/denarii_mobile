@@ -36,7 +36,7 @@ struct RegisterView: View {
                         .padding().onTapGesture {
                             showingPopover = false
                         }
-                        .accessibilityIdentifier("Popover")
+                        .accessibilityIdentifier(Constants.POPOVER)
                 }
                 Spacer()
                 NavigationLink(destination: WalletDecisionView(user.getValue())) {
@@ -79,7 +79,7 @@ struct RegisterView: View {
                 return false
             }
             
-            var userDetails = UserDetails()
+            let userDetails = UserDetails()
             userDetails.userID = String(userIdentifierOptional!)
             user.setValue(userDetails)
             successOrFailure.setValue("Registered")

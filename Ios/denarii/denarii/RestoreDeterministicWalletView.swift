@@ -39,7 +39,7 @@ struct RestoreDeterministicWalletView: View {
                             .onTapGesture {
                                 showingPopover = false
                             }
-                            .accessibilityIdentifier("Popover")
+                            .accessibilityIdentifier(Constants.POPOVER)
                 }
                 Spacer()
                 NavigationLink(destination: OpenedWalletView(user.getValue(), walletName, walletSeed)) {

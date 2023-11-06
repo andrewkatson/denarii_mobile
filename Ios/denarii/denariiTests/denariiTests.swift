@@ -69,24 +69,63 @@ final class denariiTests: XCTestCase {
         XCTAssert(RegisterView().attemptSubmit() == true)
     }
     
+    func testBuyDenarii() throws {
+        XCTAssert(BuyDenarii().attemptBuy() == true)
+    }
+    
+    func testSellDenarii() throws {
+        XCTAssert(SellDenarii().attemptToSellDenarii() == true)
+    }
+    
+    func testVerifyIdentity() throws {
+        XCTAssert(Verification().attemptSubmit() == true)
+    }
+    
+    func testSetCreditCardInfo() throws {
+        XCTAssert(CreditCardInfo().attemptToSetCreditCardInfo() == true)
+    }
+
+    func testCreateSupportTicket() throws {
+        XCTAssert(CreateSupportTicket().attemptCreateTicket() == true)
+    }
+    
+    func testCreateNewComment() throws {
+        XCTAssert(SupportTicketDetails().attemptCreateNewComment() == true)
+    }
+    
+    func testDeleteSupportTicket() throws {
+        XCTAssert(SupportTicketDetails().attemptDeleteTicket() == true)
+    }
+    
+    func testResolveSupportTicket() throws {
+        XCTAssert(SupportTicketDetails().attemptResolveTicket() == true)
+    }
+    
+    func testDeleteAccount() throws {
+        XCTAssert(UserSettings().attemptDeleteAccount() == true)
+    }
+    
     func testLoginPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(LoginView().attemptSubmit() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(LoginView().attemptSubmit() == false)
         }
     }
     
     func testCreateWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(CreateWalletView().attemptSubmit() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(CreateWalletView().attemptSubmit() == false)
         }
     }
     
     func testOpenWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(OpenWalletView().attemptSubmit() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(OpenWalletView().attemptSubmit() == false)
         }
     }
     
@@ -96,9 +135,9 @@ final class denariiTests: XCTestCase {
             let openedWalletView = OpenedWalletView()
             // Get some denarii into the wallet text view
             openedWalletView.setBalance("1")
-            openedWalletView.refreshBalance()
-            // The refresh of balance with the stubbed api always sets the balance to 0.0'
-            XCTAssert(openedWalletView.getBalance() == "0.0")
+            let _ = openedWalletView.refreshBalance()
+            // The refresh of balance with the real api never changes the balance because the call fails
+            XCTAssert(openedWalletView.getBalance() == "1")
         }
     }
     
@@ -108,7 +147,7 @@ final class denariiTests: XCTestCase {
             let openedWalletView = OpenedWalletView()
             // Get some denarii into the wallet text view
             openedWalletView.setBalance("10")
-            openedWalletView.sendDenarii()
+            let _ = openedWalletView.sendDenarii()
             // Nothing should be sent because the amountToSend text view is empty
             XCTAssert(openedWalletView.getBalance() == "10")
         }
@@ -117,14 +156,16 @@ final class denariiTests: XCTestCase {
     func testRestoreDeterministicWalletPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(RestoreDeterministicWalletView().attemptSubmit() == false)
         }
     }
     
     func testRequestResetPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RequestResetView().attemptRequest() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(RequestResetView().attemptRequest() == false)
         }
     }
     
@@ -140,14 +181,88 @@ final class denariiTests: XCTestCase {
     func testResetPasswordPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(ResetPasswordView().attemptReset() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(ResetPasswordView().attemptReset() == false)
         }
     }
     
     func testRegisterPerformance() throws {
         Constants.DEBUG = false
         self.measure {
-            XCTAssert(RegisterView().attemptSubmit() == true)
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(RegisterView().attemptSubmit() == false)
+        }
+    }
+    
+    func testBuyDenariiPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(BuyDenarii().attemptBuy() == false)
+        }
+    }
+    
+    func testSellDenariiPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(SellDenarii().attemptToSellDenarii() == false)
+        }
+    }
+    
+    func testVerifyIdentityPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(Verification().attemptSubmit() == false)
+        }
+    }
+    
+    func testSetCreditCardInfoPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(CreditCardInfo().attemptToSetCreditCardInfo() == false)
+        }
+    }
+    
+    func testCreateSupportTicketPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(CreateSupportTicket().attemptCreateTicket() == false)
+        }
+    }
+    
+    func testCreateNewCommentPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(SupportTicketDetails().attemptCreateNewComment() == false)
+        }
+    }
+    
+    func testDeleteSupportTicketPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(SupportTicketDetails().attemptDeleteTicket() == false)
+        }
+    }
+    
+    func testResolveSupportTicketPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(SupportTicketDetails().attemptResolveTicket() == false)
+        }
+    }
+    
+    func testDeleteAccountPerformance() throws {
+        Constants.DEBUG = false
+        self.measure {
+            // Should be false since the real API doesnt work in local mode
+            XCTAssert(UserSettings().attemptDeleteAccount() == false)
         }
     }
 

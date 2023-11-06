@@ -53,7 +53,7 @@ struct CreateWalletView: View {
                                     
                                 }
                             }
-                            .accessibilityIdentifier("Popover")
+                            .accessibilityIdentifier(Constants.POPOVER)
                     }
                     Spacer()
                 }

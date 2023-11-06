@@ -73,7 +73,7 @@ struct CreditCardInfo: View {
                     .font(.headline)
                     .padding().onTapGesture {
                         showingPopoverForSet = false
-                    }.accessibilityIdentifier("Popover Set Credit Card Info")
+                    }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
             }
             if status.contains("Status: Set") {
                 Button("Clear Info") {
@@ -84,7 +84,7 @@ struct CreditCardInfo: View {
                         .font(.headline)
                         .padding().onTapGesture {
                             showingPopoverForClear = false
-                        }.accessibilityIdentifier("Popover Clear Credit Card Info")
+                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
                 }
 
             }
