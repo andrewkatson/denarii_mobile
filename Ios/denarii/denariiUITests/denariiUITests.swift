@@ -18,93 +18,28 @@ final class denariiUITests: XCTestCase {
         }
     }
     
+    func refreshScreen(_ app: XCUIApplication, _ element: XCUIElement) {
+        let start = element.coordinate(withNormalizedOffset: CGVectorMake(0, 0))
+        let finish = element.coordinate(withNormalizedOffset: CGVectorMake(0, 6))
+        start.press(forDuration: 0, thenDragTo: finish)
+    }
+    
     func tapAway(_ app: XCUIApplication) {
         app.tap()
         
-        // Have to do redundant tapping becuase the popover in landscape is harder to tap
-        if app.staticTexts[Constants.POPOVER].exists {
-            app.staticTexts[Constants.POPOVER].tap()
-            if app.staticTexts[Constants.POPOVER].exists {
-                app.staticTexts[Constants.POPOVER].swipeDown()
+        tapAwayOnPopovers(app, [Constants.POPOVER, Constants.BUY_DENARII_POPOVER, Constants.CANCEL_BUY_DENARII_POPOVER, Constants.CANCEL_SELL_DENARII_POPOVER, Constants.CLEAR_CREDIT_CARD_INFO_POPOVER, Constants.CREATE_NEW_COMMENT_POPOVER, Constants.DELETE_ACCOUNT_POPOVER, Constants.DELETE_TICKET_POPOVER, Constants.LOGOUT_POPOVER,Constants.REFRESH_BALANCE_POPOVER, Constants.RESOLVE_TICKET_POPOVER, Constants.SELL_DENARII_POPOVER, Constants.SEND_DENARII_POPOVER, Constants.SET_CREDIT_CARD_INFO_POPOVER])
+    }
+
+    func tapAwayOnPopovers(_ app: XCUIApplication, _ popoverNames: Array<String>) {
+        for popoverName in popoverNames{
+            // Have to do redundant tapping becuase the popover in landscape is harder to tap
+            if app.staticTexts[popoverName].exists {
+                app.staticTexts[popoverName].tap()
+                if app.staticTexts[popoverName].exists {
+                    app.staticTexts[popoverName].swipeDown()
+                }
+                XCTAssert(!app.staticTexts[popoverName].exists, "\(popoverName) still exists")
             }
-            XCTAssert(!app.staticTexts[Constants.POPOVER].exists, "\(Constants.POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists {
-            app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].tap()
-            if app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists {
-                app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.REFRESH_BALANCE_POPOVER].exists, "\(Constants.REFRESH_BALANCE_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.SEND_DENARII_POPOVER].exists {
-            app.staticTexts[Constants.SEND_DENARII_POPOVER].tap()
-            if app.staticTexts[Constants.SEND_DENARII_POPOVER].exists {
-                app.staticTexts[Constants.SEND_DENARII_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.SEND_DENARII_POPOVER].exists, "\(Constants.SEND_DENARII_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.BUY_DENARII_POPOVER].exists {
-            app.staticTexts[Constants.BUY_DENARII_POPOVER].tap()
-            if app.staticTexts[Constants.BUY_DENARII_POPOVER].exists {
-                app.staticTexts[Constants.BUY_DENARII_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.BUY_DENARII_POPOVER].exists, "\(Constants.BUY_DENARII_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists {
-            app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].tap()
-            if app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists {
-                app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.CANCEL_BUY_DENARII_POPOVER].exists, "\(Constants.CANCEL_BUY_DENARII_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.SELL_DENARII_POPOVER].exists {
-            app.staticTexts[Constants.SELL_DENARII_POPOVER].tap()
-            if app.staticTexts[Constants.SELL_DENARII_POPOVER].exists {
-                app.staticTexts[Constants.SELL_DENARII_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.SELL_DENARII_POPOVER].exists, "\(Constants.SELL_DENARII_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists {
-            app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].tap()
-            if app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists {
-                app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.CANCEL_SELL_DENARII_POPOVER].exists, "\(Constants.CANCEL_SELL_DENARII_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists {
-            app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].tap()
-            if app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists {
-                app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.SET_CREDIT_CARD_INFO_POPOVER].exists, "\(Constants.SET_CREDIT_CARD_INFO_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists {
-            app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].tap()
-            if app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists {
-                app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.CLEAR_CREDIT_CARD_INFO_POPOVER].exists, "\(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists {
-            app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].tap()
-            if app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists {
-                app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.CREATE_NEW_COMMENT_POPOVER].exists, "\(Constants.CREATE_NEW_COMMENT_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists {
-            app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].tap()
-            if app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists {
-                app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.RESOLVE_TICKET_POPOVER].exists, "\(Constants.RESOLVE_TICKET_POPOVER) still exists")
-        }
-        if app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists {
-            app.staticTexts[Constants.DELETE_TICKET_POPOVER].tap()
-            if app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists {
-                app.staticTexts[Constants.DELETE_TICKET_POPOVER].swipeDown()
-            }
-            XCTAssert(!app.staticTexts[Constants.DELETE_TICKET_POPOVER].exists, "\(Constants.DELETE_TICKET_POPOVER) still exists")
         }
     }
     
@@ -128,8 +63,8 @@ final class denariiUITests: XCTestCase {
         navigateToLogin(app)
     }
     
-    func loginWithDenarii(_ app: XCUIApplication) {
-        registerWithDenarii(app)
+    func loginWithDenarii(_ app: XCUIApplication, _ suffix: String) {
+        registerWithDenarii(app, suffix)
         
         // Then navigate back
         let backButton = app.buttons["Back"]
@@ -142,28 +77,28 @@ final class denariiUITests: XCTestCase {
         
         let loginTextField = app.textFields["Name"]
         loginTextField.tap()
-        loginTextField.typeText("User_\(self.currentTestName)")
+        loginTextField.typeText("User_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let emailTextField = app.textFields["Email"]
         emailTextField.tap()
-        emailTextField.typeText("Email_\(self.currentTestName)@email.com")
+        emailTextField.typeText("Email_\(self.currentTestName)_\(suffix)@email.com")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let passwordSecureTextField = app.secureTextFields["Password"]
         passwordSecureTextField.tap()
-        passwordSecureTextField.typeText("Password_\(self.currentTestName)")
+        passwordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
         confirmPasswordSecureTextField.tap()
-        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)")
+        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
 
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -178,35 +113,35 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func registerWithDenarii(_ app: XCUIApplication) {
+    func registerWithDenarii(_ app: XCUIApplication, _ suffix: String) {
         navigateToLoginOrRegister(app)
 
         navigateToRegister(app)
         
         let loginTextField = app.textFields["Name"]
         loginTextField.tap()
-        loginTextField.typeText("User_\(self.currentTestName)")
+        loginTextField.typeText("User_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let emailTextField = app.textFields["Email"]
         emailTextField.tap()
-        emailTextField.typeText("Email_\(self.currentTestName)@email.com")
+        emailTextField.typeText("Email_\(self.currentTestName)_\(suffix)@email.com")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let passwordSecureTextField = app.secureTextFields["Password"]
         passwordSecureTextField.tap()
-        passwordSecureTextField.typeText("Password_\(self.currentTestName)")
+        passwordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
         confirmPasswordSecureTextField.tap()
-        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)")
+        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
 
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -221,8 +156,8 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func resetPassword(_ app: XCUIApplication) {
-        registerWithDenarii(app)
+    func resetPassword(_ app: XCUIApplication, _ suffix: String) {
+        registerWithDenarii(app, suffix)
         
         // Then navigate back
         let backButton = app.buttons["Back"]
@@ -240,7 +175,7 @@ final class denariiUITests: XCTestCase {
         
         let usernameOrEmailTextField = app.textFields.matching(userNameOrEmailPredicate)
         usernameOrEmailTextField.element.tap()
-        usernameOrEmailTextField.element.typeText("User_\(self.currentTestName)")
+        usernameOrEmailTextField.element.typeText("User_\(self.currentTestName)_\(suffix)")
 
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -273,28 +208,28 @@ final class denariiUITests: XCTestCase {
         
         let usernameTextField = app.textFields["Name"]
         usernameTextField.tap()
-        usernameTextField.typeText("User")
+        usernameTextField.typeText("User_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let emailTextField = app.textFields["Email"]
         emailTextField.tap()
-        emailTextField.typeText("Email@email.com")
+        emailTextField.typeText("Email_\(self.currentTestName)_\(suffix)@email.com")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let passwordTextField = app.secureTextFields["Password"]
         passwordTextField.tap()
-        passwordTextField.typeText("password")
+        passwordTextField.typeText("password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmPasswordTextField = app.secureTextFields["Confirm Password"]
         confirmPasswordTextField.tap()
-        confirmPasswordTextField.typeText("password")
+        confirmPasswordTextField.typeText("password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -310,29 +245,27 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func createWallet(_ app: XCUIApplication) {
-        loginWithDenarii(app)
-        
+    func strictlyCreateWallet(_ app: XCUIApplication, _ suffix: String) {
         let createWalletButton = app.buttons["Create Wallet"]
         createWalletButton.tap()
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmWalletPasswordSecureTextField = app.secureTextFields["Confirm Wallet Password"]
         confirmWalletPasswordSecureTextField.tap()
-        confirmWalletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        confirmWalletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -347,8 +280,14 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func openWallet(_ app: XCUIApplication) {
-        createWallet(app)
+    func createWallet(_ app: XCUIApplication, _ suffix: String) {
+        loginWithDenarii(app, suffix)
+        
+        strictlyCreateWallet(app, suffix)
+    }
+    
+    func openWallet(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
         
         // Then navigate back
         let backButton = app.buttons["Back"]
@@ -362,14 +301,14 @@ final class denariiUITests: XCTestCase {
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -384,8 +323,8 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func restoreDeterministicWallet(_ app: XCUIApplication) {
-        createWallet(app)
+    func restoreDeterministicWallet(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
         
         // Then navigate back
         let backButton = app.buttons["Back"]
@@ -399,14 +338,14 @@ final class denariiUITests: XCTestCase {
         
         let walletNameTextField = app.textFields["Wallet Name"]
         walletNameTextField.tap()
-        walletNameTextField.typeText("wallet_\(self.currentTestName)")
+        walletNameTextField.typeText("wallet_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         walletPasswordSecureTextField.tap()
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)")
+        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -428,8 +367,8 @@ final class denariiUITests: XCTestCase {
         nextButton.tap()
     }
     
-    func refreshBalance(_ app: XCUIApplication) {
-        createWallet(app)
+    func refreshBalance(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
         
         let refreshBalanceButton = app.buttons["Refresh Balance"]
         refreshBalanceButton.tap()
@@ -438,8 +377,8 @@ final class denariiUITests: XCTestCase {
         tapAway(app)
     }
     
-    func sendDenarii(_ app: XCUIApplication) {
-        refreshBalance(app)
+    func sendDenarii(_ app: XCUIApplication, _ suffix: String) {
+        refreshBalance(app, suffix)
         
         let amountToSendTextField = app.textFields["Amount to Send"]
         amountToSendTextField.tap()
@@ -452,10 +391,348 @@ final class denariiUITests: XCTestCase {
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        
         let sendDenariiButton = app.buttons["Send"]
         sendDenariiButton.tap()
     }
+    
+    func logout(_ app: XCUIApplication, _ suffix: String) {
+        let userSettingsButton = app.buttons["Settings"]
+        userSettingsButton.tap()
+        
+        let logoutButton = app.buttons["Logout"]
+        logoutButton.tap()
+        
+        // We should be on the ContentView screen
+        XCTAssert(app.buttons["Next"].exists)
+    }
+    
+    func logoutFromWalletDecision(_ app: XCUIApplication, _ suffix: String) {
+        strictlyCreateWallet(app, suffix)
+        logout(app, suffix)
+    }
+    
+    func logoutFromSupportTickets(_ app: XCUIApplication, _ suffix: String) {
+        let backButton = app.buttons["Back"]
+        backButton.tap()
+        logout(app, suffix)
+    }
+    
+    func logoutFromSupportTicketDetails(_ app: XCUIApplication, _ suffix: String) {
+        let backToCreateSupportTicketButton = app.buttons["Back"]
+        backToCreateSupportTicketButton.tap()
+        
+        let backToSupportTicketsButton = app.buttons["Back"]
+        backToSupportTicketsButton.tap()
+        logoutFromSupportTickets(app, suffix)
+    }
+    
+    func buyDenarii(_ app: XCUIApplication, _ firstUserSuffix: String, _ secondUserSuffix: String) {
+        sellDenarii(app, firstUserSuffix)
+        
+        logout(app, firstUserSuffix)
+        
+        createWallet(app, secondUserSuffix)
+        
+        let buyDenariiButton = app.buttons["Buy Denarii"]
+        buyDenariiButton.tap()
+        
+        let amountTextField = app.textFields["Amount"]
+        amountTextField.tap()
+        // More than is sold
+        amountTextField.typeText("10.0")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        // Willing to buy at a high price
+        let priceTextField = app.textFields["Price"]
+        priceTextField.tap()
+        priceTextField.typeText("100.0")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let secondBuyDenariiButton = app.buttons["Buy Denarii"]
+        secondBuyDenariiButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func cancelBuyDenarii(_ app: XCUIApplication, _ firstUserSuffix: String, _ secondUserSuffix: String) {
+        buyDenarii(app, firstUserSuffix, secondUserSuffix)
+        
+        let queuedBuysGrid = app.grids[Constants.QUEUED_BUYS_GRID]
+        refreshScreen(app, queuedBuysGrid)
+        
+        let cancelButton = queuedBuysGrid.buttons["Cancel"]
+        cancelButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func sellDenarii(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
+        
+        let sellDenariiButton = app.buttons["Sell Denarii"]
+        sellDenariiButton.tap()
+        
+        let amountTextField = app.textFields["Amount"]
+        amountTextField.tap()
+        // More than is sold
+        amountTextField.typeText("10.0")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        // Willing to buy at a high price
+        let priceTextField = app.textFields["Price"]
+        priceTextField.tap()
+        priceTextField.typeText("100.0")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let secondSellDenariiButto  = app.buttons["Sell Denarii"]
+        secondSellDenariiButto.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func cancelSellDenarii(_ app: XCUIApplication, _ suffix: String) {
+        sellDenarii(app, suffix)
+        
+        let ownAsksGrid = app.grids[Constants.OWNED_ASKS_GRID]
+        refreshScreen(app, ownAsksGrid)
+        
+        let cancelButton = ownAsksGrid.buttons["Cancel Ask"]
+        cancelButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func verifyIdentity(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
+        
+        let verificationButton = app.buttons["Verification"]
+        verificationButton.tap()
+        
+        let firstNameTextField = app.textFields["First Name"]
+        firstNameTextField.tap()
+        firstNameTextField.typeText("first_name_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let middleNameTextField = app.textFields["Middle Name"]
+        middleNameTextField.tap()
+        middleNameTextField.typeText("middle_name_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let lastNameTextField = app.textFields["Last Name"]
+        lastNameTextField.tap()
+        lastNameTextField.typeText("last_name_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let emailTextField = app.textFields["Email"]
+        emailTextField.tap()
+        emailTextField.typeText("email_\(self.currentTestName)_\(suffix)@email.com")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let dateOfBirthTextField = app.textFields["Date Of Birth"]
+        dateOfBirthTextField.tap()
+        dateOfBirthTextField.typeText("2020/02/10")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let socialSecurityNumberTextField = app.textFields["Social Security Number"]
+        socialSecurityNumberTextField.tap()
+        socialSecurityNumberTextField.typeText("101")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let zipcodeTextField = app.textFields["Zipcode"]
+        zipcodeTextField.tap()
+        zipcodeTextField.typeText("Zipcode")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let phoneNumberTextField = app.textFields["Phone Number"]
+        phoneNumberTextField.tap()
+        phoneNumberTextField.typeText("123")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let workCityTextField = app.textFields["Work City"]
+        workCityTextField.tap()
+        workCityTextField.typeText("city_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let workStateTexttField = app.textFields["Work State"]
+        workStateTexttField.tap()
+        workStateTexttField.typeText("state_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let workCountryTextField = app.textFields["Work Country"]
+        workCountryTextField.tap()
+        workCountryTextField.typeText("country_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let submitButton = app.buttons["Submit"]
+        submitButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func setCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
+        
+        let creditCardInfoButton = app.buttons["Credit Card"]
+        creditCardInfoButton.tap()
+        
+        let creditCardNumberTextField = app.textFields["Credit Card Number"]
+        creditCardNumberTextField.tap()
+        creditCardNumberTextField.typeText("234")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let creditCardExpirationDateMonthTextField = app.textFields["Expiration Date Month"]
+        creditCardExpirationDateMonthTextField.tap()
+        creditCardExpirationDateMonthTextField.typeText("02")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let creditCardExpirationDateYearTextField = app.textFields["Expiration Date Year"]
+        creditCardExpirationDateYearTextField.tap()
+        creditCardExpirationDateYearTextField.typeText("2020")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let creditCardSecurityCodeTextField = app.textFields["Security Code"]
+        creditCardSecurityCodeTextField.tap()
+        creditCardSecurityCodeTextField.typeText("001")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let setInfoButton = app.textFields["Set Info"]
+        setInfoButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func clearCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
+        setCreditCardInfo(app, suffix)
+        
+        let clearCreditCardInfoButton = app.buttons["Clear Info"]
+        clearCreditCardInfoButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func navigateToSupportTickets(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
+        
+        let userSettingsButton = app.buttons["Settings"]
+        userSettingsButton.tap()
+        
+        let supportTicketsButton = app.buttons["Support Tickets"]
+        supportTicketsButton.tap()
+    }
+    
+    func createSupportTicket(_ app: XCUIApplication, _ suffix: String) {
+        navigateToSupportTickets(app, suffix)
+        
+        let createTicketButton = app.buttons["Create Support Ticket"]
+        createTicketButton.tap()
+        
+        let titleTextField = app.textFields["Title"]
+        titleTextField.tap()
+        titleTextField.typeText("title_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let descriptionTextField = app.textFields["Description"]
+        descriptionTextField.tap()
+        descriptionTextField.typeText("description_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let createTicketTwoButton = app.buttons["Create Support Ticket"]
+        createTicketTwoButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func createNewComment(_ app: XCUIApplication, _ suffix: String) {
+        createSupportTicket(app, suffix)
+        
+        let newCommentTextField = app.textFields["New Comment"]
+        newCommentTextField.tap()
+        newCommentTextField.typeText("comment_\(self.currentTestName)_\(suffix)")
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
+        
+        let createNewCommentButton = app.buttons["Submit"]
+        createNewCommentButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
+    }
+    
+    func deleteSupportTicket(_ app: XCUIApplication, _ suffix: String) {
+        createSupportTicket(app, suffix)
+        
+        let deleteTicketButton = app.buttons["Delete"]
+        deleteTicketButton.tap()
+    }
+    
+    func resolveSupportTicket(_ app: XCUIApplication, _ suffix: String) {
+        createSupportTicket(app, suffix)
+        
+        let resolveButton = app.buttons["Resolve"]
+        resolveButton.tap()
+    }
+    
+    func deleteAccount(_ app: XCUIApplication, _ suffix: String) {
+        createWallet(app, suffix)
+        
+        let userSettingsButton = app.buttons["Settings"]
+        userSettingsButton.tap()
+        
+        let deleteAccountButton = app.buttons["Delete Account"]
+        deleteAccountButton.tap()
+    }
+    
     
     func checkForLoginView(_ app: XCUIApplication) {
         XCTAssert(app.buttons["Submit"].exists)
@@ -492,6 +769,12 @@ final class denariiUITests: XCTestCase {
         XCTAssert(app.staticTexts["Balance Value"].label == String(balance))
     }
     
+    func checkForSupportTicketDetailsView(_ app: XCUIApplication) {
+        XCTAssert(app.buttons["Submit"].exists)
+        XCTAssert(app.buttons["Resolve"].exists)
+        XCTAssert(app.buttons["Delete"].exists)
+    }
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -516,10 +799,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        loginWithDenarii(app)
+        loginWithDenarii(app, Constants.FIRST_USER)
         
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForWalletDecisionView(app)
+        
+        // Always log the user out
+        logoutFromWalletDecision(app, Constants.FIRST_USER)
     }
     
     func testRegister() throws {
@@ -528,10 +814,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        registerWithDenarii(app)
+        registerWithDenarii(app, Constants.FIRST_USER)
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForWalletDecisionView(app)
+        
+        // Always log the user out
+        logoutFromWalletDecision(app, Constants.FIRST_USER)
     }
 
     func testResetPassword() throws {
@@ -540,7 +829,7 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
     
-        resetPassword(app)
+        resetPassword(app, Constants.FIRST_USER)
     
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForLoginView(app)
@@ -552,10 +841,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        createWallet(app)
+        createWallet(app, Constants.FIRST_USER)
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForOpenedWalletView(app)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testOpenWallet() throws {
@@ -564,10 +856,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        openWallet(app)
+        openWallet(app, Constants.FIRST_USER)
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForOpenedWalletView(app)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testRestoreDeterministicWallet() throws {
@@ -576,10 +871,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        restoreDeterministicWallet(app)
+        restoreDeterministicWallet(app, Constants.FIRST_USER)
         
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForOpenedWalletView(app)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testRefreshBalance() throws {
@@ -588,10 +886,13 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        refreshBalance(app);
+        refreshBalance(app, Constants.FIRST_USER);
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForUpdatedBalance(app, 3.0);
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testSendDenarii() throws {
@@ -600,58 +901,193 @@ final class denariiUITests: XCTestCase {
         app.launchArguments = ["UI-TESTING"]
         app.launch()
         
-        sendDenarii(app)
+        sendDenarii(app, Constants.FIRST_USER)
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         checkForUpdatedBalance(app, 1.0)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testBuyDenarii() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        buyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
+        
+        XCTAssert(app.buttons["Cancel"].exists)
+        
+        // Always log the user out
+        logout(app, Constants.SECOND_USER)
     }
     
     func testCancelBuyOfDenarii() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
+     
+        cancelBuyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
         
+        XCTAssert(!app.buttons["Cancel"].exists)
+        
+        // Always log the user out
+        logout(app, Constants.SECOND_USER)
     }
     
     func testSellDenarii() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
+     
+        sellDenarii(app, Constants.FIRST_USER)
         
+        XCTAssert(app.buttons["Cancel"].exists)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testCancelSellDenarii() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        cancelSellDenarii(app, Constants.FIRST_USER)
+        
+        XCTAssert(!app.buttons["Cancel"].exists)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testVerifyIdentity() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        verifyIdentity(app, Constants.FIRST_USER)
+        
+        XCTAssert(!app.buttons["Submit"].exists)
+        
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testSetCreditCardInfo() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        setCreditCardInfo(app, Constants.FIRST_USER)
+        
+        XCTAssert(app.buttons["Clear Info"].exists)
+
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testClearCreditCardInfo() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
+     
+        clearCreditCardInfo(app, Constants.FIRST_USER)
         
+        XCTAssert(!app.buttons["Clear Info"].exists)
+
+        // Always log the user out
+        logout(app, Constants.FIRST_USER)
     }
     
     func testSupportTickets() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
+     
+        navigateToSupportTickets(app, Constants.FIRST_USER)
         
+        XCTAssert(app.buttons["Create Support Ticket"].exists)
+        XCTAssert(!app.buttons["Submit"].exists)
+        
+        // Always log the user out
+        logoutFromSupportTickets(app, Constants.FIRST_USER)
     }
     
     func testCreateSupportTicket() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        createSupportTicket(app, Constants.FIRST_USER)
+        
+        checkForSupportTicketDetailsView(app)
+        
+        // Always log the user out
+        logoutFromSupportTicketDetails(app, Constants.FIRST_USER)
+    }
+    
+    func testCreateNewComment() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
+        
+        createNewComment(app, Constants.FIRST_USER)
+
+        checkForSupportTicketDetailsView(app)
+        
+        // Always log the user out
+        logoutFromSupportTicketDetails(app, Constants.FIRST_USER)
     }
     
     func testDeleteSupportTicket() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        deleteSupportTicket(app, Constants.FIRST_USER)
+        
+        XCTAssert(app.buttons["Create Support Ticket"].exists)
+
+        // Always log the user out
+        logoutFromSupportTickets(app, Constants.FIRST_USER)
     }
     
     func testResolveSupportTicket() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        resolveSupportTicket(app, Constants.FIRST_USER)
+        
+        XCTAssert(app.buttons["Create Support Ticket"].exists)
+        
+        // Always log the user out
+        logoutFromSupportTickets(app, Constants.FIRST_USER)
     }
     
     func testDeleteAccount() throws {
+        // UI tests must launch the application that they test.
+        let app = XCUIApplication()
+        app.launchArguments = ["UI-TESTING"]
+        app.launch()
         
+        deleteAccount(app, Constants.FIRST_USER)
+        
+        XCTAssert(app.buttons["Next"].exists)
     }
     
     
@@ -663,7 +1099,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
                 
-                loginWithDenarii(app)
+                loginWithDenarii(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromWalletDecision(app, Constants.FIRST_USER)
             }
         }
     }
@@ -676,7 +1115,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
              
-                registerWithDenarii(app)
+                registerWithDenarii(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromWalletDecision(app, Constants.FIRST_USER)
             }
         }
     }
@@ -689,7 +1131,7 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
                 
-                resetPassword(app)
+                resetPassword(app, Constants.FIRST_USER)
             }
         }
     }
@@ -702,7 +1144,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
 
-                createWallet(app)
+                createWallet(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
             }
         }
     }
@@ -715,7 +1160,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
 
-                openWallet(app)
+                openWallet(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
             }
         }
     }
@@ -728,7 +1176,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
 
-                restoreDeterministicWallet(app)
+                restoreDeterministicWallet(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
             }
         }
     }
@@ -741,7 +1192,10 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
 
-                refreshBalance(app)
+                refreshBalance(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
             }
         }
     }
@@ -754,56 +1208,219 @@ final class denariiUITests: XCTestCase {
                 app.launchArguments = ["UI-TESTING"]
                 app.launch()
 
-                sendDenarii(app)
+                sendDenarii(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
             }
         }
     }
     
     func testBuyDenariiPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                buyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
+                
+                // Always log the user out
+                logout(app, Constants.SECOND_USER)
+            }
+        }
     }
     
     func testCancelBuyOfDenariiPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                cancelBuyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
+                
+                // Always log the user out
+                logout(app, Constants.SECOND_USER)
+            }
+        }
     }
     
     func testSellDenariiPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                sellDenarii(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testCancelSellDenariiPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                cancelSellDenarii(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testVerifyIdentityPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                verifyIdentity(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testSetCreditCardInfoPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                setCreditCardInfo(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testClearCreditCardInfoPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                clearCreditCardInfo(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testSupportTicketsPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                navigateToSupportTickets(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromSupportTickets(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testCreateSupportTicketPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                createSupportTicket(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromSupportTicketDetails(app, Constants.FIRST_USER)
+            }
+        }
+    }
+    
+    func testCreateNewCommentPerformance() throws {
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                createNewComment(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromSupportTicketDetails(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testDeleteSupportTicketPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                deleteSupportTicket(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromSupportTickets(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testResolveSupportTicketPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                resolveSupportTicket(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logoutFromSupportTickets(app, Constants.FIRST_USER)
+            }
+        }
     }
     
     func testDeleteAccountPerformance() throws {
-        
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+            // This measures how long it takes to launch your application.
+            measure(metrics: [XCTApplicationLaunchMetric()]) {
+                let app = XCUIApplication()
+                app.launchArguments = ["UI-TESTING"]
+                app.launch()
+
+                deleteAccount(app, Constants.FIRST_USER)
+                
+                // Always log the user out
+                logout(app, Constants.FIRST_USER)
+            }
+        }
     }
 }

@@ -35,7 +35,7 @@ class UserDetails {
         self.userPassword = ""
         self.walletDetails = WalletDetails()
         self.creditCard = CreditCard()
-        self.userID = "-1"
+        self.userID = ""
         self.denariiUser = DenariiUser()
     }
 }

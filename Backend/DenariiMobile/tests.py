@@ -1859,3 +1859,15 @@ class ViewsTestCase(TestCase):
                                               -1)
 
         self.assertEqual(type(get_all_response), HttpResponseBadRequest)
+
+    def test_logout_user_logs_them_out(self): 
+        test_values = get_all_test_values("logout_user_logs_them_out")
+
+        response_one = logout(test_values['request'], test_values['user_id'])
+
+        self.assertNotEqual(type(response_one), HttpResponseBadRequest)
+
+        response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
+                                             "other description")
+
+        self.assertEqual(type(response_two), HttpResponseBadRequest)

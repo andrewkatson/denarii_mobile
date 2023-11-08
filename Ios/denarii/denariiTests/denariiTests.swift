@@ -35,7 +35,7 @@ final class denariiTests: XCTestCase {
         let openedWalletView = OpenedWalletView()
         // Get some denarii into the wallet
         openedWalletView.setBalance("1")
-        openedWalletView.refreshBalance()
+        let _ = openedWalletView.refreshBalance()
         XCTAssert(openedWalletView.getBalance() == "1")
     }
     
@@ -43,7 +43,7 @@ final class denariiTests: XCTestCase {
         let openedWalletView = OpenedWalletView()
         // Get some denarii into the wallet
         openedWalletView.setBalance("10")
-        openedWalletView.sendDenarii()
+        let _ = openedWalletView.sendDenarii()
         // Nothing should be sent because the amountToSend text view is empty
         XCTAssert(openedWalletView.getBalance() == "10")
     }

@@ -33,17 +33,15 @@ struct CreateSupportTicket: View {
             TextField("Title", text: $title)
             TextField("Description", text: $description, axis: Axis.vertical)
             Spacer()
-            NavigationStack {
-                Button("Create Support Ticket") {
-                    isCreated = attemptCreateTicket()
-                    showingPopover = true
-                }.popover(isPresented: $showingPopover) {
-                    Text(successOrFailure.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopover = false
-                        }.accessibilityIdentifier(Constants.POPOVER)
-                }
+            Button("Create Support Ticket") {
+                isCreated = attemptCreateTicket()
+                showingPopover = true
+            }.popover(isPresented: $showingPopover) {
+                Text(successOrFailure.getValue())
+                    .font(.headline)
+                    .padding().onTapGesture {
+                        showingPopover = false
+                    }.accessibilityIdentifier(Constants.POPOVER)
             }.navigationDestination(isPresented: $isCreated) {
                 return SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
             }

@@ -24,4 +24,14 @@ struct Constants {
     static var CREATE_NEW_COMMENT_POPOVER = "Create New Comment Popover"
     static var RESOLVE_TICKET_POPOVER = "Resolve Ticket Popover"
     static var DELETE_TICKET_POPOVER = "Delete Ticket Popover"
+    static var DELETE_ACCOUNT_POPOVER = "Delete Account Popover"
+    static var LOGOUT_POPOVER = "Logout Popover"
+    
+    // User suffixes used in testing
+    static var FIRST_USER = "tom"
+    static var SECOND_USER = "jerry"
+    
+    // Grids
+    static var QUEUED_BUYS_GRID = "Queued Buys Grid"
+    static var OWNED_ASKS_GRID = "Owned Asks Grid"
 }

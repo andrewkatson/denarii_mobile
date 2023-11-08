@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreditCardInfo: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
     
     @State private var number: String = ""
     @State private var expirationDateMonth: String = ""
@@ -57,57 +58,62 @@ struct CreditCardInfo: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Credit Card Info").font(.largeTitle)
-            Spacer()
-            Text("\(status)")
-            TextField("Credit Card Number", text: $number)
-            TextField("Expiration Date Month", text: $expirationDateMonth)
-            TextField("Expiration Date Year", text: $expirationDateYear)
-            TextField("Security Code", text: $securityCode)
-            Button("Set Info") {
-                isSet = attemptToSetCreditCardInfo()
-                showingPopoverForSet = true
-            }.popover(isPresented: $showingPopoverForSet) {
-                Text(successOrFailureForSet.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForSet = false
-                    }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+        GeometryReader { proxy in
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .center) {
+                    Text("Credit Card Info").font(.largeTitle)
+                    Spacer()
+                    Text("\(status)")
+                    TextField("Credit Card Number", text: $number)
+                    TextField("Expiration Date Month", text: $expirationDateMonth)
+                    TextField("Expiration Date Year", text: $expirationDateYear)
+                    TextField("Security Code", text: $securityCode)
+                    Button("Set Info") {
+                        isSet = attemptToSetCreditCardInfo()
+                        showingPopoverForSet = true
+                    }.popover(isPresented: $showingPopoverForSet) {
+                        Text(successOrFailureForSet.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForSet = false
+                            }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                    }
+                    if status.contains("Status: Set") {
+                        Button("Clear Info") {
+                            isCleared = attemptToClearCreditCardInfo()
+                            showingPopoverForClear = true
+                        }.popover(isPresented: $showingPopoverForClear) {
+                            Text(successOrFailureForClear.getValue())
+                                .font(.headline)
+                                .padding().onTapGesture {
+                                    showingPopoverForClear = false
+                                }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                        }
+                        
+                    }
+                    if self.sizeClass == .compact {
+                        Spacer()
+                    }
+                    HStack {
+                        NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                            Text("Wallet")
+                        }
+                        NavigationLink(destination: BuyDenarii(user.getValue())) {
+                            Text("Buy Denarii")
+                        }
+                        NavigationLink(destination: SellDenarii(user.getValue())) {
+                            Text("Sell Denarii")
+                        }
+                        NavigationLink(destination: Verification(user.getValue())) {
+                            Text("Verification")
+                        }
+                        NavigationLink(destination: UserSettings(user.getValue())) {
+                            Text("Settings")
+                        }
+                    }
+                    Spacer()
+                }.frame(width: proxy.size.width, height: proxy.size.height)
             }
-            if status.contains("Status: Set") {
-                Button("Clear Info") {
-                    isCleared = attemptToClearCreditCardInfo()
-                    showingPopoverForClear = true
-                }.popover(isPresented: $showingPopoverForClear) {
-                    Text(successOrFailureForClear.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForClear = false
-                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                }
-
-            }
-            Spacer()
-            HStack {
-                NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                    Text("Wallet")
-                }
-                NavigationLink(destination: BuyDenarii(user.getValue())) {
-                    Text("Buy Denarii")
-                }
-                NavigationLink(destination: SellDenarii(user.getValue())) {
-                    Text("Sell Denarii")
-                }
-                NavigationLink(destination: Verification(user.getValue())) {
-                    Text("Verification")
-                }
-                NavigationLink(destination: UserSettings(user.getValue())) {
-                    Text("Settings")
-                }
-            }
-            Spacer()
-
         }
     }
     

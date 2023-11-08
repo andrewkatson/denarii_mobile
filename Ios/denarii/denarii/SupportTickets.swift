@@ -61,17 +61,21 @@ struct SupportTickets: View {
                 Text("Create Support Ticket")
             }
             Spacer()
-            VStack {
-                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                 */
-                ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
-                    
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text(supportTicket.title)
-                    }
-                    
-                }.refreshable {
-                    getSupportTickets()
+            GeometryReader { proxy in
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack {
+                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                         */
+                        ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
+                            
+                            NavigationLink(destination: UserSettings(user.getValue())) {
+                                Text(supportTicket.title)
+                            }
+                            
+                        }.refreshable {
+                            getSupportTickets()
+                        }
+                    }.frame(width: proxy.size.width, height: proxy.size.height)
                 }
             }
             Spacer()

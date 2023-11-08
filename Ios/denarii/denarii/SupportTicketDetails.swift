@@ -83,16 +83,20 @@ struct SupportTicketDetails: View {
             Spacer()
             Text("\(title.getValue())")
             Text("\(description.getValue())")
-            VStack(alignment: .center) {
-                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                 */
-                ForEach(self.comments.getValue(), id: \.self) { comment in
-                    HStack {
-                        Text(comment.author)
-                        Text(comment.content)
-                    }
-                }.refreshable {
-                    getComments()
+            GeometryReader { proxy in
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(alignment: .center) {
+                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                         */
+                        ForEach(self.comments.getValue(), id: \.self) { comment in
+                            HStack {
+                                Text(comment.author)
+                                Text(comment.content)
+                            }
+                        }.refreshable {
+                            getComments()
+                        }
+                    }.frame(width: proxy.size.width, height: proxy.size.height)
                 }
             }
             TextField("New Comment", text: $comment, axis: Axis.vertical)

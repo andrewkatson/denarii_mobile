@@ -9,6 +9,8 @@ import SwiftUI
 
 struct OpenedWalletView: View {
     
+    @Environment(\.horizontalSizeClass) var sizeClass
+    
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var balance: ObservableString =  ObservableString("0")
     @ObservedObject private var successOrFailureForRefreshBalance: ObservableString = ObservableString()
@@ -34,62 +36,66 @@ struct OpenedWalletView: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Wallet").font(.largeTitle)
-            Spacer()
-            Text("Wallet Name").accessibilityLabel("Wallet Name")
-            Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
-            Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
-            HStack {
-                Spacer(minLength: 150)
-                Text("Balance: ").accessibilityIdentifier("Balance")
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(alignment: .center) {
+                Text("Wallet").font(.largeTitle)
                 Spacer()
-                ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
-                Spacer(minLength: 150)
-            }
-            Button("Refresh Balance") {
-                let _ = refreshBalance()
-                showingPopoverForRefreshBalance = true
-            }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
-                Text(successOrFailureForRefreshBalance.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForRefreshBalance = false
+                Text("Wallet Name").accessibilityLabel("Wallet Name")
+                Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
+                Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
+                HStack {
+                    Spacer(minLength: 150)
+                    Text("Balance: ").accessibilityIdentifier("Balance")
+                    Spacer()
+                    ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
+                    Spacer(minLength: 150)
+                }
+                Button("Refresh Balance") {
+                    let _ = refreshBalance()
+                    showingPopoverForRefreshBalance = true
+                }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
+                    Text(successOrFailureForRefreshBalance.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForRefreshBalance = false
+                        }
+                        .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
+                }
+                TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
+                TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
+                Button("Send") {
+                    let _ = sendDenarii()
+                    showingPopoverForSendDenarii = true
+                }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
+                    Text(successOrFailureForSendDenarii.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForSendDenarii = false
+                        }
+                        .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
+                }
+                if self.sizeClass == .compact {
+                    Spacer()
+                }
+                HStack {
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
                     }
-                    .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
-            }
-            TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
-            TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
-            Button("Send") {
-                let _ = sendDenarii()
-               showingPopoverForSendDenarii = true
-            }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
-                Text(successOrFailureForSendDenarii.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForSendDenarii = false
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
                     }
-                    .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
+                    NavigationLink(destination: Verification(user.getValue())) {
+                        Text("Verification")
+                    }
+                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                        Text("Credit Card")
+                    }
+                    NavigationLink(destination: UserSettings(user.getValue())) {
+                        Text("Settings")
+                    }
+                }
+                Spacer()
             }
-            Spacer()
-            HStack {
-                NavigationLink(destination: BuyDenarii(user.getValue())) {
-                    Text("Buy Denarii")
-                }
-                NavigationLink(destination: SellDenarii(user.getValue())) {
-                    Text("Sell Denarii")
-                }
-                NavigationLink(destination: Verification(user.getValue())) {
-                    Text("Verification")
-                }
-                NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                    Text("Credit Card")
-                }
-                NavigationLink(destination: UserSettings(user.getValue())) {
-                    Text("Settings")
-                }
-            }
-            Spacer()
         }
     }
     

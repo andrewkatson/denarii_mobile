@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.mail import send_mail
@@ -175,6 +175,7 @@ def update_user_verification_status(user):
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
+        login(request, user)
         response = Response.objects.create(user_identifier=str(existing.id))
 
         serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
@@ -1371,3 +1372,7 @@ def poll_for_escrowed_transaction(request, user_id):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
+
+@login_required
+def logout(request, user_id): 
+    logout(request)

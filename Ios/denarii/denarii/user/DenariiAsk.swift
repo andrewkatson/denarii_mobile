@@ -36,7 +36,7 @@ class DenariiAsk : Equatable, Hashable {
     }
     
     init() {
-        self.askID = "-1"
+        self.askID = ""
         self.amount = 0.0
         self.askingPrice = 0.0
         self.isSettled = false

@@ -124,6 +124,9 @@ protocol API {
     
     // Returns a list of DenariiResponse with ask_id, amount, asking_price, amount_bought
     func pollForEscrowedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse>
+    
+    // Logs the user out
+    func logout(_ userIdentifier: Int) -> Array<DenariiResponse>
 }
 
 class RealAPI: API {
@@ -356,11 +359,18 @@ class RealAPI: API {
         let urlString = "\(urlBase)/users/poll_for_escrowed_transaction/\(userIdentifier)"
         return makeApiCall(urlString)
     }
+    
+    func logout(_ userIdentifier: Int) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/loggout/\(userIdentifier)"
+        return makeApiCall(urlString)
+    }
 }
 
 class StubbedAPI: API {
         
     var users : Array<UserDetails> = Array()
+    
+    var loggedInUser: UserDetails = UserDetails()
     
     var lastAskId = 1
     
@@ -378,6 +388,14 @@ class StubbedAPI: API {
             }
             user.denariiAskList = finalAsks
         }
+    }
+    
+    func requireLogin(_ userIdentifier: Int) -> Bool {
+        
+        if self.loggedInUser.userID != String(userIdentifier) {
+            return false
+        }
+        return true
     }
     
     func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
@@ -398,6 +416,11 @@ class StubbedAPI: API {
         
         if foundUser {
             denariiResponse.userIdentifier = aUser.userID
+            self.loggedInUser = aUser
+        } else if !self.loggedInUser.userID.isEmpty {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
         } else {
             denariiResponse.userIdentifier = String(lastUserId)
             
@@ -474,8 +497,13 @@ class StubbedAPI: API {
     
     func createWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
 
         denariiResponse.walletAddress = String(Int.random(in: 1..<100))
@@ -495,8 +523,13 @@ class StubbedAPI: API {
     
     func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.walletAddress = "123 \(Int.random(in: 1..<100))"
         
@@ -514,8 +547,13 @@ class StubbedAPI: API {
     
     func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.walletAddress = String(Int.random(in: 1..<100))
         denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
@@ -534,8 +572,13 @@ class StubbedAPI: API {
     
     func getBalance(_ userIdentifier: Int, _ walletName: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -552,8 +595,13 @@ class StubbedAPI: API {
     
     func sendDenarii(_ userIdentifier: Int, _ walletName: String, _ adddressToSendTo: String, _ amountToSend: Double) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -579,6 +627,10 @@ class StubbedAPI: API {
     
     func getPrices(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
 
         for user in self.users {
             if user.userID != String(userIdentifier) {
@@ -600,6 +652,11 @@ class StubbedAPI: API {
     func buyDenarii(_ userIdentifier: Int, _ amount: Double, _ bidPrice: Double, _ buyRegardlessOfPrice: Bool, _ failIfFullAmountIsntMet: Bool) -> Array<DenariiResponse> {
 
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
+        
         var boughtAsks = Array<DenariiAsk>()
 
         var currentAmountBought = 0.0
@@ -682,7 +739,11 @@ class StubbedAPI: API {
     
     func transferDenarii(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
+        
         for userIndex in self.users.indices {
             let user = self.users[userIndex]
             for askIndex in user.denariiAskList.indices {
@@ -709,8 +770,13 @@ class StubbedAPI: API {
     
     func makeDenariiAsk(_ userIdentifier: Int, _ amount: Double, _ askingPrice: Double) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.amount = amount
         denariiResponse.askingPrice = askingPrice
@@ -734,6 +800,10 @@ class StubbedAPI: API {
 
     func pollForCompletedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -761,8 +831,11 @@ class StubbedAPI: API {
     
     func cancelAsk(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
         denariiResponse.responseCode = -1
         denariiResponse.askID = askId
         
@@ -798,8 +871,13 @@ class StubbedAPI: API {
     
     func hasCreditCardInfo(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -817,8 +895,13 @@ class StubbedAPI: API {
     
     func setCreditCardInfo(_ userIdentifier: Int, _ cardNumber: String, _ epirationDateMonth: String, _ expirationDateYear: String, _ securityCode: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -834,8 +917,13 @@ class StubbedAPI: API {
     
     func clearCreditCardInfo(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -851,8 +939,13 @@ class StubbedAPI: API {
     
     func getMoneyFromBuyer(_ userIdentifier: Int, _ amount: Double, _ currency: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         denariiResponses.append(denariiResponse)
@@ -861,8 +954,13 @@ class StubbedAPI: API {
     
     func sendMoneyToSeller(_ userIdentifier: Int, _ amount: Double, _ currency: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         denariiResponses.append(denariiResponse)
@@ -871,8 +969,13 @@ class StubbedAPI: API {
     
     func isTransactionSettled(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.askID = askId
         
@@ -905,8 +1008,13 @@ class StubbedAPI: API {
     
     func deleteUser(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         var finalUsers = Array<UserDetails>()
@@ -917,6 +1025,7 @@ class StubbedAPI: API {
         }
         
         self.users = finalUsers
+        self.loggedInUser = UserDetails()
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -924,8 +1033,13 @@ class StubbedAPI: API {
     
     func getAskWithIdentifier(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -949,8 +1063,13 @@ class StubbedAPI: API {
     
     func transferDenariiBackToSeller(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         for index in self.users.indices {
@@ -989,8 +1108,13 @@ class StubbedAPI: API {
     
     func sendMoneyBackToBuyer(_ userIdentifier: Int, _ amount: Double, _ currency: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         
         denariiResponses.append(denariiResponse)
@@ -999,8 +1123,14 @@ class StubbedAPI: API {
     
     func cancelBuyOfAsk(_ userIdentifier: Int, _ askId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        
         denariiResponse.responseCode = -1
         
         for index in self.users.indices {
@@ -1027,8 +1157,13 @@ class StubbedAPI: API {
     
     func verifyIdentity(_ userIdentifier: Int, _ firstName: String, _ middleName: String, _ lastName: String, _ email: String, _ dob: String, _ ssn: String, _ zipCode: String, _ phone: String, _ workLocations: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.verificationStatus = "is_verified"
         
@@ -1038,8 +1173,13 @@ class StubbedAPI: API {
     
     func isAVerifiedPerson(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.verificationStatus = "is_verified"
         
@@ -1049,6 +1189,10 @@ class StubbedAPI: API {
     
     func getAllAsks(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1074,6 +1218,10 @@ class StubbedAPI: API {
     
     func getAllBuys(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
         
         var allBuys = Array<DenariiAsk>()
         
@@ -1103,6 +1251,14 @@ class StubbedAPI: API {
     
     func createSupportTicket(_ userIdentifier: Int, _ title: String, _ description: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
 
         let supportTicketId = String(Int.random(in: 0..<100))
         
@@ -1116,8 +1272,6 @@ class StubbedAPI: API {
             }
         }
 
-        var denariiResponse = DenariiResponse()
-        denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
         
         denariiResponses.append(denariiResponse)
@@ -1126,8 +1280,13 @@ class StubbedAPI: API {
     
     func updateSupportTicket(_ userIdentifier: Int, _ supportTicketId: String, _ comment: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
         denariiResponse.commentID = String(Int.random(in: 1..<100))
@@ -1153,8 +1312,13 @@ class StubbedAPI: API {
     
     func deleteSupportTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
         var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
         denariiResponse.responseCode = 200
         denariiResponse.supportTicketID = supportTicketId
         
@@ -1176,6 +1340,10 @@ class StubbedAPI: API {
 
     func getSupportTickets(_ userIdentifier: Int, _ canBeResolved: Bool) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
         
         for index in self.users.indices {
             let user = self.users[index]
@@ -1204,15 +1372,21 @@ class StubbedAPI: API {
 
     func getSupportTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
+        
         for index in self.users.indices {
             let user = self.users[index]
             if user.userID == String(userIdentifier) {
                 for supportTicketIndex in user.supportTicketList.indices {
                     let supportTicket = user.supportTicketList[supportTicketIndex]
                     if supportTicket.supportID == supportTicketId{
-                        var denariiResponse = DenariiResponse()
-                        denariiResponse.responseCode = 200
                         denariiResponse.supportTicketID = supportTicket.supportID
                         denariiResponse.author = user.userName
                         denariiResponse.description = supportTicket.description
@@ -1232,6 +1406,12 @@ class StubbedAPI: API {
 
     func getCommentsOnTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1239,8 +1419,6 @@ class StubbedAPI: API {
                 let supportTicket = user.supportTicketList[stIndex]
                 if supportTicket.supportID == supportTicketId {
                     for comment in supportTicket.supportTicketCommentList {
-                        var denariiResponse = DenariiResponse()
-                        denariiResponse.responseCode = 200
                         denariiResponse.author = comment.author
                         denariiResponse.content = comment.content
                         denariiResponse.updatedTimeBody = ""
@@ -1257,6 +1435,14 @@ class StubbedAPI: API {
     
     func resolveSupportTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
                 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1265,8 +1451,6 @@ class StubbedAPI: API {
                     let supportTicket = user.supportTicketList[supportTicketIndex]
                     if supportTicket.supportID == supportTicketId{
                         supportTicket.resolved = true
-                        var denariiResponse = DenariiResponse()
-                        denariiResponse.responseCode = 200
                         denariiResponse.supportTicketID = supportTicketId
                         denariiResponse.updatedTimeBody = ""
                         denariiResponses.append(denariiResponse)
@@ -1281,6 +1465,12 @@ class StubbedAPI: API {
 
     func pollForEscrowedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1288,8 +1478,6 @@ class StubbedAPI: API {
                 for askIndex in user.denariiAskList.indices {
                     let ask = user.denariiAskList[askIndex]
                     if ask.inEscrow && !ask.isSettled {
-                        var denariiResponse = DenariiResponse()
-                        denariiResponse.responseCode = 200
                         denariiResponse.askID = ask.askID
                         denariiResponse.amount = ask.amount
                         denariiResponse.askingPrice = ask.askingPrice
@@ -1301,6 +1489,22 @@ class StubbedAPI: API {
             }
         }
 
+        return denariiResponses
+    }
+    
+    func logout(_ userIdentifier: Int) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+        var denariiResponse = DenariiResponse()
+        
+        if !requireLogin(userIdentifier) {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        denariiResponse.responseCode = 200
+        
+        self.loggedInUser = UserDetails()
+        denariiResponses.append(denariiResponse)
         return denariiResponses
     }
 }
