@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct SupportTicketDetails: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
-    
-    
+    @State private var resolve: Bool = false
+    @State private var delete: Bool = false
     @State private var comment: String = ""
     @State private var isCreated: Bool = false
     @State private var isResolved: Bool = false
@@ -78,61 +80,170 @@ struct SupportTicketDetails: View {
     
     
     var body: some View {
-        VStack(alignment: .center) {
-            Text("Support Ticket Details").font(.largeTitle)
-            Spacer()
-            Text("\(title.getValue())")
-            Text("\(description.getValue())")
-            GeometryReader { proxy in
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(alignment: .center) {
-                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                         */
-                        ForEach(self.comments.getValue(), id: \.self) { comment in
-                            HStack {
-                                Text(comment.author)
-                                Text(comment.content)
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
+            VStack(alignment: .center) {
+                Text("Support Ticket Details").font(.largeTitle)
+                Spacer()
+                Text("\(title.getValue())")
+                Text("\(description.getValue())")
+                GeometryReader { proxy in
+                    ScrollView(.vertical, showsIndicators: true) {
+                        VStack(alignment: .center) {
+                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                             */
+                            ForEach(self.comments.getValue(), id: \.self) { comment in
+                                HStack {
+                                    Text(comment.author)
+                                    Text(comment.content)
+                                }
+                            }.refreshable {
+                                getComments()
                             }
-                        }.refreshable {
-                            getComments()
-                        }
-                    }.frame(width: proxy.size.width, height: proxy.size.height)
+                        }.frame(width: proxy.size.width, height: proxy.size.height)
+                    }
                 }
+                TextField("New Comment", text: $comment, axis: Axis.vertical)
+                Button("Submit") {
+                    isCreated = attemptCreateNewComment()
+                    showingPopoverForCreateNewComment = true
+                }.popover(isPresented: $showingPopoverForCreateNewComment) {
+                    Text(successOrFailureForCreateNewComment.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForCreateNewComment = false
+                        }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
+                }
+                Spacer()
+                if resolve && showingPopoverForResolveTicket == false {
+                    NavigationLink("Resolve") {
+                        EmptyView()
+                    }.navigationDestination(isPresented: $resolve, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
+                }
+                Button("Resolve") {
+                    isResolved = attemptResolveTicket()
+                    showingPopoverForResolveTicket = true
+                }.popover(isPresented: $showingPopoverForResolveTicket) {
+                        Text(successOrFailureForResolveTicket.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForResolveTicket = false
+                                if isResolved {
+                                    resolve = true
+                                }
+                            }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                    }
+                Spacer()
+                if delete && showingPopoverForDeleteTicket == false {
+                    NavigationLink("Delete") {
+                        EmptyView()
+                    }.navigationDestination(isPresented: $delete, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
+                }
+                Button("Delete") {
+                    isDeleted = attemptDeleteTicket()
+                    showingPopoverForDeleteTicket = true
+                }.popover(isPresented: $showingPopoverForDeleteTicket) {
+                        Text(successOrFailureForDeleteTicket.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForDeleteTicket = false
+                                if isDeleted {
+                                    delete = true
+                                }
+                            }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                    }
+                Spacer()
             }
-            TextField("New Comment", text: $comment, axis: Axis.vertical)
-            Button("Submit") {
-                isCreated = attemptCreateNewComment()
-                showingPopoverForCreateNewComment = true
-            }.popover(isPresented: $showingPopoverForCreateNewComment) {
-                Text(successOrFailureForCreateNewComment.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForCreateNewComment = false
-                    }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
-            }
-            Spacer()
-            Button("Resolve") {
-                isResolved = attemptResolveTicket()
-                showingPopoverForResolveTicket = true
-            }.popover(isPresented: $showingPopoverForResolveTicket) {
-                Text(successOrFailureForResolveTicket.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForResolveTicket = false
-                    }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
-            }
-            Button("Delete") {
-                isDeleted = attemptDeleteTicket()
-                showingPopoverForDeleteTicket = true
-            }.popover(isPresented: $showingPopoverForDeleteTicket) {
-                Text(successOrFailureForDeleteTicket.getValue())
-                    .font(.headline)
-                    .padding().onTapGesture {
-                        showingPopoverForDeleteTicket = false
-                    }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
-            }
-            Spacer()
-        }
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+          
+          Text("iPhone Landscape")
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+          
+          Text("iPad Portrait/Landscape")
+      } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+          VStack(alignment: .center) {
+              Text("Support Ticket Details").font(.headline)
+              Spacer()
+              Text("\(title.getValue())")
+              Text("\(description.getValue())")
+              GeometryReader { proxy in
+                  ScrollView(.vertical, showsIndicators: true) {
+                      VStack(alignment: .center) {
+                          /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                           */
+                          ForEach(self.comments.getValue(), id: \.self) { comment in
+                              HStack {
+                                  Text(comment.author).font(.subheadline)
+                                  Text(comment.content).font(.subheadline)
+                              }
+                          }.refreshable {
+                              getComments()
+                          }
+                      }.frame(width: proxy.size.width, height: proxy.size.height)
+                  }
+              }
+              HStack {
+                  TextField("New Comment", text: $comment, axis: Axis.vertical)
+                  Spacer()
+                  Button("Submit") {
+                      isCreated = attemptCreateNewComment()
+                      showingPopoverForCreateNewComment = true
+                  }.popover(isPresented: $showingPopoverForCreateNewComment) {
+                      Text(successOrFailureForCreateNewComment.getValue())
+                          .font(.headline)
+                          .padding().onTapGesture {
+                              showingPopoverForCreateNewComment = false
+                          }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
+                  }
+              }
+              Spacer()
+              HStack {
+                  Spacer()
+                  if resolve && showingPopoverForResolveTicket == false {
+                      NavigationLink("Resolve") {
+                          EmptyView()
+                      }.navigationDestination(isPresented: $resolve, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
+                  }
+                  Button("Resolve") {
+                      isResolved = attemptResolveTicket()
+                      showingPopoverForResolveTicket = true
+                  }.popover(isPresented: $showingPopoverForResolveTicket) {
+                          Text(successOrFailureForResolveTicket.getValue())
+                              .font(.headline)
+                              .padding().onTapGesture {
+                                  showingPopoverForResolveTicket = false
+                                  if isResolved {
+                                      resolve = true
+                                  }
+                              }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                      }
+                  Spacer()
+                  if delete && showingPopoverForDeleteTicket == false {
+                      NavigationLink("Delete") {
+                          EmptyView()
+                      }.navigationDestination(isPresented: $delete, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
+                  }
+                  Button("Delete") {
+                      isDeleted = attemptDeleteTicket()
+                      showingPopoverForDeleteTicket = true
+                  }.popover(isPresented: $showingPopoverForDeleteTicket) {
+                          Text(successOrFailureForDeleteTicket.getValue())
+                              .font(.headline)
+                              .padding().onTapGesture {
+                                  showingPopoverForDeleteTicket = false
+                                  if isDeleted {
+                                      delete = true
+                                  }
+                              }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                      }
+                  Spacer()
+              }
+              Spacer()
+          }
+      } else {
+        Text("Who knows")
+     }
     }
     
     func attemptCreateNewComment() -> Bool {

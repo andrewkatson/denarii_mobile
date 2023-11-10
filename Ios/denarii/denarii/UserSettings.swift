@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct UserSettings: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var logout: Bool = false
+    @State private var deletedAccount: Bool = false
     @State private var isDeleted = false
     @State private var isLoggedOut = false
     @State private var showingPopoverForDeleteAccount = false
@@ -26,66 +29,157 @@ struct UserSettings: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .center) {
-                    Spacer()
-                    Text("Settings").font(.largeTitle)
-                    Spacer()
-                    NavigationLink(destination: SupportTickets(user.getValue())) {
-                        Text("Support Tickets")
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
+            VStack(alignment: .center) {
+                Spacer()
+                Text("Settings").font(.largeTitle)
+                Spacer()
+                NavigationLink(destination: SupportTickets(user.getValue())) {
+                    Text("Support Tickets")
+                }
+                Spacer()
+                if logout && showingPopoverForLogout == false {
+                    NavigationLink("Logout") {
+                        EmptyView()
+                    }.navigationDestination(isPresented: $logout, destination: {() -> ContentView in ContentView()})
+                }
+                Button("Logout") {
+                    isLoggedOut = attemptLogout()
+                    showingPopoverForLogout = true
+                }.popover(isPresented: $showingPopoverForLogout) {
+                        Text(successOrFailureForLogout.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForLogout = false
+                            }.accessibilityIdentifier(Constants.LOGOUT_POPOVER)
+                    }.onTapGesture {
+                        if isLoggedOut {
+                            logout = true
                     }
-                    Spacer()
-                        Button("Logout") {
-                            isLoggedOut = attemptLogout()
-                            showingPopoverForLogout = true
-                        }.popover(isPresented: $showingPopoverForLogout) {
-                            Text(successOrFailureForLogout.getValue())
-                                .font(.headline)
-                                .padding().onTapGesture {
-                                    showingPopoverForLogout = false
-                                }.accessibilityIdentifier(Constants.LOGOUT_POPOVER)
-                        }.navigationDestination(isPresented: $isLoggedOut) {
-                            return ContentView()
-                        }
-                    Spacer()
-                    
-                    Button("Delete Account") {
-                        isDeleted = attemptDeleteAccount()
-                        showingPopoverForDeleteAccount = true
-                    }.popover(isPresented: $showingPopoverForDeleteAccount) {
+                }
+                Spacer()
+                if deletedAccount && showingPopoverForDeleteAccount == false {
+                    NavigationLink("Delete Account") {
+                        EmptyView()
+                    }
+                }
+                Button("Delete Account") {
+                    isDeleted = attemptDeleteAccount()
+                    showingPopoverForDeleteAccount = true
+                }.popover(isPresented: $showingPopoverForDeleteAccount) {
                         Text(successOrFailureForDeleteAccount.getValue())
                             .font(.headline)
                             .padding().onTapGesture {
                                 showingPopoverForDeleteAccount = false
                             }.accessibilityIdentifier(Constants.DELETE_ACCOUNT_POPOVER)
-                    }.navigationDestination(isPresented: $isDeleted) {
-                        return ContentView()
+                    }.onTapGesture {
+                        if isDeleted {
+                            deletedAccount = true
                     }
-                    if self.sizeClass == .compact {
-                        Spacer()
+                }
+                Spacer()
+                HStack {
+                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                        Text("Wallet")
                     }
-                    HStack {
-                        NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                            Text("Wallet")
-                        }
-                        NavigationLink(destination: BuyDenarii(user.getValue())) {
-                            Text("Buy Denarii")
-                        }
-                        NavigationLink(destination: SellDenarii(user.getValue())) {
-                            Text("Sell Denarii")
-                        }
-                        NavigationLink(destination: Verification(user.getValue())) {
-                            Text("Verification")
-                        }
-                        NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                            Text("Credit Card")
-                        }
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
                     }
-                    Spacer()
-                }.frame(width: proxy.size.width, height: proxy.size.height)
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
+                    }
+                    NavigationLink(destination: Verification(user.getValue())) {
+                        Text("Verification")
+                    }
+                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                        Text("Credit Card")
+                    }
+                }
+                Spacer()
             }
-        }
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+          
+          Text("iPhone Landscape")
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+          
+          Text("iPad Portrait/Landscape")
+      } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+          VStack(alignment: .center) {
+              Spacer()
+              Text("Settings").font(.headline)
+              Spacer()
+              HStack {
+                  Spacer()
+                  NavigationLink(destination: SupportTickets(user.getValue())) {
+                      Text("Support Tickets")
+                  }
+                  Spacer()
+                  if logout && showingPopoverForLogout == false {
+                      NavigationLink("Logout") {
+                          EmptyView()
+                      }.navigationDestination(isPresented: $logout, destination: {() -> ContentView in ContentView()})
+                  }
+                  Button("Logout") {
+                      isLoggedOut = attemptLogout()
+                      showingPopoverForLogout = true
+                  }.popover(isPresented: $showingPopoverForLogout) {
+                          Text(successOrFailureForLogout.getValue())
+                              .font(.headline)
+                              .padding().onTapGesture {
+                                  showingPopoverForLogout = false
+                              }.accessibilityIdentifier(Constants.LOGOUT_POPOVER)
+                      }.onTapGesture {
+                          if isLoggedOut {
+                              logout = true
+                      }
+                  }
+                  Spacer()
+                  if deletedAccount && showingPopoverForDeleteAccount == false {
+                      NavigationLink("Delete Account") {
+                          EmptyView()
+                      }
+                  }
+                  Button("Delete Account") {
+                      isDeleted = attemptDeleteAccount()
+                      showingPopoverForDeleteAccount = true
+                  }.popover(isPresented: $showingPopoverForDeleteAccount) {
+                          Text(successOrFailureForDeleteAccount.getValue())
+                              .font(.headline)
+                              .padding().onTapGesture {
+                                  showingPopoverForDeleteAccount = false
+                              }.accessibilityIdentifier(Constants.DELETE_ACCOUNT_POPOVER)
+                      }.onTapGesture {
+                          if isDeleted {
+                              deletedAccount = true
+                      }
+                  }
+                  Spacer()
+              }
+              Spacer()
+              HStack {
+                  NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                      Text("Wallet")
+                  }
+                  NavigationLink(destination: BuyDenarii(user.getValue())) {
+                      Text("Buy Denarii")
+                  }
+                  NavigationLink(destination: SellDenarii(user.getValue())) {
+                      Text("Sell Denarii")
+                  }
+                  NavigationLink(destination: Verification(user.getValue())) {
+                      Text("Verification")
+                  }
+                  NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                      Text("Credit Card")
+                  }
+              }
+              Spacer()
+          }
+      } else {
+        Text("Who knows")
+     }
     }
     
     func attemptLogout() -> Bool {

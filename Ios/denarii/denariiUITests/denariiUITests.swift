@@ -402,6 +402,9 @@ final class denariiUITests: XCTestCase {
         let logoutButton = app.buttons["Logout"]
         logoutButton.tap()
         
+        // A popover appears and we need to tap it away
+        tapAway(app)
+        
         // We should be on the ContentView screen
         XCTAssert(app.buttons["Next"].exists)
     }

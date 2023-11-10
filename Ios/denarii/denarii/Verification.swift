@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct Verification: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
     @State private var firstName: String = ""
     @State private var middleName: String = ""
@@ -85,58 +86,120 @@ struct Verification: View {
     }
 
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .center) {
-                    Text("Verification").font(.largeTitle)
-                    Spacer()
-                    Text("\(status)")
-                    if !status.contains("Status: Verfiied") {
-                        TextField("First Name", text: $firstName)
-                        TextField("Middle Initial", text: $middleName)
-                        TextField("Last Name", text: $lastName)
-                        TextField("Email", text: $email)
-                        TextField("Date of Birth", text: $dob)
-                        TextField("Social Security Number", text: $ssn)
-                        TextField("Zipcode", text: $zipcode)
-                        TextField("Phone Number", text: $phone)
-                        TextField("Work City", text: $workCity)
-                        TextField("Work State", text: $workState)
-                        TextField("Work Country", text: $workCountry)
-                        Button("Submit") {
-                            isSubmitted = attemptSubmit()
-                            showingPopover = true
-                        }.popover(isPresented: $showingPopover) {
-                            Text(successOrFailure.getValue())
-                                .font(.headline)
-                                .padding().onTapGesture {
-                                    showingPopover = false
-                                }.accessibilityIdentifier(Constants.POPOVER)
-                        }
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
+            VStack(alignment: .center) {
+                Text("Verification").font(.largeTitle)
+                Spacer()
+                Text("\(status)")
+                if !status.contains("Status: Verfiied") {
+                    TextField("First Name", text: $firstName)
+                    TextField("Middle Initial", text: $middleName)
+                    TextField("Last Name", text: $lastName)
+                    TextField("Email", text: $email)
+                    TextField("Date of Birth", text: $dob)
+                    TextField("Social Security Number", text: $ssn)
+                    TextField("Zipcode", text: $zipcode)
+                    TextField("Phone Number", text: $phone)
+                    TextField("Work City", text: $workCity)
+                    TextField("Work State", text: $workState)
+                    TextField("Work Country", text: $workCountry)
+                    Button("Submit") {
+                        isSubmitted = attemptSubmit()
+                        showingPopover = true
+                    }.popover(isPresented: $showingPopover) {
+                        Text(successOrFailure.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopover = false
+                            }.accessibilityIdentifier(Constants.POPOVER)
                     }
-                    if self.sizeClass == .compact {
-                        Spacer()
+                }
+                Spacer()
+                HStack {
+                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                        Text("Wallet")
                     }
-                    HStack {
-                        NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                            Text("Wallet")
-                        }
-                        NavigationLink(destination: BuyDenarii(user.getValue())) {
-                            Text("Buy Denarii")
-                        }
-                        NavigationLink(destination: SellDenarii(user.getValue())) {
-                            Text("Sell Denarii")
-                        }
-                        NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                            Text("Credit Card")
-                        }
-                        NavigationLink(destination: UserSettings(user.getValue())) {
-                            Text("Settings")
-                        }
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
                     }
-                    Spacer()
-                }.frame(width: proxy.size.width, height: proxy.size.height)
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
+                    }
+                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                        Text("Credit Card")
+                    }
+                    NavigationLink(destination: UserSettings(user.getValue())) {
+                        Text("Settings")
+                    }
+                }
+                Spacer()
             }
+         }
+         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+             
+             Text("iPhone Landscape")
+         }
+         else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+             
+             Text("iPad Portrait/Landscape")
+         } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+             VStack(alignment: .center) {
+                 Text("Verification").font(.headline)
+                 Spacer()
+                 Text("\(status)").font(.subheadline)
+                 if !status.contains("Status: Verfiied") {
+                     HStack {
+                         TextField("First Name", text: $firstName)
+                         TextField("Middle Initial", text: $middleName)
+                         TextField("Last Name", text: $lastName)
+                     }
+                     HStack {
+                         TextField("Email", text: $email)
+                         TextField("Date of Birth", text: $dob)
+                         TextField("Social Security Number", text: $ssn)
+                     }
+                     HStack {
+                         TextField("Zipcode", text: $zipcode)
+                         TextField("Phone Number", text: $phone)
+                     }
+                     HStack {
+                         TextField("Work City", text: $workCity)
+                         TextField("Work State", text: $workState)
+                         TextField("Work Country", text: $workCountry)
+                     }
+                     Button("Submit") {
+                         isSubmitted = attemptSubmit()
+                         showingPopover = true
+                     }.popover(isPresented: $showingPopover) {
+                         Text(successOrFailure.getValue())
+                             .font(.headline)
+                             .padding().onTapGesture {
+                                 showingPopover = false
+                             }.accessibilityIdentifier(Constants.POPOVER)
+                     }
+                 }
+                 Spacer()
+                 HStack {
+                     NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                         Text("Wallet")
+                     }
+                     NavigationLink(destination: BuyDenarii(user.getValue())) {
+                         Text("Buy Denarii")
+                     }
+                     NavigationLink(destination: SellDenarii(user.getValue())) {
+                         Text("Sell Denarii")
+                     }
+                     NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                         Text("Credit Card")
+                     }
+                     NavigationLink(destination: UserSettings(user.getValue())) {
+                         Text("Settings")
+                     }
+                 }
+                 Spacer()
+             }
+         } else {
+           Text("Who knows")
         }
     }
     

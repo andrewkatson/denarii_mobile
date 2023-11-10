@@ -19,5 +19,5 @@ struct Config {
 }
 
 private func UITesting() -> Bool {
-    return ProcessInfo.processInfo.arguments.contains("UI-TESTING")
+    return ProcessInfo.processInfo.arguments.contains("UI-TESTING") || CommandLine.arguments.contains("UI-TESTING")
 }

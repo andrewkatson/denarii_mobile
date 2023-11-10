@@ -9,7 +9,8 @@ import SwiftUI
 
 struct OpenedWalletView: View {
     
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var balance: ObservableString =  ObservableString("0")
@@ -36,7 +37,7 @@ struct OpenedWalletView: View {
     }
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: true) {
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
             VStack(alignment: .center) {
                 Text("Wallet").font(.largeTitle)
                 Spacer()
@@ -74,9 +75,7 @@ struct OpenedWalletView: View {
                         }
                         .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
                 }
-                if self.sizeClass == .compact {
-                    Spacer()
-                }
+                Spacer()
                 HStack {
                     NavigationLink(destination: BuyDenarii(user.getValue())) {
                         Text("Buy Denarii")
@@ -97,6 +96,85 @@ struct OpenedWalletView: View {
                 Spacer()
             }
         }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+            
+            Text("iPhone Landscape")
+        }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+            
+            Text("iPad Portrait/Landscape")
+        } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+            VStack(alignment: .center) {
+                Text("Wallet").font(.headline)
+                Spacer()
+                HStack {
+                    Spacer()
+                    Text("Wallet Name").accessibilityLabel("Wallet Name")
+                    Spacer()
+                    Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
+                    Spacer()
+                    Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
+                    Spacer()
+                }
+                HStack {
+                    Spacer(minLength: 150)
+                    Text("Balance: ").accessibilityIdentifier("Balance")
+                    Spacer()
+                    ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
+                    Spacer(minLength: 150)
+                }
+                Button("Refresh Balance") {
+                    let _ = refreshBalance()
+                    showingPopoverForRefreshBalance = true
+                }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
+                    Text(successOrFailureForRefreshBalance.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForRefreshBalance = false
+                        }
+                        .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
+                }
+                HStack {
+                    Spacer()
+                    TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
+                    Spacer()
+                    TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
+                    Spacer()
+                }
+                Button("Send") {
+                    let _ = sendDenarii()
+                    showingPopoverForSendDenarii = true
+                }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
+                    Text(successOrFailureForSendDenarii.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForSendDenarii = false
+                        }
+                        .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
+                }
+                Spacer()
+                HStack {
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
+                    }
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
+                    }
+                    NavigationLink(destination: Verification(user.getValue())) {
+                        Text("Verification")
+                    }
+                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
+                        Text("Credit Card")
+                    }
+                    NavigationLink(destination: UserSettings(user.getValue())) {
+                        Text("Settings")
+                    }
+                }
+                Spacer()
+            }
+        } else {
+          Text("Who knows")
+       }
     }
     
     func refreshBalance() -> Bool {

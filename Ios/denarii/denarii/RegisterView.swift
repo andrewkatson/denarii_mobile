@@ -39,7 +39,7 @@ struct RegisterView: View {
                         .accessibilityIdentifier(Constants.POPOVER)
                 }
                 Spacer()
-                NavigationLink(destination: WalletDecisionView(user.getValue())) {
+                NavigationLink(destination: LoginView(user.getValue())) {
                     if (isSubmitted) {
                         Text("Next")
                     }

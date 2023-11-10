@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct SupportTickets: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    
+    @State private var goToTicket: Int? = 0
     @State private var isCreated: Bool = false
     @State private var showingPopover = false
     
@@ -54,32 +58,71 @@ struct SupportTickets: View {
     }
     
     var body: some View {
-        VStack (alignment: .center) {
-            Text("Support Tickets").font(.largeTitle)
-            Spacer()
-            NavigationLink(destination: CreateSupportTicket(user.getValue())) {
-                Text("Create Support Ticket")
-            }
-            Spacer()
-            GeometryReader { proxy in
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack {
-                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                         */
-                        ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
-                            
-                            NavigationLink(destination: UserSettings(user.getValue())) {
-                                Text(supportTicket.title)
-                            }
-                            
-                        }.refreshable {
-                            getSupportTickets()
-                        }
-                    }.frame(width: proxy.size.width, height: proxy.size.height)
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
+            VStack (alignment: .center) {
+                Text("Support Tickets").font(.largeTitle)
+                Spacer()
+                NavigationLink(destination: CreateSupportTicket(user.getValue())) {
+                    Text("Create Support Ticket")
                 }
+                Spacer()
+                GeometryReader { proxy in
+                    ScrollView(.vertical, showsIndicators: true) {
+                        VStack {
+                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                             */
+                            ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
+                                
+                                NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
+                                    Text(supportTicket.title)
+                                }
+                                
+                            }.refreshable {
+                                getSupportTickets()
+                            }
+                        }.frame(width: proxy.size.width, height: proxy.size.height)
+                    }
+                }
+                Spacer()
             }
-            Spacer()
-        }
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+          
+          Text("iPhone Landscape")
+      }
+      else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+          
+          Text("iPad Portrait/Landscape")
+      } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+          VStack (alignment: .center) {
+              Text("Support Tickets").font(.headline)
+              Spacer()
+              NavigationLink(destination: CreateSupportTicket(user.getValue())) {
+                  Text("Create Support Ticket")
+              }
+              Spacer()
+              GeometryReader { proxy in
+                  ScrollView(.vertical, showsIndicators: true) {
+                      VStack {
+                          /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                           */
+                          ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
+                              
+                              NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
+                                  Text(supportTicket.title).font(.subheadline)
+                              }
+                              
+                          }.refreshable {
+                              getSupportTickets()
+                          }
+                      }.frame(width: proxy.size.width, height: proxy.size.height)
+                  }
+              }
+              Spacer()
+          }
+      } else {
+        Text("Who knows")
+     }
     }
 }
 

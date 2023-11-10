@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct CreditCardInfo: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
     @State private var number: String = ""
     @State private var expirationDateMonth: String = ""
@@ -58,65 +59,125 @@ struct CreditCardInfo: View {
     }
     
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .center) {
-                    Text("Credit Card Info").font(.largeTitle)
-                    Spacer()
-                    Text("\(status)")
-                    TextField("Credit Card Number", text: $number)
-                    TextField("Expiration Date Month", text: $expirationDateMonth)
-                    TextField("Expiration Date Year", text: $expirationDateYear)
-                    TextField("Security Code", text: $securityCode)
-                    Button("Set Info") {
-                        isSet = attemptToSetCreditCardInfo()
-                        showingPopoverForSet = true
-                    }.popover(isPresented: $showingPopoverForSet) {
-                        Text(successOrFailureForSet.getValue())
+        if horizontalSizeClass == .compact && verticalSizeClass == .regular {
+            VStack(alignment: .center) {
+                Text("Credit Card Info").font(.largeTitle)
+                Spacer()
+                Text("\(status)")
+                TextField("Credit Card Number", text: $number)
+                TextField("Expiration Date Month", text: $expirationDateMonth)
+                TextField("Expiration Date Year", text: $expirationDateYear)
+                TextField("Security Code", text: $securityCode)
+                Button("Set Info") {
+                    isSet = attemptToSetCreditCardInfo()
+                    showingPopoverForSet = true
+                }.popover(isPresented: $showingPopoverForSet) {
+                    Text(successOrFailureForSet.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForSet = false
+                        }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                }
+                if status.contains("Status: Set") {
+                    Button("Clear Info") {
+                        isCleared = attemptToClearCreditCardInfo()
+                        showingPopoverForClear = true
+                    }.popover(isPresented: $showingPopoverForClear) {
+                        Text(successOrFailureForClear.getValue())
                             .font(.headline)
                             .padding().onTapGesture {
-                                showingPopoverForSet = false
-                            }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                                showingPopoverForClear = false
+                            }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
                     }
-                    if status.contains("Status: Set") {
-                        Button("Clear Info") {
-                            isCleared = attemptToClearCreditCardInfo()
-                            showingPopoverForClear = true
-                        }.popover(isPresented: $showingPopoverForClear) {
-                            Text(successOrFailureForClear.getValue())
-                                .font(.headline)
-                                .padding().onTapGesture {
-                                    showingPopoverForClear = false
-                                }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                        }
-                        
+                    
+                }
+                Spacer()
+                HStack {
+                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                        Text("Wallet")
                     }
-                    if self.sizeClass == .compact {
-                        Spacer()
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
                     }
-                    HStack {
-                        NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                            Text("Wallet")
-                        }
-                        NavigationLink(destination: BuyDenarii(user.getValue())) {
-                            Text("Buy Denarii")
-                        }
-                        NavigationLink(destination: SellDenarii(user.getValue())) {
-                            Text("Sell Denarii")
-                        }
-                        NavigationLink(destination: Verification(user.getValue())) {
-                            Text("Verification")
-                        }
-                        NavigationLink(destination: UserSettings(user.getValue())) {
-                            Text("Settings")
-                        }
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
                     }
-                    Spacer()
-                }.frame(width: proxy.size.width, height: proxy.size.height)
+                    NavigationLink(destination: Verification(user.getValue())) {
+                        Text("Verification")
+                    }
+                    NavigationLink(destination: UserSettings(user.getValue())) {
+                        Text("Settings")
+                    }
+                }
+                Spacer()
             }
         }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+            
+            Text("iPhone Landscape")
+        }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+            
+            Text("iPad Portrait/Landscape")
+        } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+            VStack(alignment: .center) {
+                Text("Credit Card Info").font(.headline)
+                Spacer()
+                Text("\(status)").font(.subheadline)
+                TextField("Credit Card Number", text: $number)
+                HStack {
+                    TextField("Expiration Date Month", text: $expirationDateMonth)
+                    TextField("Expiration Date Year", text: $expirationDateYear)
+                }
+                TextField("Security Code", text: $securityCode)
+                Button("Set Info") {
+                    isSet = attemptToSetCreditCardInfo()
+                    showingPopoverForSet = true
+                }.popover(isPresented: $showingPopoverForSet) {
+                    Text(successOrFailureForSet.getValue())
+                        .font(.headline)
+                        .padding().onTapGesture {
+                            showingPopoverForSet = false
+                        }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                }
+                if status.contains("Status: Set") {
+                    Button("Clear Info") {
+                        isCleared = attemptToClearCreditCardInfo()
+                        showingPopoverForClear = true
+                    }.popover(isPresented: $showingPopoverForClear) {
+                        Text(successOrFailureForClear.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForClear = false
+                            }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                    }
+                    
+                }
+                Spacer()
+                HStack {
+                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
+                        Text("Wallet")
+                    }
+                    NavigationLink(destination: BuyDenarii(user.getValue())) {
+                        Text("Buy Denarii")
+                    }
+                    NavigationLink(destination: SellDenarii(user.getValue())) {
+                        Text("Sell Denarii")
+                    }
+                    NavigationLink(destination: Verification(user.getValue())) {
+                        Text("Verification")
+                    }
+                    NavigationLink(destination: UserSettings(user.getValue())) {
+                        Text("Settings")
+                    }
+                }
+                Spacer()
+            }
+        } else {
+            Text("Who knows")
+        }
     }
-    
+        
     func attemptToSetCreditCardInfo() -> Bool {
         if Constants.DEBUG {
             successOrFailureForSet.setValue("Successfully set credit card info in DEBUG mode")
