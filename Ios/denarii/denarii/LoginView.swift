@@ -32,8 +32,8 @@ struct LoginView: View {
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
-                SecureField("Password", text: $password).textContentType(.password)
-                SecureField("Confirm Password", text: $confirmPassword).textContentType(.password)
+                SecureField("Password", text: $password).autocorrectionDisabled().textContentType(.newPassword)
+                SecureField("Confirm Password", text: $confirmPassword).autocorrectionDisabled().textContentType(.newPassword)
                 Button("Submit") {
                     isSubmitted = attemptSubmit()
                     showingPopover = true
@@ -43,8 +43,8 @@ struct LoginView: View {
                         .padding().onTapGesture {
                             showingPopover = false
                         }.accessibilityIdentifier(Constants.POPOVER)
-                Spacer()
                 }
+                Spacer()
                 HStack(alignment: .center) {
                     NavigationLink(destination: RequestResetView(user.getValue())) {
                         Text("Forgot Password")

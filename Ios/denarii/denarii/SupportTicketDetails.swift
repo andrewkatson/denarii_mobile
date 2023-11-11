@@ -114,11 +114,6 @@ struct SupportTicketDetails: View {
                         }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
                 }
                 Spacer()
-                if resolve && showingPopoverForResolveTicket == false {
-                    NavigationLink("Resolve") {
-                        EmptyView()
-                    }.navigationDestination(isPresented: $resolve, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
-                }
                 Button("Resolve") {
                     isResolved = attemptResolveTicket()
                     showingPopoverForResolveTicket = true
@@ -131,13 +126,16 @@ struct SupportTicketDetails: View {
                                     resolve = true
                                 }
                             }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                }.background {
+                    if resolve && showingPopoverForResolveTicket == false {
+                        NavigationLink("Resolve") {
+                            EmptyView()
+                        }.navigationDestination(isPresented: $resolve) {
+                            SupportTickets(self.user.getValue())
+                        }
                     }
-                Spacer()
-                if delete && showingPopoverForDeleteTicket == false {
-                    NavigationLink("Delete") {
-                        EmptyView()
-                    }.navigationDestination(isPresented: $delete, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
                 }
+                Spacer()
                 Button("Delete") {
                     isDeleted = attemptDeleteTicket()
                     showingPopoverForDeleteTicket = true
@@ -150,7 +148,15 @@ struct SupportTicketDetails: View {
                                     delete = true
                                 }
                             }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                }.background {
+                    if delete && showingPopoverForDeleteTicket == false {
+                        NavigationLink("Delete") {
+                            EmptyView()
+                        }.navigationDestination(isPresented: $delete) {
+                            SupportTickets(self.user.getValue())
+                        }
                     }
+                }
                 Spacer()
             }
       }
@@ -200,11 +206,6 @@ struct SupportTicketDetails: View {
               Spacer()
               HStack {
                   Spacer()
-                  if resolve && showingPopoverForResolveTicket == false {
-                      NavigationLink("Resolve") {
-                          EmptyView()
-                      }.navigationDestination(isPresented: $resolve, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
-                  }
                   Button("Resolve") {
                       isResolved = attemptResolveTicket()
                       showingPopoverForResolveTicket = true
@@ -217,13 +218,16 @@ struct SupportTicketDetails: View {
                                       resolve = true
                                   }
                               }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                  }.background {
+                      if resolve && showingPopoverForResolveTicket == false {
+                          NavigationLink("Resolve") {
+                              EmptyView()
+                          }.navigationDestination(isPresented: $resolve) {
+                              SupportTickets(self.user.getValue())
+                          }
                       }
-                  Spacer()
-                  if delete && showingPopoverForDeleteTicket == false {
-                      NavigationLink("Delete") {
-                          EmptyView()
-                      }.navigationDestination(isPresented: $delete, destination: {() -> SupportTickets in SupportTickets(self.user.getValue())})
                   }
+                  Spacer()
                   Button("Delete") {
                       isDeleted = attemptDeleteTicket()
                       showingPopoverForDeleteTicket = true
@@ -236,7 +240,15 @@ struct SupportTicketDetails: View {
                                       delete = true
                                   }
                               }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                  }.background {
+                      if delete && showingPopoverForDeleteTicket == false {
+                          NavigationLink("Delete") {
+                              EmptyView()
+                          }.navigationDestination(isPresented: $delete) {
+                              SupportTickets(self.user.getValue())
+                          }
                       }
+                  }
                   Spacer()
               }
               Spacer()

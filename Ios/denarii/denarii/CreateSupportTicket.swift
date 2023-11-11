@@ -36,12 +36,6 @@ struct CreateSupportTicket: View {
                 TextField("Title", text: $title)
                 TextField("Description", text: $description, axis: Axis.vertical)
                 Spacer()
-                if isCreated && createTicket && showingPopover == false {
-                    NavigationLink("Create Support Ticket")
-                    {
-                        EmptyView()
-                    }.navigationDestination(isPresented: $createTicket, destination: {() -> SupportTicketDetails in SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())})
-                }
                 Button("Create Support Ticket") {
                     isCreated = attemptCreateTicket()
                     showingPopover = true
@@ -50,9 +44,20 @@ struct CreateSupportTicket: View {
                             .font(.headline)
                             .padding().onTapGesture {
                                 showingPopover = false
+                                
+                                if isCreated {
+                                    createTicket = true
+                                }
                             }.accessibilityIdentifier(Constants.POPOVER)
-                }.onTapGesture {
-                    self.createTicket = true
+                }.background {
+                    if isCreated && createTicket && showingPopover == false {
+                        NavigationLink("Create Support Ticket")
+                        {
+                            EmptyView()
+                        }.navigationDestination(isPresented: $createTicket) {
+                            SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                        }
+                    }
                 }
                 Spacer()
             }
@@ -71,12 +76,6 @@ struct CreateSupportTicket: View {
               TextField("Title", text: $title)
               TextField("Description", text: $description, axis: Axis.vertical)
               Spacer()
-              if isCreated && createTicket && showingPopover == false {
-                  NavigationLink("Create Support Ticket")
-                  {
-                      EmptyView()
-                  }.navigationDestination(isPresented: $createTicket, destination: {() -> SupportTicketDetails in SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())})
-              }
               Button("Create Support Ticket") {
                   isCreated = attemptCreateTicket()
                   showingPopover = true
@@ -85,9 +84,20 @@ struct CreateSupportTicket: View {
                           .font(.headline)
                           .padding().onTapGesture {
                               showingPopover = false
+                              
+                              if isCreated {
+                                  createTicket = true
+                              }
                           }.accessibilityIdentifier(Constants.POPOVER)
-              }.onTapGesture {
-                  self.createTicket = true
+              }.background {
+                  if isCreated && createTicket && showingPopover == false {
+                      NavigationLink("Create Support Ticket")
+                      {
+                          EmptyView()
+                      }.navigationDestination(isPresented: $createTicket) {
+                          SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                      }
+                  }
               }
               Spacer()
           }

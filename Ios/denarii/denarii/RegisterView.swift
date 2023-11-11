@@ -24,8 +24,8 @@ struct RegisterView: View {
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
-                SecureField("Password", text: $password).textContentType(.newPassword)
-                SecureField("Confirm Password", text: $confirmPassword).textContentType(.newPassword)
+                SecureField("Password", text: $password).autocorrectionDisabled().textContentType(.newPassword)
+                SecureField("Confirm Password", text: $confirmPassword).autocorrectionDisabled().textContentType(.newPassword)
                 Button("Submit") {
                     isSubmitted = attemptSubmit()
                     showingPopover = true

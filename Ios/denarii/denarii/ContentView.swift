@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var coordinator = NavigationCoordinator()
+    
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $coordinator.path) {
             VStack {
-                Spacer(minLength: 300)
+                Spacer()
                 Text("Welcome to Denarii!").font(.largeTitle)
                 HStack {
                     Spacer()
@@ -23,8 +25,7 @@ struct ContentView: View {
                     }
                 }
             }
-        }
-        .padding()
+        }.environmentObject(coordinator)
     }
 }
 
