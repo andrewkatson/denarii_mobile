@@ -50,6 +50,17 @@ final class denariiUITestsLaunchTests: XCTestCase {
         }
     }
     
+    func tapElementAndWaitForKeyboardToAppear(element: XCUIElement) {
+        let keyboard = XCUIApplication().keyboards.element
+        while (true) {
+            element.tap()
+            if keyboard.exists {
+                break;
+            }
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 0.5) as Date)
+        }
+    }
+    
     func navigateToLoginOrRegister(_ app: XCUIApplication) {
         let contentViewToLoginOrRegisterPredicate = NSPredicate(format: "label beginswith 'Next'")
         app.buttons.matching(contentViewToLoginOrRegisterPredicate).element.tap()
