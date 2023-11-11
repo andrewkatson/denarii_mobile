@@ -11,6 +11,8 @@ struct SupportTicketDetails: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var resolve: Bool = false
     @State private var delete: Bool = false
     @State private var comment: String = ""
@@ -37,6 +39,7 @@ struct SupportTicketDetails: View {
 
     init(_ user: UserDetails, _ supportTicketID: String) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
         self.supportTicketID.setValue(supportTicketID)
         getSupportTicketInfo(supportTicketID)
         getComments()
@@ -81,83 +84,103 @@ struct SupportTicketDetails: View {
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Support Ticket Details").font(.largeTitle)
-                Spacer()
-                Text("\(title.getValue())")
-                Text("\(description.getValue())")
-                GeometryReader { proxy in
-                    ScrollView(.vertical, showsIndicators: true) {
+            ZStack {
+                GeometryReader { geometry in
+                    List {
                         VStack(alignment: .center) {
-                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                             */
-                            ForEach(self.comments.getValue(), id: \.self) { comment in
-                                HStack {
-                                    Text(comment.author)
-                                    Text(comment.content)
+                            Text("Support Ticket Details").font(.largeTitle)
+                            Spacer()
+                            Text("\(title.getValue())")
+                            Text("\(description.getValue())")
+                            GeometryReader { proxy in
+                                ScrollView(.vertical, showsIndicators: true) {
+                                    VStack(alignment: .center) {
+                                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                         */
+                                        ForEach(self.comments.getValue(), id: \.self) { comment in
+                                            HStack {
+                                                Text(comment.author)
+                                                Text(comment.content)
+                                            }
+                                        }
+                                    }.frame(width: proxy.size.width, height: proxy.size.height)
                                 }
-                            }.refreshable {
-                                getComments()
                             }
-                        }.frame(width: proxy.size.width, height: proxy.size.height)
-                    }
-                }
-                TextField("New Comment", text: $comment, axis: Axis.vertical)
-                Button("Submit") {
-                    isCreated = attemptCreateNewComment()
-                    showingPopoverForCreateNewComment = true
-                }.popover(isPresented: $showingPopoverForCreateNewComment) {
-                    Text(successOrFailureForCreateNewComment.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForCreateNewComment = false
-                        }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
-                }
-                Spacer()
-                Button("Resolve") {
-                    isResolved = attemptResolveTicket()
-                    showingPopoverForResolveTicket = true
-                }.popover(isPresented: $showingPopoverForResolveTicket) {
-                        Text(successOrFailureForResolveTicket.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopoverForResolveTicket = false
-                                if isResolved {
-                                    resolve = true
+                            TextField("New Comment", text: $comment, axis: Axis.vertical)
+                            Button("Submit") {
+                                isCreated = attemptCreateNewComment()
+                                showingPopoverForCreateNewComment = true
+                            }.popover(isPresented: $showingPopoverForCreateNewComment) {
+                                Text(successOrFailureForCreateNewComment.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForCreateNewComment = false
+                                    }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
+                            }
+                            Spacer()
+                            Button("Resolve") {
+                                isResolved = attemptResolveTicket()
+                                showingPopoverForResolveTicket = true
+                            }.popover(isPresented: $showingPopoverForResolveTicket) {
+                                Text(successOrFailureForResolveTicket.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForResolveTicket = false
+                                        if isResolved {
+                                            resolve = true
+                                        }
+                                    }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                            }.background {
+                                if resolve && showingPopoverForResolveTicket == false {
+                                    NavigationLink("Resolve") {
+                                        EmptyView()
+                                    }.navigationDestination(isPresented: $resolve) {
+                                        SupportTickets(self.user.getValue())
+                                    }
                                 }
-                            }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
-                }.background {
-                    if resolve && showingPopoverForResolveTicket == false {
-                        NavigationLink("Resolve") {
-                            EmptyView()
-                        }.navigationDestination(isPresented: $resolve) {
-                            SupportTickets(self.user.getValue())
-                        }
-                    }
-                }
-                Spacer()
-                Button("Delete") {
-                    isDeleted = attemptDeleteTicket()
-                    showingPopoverForDeleteTicket = true
-                }.popover(isPresented: $showingPopoverForDeleteTicket) {
-                        Text(successOrFailureForDeleteTicket.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopoverForDeleteTicket = false
-                                if isDeleted {
-                                    delete = true
+                            }
+                            Spacer()
+                            Button("Delete") {
+                                isDeleted = attemptDeleteTicket()
+                                showingPopoverForDeleteTicket = true
+                            }.popover(isPresented: $showingPopoverForDeleteTicket) {
+                                Text(successOrFailureForDeleteTicket.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForDeleteTicket = false
+                                        if isDeleted {
+                                            delete = true
+                                        }
+                                    }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                            }.background {
+                                if delete && showingPopoverForDeleteTicket == false {
+                                    NavigationLink("Delete") {
+                                        EmptyView()
+                                    }.navigationDestination(isPresented: $delete) {
+                                        SupportTickets(self.user.getValue())
+                                    }
                                 }
-                            }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
-                }.background {
-                    if delete && showingPopoverForDeleteTicket == false {
-                        NavigationLink("Delete") {
-                            EmptyView()
-                        }.navigationDestination(isPresented: $delete) {
-                            SupportTickets(self.user.getValue())
-                        }
-                    }
+                            }
+                            Spacer()
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        getComments()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
       }
       else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -168,90 +191,110 @@ struct SupportTicketDetails: View {
           
           Text("iPad Portrait/Landscape")
       } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-          VStack(alignment: .center) {
-              Text("Support Ticket Details").font(.headline)
-              Spacer()
-              Text("\(title.getValue())")
-              Text("\(description.getValue())")
-              GeometryReader { proxy in
-                  ScrollView(.vertical, showsIndicators: true) {
+          ZStack {
+              GeometryReader { geometry in
+                  List {
                       VStack(alignment: .center) {
-                          /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                           */
-                          ForEach(self.comments.getValue(), id: \.self) { comment in
-                              HStack {
-                                  Text(comment.author).font(.subheadline)
-                                  Text(comment.content).font(.subheadline)
+                          Text("Support Ticket Details").font(.headline)
+                          Spacer()
+                          Text("\(title.getValue())")
+                          Text("\(description.getValue())")
+                          GeometryReader { proxy in
+                              ScrollView(.vertical, showsIndicators: true) {
+                                  VStack(alignment: .center) {
+                                      /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                       */
+                                      ForEach(self.comments.getValue(), id: \.self) { comment in
+                                          HStack {
+                                              Text(comment.author).font(.subheadline)
+                                              Text(comment.content).font(.subheadline)
+                                          }
+                                      }
+                                  }.frame(width: proxy.size.width, height: proxy.size.height)
                               }
-                          }.refreshable {
-                              getComments()
                           }
-                      }.frame(width: proxy.size.width, height: proxy.size.height)
-                  }
-              }
-              HStack {
-                  TextField("New Comment", text: $comment, axis: Axis.vertical)
-                  Spacer()
-                  Button("Submit") {
-                      isCreated = attemptCreateNewComment()
-                      showingPopoverForCreateNewComment = true
-                  }.popover(isPresented: $showingPopoverForCreateNewComment) {
-                      Text(successOrFailureForCreateNewComment.getValue())
-                          .font(.headline)
-                          .padding().onTapGesture {
-                              showingPopoverForCreateNewComment = false
-                          }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
-                  }
-              }
-              Spacer()
-              HStack {
-                  Spacer()
-                  Button("Resolve") {
-                      isResolved = attemptResolveTicket()
-                      showingPopoverForResolveTicket = true
-                  }.popover(isPresented: $showingPopoverForResolveTicket) {
-                          Text(successOrFailureForResolveTicket.getValue())
-                              .font(.headline)
-                              .padding().onTapGesture {
-                                  showingPopoverForResolveTicket = false
-                                  if isResolved {
-                                      resolve = true
+                          HStack {
+                              TextField("New Comment", text: $comment, axis: Axis.vertical)
+                              Spacer()
+                              Button("Submit") {
+                                  isCreated = attemptCreateNewComment()
+                                  showingPopoverForCreateNewComment = true
+                              }.popover(isPresented: $showingPopoverForCreateNewComment) {
+                                  Text(successOrFailureForCreateNewComment.getValue())
+                                      .font(.headline)
+                                      .padding().onTapGesture {
+                                          showingPopoverForCreateNewComment = false
+                                      }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
+                              }
+                          }
+                          Spacer()
+                          HStack {
+                              Spacer()
+                              Button("Resolve") {
+                                  isResolved = attemptResolveTicket()
+                                  showingPopoverForResolveTicket = true
+                              }.popover(isPresented: $showingPopoverForResolveTicket) {
+                                  Text(successOrFailureForResolveTicket.getValue())
+                                      .font(.headline)
+                                      .padding().onTapGesture {
+                                          showingPopoverForResolveTicket = false
+                                          if isResolved {
+                                              resolve = true
+                                          }
+                                      }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
+                              }.background {
+                                  if resolve && showingPopoverForResolveTicket == false {
+                                      NavigationLink("Resolve") {
+                                          EmptyView()
+                                      }.navigationDestination(isPresented: $resolve) {
+                                          SupportTickets(self.user.getValue())
+                                      }
                                   }
-                              }.accessibilityIdentifier(Constants.RESOLVE_TICKET_POPOVER)
-                  }.background {
-                      if resolve && showingPopoverForResolveTicket == false {
-                          NavigationLink("Resolve") {
-                              EmptyView()
-                          }.navigationDestination(isPresented: $resolve) {
-                              SupportTickets(self.user.getValue())
-                          }
-                      }
-                  }
-                  Spacer()
-                  Button("Delete") {
-                      isDeleted = attemptDeleteTicket()
-                      showingPopoverForDeleteTicket = true
-                  }.popover(isPresented: $showingPopoverForDeleteTicket) {
-                          Text(successOrFailureForDeleteTicket.getValue())
-                              .font(.headline)
-                              .padding().onTapGesture {
-                                  showingPopoverForDeleteTicket = false
-                                  if isDeleted {
-                                      delete = true
+                              }
+                              Spacer()
+                              Button("Delete") {
+                                  isDeleted = attemptDeleteTicket()
+                                  showingPopoverForDeleteTicket = true
+                              }.popover(isPresented: $showingPopoverForDeleteTicket) {
+                                  Text(successOrFailureForDeleteTicket.getValue())
+                                      .font(.headline)
+                                      .padding().onTapGesture {
+                                          showingPopoverForDeleteTicket = false
+                                          if isDeleted {
+                                              delete = true
+                                          }
+                                      }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
+                              }.background {
+                                  if delete && showingPopoverForDeleteTicket == false {
+                                      NavigationLink("Delete") {
+                                          EmptyView()
+                                      }.navigationDestination(isPresented: $delete) {
+                                          SupportTickets(self.user.getValue())
+                                      }
                                   }
-                              }.accessibilityIdentifier(Constants.DELETE_TICKET_POPOVER)
-                  }.background {
-                      if delete && showingPopoverForDeleteTicket == false {
-                          NavigationLink("Delete") {
-                              EmptyView()
-                          }.navigationDestination(isPresented: $delete) {
-                              SupportTickets(self.user.getValue())
+                              }
+                              Spacer()
                           }
-                      }
-                  }
-                  Spacer()
+                          Spacer()
+                      }.frame(
+                        minWidth: geometry.size.width,
+                        maxWidth: .infinity,
+                        minHeight: geometry.size.height,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                      )
+                  }.refreshable {
+                      getComments()
+                  }.listStyle(PlainListStyle())
+                      .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                      )
               }
-              Spacer()
+              Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
           }
       } else {
         Text("Who knows")

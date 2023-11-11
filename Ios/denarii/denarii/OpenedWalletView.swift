@@ -17,6 +17,8 @@ struct OpenedWalletView: View {
     @ObservedObject private var successOrFailureForRefreshBalance: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForSendDenarii: ObservableString = ObservableString()
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var showingPopoverForRefreshBalance = false
     @State private var showingPopoverForSendDenarii = false
     @State private var addressToSendTo: String = ""
@@ -26,6 +28,7 @@ struct OpenedWalletView: View {
     
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
     }
     
     init(_ user: UserDetails, _ walletName: String, _ seed: String) {
@@ -34,66 +37,52 @@ struct OpenedWalletView: View {
         user.walletDetails.seed = seed
         
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Wallet").font(.largeTitle)
-                Spacer()
-                Text("Wallet Name").accessibilityLabel("Wallet Name")
-                Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
-                Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
-                HStack {
-                    Spacer(minLength: 150)
-                    Text("Balance: ").accessibilityIdentifier("Balance")
+            ZStack {
+                VStack(alignment: .center) {
+                    Text("Wallet").font(.largeTitle)
                     Spacer()
-                    ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
-                    Spacer(minLength: 150)
+                    Text("Wallet Name").accessibilityLabel("Wallet Name")
+                    Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
+                    Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
+                    HStack {
+                        Spacer(minLength: 150)
+                        Text("Balance: ").accessibilityIdentifier("Balance")
+                        Spacer()
+                        ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
+                        Spacer(minLength: 150)
+                    }
+                    Button("Refresh Balance") {
+                        let _ = refreshBalance()
+                        showingPopoverForRefreshBalance = true
+                    }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
+                        Text(successOrFailureForRefreshBalance.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForRefreshBalance = false
+                            }
+                            .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
+                    }
+                    TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
+                    TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
+                    Button("Send") {
+                        let _ = sendDenarii()
+                        showingPopoverForSendDenarii = true
+                    }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
+                        Text(successOrFailureForSendDenarii.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForSendDenarii = false
+                            }
+                            .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
+                    }
+                    Spacer()
                 }
-                Button("Refresh Balance") {
-                    let _ = refreshBalance()
-                    showingPopoverForRefreshBalance = true
-                }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
-                    Text(successOrFailureForRefreshBalance.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForRefreshBalance = false
-                        }
-                        .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
-                }
-                TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
-                TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
-                Button("Send") {
-                    let _ = sendDenarii()
-                    showingPopoverForSendDenarii = true
-                }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
-                    Text(successOrFailureForSendDenarii.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSendDenarii = false
-                        }
-                        .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
-                }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -104,73 +93,58 @@ struct OpenedWalletView: View {
             
             Text("iPad Portrait/Landscape")
         } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-            VStack(alignment: .center) {
-                Text("Wallet").font(.headline)
-                Spacer()
-                HStack {
+            ZStack {
+                VStack(alignment: .center) {
+                    Text("Wallet").font(.headline)
                     Spacer()
-                    Text("Wallet Name").accessibilityLabel("Wallet Name")
-                    Spacer()
-                    Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
-                    Spacer()
-                    Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
-                    Spacer()
-                }
-                HStack {
-                    Spacer(minLength: 150)
-                    Text("Balance: ").accessibilityIdentifier("Balance")
-                    Spacer()
-                    ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
-                    Spacer(minLength: 150)
-                }
-                Button("Refresh Balance") {
-                    let _ = refreshBalance()
-                    showingPopoverForRefreshBalance = true
-                }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
-                    Text(successOrFailureForRefreshBalance.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForRefreshBalance = false
-                        }
-                        .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
-                }
-                HStack {
-                    Spacer()
-                    TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
-                    Spacer()
-                    TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
-                    Spacer()
-                }
-                Button("Send") {
-                    let _ = sendDenarii()
-                    showingPopoverForSendDenarii = true
-                }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
-                    Text(successOrFailureForSendDenarii.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSendDenarii = false
-                        }
-                        .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
-                }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
+                    HStack {
+                        Spacer()
+                        Text("Wallet Name").accessibilityLabel("Wallet Name")
+                        Spacer()
+                        Text("Seed: " + user.getValue().walletDetails.seed).accessibilityIdentifier("Seed")
+                        Spacer()
+                        Text("Address: " + user.getValue().walletDetails.walletAddress).accessibilityIdentifier("Address")
+                        Spacer()
                     }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
+                    HStack {
+                        Spacer(minLength: 150)
+                        Text("Balance: ").accessibilityIdentifier("Balance")
+                        Spacer()
+                        ChangingTextView(value: $balance.value).accessibilityIdentifier("Balance Value")
+                        Spacer(minLength: 150)
                     }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
+                    Button("Refresh Balance") {
+                        let _ = refreshBalance()
+                        showingPopoverForRefreshBalance = true
+                    }.padding(.top)        .popover(isPresented: $showingPopoverForRefreshBalance) {
+                        Text(successOrFailureForRefreshBalance.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForRefreshBalance = false
+                            }
+                            .accessibilityIdentifier(Constants.REFRESH_BALANCE_POPOVER)
                     }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
+                    HStack {
+                        Spacer()
+                        TextField("Send To", text: $addressToSendTo).padding(.leading, 160).padding(.top)
+                        Spacer()
+                        TextField("Amount to Send", text: $amountToSend).padding(.leading, 130).padding(.top)
+                        Spacer()
                     }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
+                    Button("Send") {
+                        let _ = sendDenarii()
+                        showingPopoverForSendDenarii = true
+                    }.padding(.top)        .popover(isPresented: $showingPopoverForSendDenarii) {
+                        Text(successOrFailureForSendDenarii.getValue())
+                            .font(.headline)
+                            .padding().onTapGesture {
+                                showingPopoverForSendDenarii = false
+                            }
+                            .accessibilityIdentifier(Constants.SEND_DENARII_POPOVER)
                     }
+                    Spacer()
                 }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         } else {
           Text("Who knows")

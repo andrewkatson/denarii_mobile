@@ -11,7 +11,8 @@ struct SupportTickets: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
-    
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var goToTicket: Int? = 0
     @State private var isCreated: Bool = false
     @State private var showingPopover = false
@@ -27,6 +28,7 @@ struct SupportTickets: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
         getSupportTickets()
     }
     
@@ -59,31 +61,51 @@ struct SupportTickets: View {
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack (alignment: .center) {
-                Text("Support Tickets").font(.largeTitle)
-                Spacer()
-                NavigationLink(destination: CreateSupportTicket(user.getValue())) {
-                    Text("Create Support Ticket")
-                }
-                Spacer()
-                GeometryReader { proxy in
-                    ScrollView(.vertical, showsIndicators: true) {
-                        VStack {
-                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                             */
-                            ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
-                                
-                                NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
-                                    Text(supportTicket.title)
-                                }
-                                
-                            }.refreshable {
-                                getSupportTickets()
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack (alignment: .center) {
+                            Text("Support Tickets").font(.largeTitle)
+                            Spacer()
+                            NavigationLink(destination: CreateSupportTicket(user.getValue())) {
+                                Text("Create Support Ticket").padding(.top).padding(.top)
                             }
-                        }.frame(width: proxy.size.width, height: proxy.size.height)
-                    }
+                            Spacer()
+                            GeometryReader { proxy in
+                                ScrollView(.vertical, showsIndicators: true) {
+                                    VStack {
+                                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                         */
+                                        ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
+                                            
+                                            NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
+                                                Text(supportTicket.title)
+                                            }
+                                            
+                                        }
+                                    }.frame(width: proxy.size.width, height: proxy.size.height)
+                                }
+                            }
+                            Spacer()
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        getSupportTickets()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
       }
       else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -94,31 +116,53 @@ struct SupportTickets: View {
           
           Text("iPad Portrait/Landscape")
       } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-          VStack (alignment: .center) {
-              Text("Support Tickets").font(.headline)
-              Spacer()
-              NavigationLink(destination: CreateSupportTicket(user.getValue())) {
-                  Text("Create Support Ticket")
-              }
-              Spacer()
-              GeometryReader { proxy in
-                  ScrollView(.vertical, showsIndicators: true) {
-                      VStack {
-                          /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                           */
-                          ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
-                              
-                              NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
-                                  Text(supportTicket.title).font(.subheadline)
-                              }
-                              
-                          }.refreshable {
-                              getSupportTickets()
+          ZStack {
+              GeometryReader { geometry in
+                  List {
+                      VStack (alignment: .center) {
+                          Text("Support Tickets").font(.headline)
+                          Spacer()
+                          NavigationLink(destination: CreateSupportTicket(user.getValue())) {
+                              Text("Create Support Ticket")
                           }
-                      }.frame(width: proxy.size.width, height: proxy.size.height)
-                  }
+                          Spacer()
+                          GeometryReader { proxy in
+                              ScrollView(.vertical, showsIndicators: true) {
+                                  VStack {
+                                      /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                       */
+                                      ForEach(self.supportTickets.getValue(), id: \.self) { supportTicket in
+                                          
+                                          NavigationLink(destination: SupportTicketDetails(user.getValue(), supportTicket.supportID)) {
+                                              Text(supportTicket.title).font(.subheadline)
+                                          }
+                                          
+                                      }.refreshable {
+                                          getSupportTickets()
+                                      }
+                                  }.frame(width: proxy.size.width, height: proxy.size.height)
+                              }
+                          }
+                          Spacer()
+                      }.frame(
+                        minWidth: geometry.size.width,
+                        maxWidth: .infinity,
+                        minHeight: geometry.size.height,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                      )
+                  }.refreshable {
+                      getSupportTickets()
+                  }.listStyle(PlainListStyle())
+                      .frame(
+                        minWidth: 0,
+                        maxWidth: .infinity,
+                        minHeight: 0,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                      )
               }
-              Spacer()
+              Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
           }
       } else {
         Text("Who knows")

@@ -11,6 +11,8 @@ struct UserSettings: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var logout: Bool = false
     @State private var deletedAccount: Bool = false
     @State private var isDeleted = false
@@ -26,97 +28,15 @@ struct UserSettings: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Spacer()
-                Text("Settings").font(.largeTitle)
-                Spacer()
-                NavigationLink(destination: SupportTickets(user.getValue())) {
-                    Text("Support Tickets")
-                }
-                Spacer()
-                Button("Logout") {
-                    isLoggedOut = attemptLogout()
-                    showingPopoverForLogout = true
-                }.popover(isPresented: $showingPopoverForLogout) {
-                    Text(successOrFailureForLogout.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForLogout = false
-                            
-                            if isLoggedOut {
-                                logout = true
-                            }
-                        }.accessibilityIdentifier(Constants.LOGOUT_POPOVER)
-                }.background {
-                    if logout && showingPopoverForLogout == false {
-                        NavigationLink("Logout") {
-                            EmptyView()
-                        }.navigationDestination(isPresented: $logout) {
-                            ContentView()
-                        }
-                    }
-                }
-                Spacer()
-                Button("Delete Account") {
-                    isDeleted = attemptDeleteAccount()
-                    showingPopoverForDeleteAccount = true
-                }.popover(isPresented: $showingPopoverForDeleteAccount) {
-                    Text(successOrFailureForDeleteAccount.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForDeleteAccount = false
-                            
-                            if isDeleted {
-                                deletedAccount = true
-                            }
-                        }.accessibilityIdentifier(Constants.DELETE_ACCOUNT_POPOVER)
-                }.background {
-                    if deletedAccount && showingPopoverForDeleteAccount == false {
-                        NavigationLink("Delete Account") {
-                            EmptyView()
-                        }.navigationDestination(isPresented: $logout) {
-                            ContentView()
-                        }
-                    }
-                }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                }
-                Spacer()
-            }
-        }
-        else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
-            
-            Text("iPhone Landscape")
-        }
-        else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
-            
-            Text("iPad Portrait/Landscape")
-        } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-            VStack(alignment: .center) {
-                Spacer()
-                Text("Settings").font(.headline)
-                Spacer()
-                HStack {
+            ZStack {
+                VStack(alignment: .center) {
+                    Spacer()
+                    Text("Settings").font(.largeTitle)
                     Spacer()
                     NavigationLink(destination: SupportTickets(user.getValue())) {
                         Text("Support Tickets")
@@ -162,32 +82,81 @@ struct UserSettings: View {
                         if deletedAccount && showingPopoverForDeleteAccount == false {
                             NavigationLink("Delete Account") {
                                 EmptyView()
-                            }.navigationDestination(isPresented: $logout) {
-                                ContentView()
-                            }
+                            }.navigationDestination(isPresented: $deletedAccount, destination: {() -> ContentView in ContentView()})
                         }
                     }
+                }
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+            }
+        }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
+            
+            Text("iPhone Landscape")
+        }
+        else if horizontalSizeClass == .regular && verticalSizeClass == .regular {
+            
+            Text("iPad Portrait/Landscape")
+        } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
+            ZStack {
+                VStack(alignment: .center) {
                     Spacer()
+                    Text("Settings").font(.headline)
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        NavigationLink(destination: SupportTickets(user.getValue())) {
+                            Text("Support Tickets")
+                        }
+                        Spacer()
+                        Button("Logout") {
+                            isLoggedOut = attemptLogout()
+                            showingPopoverForLogout = true
+                        }.popover(isPresented: $showingPopoverForLogout) {
+                            Text(successOrFailureForLogout.getValue())
+                                .font(.headline)
+                                .padding().onTapGesture {
+                                    showingPopoverForLogout = false
+                                    
+                                    if isLoggedOut {
+                                        logout = true
+                                    }
+                                }.accessibilityIdentifier(Constants.LOGOUT_POPOVER)
+                        }.background {
+                            if logout && showingPopoverForLogout == false {
+                                NavigationLink("Logout") {
+                                    EmptyView()
+                                }.navigationDestination(isPresented: $logout) {
+                                    ContentView()
+                                }
+                            }
+                        }
+                        Spacer()
+                        Button("Delete Account") {
+                            isDeleted = attemptDeleteAccount()
+                            showingPopoverForDeleteAccount = true
+                        }.popover(isPresented: $showingPopoverForDeleteAccount) {
+                            Text(successOrFailureForDeleteAccount.getValue())
+                                .font(.headline)
+                                .padding().onTapGesture {
+                                    showingPopoverForDeleteAccount = false
+                                    
+                                    if isDeleted {
+                                        deletedAccount = true
+                                    }
+                                }.accessibilityIdentifier(Constants.DELETE_ACCOUNT_POPOVER)
+                        }.background {
+                            if deletedAccount && showingPopoverForDeleteAccount == false {
+                                NavigationLink("Delete Account") {
+                                    EmptyView()
+                                }.navigationDestination(isPresented: $logout) {
+                                    ContentView()
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
                 }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         } else {
             Text("Who knows")

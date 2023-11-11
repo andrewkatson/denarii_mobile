@@ -11,6 +11,8 @@ struct CreateSupportTicket: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var createTicket: Bool = false
     @State private var title: String = ""
     @State private var description: String = ""
@@ -26,20 +28,22 @@ struct CreateSupportTicket: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Create Support Ticket").font(.largeTitle)
-                Spacer()
-                TextField("Title", text: $title)
-                TextField("Description", text: $description, axis: Axis.vertical)
-                Spacer()
-                Button("Create Support Ticket") {
-                    isCreated = attemptCreateTicket()
-                    showingPopover = true
-                }.popover(isPresented: $showingPopover) {
+            ZStack {
+                VStack(alignment: .center) {
+                    Text("Create Support Ticket").font(.largeTitle)
+                    Spacer()
+                    TextField("Title", text: $title)
+                    TextField("Description", text: $description, axis: Axis.vertical)
+                    Spacer()
+                    Button("Create Support Ticket") {
+                        isCreated = attemptCreateTicket()
+                        showingPopover = true
+                    }.popover(isPresented: $showingPopover) {
                         Text(successOrFailure.getValue())
                             .font(.headline)
                             .padding().onTapGesture {
@@ -49,17 +53,19 @@ struct CreateSupportTicket: View {
                                     createTicket = true
                                 }
                             }.accessibilityIdentifier(Constants.POPOVER)
-                }.background {
-                    if isCreated && createTicket && showingPopover == false {
-                        NavigationLink("Create Support Ticket")
-                        {
-                            EmptyView()
-                        }.navigationDestination(isPresented: $createTicket) {
-                            SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                    }.background {
+                        if isCreated && createTicket && showingPopover == false {
+                            NavigationLink("Create Support Ticket")
+                            {
+                                EmptyView()
+                            }.navigationDestination(isPresented: $createTicket) {
+                                SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                            }
                         }
                     }
+                    Spacer()
                 }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
       }
       else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -70,16 +76,17 @@ struct CreateSupportTicket: View {
           
           Text("iPad Portrait/Landscape")
       } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-          VStack(alignment: .center) {
-              Text("Create Support Ticket").font(.headline)
-              Spacer()
-              TextField("Title", text: $title)
-              TextField("Description", text: $description, axis: Axis.vertical)
-              Spacer()
-              Button("Create Support Ticket") {
-                  isCreated = attemptCreateTicket()
-                  showingPopover = true
-              }.popover(isPresented: $showingPopover) {
+          ZStack {
+              VStack(alignment: .center) {
+                  Text("Create Support Ticket").font(.headline)
+                  Spacer()
+                  TextField("Title", text: $title)
+                  TextField("Description", text: $description, axis: Axis.vertical)
+                  Spacer()
+                  Button("Create Support Ticket") {
+                      isCreated = attemptCreateTicket()
+                      showingPopover = true
+                  }.popover(isPresented: $showingPopover) {
                       Text(successOrFailure.getValue())
                           .font(.headline)
                           .padding().onTapGesture {
@@ -89,17 +96,19 @@ struct CreateSupportTicket: View {
                                   createTicket = true
                               }
                           }.accessibilityIdentifier(Constants.POPOVER)
-              }.background {
-                  if isCreated && createTicket && showingPopover == false {
-                      NavigationLink("Create Support Ticket")
-                      {
-                          EmptyView()
-                      }.navigationDestination(isPresented: $createTicket) {
-                          SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                  }.background {
+                      if isCreated && createTicket && showingPopover == false {
+                          NavigationLink("Create Support Ticket")
+                          {
+                              EmptyView()
+                          }.navigationDestination(isPresented: $createTicket) {
+                              SupportTicketDetails(self.user.getValue(), self.newSupportTicketID.getValue())
+                          }
                       }
                   }
+                  Spacer()
               }
-              Spacer()
+              Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
           }
       } else {
         Text("Who knows")

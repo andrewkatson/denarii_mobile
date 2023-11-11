@@ -13,6 +13,8 @@ struct SellDenarii: View {
     
     let lock: NSLock = NSLock()
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var amount: String = ""
     @State private var price: String = ""
     @State private var isSold: Bool = false
@@ -38,6 +40,7 @@ struct SellDenarii: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
         getNewAsks()
         refreshCompletedTransactions()
         getOwnAsks()
@@ -185,123 +188,120 @@ struct SellDenarii: View {
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Sell Denarii").font(.largeTitle)
-                Spacer()
-                Text("Going Price: \(goingPrice)").refreshable {
-                    refreshGoingPrice()
-                }
-                Text("Asks").font(.title)
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack {
-                        Grid {
-                            GridRow {
-                                Text("Amount")
-                                Text("Price")
-                            }
-                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                             */
-                            ForEach(self.currentAsks.getValue(), id: \.self) {ask in
-                                GridRow {
-                                    Text("\(ask.amount)")
-                                    Text("\(ask.askingPrice)")
-                                }
-                            }
-                        }.refreshable {
-                            getNewAsks()
-                        }
-                    }
-                }
-                TextField("Amount", text: $amount)
-                TextField("Price", text: $price)
-                Button("Sell Denarii") {
-                    isSold = attemptToSellDenarii()
-                    showingPopoverForSellDenarii = true
-                }.popover(isPresented: $showingPopoverForSellDenarii) {
-                    Text(successOrFailureForSellDenarii.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSellDenarii = false
-                        }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
-                }
-                Text("Own Asks").font(.title)
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack {
-                        Grid {
-                            GridRow {
-                                Text("Amount")
-                                Text("Price")
-                                Text("Cancel Ask")
-                            }
-                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                             */
-                            ForEach(self.ownAsks.getValue(), id: \.self) {ask in
-                                GridRow {
-                                    Text("\(ask.amount)")
-                                    Text("\(ask.askingPrice)")
-                                    Button("Cancel") {
-                                        isCancelled = attemptCancelSellDenarii(ask)
-                                        if isCancelled {
-                                            self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack(alignment: .center) {
+                            Text("Sell Denarii").font(.largeTitle)
+                            Spacer()
+                            Text("Going Price: \(goingPrice)")
+                            Text("Asks").font(.title)
+                            ScrollView(.vertical, showsIndicators: true) {
+                                VStack {
+                                    Grid {
+                                        GridRow {
+                                            Text("Amount")
+                                            Text("Price")
                                         }
-                                        showingPopoverForCancelSellDenarii = true
-                                    }.popover(isPresented: $showingPopoverForCancelSellDenarii) {
-                                        Text(successOrFailureForCancelSellDenarii.getValue())
-                                            .font(.headline)
-                                            .padding().onTapGesture {
-                                                showingPopoverForCancelSellDenarii = false
-                                            }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
+                                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                         */
+                                        ForEach(self.currentAsks.getValue(), id: \.self) {ask in
+                                            GridRow {
+                                                Text("\(ask.amount)")
+                                                Text("\(ask.askingPrice)")
+                                            }
+                                        }
                                     }
                                 }
-                            }.refreshable {
-                                getOwnAsks()
                             }
-                        }
-                    }
-                }
-                Text("Bought Asks").font(.title)
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack {
-                        Grid {
-                            GridRow {
-                                Text("Amount")
-                                Text("Price")
-                                Text("Amount Bought")
+                            TextField("Amount", text: $amount)
+                            TextField("Price", text: $price)
+                            Button("Sell") {
+                                isSold = attemptToSellDenarii()
+                                showingPopoverForSellDenarii = true
+                            }.popover(isPresented: $showingPopoverForSellDenarii) {
+                                Text(successOrFailureForSellDenarii.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForSellDenarii = false
+                                    }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
                             }
-                            /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                             */
-                            ForEach(self.boughtAsks.getValue(), id: \.self) {ask in
-                                GridRow {
-                                    Text("\(ask.amount)")
-                                    Text("\(ask.askingPrice)")
-                                    Text("\(ask.amountBought)")
+                            Text("Own Asks").font(.title)
+                            ScrollView(.vertical, showsIndicators: true) {
+                                VStack {
+                                    Grid {
+                                        GridRow {
+                                            Text("Amount")
+                                            Text("Price")
+                                            Text("Cancel Ask")
+                                        }
+                                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                         */
+                                        ForEach(self.ownAsks.getValue(), id: \.self) {ask in
+                                            GridRow {
+                                                Text("\(ask.amount)")
+                                                Text("\(ask.askingPrice)")
+                                                Button("Cancel") {
+                                                    isCancelled = attemptCancelSellDenarii(ask)
+                                                    if isCancelled {
+                                                        self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
+                                                    }
+                                                    showingPopoverForCancelSellDenarii = true
+                                                }.popover(isPresented: $showingPopoverForCancelSellDenarii) {
+                                                    Text(successOrFailureForCancelSellDenarii.getValue())
+                                                        .font(.headline)
+                                                        .padding().onTapGesture {
+                                                            showingPopoverForCancelSellDenarii = false
+                                                        }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }.refreshable {
-                                refreshCompletedTransactions()
-                                refreshAsksInEscrow()
                             }
-                        }
-                    }
+                            Text("Bought Asks").font(.title)
+                            ScrollView(.vertical, showsIndicators: true) {
+                                VStack {
+                                    Grid {
+                                        GridRow {
+                                            Text("Amount")
+                                            Text("Price")
+                                            Text("Amount Bought")
+                                        }
+                                        /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                         */
+                                        ForEach(self.boughtAsks.getValue(), id: \.self) {ask in
+                                            GridRow {
+                                                Text("\(ask.amount)")
+                                                Text("\(ask.askingPrice)")
+                                                Text("\(ask.amountBought)")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        getNewAsks()
+                        refreshGoingPrice()
+                        refreshAsksInEscrow()
+                        refreshCompletedTransactions()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -312,135 +312,132 @@ struct SellDenarii: View {
             
             Text("iPad Portrait/Landscape")
         } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-            VStack(alignment: .center) {
-                Text("Sell Denarii").font(.headline)
-                Spacer()
-                Text("Going Price: \(goingPrice)").refreshable {
-                    refreshGoingPrice()
-                }.font(.subheadline)
-                TextField("Amount", text: $amount)
-                TextField("Price", text: $price)
-                Button("Sell Denarii") {
-                    isSold = attemptToSellDenarii()
-                    showingPopoverForSellDenarii = true
-                }.popover(isPresented: $showingPopoverForSellDenarii) {
-                    Text(successOrFailureForSellDenarii.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSellDenarii = false
-                        }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
-                }
-                HStack {
-                    Spacer()
-                    VStack {
-                        Text("Asks").font(.subheadline)
-                        ScrollView(.vertical, showsIndicators: true) {
-                            VStack {
-                                Grid {
-                                    GridRow {
-                                        Text("Amount").font(.caption)
-                                        Text("Price").font(.caption)
-                                    }
-                                    /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                                     */
-                                    ForEach(self.currentAsks.getValue(), id: \.self) {ask in
-                                        GridRow {
-                                            Text("\(ask.amount)").font(.caption)
-                                            Text("\(ask.askingPrice)").font(.caption)
-                                        }
-                                    }
-                                }.refreshable {
-                                    getNewAsks()
-                                }
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack(alignment: .center) {
+                            Text("Sell Denarii").font(.headline)
+                            Spacer()
+                            Text("Going Price: \(goingPrice)").font(.subheadline)
+                            TextField("Amount", text: $amount)
+                            TextField("Price", text: $price)
+                            Button("Sell") {
+                                isSold = attemptToSellDenarii()
+                                showingPopoverForSellDenarii = true
+                            }.popover(isPresented: $showingPopoverForSellDenarii) {
+                                Text(successOrFailureForSellDenarii.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForSellDenarii = false
+                                    }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
                             }
-                        }
-                    }
-                    Spacer()
-                    VStack {
-                        Text("Own Asks").font(.subheadline)
-                        ScrollView(.vertical, showsIndicators: true) {
-                            VStack {
-                                Grid {
-                                    GridRow {
-                                        Text("Amount").font(.caption)
-                                        Text("Price").font(.caption)
-                                        Text("Cancel Ask").font(.caption)
-                                    }
-                                    /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                                     */
-                                    ForEach(self.ownAsks.getValue(), id: \.self) {ask in
-                                        GridRow {
-                                            Text("\(ask.amount)").font(.caption)
-                                            Text("\(ask.askingPrice)").font(.caption)
-                                            Button("Cancel") {
-                                                isCancelled = attemptCancelSellDenarii(ask)
-                                                if isCancelled {
-                                                    self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
+                            HStack {
+                                Spacer()
+                                VStack {
+                                    Text("Asks").font(.subheadline)
+                                    ScrollView(.vertical, showsIndicators: true) {
+                                        VStack {
+                                            Grid {
+                                                GridRow {
+                                                    Text("Amount").font(.caption)
+                                                    Text("Price").font(.caption)
                                                 }
-                                                showingPopoverForCancelSellDenarii = true
-                                            }.font(.caption).popover(isPresented: $showingPopoverForCancelSellDenarii) {
-                                                Text(successOrFailureForCancelSellDenarii.getValue())
-                                                    .font(.headline)
-                                                    .padding().onTapGesture {
-                                                        showingPopoverForCancelSellDenarii = false
-                                                    }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
+                                                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                                 */
+                                                ForEach(self.currentAsks.getValue(), id: \.self) {ask in
+                                                    GridRow {
+                                                        Text("\(ask.amount)").font(.caption)
+                                                        Text("\(ask.askingPrice)").font(.caption)
+                                                    }
+                                                }
                                             }
                                         }
-                                    }.refreshable {
-                                        getOwnAsks()
                                     }
                                 }
-                            }
-                        }
-                    }
-                    Spacer()
-                    VStack {
-                        Text("Bought Asks").font(.subheadline)
-                        ScrollView(.vertical, showsIndicators: true) {
-                            VStack {
-                                Grid {
-                                    GridRow {
-                                        Text("Amount").font(.caption)
-                                        Text("Price").font(.caption)
-                                        Text("Amount Bought").font(.caption)
-                                    }
-                                    /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
-                                     */
-                                    ForEach(self.boughtAsks.getValue(), id: \.self) {ask in
-                                        GridRow {
-                                            Text("\(ask.amount)").font(.caption)
-                                            Text("\(ask.askingPrice)").font(.caption)
-                                            Text("\(ask.amountBought)").font(.caption)
+                                Spacer()
+                                VStack {
+                                    Text("Own Asks").font(.subheadline)
+                                    ScrollView(.vertical, showsIndicators: true) {
+                                        VStack {
+                                            Grid {
+                                                GridRow {
+                                                    Text("Amount").font(.caption)
+                                                    Text("Price").font(.caption)
+                                                    Text("Cancel Ask").font(.caption)
+                                                }
+                                                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                                 */
+                                                ForEach(self.ownAsks.getValue(), id: \.self) {ask in
+                                                    GridRow {
+                                                        Text("\(ask.amount)").font(.caption)
+                                                        Text("\(ask.askingPrice)").font(.caption)
+                                                        Button("Cancel") {
+                                                            isCancelled = attemptCancelSellDenarii(ask)
+                                                            if isCancelled {
+                                                                self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
+                                                            }
+                                                            showingPopoverForCancelSellDenarii = true
+                                                        }.font(.caption).popover(isPresented: $showingPopoverForCancelSellDenarii) {
+                                                            Text(successOrFailureForCancelSellDenarii.getValue())
+                                                                .font(.headline)
+                                                                .padding().onTapGesture {
+                                                                    showingPopoverForCancelSellDenarii = false
+                                                                }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
-                                    }.refreshable {
-                                        refreshCompletedTransactions()
-                                        refreshAsksInEscrow()
                                     }
                                 }
+                                Spacer()
+                                VStack {
+                                    Text("Bought Asks").font(.subheadline)
+                                    ScrollView(.vertical, showsIndicators: true) {
+                                        VStack {
+                                            Grid {
+                                                GridRow {
+                                                    Text("Amount").font(.caption)
+                                                    Text("Price").font(.caption)
+                                                    Text("Amount Bought").font(.caption)
+                                                }
+                                                /* See https://stackoverflow.com/questions/67977092/swiftui-initialzier-requires-string-conform-to-identifiable
+                                                 */
+                                                ForEach(self.boughtAsks.getValue(), id: \.self) {ask in
+                                                    GridRow {
+                                                        Text("\(ask.amount)").font(.caption)
+                                                        Text("\(ask.askingPrice)").font(.caption)
+                                                        Text("\(ask.amountBought)").font(.caption)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Spacer()
+                                }
                             }
-                        }
-                        Spacer()
-                    }
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        getNewAsks()
+                        refreshGoingPrice()
+                        refreshAsksInEscrow()
+                        refreshCompletedTransactions()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         }
     }

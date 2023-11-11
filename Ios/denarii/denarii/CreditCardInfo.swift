@@ -11,6 +11,8 @@ struct CreditCardInfo: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var number: String = ""
     @State private var expirationDateMonth: String = ""
     @State private var expirationDateYear: String = ""
@@ -34,6 +36,7 @@ struct CreditCardInfo: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
         checkCreditCardInfoState()
     }
     
@@ -60,56 +63,60 @@ struct CreditCardInfo: View {
     
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Credit Card Info").font(.largeTitle)
-                Spacer()
-                Text("\(status)")
-                TextField("Credit Card Number", text: $number)
-                TextField("Expiration Date Month", text: $expirationDateMonth)
-                TextField("Expiration Date Year", text: $expirationDateYear)
-                TextField("Security Code", text: $securityCode)
-                Button("Set Info") {
-                    isSet = attemptToSetCreditCardInfo()
-                    showingPopoverForSet = true
-                }.popover(isPresented: $showingPopoverForSet) {
-                    Text(successOrFailureForSet.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSet = false
-                        }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack(alignment: .center) {
+                            Text("Credit Card Info").font(.largeTitle)
+                            Spacer()
+                            Text("\(status)")
+                            TextField("Credit Card Number", text: $number)
+                            TextField("Expiration Date Month", text: $expirationDateMonth)
+                            TextField("Expiration Date Year", text: $expirationDateYear)
+                            TextField("Security Code", text: $securityCode)
+                            Button("Set Info") {
+                                isSet = attemptToSetCreditCardInfo()
+                                showingPopoverForSet = true
+                            }.popover(isPresented: $showingPopoverForSet) {
+                                Text(successOrFailureForSet.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForSet = false
+                                    }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                            }
+                            if status.contains("Status: Set") {
+                                Button("Clear Info") {
+                                    isCleared = attemptToClearCreditCardInfo()
+                                    showingPopoverForClear = true
+                                }.popover(isPresented: $showingPopoverForClear) {
+                                    Text(successOrFailureForClear.getValue())
+                                        .font(.headline)
+                                        .padding().onTapGesture {
+                                            showingPopoverForClear = false
+                                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                                }
+                                
+                            }
+                            Spacer()
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        checkCreditCardInfoState()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                if status.contains("Status: Set") {
-                    Button("Clear Info") {
-                        isCleared = attemptToClearCreditCardInfo()
-                        showingPopoverForClear = true
-                    }.popover(isPresented: $showingPopoverForClear) {
-                        Text(successOrFailureForClear.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopoverForClear = false
-                            }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                    }
-                    
-                }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -120,58 +127,62 @@ struct CreditCardInfo: View {
             
             Text("iPad Portrait/Landscape")
         } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-            VStack(alignment: .center) {
-                Text("Credit Card Info").font(.headline)
-                Spacer()
-                Text("\(status)").font(.subheadline)
-                TextField("Credit Card Number", text: $number)
-                HStack {
-                    TextField("Expiration Date Month", text: $expirationDateMonth)
-                    TextField("Expiration Date Year", text: $expirationDateYear)
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack(alignment: .center) {
+                            Text("Credit Card Info").font(.headline)
+                            Spacer()
+                            Text("\(status)").font(.subheadline)
+                            TextField("Credit Card Number", text: $number)
+                            HStack {
+                                TextField("Expiration Date Month", text: $expirationDateMonth)
+                                TextField("Expiration Date Year", text: $expirationDateYear)
+                            }
+                            TextField("Security Code", text: $securityCode)
+                            Button("Set Info") {
+                                isSet = attemptToSetCreditCardInfo()
+                                showingPopoverForSet = true
+                            }.popover(isPresented: $showingPopoverForSet) {
+                                Text(successOrFailureForSet.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForSet = false
+                                    }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
+                            }
+                            if status.contains("Status: Set") {
+                                Button("Clear Info") {
+                                    isCleared = attemptToClearCreditCardInfo()
+                                    showingPopoverForClear = true
+                                }.popover(isPresented: $showingPopoverForClear) {
+                                    Text(successOrFailureForClear.getValue())
+                                        .font(.headline)
+                                        .padding().onTapGesture {
+                                            showingPopoverForClear = false
+                                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                                }
+                                
+                            }
+                            Spacer()
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        checkCreditCardInfoState()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                TextField("Security Code", text: $securityCode)
-                Button("Set Info") {
-                    isSet = attemptToSetCreditCardInfo()
-                    showingPopoverForSet = true
-                }.popover(isPresented: $showingPopoverForSet) {
-                    Text(successOrFailureForSet.getValue())
-                        .font(.headline)
-                        .padding().onTapGesture {
-                            showingPopoverForSet = false
-                        }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
-                }
-                if status.contains("Status: Set") {
-                    Button("Clear Info") {
-                        isCleared = attemptToClearCreditCardInfo()
-                        showingPopoverForClear = true
-                    }.popover(isPresented: $showingPopoverForClear) {
-                        Text(successOrFailureForClear.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopoverForClear = false
-                            }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                    }
-                    
-                }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: Verification(user.getValue())) {
-                        Text("Verification")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
         } else {
             Text("Who knows")
@@ -238,7 +249,6 @@ struct CreditCardInfo: View {
                 return false
             } else {
                 self.successOrFailureForClear.setValue("Successfully cleared credit card info")
-                status = "Status: Not Set"
                 return true
             }
         }

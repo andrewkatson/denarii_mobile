@@ -30,8 +30,4 @@ struct Constants {
     // User suffixes used in testing
     static var FIRST_USER = "tom"
     static var SECOND_USER = "jerry"
-    
-    // Grids
-    static var QUEUED_BUYS_GRID = "Queued Buys Grid"
-    static var OWNED_ASKS_GRID = "Owned Asks Grid"
 }

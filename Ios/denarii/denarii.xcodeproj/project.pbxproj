@@ -31,15 +31,12 @@
 		2427B7992AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7982AF94EC70020E1E0 /* NotLoggedInException.swift */; };
 		2427B79A2AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7982AF94EC70020E1E0 /* NotLoggedInException.swift */; };
 		2427B79B2AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7982AF94EC70020E1E0 /* NotLoggedInException.swift */; };
-		2427B79E2AFA97CB0020E1E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B79D2AFA97CB0020E1E0 /* AppDelegate.swift */; };
-		2427B79F2AFA97CB0020E1E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B79D2AFA97CB0020E1E0 /* AppDelegate.swift */; };
-		2427B7A02AFA97CB0020E1E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B79D2AFA97CB0020E1E0 /* AppDelegate.swift */; };
-		2427B7A82AFA99E60020E1E0 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7A72AFA99E60020E1E0 /* ViewExtensions.swift */; };
-		2427B7A92AFA99E60020E1E0 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7A72AFA99E60020E1E0 /* ViewExtensions.swift */; };
-		2427B7AA2AFA99E60020E1E0 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7A72AFA99E60020E1E0 /* ViewExtensions.swift */; };
 		2427B7AD2AFF0D420020E1E0 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7AC2AFF0D420020E1E0 /* NavigationCoordinator.swift */; };
 		2427B7AE2AFF0D420020E1E0 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7AC2AFF0D420020E1E0 /* NavigationCoordinator.swift */; };
 		2427B7AF2AFF0D420020E1E0 /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7AC2AFF0D420020E1E0 /* NavigationCoordinator.swift */; };
+		2427B7B12B001B750020E1E0 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7B02B001B750020E1E0 /* Sidebar.swift */; };
+		2427B7B22B001B750020E1E0 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7B02B001B750020E1E0 /* Sidebar.swift */; };
+		2427B7B32B001B750020E1E0 /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2427B7B02B001B750020E1E0 /* Sidebar.swift */; };
 		244E38702A113D1A0011B999 /* denariiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E386F2A113D1A0011B999 /* denariiApp.swift */; };
 		244E38722A113D1A0011B999 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38712A113D1A0011B999 /* ContentView.swift */; };
 		244E38742A113D1B0011B999 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 244E38732A113D1B0011B999 /* Assets.xcassets */; };
@@ -160,9 +157,8 @@
 /* Begin PBXFileReference section */
 		2427B77F2AF08B900020E1E0 /* ObservableArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableArray.swift; sourceTree = "<group>"; };
 		2427B7982AF94EC70020E1E0 /* NotLoggedInException.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotLoggedInException.swift; sourceTree = "<group>"; };
-		2427B79D2AFA97CB0020E1E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2427B7A72AFA99E60020E1E0 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		2427B7AC2AFF0D420020E1E0 /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
+		2427B7B02B001B750020E1E0 /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
 		244E386C2A113D1A0011B999 /* denarii.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = denarii.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		244E386F2A113D1A0011B999 /* denariiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denariiApp.swift; sourceTree = "<group>"; };
 		244E38712A113D1A0011B999 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -243,22 +239,6 @@
 			path = exceptions;
 			sourceTree = "<group>";
 		};
-		2427B79C2AFA97B30020E1E0 /* delegates */ = {
-			isa = PBXGroup;
-			children = (
-				2427B79D2AFA97CB0020E1E0 /* AppDelegate.swift */,
-			);
-			path = delegates;
-			sourceTree = "<group>";
-		};
-		2427B7A62AFA99D70020E1E0 /* extensions */ = {
-			isa = PBXGroup;
-			children = (
-				2427B7A72AFA99E60020E1E0 /* ViewExtensions.swift */,
-			);
-			path = extensions;
-			sourceTree = "<group>";
-		};
 		2427B7AB2AFF0D2B0020E1E0 /* coordinator */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,8 +271,6 @@
 			isa = PBXGroup;
 			children = (
 				2427B7AB2AFF0D2B0020E1E0 /* coordinator */,
-				2427B7A62AFA99D70020E1E0 /* extensions */,
-				2427B79C2AFA97B30020E1E0 /* delegates */,
 				2427B7972AF94EA70020E1E0 /* exceptions */,
 				24FDF7DA2ACA43A500EF9822 /* constants */,
 				24FDF7D92ACA439A00EF9822 /* uiviews */,
@@ -322,6 +300,7 @@
 				24FDF7D32ACA42F600EF9822 /* CreateSupportTicket.swift */,
 				24FDF7D52ACA430200EF9822 /* SupportTicketDetails.swift */,
 				2463910E2AE9566300EC840F /* UserSettings.swift */,
+				2427B7B02B001B750020E1E0 /* Sidebar.swift */,
 			);
 			path = denarii;
 			sourceTree = "<group>";
@@ -541,7 +520,6 @@
 				2463910F2AE9566300EC840F /* UserSettings.swift in Sources */,
 				24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */,
 				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
-				2427B79E2AFA97CB0020E1E0 /* AppDelegate.swift in Sources */,
 				24FDF7D22ACA42D800EF9822 /* SupportTickets.swift in Sources */,
 				24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */,
 				24FDF7CC2ACA429A00EF9822 /* SellDenarii.swift in Sources */,
@@ -550,6 +528,7 @@
 				244E38AA2A116E040011B999 /* CreateWalletView.swift in Sources */,
 				2427B7992AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */,
 				244E38C62A116E710011B999 /* ResetPasswordView.swift in Sources */,
+				2427B7B12B001B750020E1E0 /* Sidebar.swift in Sources */,
 				244E38B62A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
 				24FDF7C22AC8C01D00EF9822 /* SupportTicket.swift in Sources */,
 				244E38AE2A116E160011B999 /* OpenWalletView.swift in Sources */,
@@ -563,7 +542,6 @@
 				24FDF7CE2ACA42B000EF9822 /* Verification.swift in Sources */,
 				244E38E62A23B32B0011B999 /* ObservableInt.swift in Sources */,
 				24FDF7D42ACA42F600EF9822 /* CreateSupportTicket.swift in Sources */,
-				2427B7A82AFA99E60020E1E0 /* ViewExtensions.swift in Sources */,
 				244E38D62A23A3A60011B999 /* Config.swift in Sources */,
 				244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
 				24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */,
@@ -586,7 +564,6 @@
 				244E389F2A1144570011B999 /* LoginView.swift in Sources */,
 				2427B7872AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */,
 				24FDF7E92ACB9A5E00EF9822 /* WalletDetails.swift in Sources */,
-				2427B79F2AFA97CB0020E1E0 /* AppDelegate.swift in Sources */,
 				244E38D72A23A3A60011B999 /* Config.swift in Sources */,
 				244E38A32A1144660011B999 /* RegisterView.swift in Sources */,
 				244E38EB2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
@@ -604,7 +581,6 @@
 				2427B7882AF7BA620020E1E0 /* UserSettings.swift in Sources */,
 				244E38CB2A1EC33B0011B999 /* Constants.swift in Sources */,
 				24FDF7E62ACB9A5E00EF9822 /* SupportTicket.swift in Sources */,
-				2427B7A92AFA99E60020E1E0 /* ViewExtensions.swift in Sources */,
 				24FDF7F82ACB9A6700EF9822 /* ChangingTextView.swift in Sources */,
 				244E38AF2A116E160011B999 /* OpenWalletView.swift in Sources */,
 				24FDF7E72ACB9A5E00EF9822 /* SupportTicketComment.swift in Sources */,
@@ -624,6 +600,7 @@
 				244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
 				2427B7812AF7BA3F0020E1E0 /* ObservableUser.swift in Sources */,
 				2427B79A2AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */,
+				2427B7B22B001B750020E1E0 /* Sidebar.swift in Sources */,
 				2427B78C2AF7BA620020E1E0 /* SellDenarii.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -635,6 +612,7 @@
 				244E38C42A116E620011B999 /* VerifyResetView.swift in Sources */,
 				24FDF7EF2ACB9A5E00EF9822 /* SupportTicketComment.swift in Sources */,
 				244E388B2A113D1B0011B999 /* denariiUITests.swift in Sources */,
+				2427B7B32B001B750020E1E0 /* Sidebar.swift in Sources */,
 				24FDF7E32ACB9A5100EF9822 /* ContentView.swift in Sources */,
 				24FDF7F02ACB9A5E00EF9822 /* UserDetails.swift in Sources */,
 				244E38A42A1144660011B999 /* RegisterView.swift in Sources */,
@@ -650,10 +628,8 @@
 				2427B7902AF7BA620020E1E0 /* UserSettings.swift in Sources */,
 				24FDF7F42ACB9A5E00EF9822 /* DenariiAsk.swift in Sources */,
 				244E38B02A116E160011B999 /* OpenWalletView.swift in Sources */,
-				2427B7A02AFA97CB0020E1E0 /* AppDelegate.swift in Sources */,
 				244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				2427B7822AF7BA400020E1E0 /* ObservableUser.swift in Sources */,
-				2427B7AA2AFA99E60020E1E0 /* ViewExtensions.swift in Sources */,
 				244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
 				244E38CC2A1EC33B0011B999 /* Constants.swift in Sources */,
 				2427B78F2AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */,

@@ -42,9 +42,6 @@ final class denariiUITestsLaunchTests: XCTestCase {
             // Have to do redundant tapping becuase the popover in landscape is harder to tap
             if app.staticTexts[popoverName].exists {
                 app.staticTexts[popoverName].tap()
-                if app.staticTexts[popoverName].exists {
-                    app.staticTexts[popoverName].swipeDown()
-                }
                 XCTAssert(!app.staticTexts[popoverName].exists, "\(popoverName) still exists")
             }
         }
@@ -139,7 +136,6 @@ final class denariiUITestsLaunchTests: XCTestCase {
         let usernamePredicate = NSPredicate(format: "placeholderValue beginswith 'Name'")
         let emailPredicate = NSPredicate(format: "placeholderValue beginswith 'Email'")
         let passwordPredicate = NSPredicate(format: "placeholderValue beginswith 'Password'")
-        let confirmPasswordPredicate = NSPredicate(format: "placeholderValue beginswith 'Confirm Password'")
         let submitButtonPredicate = NSPredicate(format: "label beginswith 'Submit'")
         
         let loginTextField = app.textFields.matching(usernamePredicate)
@@ -163,15 +159,6 @@ final class denariiUITestsLaunchTests: XCTestCase {
         let passwordSecureTextField = app.secureTextFields.matching(passwordPredicate)
         passwordSecureTextField.element.tap()
         passwordSecureTextField.element.typeText("Password_\(self.currentTestName)_\(suffix)")
-        
-        // After we type things in we need to dismiss the keyboard
-        XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")
-        dismissKeyboardIfPresent(app)
-        XCTAssert(app.keyboards.count == 0, "The keyboard is shown")
-        
-        let confirmPasswordSecureTextField = app.secureTextFields.matching(confirmPasswordPredicate)
-        confirmPasswordSecureTextField.element.tap()
-        confirmPasswordSecureTextField.element.typeText("Password_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         XCTAssert(app.keyboards.count > 0, "The keyboard is not shown")

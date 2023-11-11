@@ -13,8 +13,12 @@ final class denariiUITests: XCTestCase {
     var currentTestName = ""
     
     func dismissKeyboardIfPresent(_ app: XCUIApplication) {
-        if app.keyboards.buttons["Return"].exists {
-            app.keyboards.buttons["Return"].tap()
+        while (true) {
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            if app.keyboards.buttons["Return"].exists {
+                app.keyboards.buttons["Return"].tap()
+                break
+            }
         }
     }
     
@@ -35,9 +39,6 @@ final class denariiUITests: XCTestCase {
             // Have to do redundant tapping becuase the popover in landscape is harder to tap
             if app.staticTexts[popoverName].exists {
                 app.staticTexts[popoverName].tap()
-                if app.staticTexts[popoverName].exists {
-                    app.staticTexts[popoverName].swipeDown()
-                }
                 XCTAssert(!app.staticTexts[popoverName].exists, "\(popoverName) still exists")
             }
         }
@@ -46,27 +47,27 @@ final class denariiUITests: XCTestCase {
     func tapElementAndWaitForKeyboardToAppear(_ element: XCUIElement) {
         let keyboard = XCUIApplication().keyboards.element
         while (true) {
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
             element.tap()
             if keyboard.exists {
                 break;
             }
-            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 0.5) as Date)
         }
     }
     
     func navigateToLoginOrRegister(_ app: XCUIApplication) {
         let nextButton = app.buttons["Next"]
-        tapElementAndWaitForKeyboardToAppear(nextButton)
+        nextButton.tap()
     }
     
     func navigateToLogin(_ app: XCUIApplication) {
         let loginButton = app.buttons["Login"]
-        tapElementAndWaitForKeyboardToAppear(loginButton)
+        loginButton.tap()
     }
     
     func navigateToRegister(_ app: XCUIApplication) {
         let registerButton = app.buttons["Register"]
-        tapElementAndWaitForKeyboardToAppear(registerButton)
+        registerButton.tap()
     }
     
     func navigateToLoginFromLoginOrRegister(_ app: XCUIApplication) {
@@ -104,13 +105,6 @@ final class denariiUITests: XCTestCase {
         tapElementAndWaitForKeyboardToAppear(passwordSecureTextField)
         passwordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
         
-        // After we type things in we need to dismiss the keyboard
-        dismissKeyboardIfPresent(app)
-        
-        let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
-        tapElementAndWaitForKeyboardToAppear(confirmPasswordSecureTextField)
-        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
-
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
@@ -456,7 +450,7 @@ final class denariiUITests: XCTestCase {
         
         let amountTextField = app.textFields["Amount"]
         tapElementAndWaitForKeyboardToAppear(amountTextField)
-        // More than is sold
+        // Less than is sold
         amountTextField.typeText("10.0")
         
         // After we type things in we need to dismiss the keyboard
@@ -480,10 +474,10 @@ final class denariiUITests: XCTestCase {
     func cancelBuyDenarii(_ app: XCUIApplication, _ firstUserSuffix: String, _ secondUserSuffix: String) {
         buyDenarii(app, firstUserSuffix, secondUserSuffix)
         
-        let queuedBuysGrid = app.grids[Constants.QUEUED_BUYS_GRID]
-        refreshScreen(app, queuedBuysGrid)
+        let buyDenariiText = app.textViews["Buy Denarii"]
+        refreshScreen(app, buyDenariiText)
         
-        let cancelButton = queuedBuysGrid.buttons["Cancel"]
+        let cancelButton = app.buttons["Cancel"]
         cancelButton.tap()
         
         // A popover appears and we need to tap it away
@@ -502,22 +496,20 @@ final class denariiUITests: XCTestCase {
         
         let amountTextField = app.textFields["Amount"]
         tapElementAndWaitForKeyboardToAppear(amountTextField)
-        // More than is sold
-        amountTextField.typeText("11.0")
+        amountTextField.typeText("12.0")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        // Willing to buy at a high price
         let priceTextField = app.textFields["Price"]
         tapElementAndWaitForKeyboardToAppear(priceTextField)
-        priceTextField.typeText("200.0")
+        priceTextField.typeText("50.0")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        let secondSellDenariiButto  = app.buttons["Sell Denarii"]
-        secondSellDenariiButto.tap()
+        let secondSellDenariiButton  = app.buttons["Sell Denarii"]
+        secondSellDenariiButton.tap()
         
         // A popover appears and we need to tap it away
         tapAway(app)
@@ -526,10 +518,10 @@ final class denariiUITests: XCTestCase {
     func cancelSellDenarii(_ app: XCUIApplication, _ suffix: String) {
         sellDenarii(app, suffix)
         
-        let ownAsksGrid = app.grids[Constants.OWNED_ASKS_GRID]
-        refreshScreen(app, ownAsksGrid)
+        let sellDenariiText = app.textViews["Sell Denarii"]
+        refreshScreen(app, sellDenariiText)
         
-        let cancelButton = ownAsksGrid.buttons["Cancel Ask"]
+        let cancelButton = app.buttons["Cancel Ask"]
         cancelButton.tap()
         
         // A popover appears and we need to tap it away
@@ -737,6 +729,9 @@ final class denariiUITests: XCTestCase {
         
         // A popover appears and we need to tap it away
         tapAway(app)
+        
+        let supportTicketDetailsText = app.textViews["Support Ticket Details"]
+        refreshScreen(app, supportTicketDetailsText)
     }
     
     func deleteSupportTicket(_ app: XCUIApplication, _ suffix: String) {
@@ -948,6 +943,9 @@ final class denariiUITests: XCTestCase {
         
         buyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
         
+        let buyDenariiText = app.textViews["Buy Denarii"]
+        refreshScreen(app, buyDenariiText)
+        
         XCTAssert(app.buttons["Cancel"].exists)
         
         // Always log the user out
@@ -975,6 +973,9 @@ final class denariiUITests: XCTestCase {
         app.launch()
      
         sellDenarii(app, Constants.FIRST_USER)
+        
+        let sellDenariiText = app.textViews["Sell Denarii"]
+        refreshScreen(app, sellDenariiText)
         
         XCTAssert(app.buttons["Cancel"].exists)
         

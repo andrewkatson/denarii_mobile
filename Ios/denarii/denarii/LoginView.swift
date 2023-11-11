@@ -11,7 +11,6 @@ struct LoginView: View {
     @State private var username: String = ""
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var confirmPassword: String = ""
     @State private var isSubmitted: Bool = false
     @State private var showingPopover = false
     
@@ -33,7 +32,6 @@ struct LoginView: View {
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
                 SecureField("Password", text: $password).autocorrectionDisabled().textContentType(.newPassword)
-                SecureField("Confirm Password", text: $confirmPassword).autocorrectionDisabled().textContentType(.newPassword)
                 Button("Submit") {
                     isSubmitted = attemptSubmit()
                     showingPopover = true
@@ -62,10 +60,6 @@ struct LoginView: View {
     }
     
     func attemptSubmit() -> Bool {
-        if (password != confirmPassword) {
-            successOrFailure.setValue("Failed to login becasue password is not the same as confirm password")
-            return false
-        }
         if Constants.DEBUG {
             successOrFailure.setValue("Logged In in DEBUG mode")
             return true

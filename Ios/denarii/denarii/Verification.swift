@@ -11,6 +11,8 @@ struct Verification: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
+    @State private var userDetails = UserDetails()
+    @State private var showingSidebar = false
     @State private var firstName: String = ""
     @State private var middleName: String = ""
     @State private var lastName: String = ""
@@ -37,31 +39,25 @@ struct Verification: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
+        self.userDetails = self.user.getValue()
         refreshStatus()
     }
     
     func refreshStatus() {
         if !self.user.getValue().userID.isEmpty {
-            Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-
-                if self.keepRefreshing.getValue()  {
-                    timer.invalidate()
-                }
+            let api = Config.api
+            
+            let responses = api.isAVerifiedPerson(Int(self.user.getValue().userID)!)
+            
+            if responses.isEmpty {
+                status = formatStatus("unknown")
+            } else {
+                let response = responses.first!
                 
-                let api = Config.api
-                
-                let responses = api.isAVerifiedPerson(Int(self.user.getValue().userID)!)
-                
-                if responses.isEmpty {
+                if response.responseCode != 200 {
                     status = formatStatus("unknown")
                 } else {
-                    let response = responses.first!
-                    
-                    if response.responseCode != 200 {
-                        status = formatStatus("unknown")
-                    } else {
-                        status = formatStatus(response.verificationStatus)
-                    }
+                    status = formatStatus(response.verificationStatus)
                 }
             }
         }
@@ -87,54 +83,57 @@ struct Verification: View {
 
     var body: some View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
-            VStack(alignment: .center) {
-                Text("Verification").font(.largeTitle)
-                Spacer()
-                Text("\(status)")
-                if !status.contains("Status: Verfiied") {
-                    TextField("First Name", text: $firstName)
-                    TextField("Middle Initial", text: $middleName)
-                    TextField("Last Name", text: $lastName)
-                    TextField("Email", text: $email)
-                    TextField("Date of Birth", text: $dob)
-                    TextField("Social Security Number", text: $ssn)
-                    TextField("Zipcode", text: $zipcode)
-                    TextField("Phone Number", text: $phone)
-                    TextField("Work City", text: $workCity)
-                    TextField("Work State", text: $workState)
-                    TextField("Work Country", text: $workCountry)
-                    Button("Submit") {
-                        isSubmitted = attemptSubmit()
-                        showingPopover = true
-                    }.popover(isPresented: $showingPopover) {
-                        Text(successOrFailure.getValue())
-                            .font(.headline)
-                            .padding().onTapGesture {
-                                showingPopover = false
-                            }.accessibilityIdentifier(Constants.POPOVER)
-                    }
+            ZStack {
+                GeometryReader { geometry in
+                    List {
+                        VStack(alignment: .center) {
+                            Text("Verification").font(.largeTitle)
+                            Text("\(status)")
+                            if !status.contains("Status: Verfiied") {
+                                TextField("First Name", text: $firstName).padding(.top)
+                                TextField("Middle Initial", text: $middleName)
+                                TextField("Last Name", text: $lastName)
+                                TextField("Email", text: $email)
+                                TextField("Date of Birth", text: $dob)
+                                TextField("Social Security Number", text: $ssn)
+                                TextField("Zipcode", text: $zipcode)
+                                TextField("Phone Number", text: $phone)
+                                TextField("Work City", text: $workCity)
+                                TextField("Work State", text: $workState)
+                                TextField("Work Country", text: $workCountry)
+                                Button("Submit") {
+                                    isSubmitted = attemptSubmit()
+                                    showingPopover = true
+                                }.popover(isPresented: $showingPopover) {
+                                    Text(successOrFailure.getValue())
+                                        .font(.headline)
+                                        .padding().onTapGesture {
+                                            showingPopover = false
+                                        }.accessibilityIdentifier(Constants.POPOVER)
+                                }
+                            }
+                            Spacer()
+                        }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                    }.refreshable {
+                        refreshStatus()
+                    }.listStyle(PlainListStyle())
+                        .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
                 }
-                Spacer()
-                HStack {
-                    NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                        Text("Wallet")
-                    }
-                    NavigationLink(destination: BuyDenarii(user.getValue())) {
-                        Text("Buy Denarii")
-                    }
-                    NavigationLink(destination: SellDenarii(user.getValue())) {
-                        Text("Sell Denarii")
-                    }
-                    NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                        Text("Credit Card")
-                    }
-                    NavigationLink(destination: UserSettings(user.getValue())) {
-                        Text("Settings")
-                    }
-                }
-                Spacer()
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
-         }
+        }
          else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
              
              Text("iPhone Landscape")
@@ -143,60 +142,64 @@ struct Verification: View {
              
              Text("iPad Portrait/Landscape")
          } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
-             VStack(alignment: .center) {
-                 Text("Verification").font(.headline)
-                 Spacer()
-                 Text("\(status)").font(.subheadline)
-                 if !status.contains("Status: Verfiied") {
-                     HStack {
-                         TextField("First Name", text: $firstName)
-                         TextField("Middle Initial", text: $middleName)
-                         TextField("Last Name", text: $lastName)
-                     }
-                     HStack {
-                         TextField("Email", text: $email)
-                         TextField("Date of Birth", text: $dob)
-                         TextField("Social Security Number", text: $ssn)
-                     }
-                     HStack {
-                         TextField("Zipcode", text: $zipcode)
-                         TextField("Phone Number", text: $phone)
-                     }
-                     HStack {
-                         TextField("Work City", text: $workCity)
-                         TextField("Work State", text: $workState)
-                         TextField("Work Country", text: $workCountry)
-                     }
-                     Button("Submit") {
-                         isSubmitted = attemptSubmit()
-                         showingPopover = true
-                     }.popover(isPresented: $showingPopover) {
-                         Text(successOrFailure.getValue())
-                             .font(.headline)
-                             .padding().onTapGesture {
-                                 showingPopover = false
-                             }.accessibilityIdentifier(Constants.POPOVER)
-                     }
+             ZStack {
+                 GeometryReader { geometry in
+                     List {
+                         VStack(alignment: .center) {
+                             Text("Verification").font(.headline)
+                             Spacer()
+                             Text("\(status)").font(.subheadline)
+                             if !status.contains("Status: Verfiied") {
+                                 HStack {
+                                     TextField("First Name", text: $firstName)
+                                     TextField("Middle Initial", text: $middleName)
+                                     TextField("Last Name", text: $lastName)
+                                 }
+                                 HStack {
+                                     TextField("Email", text: $email)
+                                     TextField("Date of Birth", text: $dob)
+                                     TextField("Social Security Number", text: $ssn)
+                                 }
+                                 HStack {
+                                     TextField("Zipcode", text: $zipcode)
+                                     TextField("Phone Number", text: $phone)
+                                 }
+                                 HStack {
+                                     TextField("Work City", text: $workCity)
+                                     TextField("Work State", text: $workState)
+                                     TextField("Work Country", text: $workCountry)
+                                 }
+                                 Button("Submit") {
+                                     isSubmitted = attemptSubmit()
+                                     showingPopover = true
+                                 }.popover(isPresented: $showingPopover) {
+                                     Text(successOrFailure.getValue())
+                                         .font(.headline)
+                                         .padding().onTapGesture {
+                                             showingPopover = false
+                                         }.accessibilityIdentifier(Constants.POPOVER)
+                                 }
+                             }
+                             Spacer()
+                         }.frame(
+                            minWidth: geometry.size.width,
+                            maxWidth: .infinity,
+                            minHeight: geometry.size.height,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                         )
+                     }.refreshable {
+                         refreshStatus()
+                     }.listStyle(PlainListStyle())
+                         .frame(
+                            minWidth: 0,
+                            maxWidth: .infinity,
+                            minHeight: 0,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                         )
                  }
-                 Spacer()
-                 HStack {
-                     NavigationLink(destination: OpenedWalletView(user.getValue())) {
-                         Text("Wallet")
-                     }
-                     NavigationLink(destination: BuyDenarii(user.getValue())) {
-                         Text("Buy Denarii")
-                     }
-                     NavigationLink(destination: SellDenarii(user.getValue())) {
-                         Text("Sell Denarii")
-                     }
-                     NavigationLink(destination: CreditCardInfo(user.getValue())) {
-                         Text("Credit Card")
-                     }
-                     NavigationLink(destination: UserSettings(user.getValue())) {
-                         Text("Settings")
-                     }
-                 }
-                 Spacer()
+                 Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
              }
          } else {
            Text("Who knows")
