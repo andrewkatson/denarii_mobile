@@ -405,7 +405,7 @@ struct BuyDenarii: View {
                 return false
             }
             
-            if hasCreditCardInfo(api, userId) {
+            if hasCreditCardInfo(api, userId) && isVerified(api, userId){
                 
                 let asksBought = tryToBuyDenarii(api, userId)
                 
@@ -462,7 +462,7 @@ struct BuyDenarii: View {
                 }
                 
             } else {
-                self.successOrFailureForBuyDenarii.setValue("Failed to buy denarii. No credit card info")
+                self.successOrFailureForBuyDenarii.setValue("Failed to buy denarii. No credit card info or not verified")
                 return false
             }
         }
@@ -485,6 +485,22 @@ struct BuyDenarii: View {
         } else {
             return false
         }
+    }
+    
+    func isVerified(_ api: API, _ userId: String) -> Bool {
+        let responses = api.isAVerifiedPerson(Int(userId)!)
+        
+        if responses.isEmpty {
+            return false
+        }
+        
+        let onlyResponse = responses.first!
+        
+        if onlyResponse.responseCode != 200 {
+            return false
+        }
+        
+        return onlyResponse.verificationStatus == "is_verified"
     }
     
     func tryToBuyDenarii(_ api: API, _ userId: String) ->  Array<DenariiAsk> {

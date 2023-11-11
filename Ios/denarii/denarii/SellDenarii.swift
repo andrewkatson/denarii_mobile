@@ -466,27 +466,66 @@ struct SellDenarii: View {
                 return false
             }
             
-            if amount.isEmpty {
-                self.successOrFailureForSellDenarii.setValue("Need to set an amount to sell")
-                return false
-            }
-            
-            if price.isEmpty {
-                self.successOrFailureForSellDenarii.setValue("Need to set a price to sell at")
-                return false
-            }
-            
-            let responses = api.makeDenariiAsk(Int(userId)!, Double(amount)!, Double(price)!)
-            
-            
-            if responses.isEmpty {
-                self.successOrFailureForSellDenarii.setValue("Failed to make denarii ask server failure")
-                return false
+            if hasCreditCardInfo(api, userId) && isVerified(api, userId) {
+                
+                if amount.isEmpty {
+                    self.successOrFailureForSellDenarii.setValue("Need to set an amount to sell")
+                    return false
+                }
+                
+                if price.isEmpty {
+                    self.successOrFailureForSellDenarii.setValue("Need to set a price to sell at")
+                    return false
+                }
+                
+                let responses = api.makeDenariiAsk(Int(userId)!, Double(amount)!, Double(price)!)
+                
+                
+                if responses.isEmpty {
+                    self.successOrFailureForSellDenarii.setValue("Failed to make denarii ask server failure")
+                    return false
+                } else {
+                    self.successOrFailureForSellDenarii.setValue("Successfully made a denarii ask")
+                    return true
+                }
             } else {
-                self.successOrFailureForSellDenarii.setValue("Successfully made a denarii ask")
-                return true
+                self.successOrFailureForSellDenarii.setValue("Failed to sell denarii. No credit card info or not verified")
+                return false
             }
         }
+    }
+    
+    func hasCreditCardInfo(_ api: API, _ userId: String) -> Bool {
+        
+        let responses = api.hasCreditCardInfo(Int(userId)!)
+        
+        if !responses.isEmpty {
+            let onlyResponse = responses.first!
+            
+            if onlyResponse.responseCode != 200 {
+                return false
+            }
+            
+            return onlyResponse.hasCreditCardInfo
+        } else {
+            return false
+        }
+    }
+    
+    func isVerified(_ api: API, _ userId: String) -> Bool {
+        let responses = api.isAVerifiedPerson(Int(userId)!)
+        
+        if responses.isEmpty {
+            return false
+        }
+        
+        let onlyResponse = responses.first!
+        
+        if onlyResponse.responseCode != 200 {
+            return false
+        }
+        
+        return onlyResponse.verificationStatus == "is_verified"
     }
     
     func attemptCancelSellDenarii(_ ask: DenariiAsk) -> Bool {

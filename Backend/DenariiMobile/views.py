@@ -1375,4 +1375,14 @@ def poll_for_escrowed_transaction(request, user_id):
 
 @login_required
 def logout(request, user_id): 
-    logout(request)
+    existing = get_user_with_id(user_id)
+
+    if existing is not None:
+        # We send no data back. Just a successful response.
+        response = Response.objects.create()
+        serialized_response_list = serializers.serialize('json', [response],
+                                                         fields='')
+        logout(request)
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user with id")
