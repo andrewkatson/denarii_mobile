@@ -30,4 +30,7 @@ struct Constants {
     // User suffixes used in testing
     static var FIRST_USER = "tom"
     static var SECOND_USER = "jerry"
+    
+    // Buttons
+    static var SIDEBAR_BUTTON = "Sidebar Button"
 }

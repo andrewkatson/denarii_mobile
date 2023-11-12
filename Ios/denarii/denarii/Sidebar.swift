@@ -96,6 +96,8 @@ struct Sidebar: View {
                     Angle(degrees: 180) : Angle(degrees: 0))
                 .offset(x: isSidebarVisible ? -4 : 8)
                 .foregroundColor(.blue)
+                .accessibilityIdentifier(Constants.SIDEBAR_BUTTON)
+                .accessibilityAddTraits(.isButton)
         }
         .offset(x: sideBarWidth / 2, y: 80)
         .animation(.default, value: isSidebarVisible)

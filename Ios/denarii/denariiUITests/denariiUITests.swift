@@ -13,12 +13,15 @@ final class denariiUITests: XCTestCase {
     var currentTestName = ""
     
     func dismissKeyboardIfPresent(_ app: XCUIApplication) {
-        while (true) {
+        let maxAttempts = 5
+        var attempt = 0
+        while (true && attempt < maxAttempts) {
             RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
             if app.keyboards.buttons["Return"].exists {
                 app.keyboards.buttons["Return"].tap()
                 break
             }
+            attempt += 1
         }
     }
     
@@ -48,10 +51,46 @@ final class denariiUITests: XCTestCase {
         let keyboard = XCUIApplication().keyboards.element
         while (true) {
             RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
-            element.tap()
             if keyboard.exists {
                 break;
             }
+            element.tap()
+        }
+    }
+    
+    func openSidebar(_ app: XCUIApplication) {
+        if app.buttons[Constants.SIDEBAR_BUTTON].exists {
+            let sidebarButton = app.buttons[Constants.SIDEBAR_BUTTON]
+            sidebarButton.tap()
+        }
+    }
+    
+    func closeSidebar(_ app: XCUIApplication) {
+        if app.buttons[Constants.SIDEBAR_BUTTON].exists {
+            let sidebarButton = app.buttons[Constants.SIDEBAR_BUTTON]
+            sidebarButton.tap()
+        }
+    }
+    
+    func tapButtonAndWaitForTextFieldToAppear(_ app: XCUIApplication, _ button: XCUIElement, _ textFieldName: String) {
+        while (true) {
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            let textField = app.textFields[textFieldName]
+            if textField.exists {
+                break;
+            }
+            button.tap()
+        }
+    }
+    
+    func tapButtonAndWaitForButtonToAppear(_ app: XCUIApplication, _ button: XCUIElement, _ buttonName: String) {
+        while (true) {
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            let otherButton = app.textFields[buttonName]
+            if otherButton.exists {
+                break;
+            }
+            button.tap()
         }
     }
     
@@ -401,8 +440,10 @@ final class denariiUITests: XCTestCase {
     }
     
     func logout(_ app: XCUIApplication, _ suffix: String) {
+        openSidebar(app)
+        
         let userSettingsButton = app.buttons["Settings"]
-        userSettingsButton.tap()
+        tapButtonAndWaitForButtonToAppear(app, userSettingsButton, "Logout")
         
         let logoutButton = app.buttons["Logout"]
         logoutButton.tap()
@@ -445,8 +486,10 @@ final class denariiUITests: XCTestCase {
         
         strictlySetCreditCardInfo(app, secondUserSuffix)
         
+        openSidebar(app)
+        
         let buyDenariiButton = app.buttons["Buy Denarii"]
-        buyDenariiButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, buyDenariiButton, "Amount")
         
         let amountTextField = app.textFields["Amount"]
         tapElementAndWaitForKeyboardToAppear(amountTextField)
@@ -464,7 +507,7 @@ final class denariiUITests: XCTestCase {
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        let secondBuyDenariiButton = app.buttons["Buy Denarii"]
+        let secondBuyDenariiButton = app.buttons["Buy"]
         secondBuyDenariiButton.tap()
         
         // A popover appears and we need to tap it away
@@ -491,8 +534,10 @@ final class denariiUITests: XCTestCase {
         
         strictlySetCreditCardInfo(app, suffix)
         
+        openSidebar(app)
+        
         let sellDenariiButton = app.buttons["Sell Denarii"]
-        sellDenariiButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, sellDenariiButton, "Amount")
         
         let amountTextField = app.textFields["Amount"]
         tapElementAndWaitForKeyboardToAppear(amountTextField)
@@ -508,7 +553,7 @@ final class denariiUITests: XCTestCase {
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        let secondSellDenariiButton  = app.buttons["Sell Denarii"]
+        let secondSellDenariiButton  = app.buttons["Sell"]
         secondSellDenariiButton.tap()
         
         // A popover appears and we need to tap it away
@@ -529,8 +574,10 @@ final class denariiUITests: XCTestCase {
     }
     
     func strictlyVerifyIdentity(_ app: XCUIApplication, _ suffix: String) {
+        openSidebar(app)
+        
         let verificationButton = app.buttons["Verification"]
-        verificationButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, verificationButton, "First Name")
         
         let firstNameTextField = app.textFields["First Name"]
         tapElementAndWaitForKeyboardToAppear(firstNameTextField)
@@ -614,6 +661,9 @@ final class denariiUITests: XCTestCase {
         
         // A popover appears and we need to tap it away
         tapAway(app)
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
     }
     
     func verifyIdentity(_ app: XCUIApplication, _ suffix: String) {
@@ -623,8 +673,10 @@ final class denariiUITests: XCTestCase {
     }
     
     func strictlySetCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
+        openSidebar(app)
+        
         let creditCardInfoButton = app.buttons["Credit Card"]
-        creditCardInfoButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, creditCardInfoButton, "Credit Card Number")
         
         let creditCardNumberTextField = app.textFields["Credit Card Number"]
         tapElementAndWaitForKeyboardToAppear(creditCardNumberTextField)
@@ -659,6 +711,9 @@ final class denariiUITests: XCTestCase {
         
         // A popover appears and we need to tap it away
         tapAway(app)
+        
+        // After we type things in we need to dismiss the keyboard
+        dismissKeyboardIfPresent(app)
     }
     
     func setCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
@@ -680,8 +735,10 @@ final class denariiUITests: XCTestCase {
     func navigateToSupportTickets(_ app: XCUIApplication, _ suffix: String) {
         createWallet(app, suffix)
         
+        openSidebar(app)
+        
         let userSettingsButton = app.buttons["Settings"]
-        userSettingsButton.tap()
+        tapButtonAndWaitForButtonToAppear(app, userSettingsButton, "Support Tickets")
         
         let supportTicketsButton = app.buttons["Support Tickets"]
         supportTicketsButton.tap()
@@ -751,8 +808,10 @@ final class denariiUITests: XCTestCase {
     func deleteAccount(_ app: XCUIApplication, _ suffix: String) {
         createWallet(app, suffix)
         
+        openSidebar(app)
+        
         let userSettingsButton = app.buttons["Settings"]
-        userSettingsButton.tap()
+        tapButtonAndWaitForButtonToAppear(app, userSettingsButton, "Delete Account")
         
         let deleteAccountButton = app.buttons["Delete Account"]
         deleteAccountButton.tap()

@@ -35,7 +35,6 @@ struct UserSettings: View {
         if horizontalSizeClass == .compact && verticalSizeClass == .regular {
             ZStack {
                 VStack(alignment: .center) {
-                    Spacer()
                     Text("Settings").font(.largeTitle)
                     Spacer()
                     NavigationLink(destination: SupportTickets(user.getValue())) {
@@ -85,6 +84,7 @@ struct UserSettings: View {
                             }.navigationDestination(isPresented: $deletedAccount, destination: {() -> ContentView in ContentView()})
                         }
                     }
+                    Spacer()
                 }
                 Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
@@ -99,7 +99,6 @@ struct UserSettings: View {
         } else if horizontalSizeClass == .compact && verticalSizeClass == .compact {
             ZStack {
                 VStack(alignment: .center) {
-                    Spacer()
                     Text("Settings").font(.headline)
                     Spacer()
                     HStack {
@@ -155,6 +154,7 @@ struct UserSettings: View {
                         }
                         Spacer()
                     }
+                    Spacer()
                 }
                 Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
             }
