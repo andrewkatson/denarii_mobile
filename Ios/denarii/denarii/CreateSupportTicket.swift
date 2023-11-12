@@ -11,7 +11,6 @@ struct CreateSupportTicket: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
-    @State private var userDetails = UserDetails()
     @State private var showingSidebar = false
     @State private var createTicket: Bool = false
     @State private var title: String = ""
@@ -28,7 +27,6 @@ struct CreateSupportTicket: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
@@ -65,7 +63,7 @@ struct CreateSupportTicket: View {
                     }
                     Spacer()
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
       }
       else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -108,7 +106,7 @@ struct CreateSupportTicket: View {
                   }
                   Spacer()
               }
-              Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+              Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
           }
       } else {
         Text("Who knows")

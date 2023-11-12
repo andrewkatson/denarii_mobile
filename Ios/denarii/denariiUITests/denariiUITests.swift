@@ -86,7 +86,7 @@ final class denariiUITests: XCTestCase {
     func tapButtonAndWaitForButtonToAppear(_ app: XCUIApplication, _ button: XCUIElement, _ buttonName: String) {
         while (true) {
             RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
-            let otherButton = app.textFields[buttonName]
+            let otherButton = app.buttons[buttonName]
             if otherButton.exists {
                 break;
             }
@@ -517,7 +517,7 @@ final class denariiUITests: XCTestCase {
     func cancelBuyDenarii(_ app: XCUIApplication, _ firstUserSuffix: String, _ secondUserSuffix: String) {
         buyDenarii(app, firstUserSuffix, secondUserSuffix)
         
-        let buyDenariiText = app.textViews["Buy Denarii"]
+        let buyDenariiText = app.staticTexts["Buy Denarii"]
         refreshScreen(app, buyDenariiText)
         
         let cancelButton = app.buttons["Cancel"]
@@ -563,7 +563,7 @@ final class denariiUITests: XCTestCase {
     func cancelSellDenarii(_ app: XCUIApplication, _ suffix: String) {
         sellDenarii(app, suffix)
         
-        let sellDenariiText = app.textViews["Sell Denarii"]
+        let sellDenariiText = app.staticTexts["Sell Denarii"]
         refreshScreen(app, sellDenariiText)
         
         let cancelButton = app.buttons["Cancel Ask"]
@@ -787,7 +787,7 @@ final class denariiUITests: XCTestCase {
         // A popover appears and we need to tap it away
         tapAway(app)
         
-        let supportTicketDetailsText = app.textViews["Support Ticket Details"]
+        let supportTicketDetailsText = app.staticTexts["Support Ticket Details"]
         refreshScreen(app, supportTicketDetailsText)
     }
     
@@ -1002,7 +1002,7 @@ final class denariiUITests: XCTestCase {
         
         buyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
         
-        let buyDenariiText = app.textViews["Buy Denarii"]
+        let buyDenariiText = app.staticTexts["Buy Denarii"]
         refreshScreen(app, buyDenariiText)
         
         XCTAssert(app.buttons["Cancel"].exists)
@@ -1033,7 +1033,7 @@ final class denariiUITests: XCTestCase {
      
         sellDenarii(app, Constants.FIRST_USER)
         
-        let sellDenariiText = app.textViews["Sell Denarii"]
+        let sellDenariiText = app.staticTexts["Sell Denarii"]
         refreshScreen(app, sellDenariiText)
         
         XCTAssert(app.buttons["Cancel"].exists)

@@ -141,14 +141,14 @@ def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of
 
             return False, "Asking price was higher than bid price", asks_met
 
-        current_bought_amount += ask.amount
-
         ask.in_escrow = True
 
         if current_bought_amount > to_buy_amount:
-            ask.amount_bought = ask.amount - (current_bought_amount - to_buy_amount)
+            ask.amount_bought = to_buy_amount
         else:
             ask.amount_bought = ask.amount
+            
+        current_bought_amount += ask.amount_bought
 
         ask.save()
 

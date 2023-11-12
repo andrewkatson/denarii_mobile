@@ -17,7 +17,6 @@ struct OpenedWalletView: View {
     @ObservedObject private var successOrFailureForRefreshBalance: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForSendDenarii: ObservableString = ObservableString()
     
-    @State private var userDetails = UserDetails()
     @State private var showingSidebar = false
     @State private var showingPopoverForRefreshBalance = false
     @State private var showingPopoverForSendDenarii = false
@@ -28,7 +27,6 @@ struct OpenedWalletView: View {
     
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.userDetails = self.user.getValue()
     }
     
     init(_ user: UserDetails, _ walletName: String, _ seed: String) {
@@ -37,7 +35,6 @@ struct OpenedWalletView: View {
         user.walletDetails.seed = seed
         
         self.user.setValue(user)
-        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
@@ -82,7 +79,7 @@ struct OpenedWalletView: View {
                     }
                     Spacer()
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -144,7 +141,7 @@ struct OpenedWalletView: View {
                     }
                     Spacer()
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         } else {
           Text("Who knows")

@@ -301,7 +301,7 @@ struct SellDenarii: View {
                             alignment: .topLeading
                         )
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -437,7 +437,7 @@ struct SellDenarii: View {
                             alignment: .topLeading
                         )
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         }
     }

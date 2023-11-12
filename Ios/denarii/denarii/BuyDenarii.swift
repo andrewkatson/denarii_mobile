@@ -14,7 +14,6 @@ struct BuyDenarii: View {
     
     let lock: NSLock = NSLock()
     
-    @State private var userDetails = UserDetails()
     @State private var showingSidebar = false
     @State private var amount: String = ""
     @State private var price: String = ""
@@ -38,7 +37,6 @@ struct BuyDenarii: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.userDetails = self.user.getValue()
 
         getNewAsks()
         refreshSettledTransactions()
@@ -220,7 +218,7 @@ struct BuyDenarii: View {
                             alignment: .topLeading
                         )
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -234,7 +232,7 @@ struct BuyDenarii: View {
                     List {
                         VStack(alignment: .center) {
                             Spacer()
-                            Text("Buy").font(.largeTitle)
+                            Text("Buy Denarii").font(.largeTitle)
                             Spacer()
                             HStack {
                                 TextField("Amount", text: $amount)
@@ -247,7 +245,7 @@ struct BuyDenarii: View {
                                 }.toggleStyle(.switch)
                             }
                             Spacer()
-                            Button("Buy Denarii") {
+                            Button("Buy") {
                                 isBought = attemptBuy()
                                 if isBought {
                                     self.successOrFailureForBuyDenarii.setValue("Successfully bought some denarii")
@@ -341,7 +339,7 @@ struct BuyDenarii: View {
                             alignment: .topLeading
                         )
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         } else {
             Text("Who knows").font(.largeTitle)

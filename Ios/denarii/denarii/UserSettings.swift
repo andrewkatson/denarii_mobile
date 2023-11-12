@@ -11,7 +11,6 @@ struct UserSettings: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass: UserInterfaceSizeClass?
     @Environment(\.horizontalSizeClass) var horizontalSizeClass: UserInterfaceSizeClass?
     
-    @State private var userDetails = UserDetails()
     @State private var showingSidebar = false
     @State private var logout: Bool = false
     @State private var deletedAccount: Bool = false
@@ -28,7 +27,6 @@ struct UserSettings: View {
 
     init(_ user: UserDetails) {
         self.user.setValue(user)
-        self.userDetails = self.user.getValue()
     }
     
     var body: some View {
@@ -81,12 +79,14 @@ struct UserSettings: View {
                         if deletedAccount && showingPopoverForDeleteAccount == false {
                             NavigationLink("Delete Account") {
                                 EmptyView()
-                            }.navigationDestination(isPresented: $deletedAccount, destination: {() -> ContentView in ContentView()})
+                            }.navigationDestination(isPresented: $logout) {
+                                ContentView()
+                            }
                         }
                     }
                     Spacer()
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         }
         else if horizontalSizeClass == .regular && verticalSizeClass == .compact {
@@ -156,7 +156,7 @@ struct UserSettings: View {
                     }
                     Spacer()
                 }
-                Sidebar(isSidebarVisible: $showingSidebar, userDetails: $userDetails)
+                Sidebar(isSidebarVisible: $showingSidebar, userDetails: self.$user.value)
             }
         } else {
             Text("Who knows")

@@ -681,15 +681,15 @@ class StubbedAPI: API {
             
             if buyRegardlessOfPrice {
                 
-                currentAmountBought += ask.amount
-
                 if currentAmountBought > amount {
-                    ask.amountBought = ask.amount - (currentAmountBought - amount)
+                    ask.amountBought = amount
                 }
                 else {
                     ask.amountBought = ask.amount
                 }
                 
+                currentAmountBought += ask.amountBought
+
                 ask.inEscrow = true
                 ask.buyerId = String(userIdentifier)
             
@@ -701,14 +701,15 @@ class StubbedAPI: API {
                 denariiResponses.append(denariiResponse)
             } else {
                 if ask.askingPrice <= bidPrice {
-                    currentAmountBought += ask.amount
 
-                    if currentAmountBought > amount {
-                        ask.amountBought = ask.amount - (currentAmountBought - amount)
+                    if ask.amount > amount {
+                        ask.amountBought = amount
                     }
                     else {
                         ask.amountBought = ask.amount
                     }
+                    
+                    currentAmountBought += ask.amountBought
                     
                     ask.inEscrow = true
                     ask.buyerId = String(userIdentifier)

@@ -36,7 +36,6 @@ struct CreateWalletView: View {
                     .textContentType(.newPassword)
                 HStack(alignment: .center) {
                     Text("Seed: ")
-                    Spacer()
                     ChangingTextView(value: $seed.value)
                 }
                 HStack(alignment: .center) {
