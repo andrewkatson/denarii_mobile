@@ -72,6 +72,7 @@ struct CreditCardInfo: View {
                             TextField("Expiration Date Month", text: $expirationDateMonth)
                             TextField("Expiration Date Year", text: $expirationDateYear)
                             TextField("Security Code", text: $securityCode)
+                            Spacer()
                             Button("Set Info") {
                                 isSet = attemptToSetCreditCardInfo()
                                 showingPopoverForSet = true
@@ -81,20 +82,20 @@ struct CreditCardInfo: View {
                                     .padding().onTapGesture {
                                         showingPopoverForSet = false
                                     }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
-                            }
-                            if status.contains("Status: Set") {
-                                Button("Clear Info") {
-                                    isCleared = attemptToClearCreditCardInfo()
-                                    showingPopoverForClear = true
-                                }.popover(isPresented: $showingPopoverForClear) {
-                                    Text(successOrFailureForClear.getValue())
-                                        .font(.headline)
-                                        .padding().onTapGesture {
-                                            showingPopoverForClear = false
-                                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                                }
-                                
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
+                            Divider()
+                            Spacer()
+                            Button("Clear Info") {
+                                isCleared = attemptToClearCreditCardInfo()
+                                showingPopoverForClear = true
+                            }.opacity(status.contains("Status: Set") ? 1 : 0)
+                            .popover(isPresented: $showingPopoverForClear) {
+                                Text(successOrFailureForClear.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForClear = false
+                                    }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                         }.frame(
                             minWidth: geometry.size.width,
@@ -138,6 +139,7 @@ struct CreditCardInfo: View {
                                 TextField("Expiration Date Year", text: $expirationDateYear)
                             }
                             TextField("Security Code", text: $securityCode)
+                            Spacer()
                             Button("Set Info") {
                                 isSet = attemptToSetCreditCardInfo()
                                 showingPopoverForSet = true
@@ -147,20 +149,20 @@ struct CreditCardInfo: View {
                                     .padding().onTapGesture {
                                         showingPopoverForSet = false
                                     }.accessibilityIdentifier(Constants.SET_CREDIT_CARD_INFO_POPOVER)
-                            }
-                            if status.contains("Status: Set") {
-                                Button("Clear Info") {
-                                    isCleared = attemptToClearCreditCardInfo()
-                                    showingPopoverForClear = true
-                                }.popover(isPresented: $showingPopoverForClear) {
-                                    Text(successOrFailureForClear.getValue())
-                                        .font(.headline)
-                                        .padding().onTapGesture {
-                                            showingPopoverForClear = false
-                                        }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
-                                }
-                                
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
+                            Divider()
+                            Spacer()
+                            Button("Clear Info") {
+                                isCleared = attemptToClearCreditCardInfo()
+                                showingPopoverForClear = true
+                            }.opacity(status.contains("Status: Set") ? 1 : 0)
+                            .popover(isPresented: $showingPopoverForClear) {
+                                Text(successOrFailureForClear.getValue())
+                                    .font(.headline)
+                                    .padding().onTapGesture {
+                                        showingPopoverForClear = false
+                                    }.accessibilityIdentifier(Constants.CLEAR_CREDIT_CARD_INFO_POPOVER)
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                         }.frame(
                             minWidth: geometry.size.width,
@@ -214,7 +216,6 @@ struct CreditCardInfo: View {
                 return false
             } else {
                 self.successOrFailureForSet.setValue("Successfully set credit card info")
-                status = "Status: Set"
                 return true
             }
         }
@@ -222,7 +223,7 @@ struct CreditCardInfo: View {
     
     func attemptToClearCreditCardInfo() -> Bool {
         if Constants.DEBUG {
-            successOrFailureForSet.setValue("Successfully cleared credit card info in DEBUG mode")
+            successOrFailureForClear.setValue("Successfully cleared credit card info in DEBUG mode")
             return true
         } else {
             

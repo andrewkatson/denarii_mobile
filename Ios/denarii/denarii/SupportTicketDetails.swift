@@ -114,7 +114,7 @@ struct SupportTicketDetails: View {
                                     .padding().onTapGesture {
                                         showingPopoverForCreateNewComment = false
                                     }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                             Button("Resolve") {
                                 isResolved = attemptResolveTicket()
@@ -136,7 +136,7 @@ struct SupportTicketDetails: View {
                                         SupportTickets(self.user.getValue())
                                     }
                                 }
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                             Button("Delete") {
                                 isDeleted = attemptDeleteTicket()
@@ -158,7 +158,7 @@ struct SupportTicketDetails: View {
                                         SupportTickets(self.user.getValue())
                                     }
                                 }
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                         }.frame(
                             minWidth: geometry.size.width,
@@ -223,7 +223,7 @@ struct SupportTicketDetails: View {
                                       .padding().onTapGesture {
                                           showingPopoverForCreateNewComment = false
                                       }.accessibilityIdentifier(Constants.CREATE_NEW_COMMENT_POPOVER)
-                              }
+                              }.buttonStyle(BorderlessButtonStyle())
                           }
                           Spacer()
                           HStack {
@@ -248,7 +248,7 @@ struct SupportTicketDetails: View {
                                           SupportTickets(self.user.getValue())
                                       }
                                   }
-                              }
+                              }.buttonStyle(BorderlessButtonStyle())
                               Spacer()
                               Button("Delete") {
                                   isDeleted = attemptDeleteTicket()
@@ -270,7 +270,7 @@ struct SupportTicketDetails: View {
                                           SupportTickets(self.user.getValue())
                                       }
                                   }
-                              }
+                              }.buttonStyle(BorderlessButtonStyle())
                               Spacer()
                           }
                           Spacer()

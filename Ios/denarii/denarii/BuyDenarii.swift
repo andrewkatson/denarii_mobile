@@ -91,11 +91,11 @@ struct BuyDenarii: View {
                      let onlyResponse = responses.first!
                      
                      if onlyResponse.responseCode != 200 {
-                         // TODO what do we do here?
+                         // TODO do we reverse if the server isnt responding, probably not?
                      } else {
-                         
+                         // Explicitly keep any buys even that are not settled.
                          if onlyResponse.transactionWasSettled {
-                             // TODO what do we do here?
+                             // Do not keep the buy if it was settled
                          } else {
                              remainingBuys.append(buy)
                          }
@@ -142,7 +142,7 @@ struct BuyDenarii: View {
                                     .padding().onTapGesture {
                                         showingPopoverForBuyDenarii = false
                                     }.accessibilityIdentifier(Constants.BUY_DENARII_POPOVER)
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                             Text("Asks").font(.title)
                             ScrollView(.vertical, showsIndicators: true) {
@@ -193,7 +193,7 @@ struct BuyDenarii: View {
                                                         .padding().onTapGesture {
                                                             showingPopoverForCancelBuyDenarii = false
                                                         }.accessibilityIdentifier(Constants.CANCEL_BUY_DENARII_POPOVER)
-                                                }
+                                                }.buttonStyle(BorderlessButtonStyle())
                                             }
                                         }
                                     }
@@ -257,7 +257,7 @@ struct BuyDenarii: View {
                                     .padding().onTapGesture {
                                         showingPopoverForBuyDenarii = false
                                     }.accessibilityIdentifier(Constants.BUY_DENARII_POPOVER)
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Spacer()
                             HStack {
                                 VStack {
@@ -312,7 +312,7 @@ struct BuyDenarii: View {
                                                                 .padding().onTapGesture {
                                                                     showingPopoverForCancelBuyDenarii = false
                                                                 }.accessibilityIdentifier(Constants.CANCEL_BUY_DENARII_POPOVER)
-                                                        }
+                                                        }.buttonStyle(BorderlessButtonStyle())
                                                     }
                                                 }
                                             }

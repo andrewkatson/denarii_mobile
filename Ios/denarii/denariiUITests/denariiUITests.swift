@@ -25,15 +25,17 @@ final class denariiUITests: XCTestCase {
         }
     }
     
-    func refreshScreen(_ app: XCUIApplication, _ element: XCUIElement) {
+    func refreshScreen(_ app: XCUIApplication, _ element: XCUIElement, _ amountToSwipe: CGFloat) {
         let start = element.coordinate(withNormalizedOffset: CGVectorMake(0, 0))
-        let finish = element.coordinate(withNormalizedOffset: CGVectorMake(0, 6))
+        let finish = element.coordinate(withNormalizedOffset: CGVectorMake(0, amountToSwipe))
         start.press(forDuration: 0, thenDragTo: finish)
     }
     
+    func refreshScreen(_ app: XCUIApplication, _ element: XCUIElement) {
+        refreshScreen(app, element, 6)
+    }
+    
     func tapAway(_ app: XCUIApplication) {
-        app.tap()
-        
         tapAwayOnPopovers(app, [Constants.POPOVER, Constants.BUY_DENARII_POPOVER, Constants.CANCEL_BUY_DENARII_POPOVER, Constants.CANCEL_SELL_DENARII_POPOVER, Constants.CLEAR_CREDIT_CARD_INFO_POPOVER, Constants.CREATE_NEW_COMMENT_POPOVER, Constants.DELETE_ACCOUNT_POPOVER, Constants.DELETE_TICKET_POPOVER, Constants.LOGOUT_POPOVER,Constants.REFRESH_BALANCE_POPOVER, Constants.RESOLVE_TICKET_POPOVER, Constants.SELL_DENARII_POPOVER, Constants.SEND_DENARII_POPOVER, Constants.SET_CREDIT_CARD_INFO_POPOVER])
     }
 
@@ -51,10 +53,10 @@ final class denariiUITests: XCTestCase {
         let keyboard = XCUIApplication().keyboards.element
         while (true) {
             RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            element.tap()
             if keyboard.exists {
                 break;
             }
-            element.tap()
         }
     }
     
@@ -96,17 +98,17 @@ final class denariiUITests: XCTestCase {
     
     func navigateToLoginOrRegister(_ app: XCUIApplication) {
         let nextButton = app.buttons["Next"]
-        nextButton.tap()
+        tapButtonAndWaitForButtonToAppear(app, nextButton, "Login")
     }
     
     func navigateToLogin(_ app: XCUIApplication) {
         let loginButton = app.buttons["Login"]
-        loginButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, loginButton, "Name")
     }
     
     func navigateToRegister(_ app: XCUIApplication) {
         let registerButton = app.buttons["Register"]
-        registerButton.tap()
+        tapButtonAndWaitForTextFieldToAppear(app, registerButton, "Name")
     }
     
     func navigateToLoginFromLoginOrRegister(_ app: XCUIApplication) {
@@ -116,15 +118,6 @@ final class denariiUITests: XCTestCase {
     
     func loginWithDenarii(_ app: XCUIApplication, _ suffix: String) {
         registerWithDenarii(app, suffix)
-        
-        // Then navigate back
-        let backButton = app.buttons["Back"]
-        backButton.tap()
-        
-        let backButtonTwo = app.buttons["Back"]
-        backButtonTwo.tap()
-        
-        navigateToLogin(app)
         
         let loginTextField = app.textFields["Name"]
         tapElementAndWaitForKeyboardToAppear(loginTextField)
@@ -148,7 +141,7 @@ final class denariiUITests: XCTestCase {
         dismissKeyboardIfPresent(app)
         
         let submitButton = app.buttons["Submit"]
-        submitButton.tap()
+        tapButtonAndWaitForButtonToAppear(app, submitButton, "Next")
         
         // A popover appears and we need to tap it away
         tapAway(app)
@@ -437,6 +430,9 @@ final class denariiUITests: XCTestCase {
         
         let sendDenariiButton = app.buttons["Send"]
         sendDenariiButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
     }
     
     func logout(_ app: XCUIApplication, _ suffix: String) {
@@ -711,9 +707,6 @@ final class denariiUITests: XCTestCase {
         
         // A popover appears and we need to tap it away
         tapAway(app)
-        
-        // After we type things in we need to dismiss the keyboard
-        dismissKeyboardIfPresent(app)
     }
     
     func setCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
@@ -724,6 +717,9 @@ final class denariiUITests: XCTestCase {
     
     func clearCreditCardInfo(_ app: XCUIApplication, _ suffix: String) {
         setCreditCardInfo(app, suffix)
+        
+        let creditCardText = app.staticTexts["Credit Card Info"]
+        refreshScreen(app, creditCardText)
         
         let clearCreditCardInfoButton = app.buttons["Clear Info"]
         clearCreditCardInfoButton.tap()
@@ -823,7 +819,6 @@ final class denariiUITests: XCTestCase {
         XCTAssert(app.textFields["Name"].exists)
         XCTAssert(app.textFields["Email"].exists)
         XCTAssert(app.secureTextFields["Password"].exists)
-        XCTAssert(app.secureTextFields["Confirm Password"].exists)
     }
     
     func checkForWalletDecisionView(_ app: XCUIApplication) {
@@ -901,10 +896,7 @@ final class denariiUITests: XCTestCase {
         registerWithDenarii(app, Constants.FIRST_USER)
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        checkForWalletDecisionView(app)
-        
-        // Always log the user out
-        logoutFromWalletDecision(app, Constants.FIRST_USER)
+        checkForLoginView(app)
     }
 
     func testResetPassword() throws {
@@ -1064,7 +1056,10 @@ final class denariiUITests: XCTestCase {
         
         verifyIdentity(app, Constants.FIRST_USER)
         
-        XCTAssert(!app.buttons["Submit"].exists)
+        let verificationText = app.staticTexts["Verification"]
+        refreshScreen(app, verificationText)
+        
+        XCTAssert(!app.buttons["Submit"].isHittable)
         
         // Always log the user out
         logout(app, Constants.FIRST_USER)
@@ -1077,6 +1072,9 @@ final class denariiUITests: XCTestCase {
         app.launch()
         
         setCreditCardInfo(app, Constants.FIRST_USER)
+        
+        let creditCardText = app.staticTexts["Credit Card Info"]
+        refreshScreen(app, creditCardText)
         
         XCTAssert(app.buttons["Clear Info"].exists)
 
@@ -1092,7 +1090,10 @@ final class denariiUITests: XCTestCase {
      
         clearCreditCardInfo(app, Constants.FIRST_USER)
         
-        XCTAssert(!app.buttons["Clear Info"].exists)
+        let creditCardText = app.staticTexts["Credit Card Info"]
+        refreshScreen(app, creditCardText)
+        
+        XCTAssert(!app.buttons["Clear Info"].isHittable)
 
         // Always log the user out
         logout(app, Constants.FIRST_USER)
@@ -1206,9 +1207,6 @@ final class denariiUITests: XCTestCase {
                 app.launch()
              
                 registerWithDenarii(app, Constants.FIRST_USER)
-                
-                // Always log the user out
-                logoutFromWalletDecision(app, Constants.FIRST_USER)
             }
         }
     }

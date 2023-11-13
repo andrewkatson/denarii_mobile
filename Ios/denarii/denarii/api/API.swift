@@ -984,7 +984,7 @@ class StubbedAPI: API {
             let user = self.users[index]
             for askIndex in user.denariiAskList.indices {
                 let ask = user.denariiAskList[askIndex]
-                if ask.askID != askId {
+                if ask.askID == askId {
                     if !ask.isSettled || !ask.seenBySeller {
                         denariiResponse.transactionWasSettled = false
                     }
@@ -1166,7 +1166,13 @@ class StubbedAPI: API {
             return denariiResponses
         }
         denariiResponse.responseCode = 200
-        denariiResponse.verificationStatus = "is_verified"
+        for userIndex in self.users.indices {
+            let user = self.users[userIndex]
+            if String(userIdentifier) == user.userID  {
+                user.denariiUser.isVerified = true
+                denariiResponse.verificationStatus = "is_verified"
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses
@@ -1182,7 +1188,13 @@ class StubbedAPI: API {
             return denariiResponses
         }
         denariiResponse.responseCode = 200
-        denariiResponse.verificationStatus = "is_verified"
+        denariiResponse.verificationStatus = "failed_verification"
+        for userIndex in self.users.indices {
+            let user = self.users[userIndex]
+            if String(userIdentifier) == user.userID && user.denariiUser.isVerified  {
+                denariiResponse.verificationStatus = "is_verified"
+            }
+        }
         
         denariiResponses.append(denariiResponse)
         return denariiResponses

@@ -87,7 +87,7 @@ struct Verification: View {
                         VStack(alignment: .center) {
                             Text("Verification").font(.largeTitle)
                             Text("\(status)")
-                            if !status.contains("Status: Verfiied") {
+                            VStack {
                                 TextField("First Name", text: $firstName).padding(.top)
                                 TextField("Middle Initial", text: $middleName)
                                 TextField("Last Name", text: $lastName)
@@ -99,6 +99,7 @@ struct Verification: View {
                                 TextField("Work City", text: $workCity)
                                 TextField("Work State", text: $workState)
                                 TextField("Work Country", text: $workCountry)
+                                Spacer()
                                 Button("Submit") {
                                     isSubmitted = attemptSubmit()
                                     showingPopover = true
@@ -108,8 +109,8 @@ struct Verification: View {
                                         .padding().onTapGesture {
                                             showingPopover = false
                                         }.accessibilityIdentifier(Constants.POPOVER)
-                                }
-                            }
+                                }.buttonStyle(BorderlessButtonStyle())
+                            }.opacity(!status.contains("Status: Verified") ? 1 : 0)
                             Spacer()
                         }.frame(
                             minWidth: geometry.size.width,
@@ -147,7 +148,7 @@ struct Verification: View {
                              Text("Verification").font(.headline)
                              Spacer()
                              Text("\(status)").font(.subheadline)
-                             if !status.contains("Status: Verfiied") {
+                             VStack {
                                  HStack {
                                      TextField("First Name", text: $firstName)
                                      TextField("Middle Initial", text: $middleName)
@@ -167,6 +168,7 @@ struct Verification: View {
                                      TextField("Work State", text: $workState)
                                      TextField("Work Country", text: $workCountry)
                                  }
+                                 Spacer()
                                  Button("Submit") {
                                      isSubmitted = attemptSubmit()
                                      showingPopover = true
@@ -176,8 +178,8 @@ struct Verification: View {
                                          .padding().onTapGesture {
                                              showingPopover = false
                                          }.accessibilityIdentifier(Constants.POPOVER)
-                                 }
-                             }
+                                 }.buttonStyle(BorderlessButtonStyle())
+                             }.opacity(!status.contains("Status: Verified") ? 1 : 0)
                              Spacer()
                          }.frame(
                             minWidth: geometry.size.width,

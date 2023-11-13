@@ -36,6 +36,7 @@ struct SellDenarii: View {
         refreshCompletedTransactions()
         getOwnAsks()
         refreshAsksInEscrow()
+        refreshGoingPrice()
     }
 
     init(_ user: UserDetails) {
@@ -225,7 +226,7 @@ struct SellDenarii: View {
                                     .padding().onTapGesture {
                                         showingPopoverForSellDenarii = false
                                     }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             Text("Own Asks").font(.title)
                             ScrollView(.vertical, showsIndicators: true) {
                                 VStack {
@@ -241,7 +242,7 @@ struct SellDenarii: View {
                                             GridRow {
                                                 Text("\(ask.amount)")
                                                 Text("\(ask.askingPrice)")
-                                                Button("Cancel") {
+                                                Button("Cancel Ask") {
                                                     isCancelled = attemptCancelSellDenarii(ask)
                                                     if isCancelled {
                                                         self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
@@ -253,7 +254,7 @@ struct SellDenarii: View {
                                                         .padding().onTapGesture {
                                                             showingPopoverForCancelSellDenarii = false
                                                         }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
-                                                }
+                                                }.buttonStyle(BorderlessButtonStyle())
                                             }
                                         }
                                     }
@@ -289,9 +290,10 @@ struct SellDenarii: View {
                         )
                     }.refreshable {
                         getNewAsks()
-                        refreshGoingPrice()
-                        refreshAsksInEscrow()
                         refreshCompletedTransactions()
+                        getOwnAsks()
+                        refreshAsksInEscrow()
+                        refreshGoingPrice()
                     }.listStyle(PlainListStyle())
                         .frame(
                             minWidth: 0,
@@ -330,7 +332,7 @@ struct SellDenarii: View {
                                     .padding().onTapGesture {
                                         showingPopoverForSellDenarii = false
                                     }.accessibilityIdentifier(Constants.SELL_DENARII_POPOVER)
-                            }
+                            }.buttonStyle(BorderlessButtonStyle())
                             HStack {
                                 Spacer()
                                 VStack {
@@ -371,7 +373,7 @@ struct SellDenarii: View {
                                                     GridRow {
                                                         Text("\(ask.amount)").font(.caption)
                                                         Text("\(ask.askingPrice)").font(.caption)
-                                                        Button("Cancel") {
+                                                        Button("Cancel Ask") {
                                                             isCancelled = attemptCancelSellDenarii(ask)
                                                             if isCancelled {
                                                                 self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
@@ -383,7 +385,7 @@ struct SellDenarii: View {
                                                                 .padding().onTapGesture {
                                                                     showingPopoverForCancelSellDenarii = false
                                                                 }.accessibilityIdentifier(Constants.CANCEL_SELL_DENARII_POPOVER)
-                                                        }
+                                                        }.buttonStyle(BorderlessButtonStyle())
                                                     }
                                                 }
                                             }
@@ -425,9 +427,10 @@ struct SellDenarii: View {
                         )
                     }.refreshable {
                         getNewAsks()
-                        refreshGoingPrice()
-                        refreshAsksInEscrow()
                         refreshCompletedTransactions()
+                        getOwnAsks()
+                        refreshAsksInEscrow()
+                        refreshGoingPrice()
                     }.listStyle(PlainListStyle())
                         .frame(
                             minWidth: 0,
