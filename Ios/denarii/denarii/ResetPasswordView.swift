@@ -32,8 +32,8 @@ struct ResetPasswordView: View {
                 Spacer()
                 TextField("Name", text: $username)
                 TextField("Email", text: $email)
-                SecureField("Password", text: $password)
-                SecureField("Confirm Password", text: $confirmPassword)
+                SecureField("Password", text: $password).textContentType(.newPassword)
+                SecureField("Confirm Password", text: $confirmPassword).textContentType(.newPassword)
                 Button("Reset Password") {
                     isReset = attemptReset()
                     showingPopover = true

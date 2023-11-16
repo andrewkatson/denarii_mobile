@@ -104,7 +104,7 @@ struct SupportTicketDetails: View {
                                     }.frame(width: proxy.size.width, height: proxy.size.height)
                                 }
                             }
-                            TextField("New Comment", text: $comment, axis: Axis.vertical)
+                            TextField("New Comment", text: $comment)
                             Button("Submit") {
                                 isCreated = attemptCreateNewComment()
                                 showingPopoverForCreateNewComment = true
@@ -212,7 +212,7 @@ struct SupportTicketDetails: View {
                               }
                           }
                           HStack {
-                              TextField("New Comment", text: $comment, axis: Axis.vertical)
+                              TextField("New Comment", text: $comment)
                               Spacer()
                               Button("Submit") {
                                   isCreated = attemptCreateNewComment()

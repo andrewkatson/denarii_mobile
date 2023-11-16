@@ -242,7 +242,7 @@ struct SellDenarii: View {
                                             GridRow {
                                                 Text("\(ask.amount)")
                                                 Text("\(ask.askingPrice)")
-                                                Button("Cancel Ask") {
+                                                Button("Cancel") {
                                                     isCancelled = attemptCancelSellDenarii(ask)
                                                     if isCancelled {
                                                         self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")
@@ -373,7 +373,7 @@ struct SellDenarii: View {
                                                     GridRow {
                                                         Text("\(ask.amount)").font(.caption)
                                                         Text("\(ask.askingPrice)").font(.caption)
-                                                        Button("Cancel Ask") {
+                                                        Button("Cancel") {
                                                             isCancelled = attemptCancelSellDenarii(ask)
                                                             if isCancelled {
                                                                 self.successOrFailureForCancelSellDenarii.setValue("Successfully cancelled an ask to sell denarii")

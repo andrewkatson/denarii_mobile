@@ -1402,6 +1402,7 @@ class StubbedAPI: API {
                     if supportTicket.supportID == supportTicketId{
                         denariiResponse.supportTicketID = supportTicket.supportID
                         denariiResponse.author = user.userName
+                        denariiResponse.title = supportTicket.title
                         denariiResponse.description = supportTicket.description
                         denariiResponse.updatedTimeBody = ""
                         denariiResponse.creationTimeBody = ""

@@ -35,6 +35,16 @@ final class denariiUITests: XCTestCase {
         refreshScreen(app, element, 6)
     }
     
+    func refreshScreenUntilButtonAppears(_ app: XCUIApplication, _ element: XCUIElement, _ buttonName: String) {
+        let maxAttempts = 3
+        var attempt = 0
+        while !app.buttons[buttonName].exists && attempt < maxAttempts {
+            refreshScreen(app, element)
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            attempt += 1
+        }
+    }
+    
     func tapAway(_ app: XCUIApplication) {
         tapAwayOnPopovers(app, [Constants.POPOVER, Constants.BUY_DENARII_POPOVER, Constants.CANCEL_BUY_DENARII_POPOVER, Constants.CANCEL_SELL_DENARII_POPOVER, Constants.CLEAR_CREDIT_CARD_INFO_POPOVER, Constants.CREATE_NEW_COMMENT_POPOVER, Constants.DELETE_ACCOUNT_POPOVER, Constants.DELETE_TICKET_POPOVER, Constants.LOGOUT_POPOVER,Constants.REFRESH_BALANCE_POPOVER, Constants.RESOLVE_TICKET_POPOVER, Constants.SELL_DENARII_POPOVER, Constants.SEND_DENARII_POPOVER, Constants.SET_CREDIT_CARD_INFO_POPOVER])
     }
@@ -42,10 +52,17 @@ final class denariiUITests: XCTestCase {
     func tapAwayOnPopovers(_ app: XCUIApplication, _ popoverNames: Array<String>) {
         for popoverName in popoverNames{
             // Have to do redundant tapping becuase the popover in landscape is harder to tap
-            if app.staticTexts[popoverName].exists {
+            while app.staticTexts[popoverName].exists {
                 app.staticTexts[popoverName].tap()
-                XCTAssert(!app.staticTexts[popoverName].exists, "\(popoverName) still exists")
+                RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
             }
+        }
+    }
+    
+    func tapElementAndWaitForPopoverToAppear(_ app: XCUIApplication, _ element: XCUIElement, _ popoverName: String) {
+        while (!app.staticTexts[popoverName].exists) {
+            RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
+            element.tap()
         }
     }
     
@@ -53,7 +70,9 @@ final class denariiUITests: XCTestCase {
         let keyboard = XCUIApplication().keyboards.element
         while (true) {
             RunLoop.current.run(until: NSDate(timeIntervalSinceNow: 1.0) as Date)
-            element.tap()
+            if element.exists {
+                element.tap()
+            }
             if keyboard.exists {
                 break;
             }
@@ -141,8 +160,8 @@ final class denariiUITests: XCTestCase {
         dismissKeyboardIfPresent(app)
         
         let submitButton = app.buttons["Submit"]
-        tapButtonAndWaitForButtonToAppear(app, submitButton, "Next")
-        
+        tapElementAndWaitForPopoverToAppear(app, submitButton, Constants.POPOVER)
+
         // A popover appears and we need to tap it away
         tapAway(app)
         
@@ -184,7 +203,7 @@ final class denariiUITests: XCTestCase {
         dismissKeyboardIfPresent(app)
         
         let submitButton = app.buttons["Submit"]
-        submitButton.tap()
+        tapElementAndWaitForPopoverToAppear(app, submitButton, Constants.POPOVER)
         
         // A popover appears and we need to tap it away
         tapAway(app)
@@ -457,17 +476,10 @@ final class denariiUITests: XCTestCase {
     }
     
     func logoutFromSupportTickets(_ app: XCUIApplication, _ suffix: String) {
-        let backButton = app.buttons["Back"]
-        backButton.tap()
         logout(app, suffix)
     }
     
     func logoutFromSupportTicketDetails(_ app: XCUIApplication, _ suffix: String) {
-        let backToCreateSupportTicketButton = app.buttons["Back"]
-        backToCreateSupportTicketButton.tap()
-        
-        let backToSupportTicketsButton = app.buttons["Back"]
-        backToSupportTicketsButton.tap()
         logoutFromSupportTickets(app, suffix)
     }
     
@@ -560,9 +572,9 @@ final class denariiUITests: XCTestCase {
         sellDenarii(app, suffix)
         
         let sellDenariiText = app.staticTexts["Sell Denarii"]
-        refreshScreen(app, sellDenariiText)
+        refreshScreen(app, sellDenariiText, 8)
         
-        let cancelButton = app.buttons["Cancel Ask"]
+        let cancelButton = app.buttons["Cancel"]
         cancelButton.tap()
         
         // A popover appears and we need to tap it away
@@ -719,7 +731,7 @@ final class denariiUITests: XCTestCase {
         setCreditCardInfo(app, suffix)
         
         let creditCardText = app.staticTexts["Credit Card Info"]
-        refreshScreen(app, creditCardText)
+        refreshScreen(app, creditCardText, 8)
         
         let clearCreditCardInfoButton = app.buttons["Clear Info"]
         clearCreditCardInfoButton.tap()
@@ -760,7 +772,7 @@ final class denariiUITests: XCTestCase {
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
-        let createTicketTwoButton = app.buttons["Create Support Ticket"]
+        let createTicketTwoButton = app.buttons["Create"]
         createTicketTwoButton.tap()
         
         // A popover appears and we need to tap it away
@@ -792,6 +804,9 @@ final class denariiUITests: XCTestCase {
         
         let deleteTicketButton = app.buttons["Delete"]
         deleteTicketButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
     }
     
     func resolveSupportTicket(_ app: XCUIApplication, _ suffix: String) {
@@ -799,6 +814,9 @@ final class denariiUITests: XCTestCase {
         
         let resolveButton = app.buttons["Resolve"]
         resolveButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
     }
     
     func deleteAccount(_ app: XCUIApplication, _ suffix: String) {
@@ -811,6 +829,9 @@ final class denariiUITests: XCTestCase {
         
         let deleteAccountButton = app.buttons["Delete Account"]
         deleteAccountButton.tap()
+        
+        // A popover appears and we need to tap it away
+        tapAway(app)
     }
     
     
@@ -1505,9 +1526,6 @@ final class denariiUITests: XCTestCase {
                 app.launch()
 
                 deleteAccount(app, Constants.FIRST_USER)
-                
-                // Always log the user out
-                logout(app, Constants.FIRST_USER)
             }
         }
     }

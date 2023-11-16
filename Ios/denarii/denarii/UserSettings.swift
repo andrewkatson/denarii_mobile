@@ -79,7 +79,7 @@ struct UserSettings: View {
                         if deletedAccount && showingPopoverForDeleteAccount == false {
                             NavigationLink("Delete Account") {
                                 EmptyView()
-                            }.navigationDestination(isPresented: $logout) {
+                            }.navigationDestination(isPresented: $deletedAccount) {
                                 ContentView()
                             }
                         }
@@ -147,7 +147,7 @@ struct UserSettings: View {
                             if deletedAccount && showingPopoverForDeleteAccount == false {
                                 NavigationLink("Delete Account") {
                                     EmptyView()
-                                }.navigationDestination(isPresented: $logout) {
+                                }.navigationDestination(isPresented: $deletedAccount) {
                                     ContentView()
                                 }
                             }
