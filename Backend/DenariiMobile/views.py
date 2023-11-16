@@ -147,7 +147,7 @@ def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of
             ask.amount_bought = to_buy_amount
         else:
             ask.amount_bought = ask.amount
-            
+
         current_bought_amount += ask.amount_bought
 
         ask.save()
@@ -175,7 +175,7 @@ def update_user_verification_status(user):
 def get_user_id(request, username, email, password):
     existing = get_user(username, email, password)
     if existing is not None:
-        login(request, user)
+        login(request, existing)
         response = Response.objects.create(user_identifier=str(existing.id))
 
         serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
@@ -186,7 +186,8 @@ def get_user_id(request, username, email, password):
         if get_user_with_username(username) is not None or get_user_with_email(email) is not None:
             return HttpResponseBadRequest("User already exists")
 
-        new_user = DenariiUser.objects.create_user(username=username, email=email, password=password)
+        new_user = DenariiUser.objects.create_user(username=username, email=email)
+        new_user.set_password(password)
         new_user.save()
 
         new_wallet_details = new_user.walletdetails_set.create()
@@ -511,7 +512,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
             if fail_if_full_amount_isnt_met == "True":
 
                 for ask in asks_met:
-                    ask.in_escrow = False 
+                    ask.in_escrow = False
                     ask.buyer = None
                     ask.save()
                 return HttpResponseBadRequest("Could not buy the asked amount")
@@ -1133,7 +1134,7 @@ def get_all_asks(request, user_id):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
-    
+
 
 @login_required
 def get_all_buys(request, user_id):
@@ -1156,6 +1157,7 @@ def get_all_buys(request, user_id):
         return JsonResponse({'response_list': serialized_response_list})
     else:
         return HttpResponseBadRequest("No user with id")
+
 
 @login_required
 def create_support_ticket(request, user_id, title, description):
@@ -1193,11 +1195,12 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
             comment.comment_id = comment.primary_key
 
             response = Response.objects.create(support_ticket_id=support_ticket.support_id,
-                                               updated_time_body=comment.updated_time, 
-                                               comment_id = comment.comment_id)
+                                               updated_time_body=comment.updated_time,
+                                               comment_id=comment.comment_id)
 
             serialized_response_list = serializers.serialize('json', [response],
-                                                             fields=('support_ticket_id', 'updated_time_body', 'comment_id'))
+                                                             fields=(
+                                                             'support_ticket_id', 'updated_time_body', 'comment_id'))
             support_ticket.save()
             comment.save()
 
@@ -1373,8 +1376,9 @@ def poll_for_escrowed_transaction(request, user_id):
     else:
         return HttpResponseBadRequest("No user with id")
 
+
 @login_required
-def logout(request, user_id): 
+def logout_user(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:

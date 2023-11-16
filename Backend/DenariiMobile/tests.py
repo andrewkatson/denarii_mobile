@@ -1,8 +1,8 @@
+import pandas as pd
 import random
 
-import pandas as pd
-
-from django.http import HttpRequest
+from django.contrib.sessions.backends.db import SessionStore
+from django.http import HttpRequest, HttpResponseBadRequest, HttpResponseRedirect
 from django.test import TestCase
 
 from DenariiMobile.views import *
@@ -121,6 +121,9 @@ def create_user_request(user_id):
     user = DenariiUser.objects.get(id=user_id)
     request = HttpRequest()
     request.user = user
+    request.session = SessionStore()
+    request.META["SERVER_NAME"] = "localhost"
+    request.META["SERVER_PORT"] = "8000"
     return request
 
 
@@ -1863,11 +1866,11 @@ class ViewsTestCase(TestCase):
     def test_logout_user_logs_them_out(self): 
         test_values = get_all_test_values("logout_user_logs_them_out")
 
-        response_one = logout(test_values['request'], test_values['user_id'])
+        response_one = logout_user(test_values['request'], test_values['user_id'])
 
         self.assertNotEqual(type(response_one), HttpResponseBadRequest)
 
         response_two = create_support_ticket(test_values['request'], test_values['user_id'], "Other Title",
                                              "other description")
 
-        self.assertEqual(type(response_two), HttpResponseBadRequest)
+        self.assertEqual(type(response_two), HttpResponseRedirect)

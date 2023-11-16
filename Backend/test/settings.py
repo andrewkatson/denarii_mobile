@@ -17,7 +17,7 @@ with open(Path(f"{BASE_DIR}/Backend/secret_key.txt"), "rb") as secret_key_file:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost"]
 
 
 # Application definition

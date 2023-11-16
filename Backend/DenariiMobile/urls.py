@@ -87,5 +87,5 @@ urlpatterns = [
     # Get a single support ticket
     path('get_support_ticket/<str:user_id>/<str:support_ticket_id>/', views.get_support_ticket),
     # Log the user out
-    path('logout/<str:user_id/', views.logout)
+    path('logout/<str:user_id/', views.logout_user)
 ]
