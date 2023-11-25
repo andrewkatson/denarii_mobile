@@ -504,15 +504,20 @@ class StubbedAPI: API {
             denariiResponses.append(denariiResponse)
             return denariiResponses
         }
-        denariiResponse.responseCode = 200
-
-        denariiResponse.walletAddress = String(Int.random(in: 1..<100))
-        denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
         
+        denariiResponses.responseCode = -1
+
         for index in self.users.indices {
             let user = self.users[index]
             if user.userID == String(userIdentifier) {
-                user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 3.0, walletAddress: denariiResponse.walletAddress)
+                if user.walletDetails.walletName.isEmpty {
+                    user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 3.0, walletAddress: denariiResponse.walletAddress)
+
+                    denariiResponse.responseCode = 200
+
+                    denariiResponse.walletAddress = String(Int.random(in: 1..<100))
+                    denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
+                }
                 break
             }
         }
@@ -520,7 +525,7 @@ class StubbedAPI: API {
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
-    
+
     func restoreWallet(_ userIdentifier: Int, _ walletName: String, _ password: String, _ seed: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         var denariiResponse = DenariiResponse()
@@ -544,7 +549,7 @@ class StubbedAPI: API {
         denariiResponses.append(denariiResponse)
         return denariiResponses
     }
-    
+
     func openWallet(_ userIdentifier: Int, _ walletName: String, _ password: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         var denariiResponse = DenariiResponse()
@@ -555,13 +560,17 @@ class StubbedAPI: API {
             return denariiResponses
         }
         denariiResponse.responseCode = 200
-        denariiResponse.walletAddress = String(Int.random(in: 1..<100))
-        denariiResponse.seed = "some seed here \(Int.random(in: 1..<100))"
         
         for index in self.users.indices {
             let user = self.users[index]
             if user.userID == String(userIdentifier) {
-                user.walletDetails = WalletDetails(walletName: walletName, walletPassword: password, seed: denariiResponse.seed, balance: 0.0, walletAddress: denariiResponse.walletAddress)
+                 
+                if user.walletDetails.password == password && user.walletDetails.walletName == walletName {
+                    denariiResponse.walletAddress = user.walletDetails.walletAddress
+                    denariiResponse.seed = user.walletDetails.seed
+                } else {
+                    denariiResponse.responseCode = -1
+                }
                 break
             }
         }
@@ -660,6 +669,7 @@ class StubbedAPI: API {
         var boughtAsks = Array<DenariiAsk>()
 
         var currentAmountBought = 0.0
+        var amountToBuyLeft = amount
         
         var allAsks = Array<DenariiAsk>()
         
@@ -681,14 +691,15 @@ class StubbedAPI: API {
             
             if buyRegardlessOfPrice {
                 
-                if currentAmountBought > amount {
-                    ask.amountBought = amount
+                if amountToBuyLeft < ask.amount {
+                    ask.amountBought = amountToBuyLeft
                 }
                 else {
                     ask.amountBought = ask.amount
                 }
                 
                 currentAmountBought += ask.amountBought
+                amountToBuyLeft -= ask.amountBought
 
                 ask.inEscrow = true
                 ask.buyerId = String(userIdentifier)
@@ -702,14 +713,15 @@ class StubbedAPI: API {
             } else {
                 if ask.askingPrice <= bidPrice {
 
-                    if ask.amount > amount {
-                        ask.amountBought = amount
+                    if amountToBuyLeft < ask.amount {
+                        ask.amountBought = amountToBuyLeft
                     }
                     else {
                         ask.amountBought = ask.amount
                     }
                     
                     currentAmountBought += ask.amountBought
+                    amountToBuyLeft -= ask.amountBought
                     
                     ask.inEscrow = true
                     ask.buyerId = String(userIdentifier)

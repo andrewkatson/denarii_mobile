@@ -18,6 +18,8 @@ public class DenariiAsk implements Serializable
 
     private boolean seenBySeller;
 
+    private UserDetails buyer;
+
     public void setAskID(String newID){ askID = newID;}
 
     public void setAmount(double newAmount){ amount = newAmount;}
@@ -31,6 +33,10 @@ public class DenariiAsk implements Serializable
     public void setIsSettled(boolean newSettled){ isSettled = newSettled;}
 
     public void setHasBeenSeenBySeller(boolean newSeller){ seenBySeller = newSeller;}
+
+    public void setBuyer(UserDetails buyer) {
+        this.buyer = buyer;
+    }
 
     public String getAskID(){ return askID;}
 
@@ -46,5 +52,5 @@ public class DenariiAsk implements Serializable
 
     public boolean getSeenBySeller(){return seenBySeller;}
 
-
+    public UserDetails getBuyer() { return buyer;}
 }

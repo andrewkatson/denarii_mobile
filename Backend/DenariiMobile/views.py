@@ -1,5 +1,3 @@
-import json
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
@@ -11,8 +9,8 @@ try:
 except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
-from DenariiMobile.interface import wallet, work_location
-from DenariiMobile.models import DenariiUser, DenariiAsk, Response, CreditCard, SupportTicket, SupportTicketComment
+from DenariiMobile.interface import wallet
+from DenariiMobile.models import DenariiUser, DenariiAsk, Response, SupportTicket
 
 if DEBUG:
     import DenariiMobile.testing.testing_denarii_client as denarii_client
@@ -125,6 +123,7 @@ def get_credit_card(user):
 
 def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of_price, fail_if_full_amount_isnt_met):
     current_bought_amount = 0
+    amount_to_buy_left = to_buy_amount
     current_ask_price = bid_price
     asks_met = []
     for ask in ordered_asks:
@@ -137,24 +136,26 @@ def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of
                 for reprocessed_ask in ordered_asks:
                     reprocessed_ask.in_escrow = False
                     reprocessed_ask.amount_bought = 0
+                    reprocessed_ask.buyer = None
                     reprocessed_ask.save()
 
             return False, "Asking price was higher than bid price", asks_met
 
         ask.in_escrow = True
 
-        if current_bought_amount > to_buy_amount:
-            ask.amount_bought = to_buy_amount
+        if ask.amount > amount_to_buy_left:
+            ask.amount_bought = amount_to_buy_left
         else:
             ask.amount_bought = ask.amount
 
         current_bought_amount += ask.amount_bought
+        amount_to_buy_left -= ask.amount_bought
 
         ask.save()
 
         asks_met.append(ask)
 
-        if current_bought_amount > to_buy_amount:
+        if current_bought_amount >= to_buy_amount:
             return True, None, asks_met
 
     return False, "Reached end of asks so not enough was bought", asks_met
@@ -492,7 +493,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
         filtered_asks = DenariiAsk.objects.filter(in_escrow=False)
         ordered_asks = filtered_asks.order_by('asking_price')
 
-        _, error_message, asks_met = try_to_buy_denarii(ordered_asks, amount, bid_price,
+        _, error_message, asks_met = try_to_buy_denarii(ordered_asks, float(amount), float(bid_price),
                                                         buy_regardless_of_price,
                                                         fail_if_full_amount_isnt_met)
 
@@ -513,6 +514,7 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
 
                 for ask in asks_met:
                     ask.in_escrow = False
+                    ask.amount_bought = 0
                     ask.buyer = None
                     ask.save()
                 return HttpResponseBadRequest("Could not buy the asked amount")
@@ -560,16 +562,17 @@ def transfer_denarii(request, user_id, ask_id):
 
                 receiver_wallet.save()
 
+                response = Response.objects.create(ask_id=ask.ask_id, amount_bought=ask.amount_bought)
+
                 ask.in_escrow = False
                 ask.buyer = None
                 ask.amount = ask.amount - ask.amount_bought
                 ask.amount_bought = 0
 
-                response = Response.objects.create(ask_id=ask.ask_id, amount_bought=ask.amount_bought)
-
                 serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount_bought'))
 
-                # An ask is always settled if the transfer worked. It will get unsettled later on if it still has money in it. 
+                # An ask is always settled if the transfer worked. It will get unsettled later on if it still has
+                # money in it.
                 ask.is_settled = True
                 ask.save()
 
@@ -886,6 +889,14 @@ def delete_user(request, user_id):
     existing = get_user_with_id(user_id)
 
     if existing is not None:
+
+        outstanding_asks_in_escrow = existing.denariiask_set.all().filter(in_escrow=True)
+        outstanding_asks_settled = existing.denariiask_set.all().filter(is_settled=True)
+        outstanding_buys = DenariiAsk.objects.filter(buyer=existing)
+
+        if len(outstanding_asks_in_escrow) != 0 or len(outstanding_asks_settled) != 0 or len(outstanding_buys) != 0:
+            return HttpResponseBadRequest("Outstanding asks or buys so cannot delete user")
+
         existing.delete()
 
         response = Response.objects.create()
@@ -1200,7 +1211,8 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
 
             serialized_response_list = serializers.serialize('json', [response],
                                                              fields=(
-                                                             'support_ticket_id', 'updated_time_body', 'comment_id'))
+                                                                 'support_ticket_id', 'updated_time_body',
+                                                                 'comment_id'))
             support_ticket.save()
             comment.save()
 

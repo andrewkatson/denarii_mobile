@@ -1,12 +1,12 @@
-import pandas as pd
 import random
 
+import pandas as pd
 from django.contrib.sessions.backends.db import SessionStore
-from django.http import HttpRequest, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.test import TestCase
 
-from DenariiMobile.views import *
 from DenariiMobile.interface.ask import *
+from DenariiMobile.views import *
 
 
 def get_json_fields(response):
@@ -1070,6 +1070,88 @@ class ViewsTestCase(TestCase):
 
         self.assertIsNone(get_user_with_id(test_values['user_id']))
 
+    def test_delete_user_with_outstanding_asks(self):
+        seller_test_values = get_all_test_values("delete_user_with_outstanding_asks_seller")
+
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        # buy one and settle it
+        buyer_test_values = get_all_test_values("delete_user_with_outstanding_asks_buyer")
+
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        first_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                first_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(first_ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # buy another so it is in escrow
+        amount_to_buy = 20
+        bid_price = 11.5
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        response = delete_user(seller_test_values['request'], seller_test_values['user_id'])
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_delete_user_with_outstanding_buys(self):
+        seller_test_values = get_all_test_values("delete_user_with_outstanding_buys_seller")
+
+        asks = create_asks(seller_test_values['request'], seller_test_values['user_id'])
+
+        # buy one and settle it
+        buyer_test_values = get_all_test_values("delete_user_with_outstanding_buys_buyer")
+
+        # Buy exactly one of the sellers lowest prices asks
+        amount_to_buy = 2.0
+        bid_price = 10.0
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        # We want the ask id of the ask with 2.0 to offer (at 10.0 price)
+        first_ask_id = 0
+        for ask in asks:
+            if ask.amount == amount_to_buy and ask.asking_price == bid_price:
+                first_ask_id = ask.ask_id
+                break
+
+        self.assertNotEqual(first_ask_id, 0)
+
+        transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], first_ask_id)
+
+        self.assertNotEqual(type(transfer_response), HttpResponseBadRequest)
+
+        # buy another so it is in escrow
+        amount_to_buy = 20
+        bid_price = 11.5
+        buy_response = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy, bid_price,
+                                   "False", "False")
+
+        self.assertNotEqual(type(buy_response), HttpResponseBadRequest)
+
+        response = delete_user(buyer_test_values['request'], buyer_test_values['user_id'])
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
     def test_delete_user_with_non_existent_user(self):
         test_values = get_all_test_values("delete_user_with_non_existent_user")
 
@@ -1794,8 +1876,9 @@ class ViewsTestCase(TestCase):
         # We want to buy (but not transfer) an ask with 34.0 at 11.5 price
         amount_to_buy_two = 34.0
         bid_price_two = 11.5
-        buy_response_two = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy_two, bid_price_two,
-                                   "False", "False")
+        buy_response_two = buy_denarii(buyer_test_values['request'], buyer_test_values['user_id'], amount_to_buy_two,
+                                       bid_price_two,
+                                       "False", "False")
 
         self.assertNotEqual(type(buy_response_two), HttpResponseBadRequest)
 
@@ -1837,7 +1920,8 @@ class ViewsTestCase(TestCase):
 
         fields_two = get_json_fields(response_two)
 
-        get_all_response = get_support_ticket(test_values['request'], test_values['user_id'], fields['support_ticket_id'])
+        get_all_response = get_support_ticket(test_values['request'], test_values['user_id'],
+                                              fields['support_ticket_id'])
 
         self.assertNotEqual(type(get_all_response), HttpResponseBadRequest)
 
@@ -1863,7 +1947,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(get_all_response), HttpResponseBadRequest)
 
-    def test_logout_user_logs_them_out(self): 
+    def test_logout_user_logs_them_out(self):
         test_values = get_all_test_values("logout_user_logs_them_out")
 
         response_one = logout_user(test_values['request'], test_values['user_id'])
