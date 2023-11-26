@@ -10,14 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.denarii.android.R;
-import com.denarii.android.activities.createwallet.CreateWallet;
 import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
 import com.denarii.android.activities.selldenarii.SellDenarii;
+import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.user.UserDetails;
-import com.denarii.android.user.UserSettings;
 
 import java.util.Objects;
 

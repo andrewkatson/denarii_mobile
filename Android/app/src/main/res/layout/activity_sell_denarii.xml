@@ -74,17 +74,6 @@
                 android:textStyle="bold" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </TableLayout>
 
     <EditText
@@ -187,38 +176,6 @@
                 android:textStyle="bold" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="67dp">
-
-            <TextView
-                android:id="@+id/ownAsksAmountOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/ownAsksPriceOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center" />
-
-            <Button
-                android:id="@+id/ownAsksCancelBuyButton"
-                android:layout_width="136dp"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="14dp" />
     </TableLayout>
 
     <TextView
@@ -234,6 +191,7 @@
         tools:layout_editor_absoluteX="176dp" />
 
     <TableLayout
+        android:id="@+id/pendingSalesTable"
         android:layout_width="380dp"
         android:layout_height="173dp"
         android:layout_marginStart="19dp"
@@ -274,39 +232,6 @@
                 android:textStyle="bold" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/pendingSalesAmountOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/pendingSalesPriceOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/pendingSalesAmountBoughtOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAlignment="center" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

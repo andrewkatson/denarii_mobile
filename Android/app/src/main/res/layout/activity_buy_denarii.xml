@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/a"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.buydenarii.BuyDenarii">
@@ -154,8 +155,10 @@
         android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/asks"
@@ -182,6 +185,7 @@
         tools:layout_editor_absoluteX="108dp" />
 
     <TableLayout
+        android:id="@+id/asksTab,"
         android:layout_width="291dp"
         android:layout_height="116dp"
         android:layout_marginStart="49dp"
@@ -218,26 +222,10 @@
                 android:textAlignment="center" />
         </TableRow>
 
-        <TableRow
-            android:layout_width="182dp"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/askAmountOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/askPriceOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </TableRow>
-
     </TableLayout>
 
     <TableLayout
+        android:id="@+id/queuedBuysTable"
         android:layout_width="332dp"
         android:layout_height="116dp"
         android:layout_marginStart="29dp"
@@ -280,35 +268,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/queued_buy_cancel_buy"
                 android:textAlignment="center" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/totalAmountOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/totalPriceBuyOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/totalAmountBoughtOne"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="44dp"
-                android:layout_height="62dp"
-                android:text="X" />
         </TableRow>
 
     </TableLayout>
