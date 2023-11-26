@@ -1,8 +1,11 @@
 package com.denarii.android.network;
 
+import com.denarii.android.user.CreditCard;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.DenariiUser;
+import com.denarii.android.user.SupportTicket;
+import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 
@@ -105,6 +108,53 @@ public class StubbedDenariiService implements DenariiService {
         if (Objects.equals(ask.getAskID(), askIdentifier)) {
           return Optional.of(ask);
         }
+      }
+    }
+    return Optional.empty();
+  }
+
+  private List<DenariiAsk> getAsksOfUser(String userIdentifier, boolean isSettled, boolean inEscrow) {
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+    List<DenariiAsk> filteredAsks = new ArrayList<>();
+    if (user.isPresent()) {
+      for (DenariiAsk ask : user.get().getDenariiAskList()) {
+        if (Objects.equals(isSettled, ask.getIsSettled()) && Objects.equals(inEscrow, ask.getInEscrow())) {
+          filteredAsks.add(ask);
+        }
+      }
+    }
+    return filteredAsks;
+  }
+
+  private boolean hasRemainingAsks(String userIdentifier) {
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+    if (user.isPresent()) {
+      for (DenariiAsk ask : user.get().getDenariiAskList()) {
+        if (ask.getIsSettled() && ask.getInEscrow()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean hasRemainingBuys(String userIdentifier) {
+    for (UserDetails user : users.values()) {
+      if (!Objects.equals(user.getUserID(), userIdentifier)) {
+        for (DenariiAsk ask : user.getDenariiAskList()) {
+          if (Objects.equals(ask.getBuyer().getUserID(), userIdentifier)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  private Optional<SupportTicket> getSupportTicketWithId(String supportTicketIdentifier) {
+    for (SupportTicket supportTicket : loggedInUser.getSupportTicketList()) {
+      if (Objects.equals(supportTicket.getSupportID(), supportTicketIdentifier)) {
+        return Optional.of(supportTicket);
       }
     }
     return Optional.empty();
@@ -601,6 +651,33 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      DenariiAsk newAsk = new DenariiAsk();
+      newAsk.setInEscrow(false);
+      newAsk.setAmount(Double.parseDouble(amount));
+      newAsk.setBuyer(null);
+      newAsk.setAskingPrice(Double.parseDouble(askingPrice));
+      newAsk.setAskID(String.valueOf(lastAskId));
+      newAsk.setIsSettled(false);
+      newAsk.setHasBeenSeenBySeller(false);
+
+      UserDetails userDetails = user.get();
+      userDetails.addDenariiAsk(newAsk);
+
+      lastAskId += 1;
+
+      DenariiResponse response = new DenariiResponse();
+      response.askID = newAsk.getAskID();
+      response.askingPrice = newAsk.getAskingPrice();
+      response.amount = newAsk.getAmount();
+
+      responses.add(response);
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -611,6 +688,28 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      List<DenariiAsk> filteredAsks = getAsksOfUser(userIdentifier, true, false);
+
+      for (DenariiAsk ask : filteredAsks) {
+        ask.setHasBeenSeenBySeller(true);
+
+        DenariiResponse response = new DenariiResponse();
+        response.askID = ask.getAskID();
+        response.amount = ask.getAmount();
+        response.askingPrice = ask.getAskingPrice();
+        response.amountBought = ask.getAmountBought();
+
+        responses.add(response);
+      }
+
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -621,6 +720,39 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = new UserDetails();
+      List<DenariiAsk> remainingAsks = new ArrayList<>();
+      DenariiAsk deletedAsk = null;
+      boolean deletedAnAsk = false;
+
+      for (DenariiAsk ask : userDetails.getDenariiAskList()) {
+        if (Objects.equals(ask.getAskID(), askIdentifier)) {
+          deletedAsk = ask;
+          deletedAnAsk = true;
+        } else {
+          remainingAsks.add(ask);
+        }
+      }
+
+      userDetails.clearDenariiAskList();;
+      userDetails.addAllDenariiAsk(remainingAsks);
+
+      if (deletedAnAsk) {
+        DenariiResponse response = new DenariiResponse();
+        response.askID = deletedAsk.getAskID();
+
+        responses.add(response);
+      } else {
+        // An empty response list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -631,6 +763,21 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+
+      boolean hasCreditCardInfo = Objects.equals(userDetails.getCreditCard(), null);
+
+      DenariiResponse response = new DenariiResponse();
+      response.hasCreditCardInfo = hasCreditCardInfo;
+
+      responses.add(response);
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -646,6 +793,24 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+
+      Random rand = new Random();
+
+      CreditCard newCreditCard = new CreditCard();
+      newCreditCard.setCustomerID(String.valueOf(rand.nextInt(100)));
+      newCreditCard.setSourceTokenID(String.valueOf(rand.nextInt(100)));
+
+      userDetails.setCreditCard(newCreditCard);
+
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -656,6 +821,18 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = new UserDetails();
+
+      userDetails.setCreditCard(null);
+
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -667,6 +844,14 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -678,6 +863,14 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -689,6 +882,49 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      Optional<DenariiAsk> ask = getAskWithId(askIdentifier);
+
+      UserDetails userDetails = user.get();
+      if (ask.isPresent()) {
+        DenariiAsk denariiAsk = ask.get();
+
+        DenariiResponse response = new DenariiResponse();
+        if (!denariiAsk.getIsSettled() || !denariiAsk.getSeenBySeller()) {
+          response.transactionWasSettled = false;
+
+          responses.add(response);
+        } else {
+          response.transactionWasSettled = true;
+
+          if (denariiAsk.getAmount() == 0) {
+
+            // Here we delete the ask if this was the last bit in it.
+            List<DenariiAsk> remainingAsks = new ArrayList<>();
+
+            for (DenariiAsk otherAsk : userDetails.getDenariiAskList()) {
+              if (!Objects.equals(otherAsk.getAskID(), askIdentifier)) {
+                remainingAsks.add(otherAsk);
+              }
+            }
+
+            userDetails.clearDenariiAskList();;
+            userDetails.addAllDenariiAsk(remainingAsks);
+          } else {
+            denariiAsk.setIsSettled(false);
+            denariiAsk.setHasBeenSeenBySeller(false);
+          }
+        }
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -699,6 +935,24 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      if (hasRemainingAsks(userIdentifier) || hasRemainingBuys(userIdentifier)) {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      } else {
+        loggedInUser = null;
+
+        users.remove(userIdentifier);
+
+        responses.add(new DenariiResponse());
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -710,6 +964,30 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      Optional<DenariiAsk> ask = getAskWithId(askIdentifier);
+
+      if (ask.isPresent()) {
+        DenariiResponse response = new DenariiResponse();
+
+        DenariiAsk denariiAsk = ask.get();
+
+        response.askID = askIdentifier;
+        response.amount = denariiAsk.getAmount();
+        response.amountBought = denariiAsk.getAmountBought();
+        response.askingPrice = denariiAsk.getAskingPrice();
+
+        responses.add(response);
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -721,6 +999,53 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      Optional<DenariiAsk> ask = getAskWithId(askIdentifier);
+
+      if (ask.isPresent()) {
+        Optional<UserDetails> receivingUser = getUserWithAsk(askIdentifier);
+
+        if (receivingUser.isPresent()) {
+
+          UserDetails sendingUserDetails = user.get();
+          UserDetails receivingUserDetails = receivingUser.get();
+          DenariiAsk denariiAsk = ask.get();
+
+          if (sendingUserDetails.getWalletDetails().getBalance() >= denariiAsk.getAmountBought()) {
+            sendingUserDetails.getWalletDetails().setBalance(sendingUserDetails.getWalletDetails().getBalance() - denariiAsk.getAmountBought());
+            receivingUserDetails.getWalletDetails().setBalance(receivingUserDetails.getWalletDetails().getBalance() + denariiAsk.getAmountBought());
+
+            DenariiResponse response = new DenariiResponse();
+
+            response.askID = denariiAsk.getAskID();
+            response.amountBought = denariiAsk.getAmountBought();
+
+            denariiAsk.setInEscrow(false);
+            denariiAsk.setBuyer(null);
+            denariiAsk.setAmount(denariiAsk.getAmount() + denariiAsk.getAmountBought());
+            denariiAsk.setAmountBought(0.0);
+            denariiAsk.setIsSettled(false);
+
+            responses.add(response);
+          } else {
+            // An empty responses list indicates failure
+            return new StubbedCall(responses);
+          }
+        } else {
+          // An empty responses list indicates failure
+          return new StubbedCall(responses);
+        }
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -732,6 +1057,14 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -742,6 +1075,30 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      Optional<DenariiAsk> ask = getAskWithId(askIdentifier);
+
+      if (ask.isPresent()) {
+        DenariiAsk denariiAsk = ask.get();
+
+        if (denariiAsk.getInEscrow() && !denariiAsk.getIsSettled()) {
+          denariiAsk.setInEscrow(false);
+          denariiAsk.setBuyer(null);
+          denariiAsk.setAmountBought(0.0);
+        } else {
+          // An empty responses list indicates failure
+          return new StubbedCall(responses);
+        }
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -762,6 +1119,22 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+
+      userDetails.getDenariiUser().setVerified(true);
+
+      DenariiResponse response = new DenariiResponse();
+      response.verificationStatus = "is_verified";
+
+      responses.add(response);
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
+
     return new StubbedCall(responses);
   }
 
@@ -771,6 +1144,23 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+
+      DenariiResponse response = new DenariiResponse();
+
+      if (userDetails.getDenariiUser().getIsVerified()) {
+        response.verificationStatus = "is_verified";
+      } else {
+        response.verificationStatus = "failed_verification";
+      }
+      responses.add(response);
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -781,6 +1171,27 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      for (DenariiAsk ask : user.get().getDenariiAskList()) {
+        if (!ask.getIsSettled() && !ask.getInEscrow()) {
+          DenariiResponse response = new DenariiResponse();
+          response.askID = ask.getAskID();
+          response.amount = ask.getAmount();
+          response.amountBought = ask.getAmountBought();
+          response.askingPrice = ask.getAskingPrice();
+
+          responses.add(response);
+        } else {
+          // An empty responses list indicates failure
+          return new StubbedCall(responses);
+        }
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -791,6 +1202,26 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      List<DenariiAsk> asksOfOtherUsers = getAsksOfOtherUsers(userIdentifier);
+
+      for (DenariiAsk ask : asksOfOtherUsers) {
+        if (Objects.equals(ask.getBuyer().getUserID(), userIdentifier)) {
+          DenariiResponse response = new DenariiResponse();
+          response.askID = ask.getAskID();
+          response.amount = ask.getAmount();
+          response.askingPrice = ask.getAskingPrice();
+          response.amountBought = ask.getAmountBought();
+
+          responses.add(response);
+        }
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -802,6 +1233,31 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      UserDetails userDetails = user.get();
+
+      Random rand = new Random();
+
+      SupportTicket supportTicket = new SupportTicket();
+      supportTicket.setSupportID(String.valueOf(rand.nextInt(100)));
+      supportTicket.setDescription(description);
+      supportTicket.setTitle(title);
+
+      userDetails.addSupportTicket(supportTicket);
+
+      DenariiResponse response = new DenariiResponse();
+
+      response.supportTicketID = supportTicket.getSupportID();
+
+      responses.add(response);
+
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -813,6 +1269,35 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      Optional<SupportTicket> supportTicket = getSupportTicketWithId(supportTicketIdentifier);
+
+      if (supportTicket.isPresent()) {
+        SupportTicket denariiSupportTicket = supportTicket.get();
+
+        SupportTicketComment newComment = new SupportTicketComment();
+        newComment.setAuthor(user.get().getUserName());
+        newComment.setContent(comment);
+
+        denariiSupportTicket.addComment(newComment);
+
+        Random rand = new Random();
+
+        DenariiResponse response = new DenariiResponse();
+        response.supportTicketID = supportTicketIdentifier;
+        response.commentId = String.valueOf(rand.nextInt(100));
+
+        responses.add(response);
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -824,6 +1309,29 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      List<SupportTicket> remainingTickets = new ArrayList<>();
+      UserDetails userDetails = user.get();
+
+      for (SupportTicket supportTicket : userDetails.getSupportTicketList()) {
+        if (!Objects.equals(supportTicket.getSupportID(), supportTicketIdentifier)) {
+          remainingTickets.add(supportTicket);
+        }
+      }
+
+      userDetails.clearSupportTicketList();
+      userDetails.addAllSupportTicket(remainingTickets);
+
+      DenariiResponse response = new DenariiResponse();
+      response.supportTicketID = supportTicketIdentifier;
+
+      responses.add(response);
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -835,6 +1343,29 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+      boolean canBeResolvedBool = Boolean.parseBoolean(canBeResolved);
+      for (SupportTicket supportTicket : userDetails.getSupportTicketList()) {
+        if (canBeResolvedBool || !supportTicket.getResolved()) {
+           DenariiResponse response = new DenariiResponse();
+           response.supportTicketID = supportTicket.getSupportID();
+           response.author = userDetails.getUserName();
+           response.title = supportTicket.getTitle();
+           response.description = supportTicket.getDescription();
+           response.updatedTimeBody = "";
+           response.creationTimeBody = "";
+           response.isResolved = supportTicket.getResolved();
+
+           responses.add(response);
+        }
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -846,6 +1377,32 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+
+      if (supportTicketOptional.isPresent()) {
+        SupportTicket supportTicket = supportTicketOptional.get();
+
+        DenariiResponse response = new DenariiResponse();
+        response.supportTicketID = supportTicketIdentifier;
+        response.author = user.get().getUserName();
+        response.title = supportTicket.getTitle();
+        response.description = supportTicket.getDescription();
+        response.updatedTimeBody = "";
+        response.creationTimeBody = "";
+
+        responses.add(response);
+      } else{
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -857,6 +1414,32 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+
+      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+
+      if (supportTicketOptional.isPresent()) {
+       SupportTicket supportTicket = supportTicketOptional.get();
+
+       for (SupportTicketComment comment : supportTicket.getSupportTicketCommentList()) {
+         DenariiResponse response = new DenariiResponse();
+         response.author = comment.getAuthor();
+         response.content = comment.getContent();
+         response.updatedTimeBody = "";
+         response.creationTimeBody = "";
+
+         responses.add(response);
+       }
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -868,6 +1451,29 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+
+      if (supportTicketOptional.isPresent()) {
+        SupportTicket supportTicket = supportTicketOptional.get();
+
+        supportTicket.setResolved(true);
+
+        DenariiResponse response = new DenariiResponse();
+        response.supportTicketID = supportTicketIdentifier;
+        response.updatedTimeBody = "";
+
+        responses.add(response);
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -878,6 +1484,26 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      UserDetails userDetails = user.get();
+      for (DenariiAsk ask : userDetails.getDenariiAskList()) {
+       if (ask.getInEscrow() && !ask.getIsSettled()) {
+         DenariiResponse response = new DenariiResponse();
+
+         response.askID = ask.getAskID();
+         response.amount = ask.getAmount();
+         response.askingPrice = ask.getAskingPrice();
+         response.amountBought = ask.getAmountBought();
+
+         responses.add(response);
+       }
+      }
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }
@@ -888,6 +1514,16 @@ public class StubbedDenariiService implements DenariiService {
 
     requireLogin(userIdentifier);
 
+    Optional<UserDetails> user = getUserWithId(userIdentifier);
+
+    if (user.isPresent()) {
+      loggedInUser = null;
+
+      responses.add(new DenariiResponse());
+    } else {
+      // An empty responses list indicates failure
+      return new StubbedCall(responses);
+    }
 
     return new StubbedCall(responses);
   }

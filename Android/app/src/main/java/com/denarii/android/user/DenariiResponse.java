@@ -61,4 +61,7 @@ public class DenariiResponse implements Serializable {
 
     @SerializedName("updated_time_body")
     public String updatedTimeBody;
+
+    @SerializedName("comment_id")
+    public String commentId;
 }

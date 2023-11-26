@@ -594,6 +594,7 @@ def transfer_denarii(request, user_id, ask_id):
 def make_denarii_ask(request, user_id, amount, asking_price):
     existing = get_user_with_id(user_id)
 
+    # TODO do we want to be disallowing new asks when existing asks exceed amount of denarii a user has?
     if existing is not None:
         new_ask = existing.denariiask_set.create()
         new_ask.in_escrow = False

@@ -389,6 +389,32 @@ class StubbedAPI: API {
             user.denariiAskList = finalAsks
         }
     }
+
+    func hasRemainingAsks(_ userIdentifier : String) -> Bool {
+        for user in self.users {
+            if user.userID == userIdentifier {
+                for ask in user.denariiAskList {
+                    if ask.isSettled || ask.inEscrow {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
+    func hasRemainingBuys(_ userIdentifier : String) -> Bool {
+        for user in self.users {
+            if user.userID != userIdentifier {
+                for ask in user.denariiAskList {
+                    if ask.buyerId == userIdentifier {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
     
     func requireLogin(_ userIdentifier: Int) -> Bool {
         
@@ -1023,7 +1049,7 @@ class StubbedAPI: API {
         var denariiResponses = Array<DenariiResponse>()
         var denariiResponse = DenariiResponse()
         
-        if !requireLogin(userIdentifier) {
+        if !requireLogin(userIdentifier) || hasRemainingAsks(userIdentifier) || hasRemainingBuys(userIdentifier) {
             denariiResponse.responseCode = -1
             denariiResponses.append(denariiResponse)
             return denariiResponses
@@ -1380,6 +1406,7 @@ class StubbedAPI: API {
                         denariiResponse.responseCode = 200
                         denariiResponse.supportTicketID = supportTicket.supportID
                         denariiResponse.author = user.userName
+                        denariiResponse.title = supportTicket.title
                         denariiResponse.description = supportTicket.description
                         denariiResponse.updatedTimeBody = ""
                         denariiResponse.creationTimeBody = ""
@@ -1432,7 +1459,6 @@ class StubbedAPI: API {
 
     func getCommentsOnTicket(_ userIdentifier: Int, _ supportTicketId: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        var denariiResponse = DenariiResponse()
         
         if !requireLogin(userIdentifier) {
             return denariiResponses
@@ -1445,6 +1471,8 @@ class StubbedAPI: API {
                 let supportTicket = user.supportTicketList[stIndex]
                 if supportTicket.supportID == supportTicketId {
                     for comment in supportTicket.supportTicketCommentList {
+                        var denariiResponse = DenariiResponse()
+
                         denariiResponse.author = comment.author
                         denariiResponse.content = comment.content
                         denariiResponse.updatedTimeBody = ""
@@ -1491,7 +1519,6 @@ class StubbedAPI: API {
 
     func pollForEscrowedTransaction(_ userIdentifier: Int) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
-        var denariiResponse = DenariiResponse()
         
         if !requireLogin(userIdentifier) {
             return denariiResponses
@@ -1504,6 +1531,8 @@ class StubbedAPI: API {
                 for askIndex in user.denariiAskList.indices {
                     let ask = user.denariiAskList[askIndex]
                     if ask.inEscrow && !ask.isSettled {
+                        var denariiResponse = DenariiResponse()
+
                         denariiResponse.askID = ask.askID
                         denariiResponse.amount = ask.amount
                         denariiResponse.askingPrice = ask.askingPrice

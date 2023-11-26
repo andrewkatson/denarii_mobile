@@ -41,6 +41,9 @@ public class UserDetails implements Serializable {
     public void addDenariiAsk(DenariiAsk newAsk){
         denariiAskList.add(newAsk);
     }
+    public void addAllDenariiAsk(List<DenariiAsk> otherList) { denariiAskList.addAll(otherList);}
+
+    public void addAllSupportTicket(List<SupportTicket> otherList) {supportTicketList.addAll(otherList);}
 
     public void setDenariiUser(DenariiUser denariiUser) {
         this.denariiUser = denariiUser;
@@ -73,4 +76,8 @@ public class UserDetails implements Serializable {
     public DenariiUser getDenariiUser() {
         return denariiUser;
     }
+
+    public void clearDenariiAskList() {this.denariiAskList.clear();}
+
+    public void clearSupportTicketList() {this.supportTicketList.clear();}
 }

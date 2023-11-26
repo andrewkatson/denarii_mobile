@@ -25,6 +25,8 @@ public class SupportTicket implements Serializable {
 
     public void setSupportTicketCommentList(List<SupportTicketComment> newSupportTicketList) {supportTicketCommentList = newSupportTicketList;}
 
+    public void addComment(SupportTicketComment comment) { supportTicketCommentList.add(comment);}
+
     public String getSupportID() {
         return supportID;
     }
