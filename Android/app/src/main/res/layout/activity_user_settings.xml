@@ -11,7 +11,6 @@
         android:id="@+id/userSettingsHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
         android:text="@string/user_settings_header"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -20,34 +19,37 @@
         tools:layout_editor_absoluteX="177dp" />
 
     <Button
-        android:id="@+id/userSettingsSupportTicket"
+        android:id="@+id/supportTicketsButton"
         android:layout_width="214dp"
         android:layout_height="101dp"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="145dp"
-        android:layout_marginEnd="99dp"
-        android:layout_marginBottom="485dp"
         android:text="@string/user_settings_support_tickets"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userSettingsHeader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/logoutButton" />
 
     <Button
-        android:id="@+id/userSettingsSupportTicket2"
+        android:id="@+id/logoutButton"
         android:layout_width="214dp"
         android:layout_height="101dp"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="343dp"
-        android:layout_marginEnd="99dp"
-        android:layout_marginBottom="287dp"
+        android:text="@string/logout_button_text"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@+id/supportTicketsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/deleteAccountButton" />
+
+    <Button
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="214dp"
+        android:layout_height="101dp"
         android:backgroundTint="#BC0B0B"
         android:text="@string/user_settings_delete_account"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoutButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

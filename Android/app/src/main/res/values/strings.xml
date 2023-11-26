@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Android</string>
     <string name="user_info_next">Next</string>
     <string name="user_info_enter_name_text">Name</string>
@@ -136,6 +136,14 @@
     <string name="user_settings_header">User Settings</string>
     <string name="user_settings_support_tickets">Support Tickets</string>
     <string name="user_settings_delete_account">Delete Account</string>
+    <string name="wallet_name_menu_text">Wallet</string>
+    <string name="buy_denarii_menu_text">Buy Denarii</string>
+    <string name="sell_denarii_menu_text">Sell Denarii</string>
+    <string name="verification_menu_text">Verification</string>
+    <string name="credit_card_info_menu_text">Credit Card</string>
+    <string name="main_menu_title">Denarii</string>
+    <string name="settings_menu_text">Settings</string>
+    <string name="logout_button_text">Logout</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

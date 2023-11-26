@@ -6,12 +6,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.denarii.android.R;
+import com.denarii.android.activities.buydenarii.BuyDenarii;
+import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
+import com.denarii.android.activities.selldenarii.SellDenarii;
+import com.denarii.android.activities.usersettings.UserSettings;
+import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
@@ -22,6 +30,7 @@ import com.denarii.android.util.UnpackDenariiResponse;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +39,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OpenedWallet extends AppCompatActivity {
+
+    private UserDetails userDetails = null;
 
     private DenariiService denariiService;
 
@@ -41,7 +52,7 @@ public class OpenedWallet extends AppCompatActivity {
         denariiService = DenariiServiceHandler.returnDenariiService();
 
         Intent currentIntent = getIntent();
-        UserDetails userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+        userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
         if (userDetails != null && userDetails.getWalletDetails() != null) {
             TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
@@ -59,14 +70,21 @@ public class OpenedWallet extends AppCompatActivity {
         refresh.setOnClickListener(v -> getBalance(userDetails));
     }
 
-    private void getBalance(UserDetails userDetails) {
-        if (userDetails == null) {
-            userDetails = new UserDetails();
-            userDetails.setWalletDetails(new WalletDetails());
-        }
-        Call<List<DenariiResponse>> walletCall = denariiService.getBalance(userDetails.getUserID(), userDetails.getWalletDetails().getWalletName());
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
-        UserDetails finalUserDetails = userDetails;
+    private void getBalance(UserDetails localUserDetails) {
+        if (localUserDetails == null) {
+            localUserDetails = new UserDetails();
+            localUserDetails.setWalletDetails(new WalletDetails());
+        }
+        Call<List<DenariiResponse>> walletCall = denariiService.getBalance(localUserDetails.getUserID(), localUserDetails.getWalletDetails().getWalletName());
+
+        UserDetails finalUserDetails = localUserDetails;
         walletCall.enqueue(new Callback<List<DenariiResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<DenariiResponse>> call, @NonNull Response<List<DenariiResponse>> response) {
@@ -182,5 +200,59 @@ public class OpenedWallet extends AppCompatActivity {
 
         Toast toast = Toast.makeText(context, failureMessage, duration);
         toast.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (Objects.equals(userDetails, null)) {
+            return true;
+        }
+
+        // Handle item selection.
+        if (Objects.equals(item.getItemId(), R.id.buy_denarii)) {
+            Intent intent = new Intent(OpenedWallet.this, BuyDenarii.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
+
+            return true;
+        } else if (Objects.equals(item.getItemId(), R.id.sell_denarii)) {
+            Intent intent = new Intent(OpenedWallet.this, SellDenarii.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
+
+            return true;
+        } else if (Objects.equals(item.getItemId(), R.id.wallet)) {
+            return true;
+        } else if (Objects.equals(item.getItemId(), R.id.verification)) {
+            Intent intent = new Intent(OpenedWallet.this, Verification.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
+
+            return true;
+        } else if (Objects.equals(item.getItemId(), R.id.credit_card_info)) {
+            Intent intent = new Intent(OpenedWallet.this, CreditCardInfo.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
+
+            return true;
+        } else if (Objects.equals(item.getItemId(), R.id.settings)) {
+            Intent intent = new Intent(OpenedWallet.this, UserSettings.class);
+
+            intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+            startActivity(intent);
+
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }

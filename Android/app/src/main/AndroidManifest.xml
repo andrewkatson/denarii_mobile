@@ -25,7 +25,7 @@
             android:name=".activities.createsupportticket.CreateSupportTicket"
             android:exported="false" />
         <activity
-            android:name=".activities.supportticket.SupportTicket"
+            android:name=".activities.supporttickets.SupportTickets"
             android:exported="false" />
         <activity
             android:name=".activities.creditcardinfo.CreditCardInfo"
