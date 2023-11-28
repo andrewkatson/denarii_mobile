@@ -30,6 +30,8 @@ public class BuyDenarii extends AppCompatActivity {
 
         Intent currentIntent = getIntent();
         userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
