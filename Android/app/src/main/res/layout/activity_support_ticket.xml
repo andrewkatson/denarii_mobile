@@ -10,33 +10,23 @@
         android:id="@+id/supportTicketHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="626dp"
         android:text="@string/support_ticket_header"
         android:textAlignment="center"
         android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@id/createSupportTicket"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/createSupportTicket"
+        android:layout_width="221dp"
+        android:layout_height="62dp"
+        android:text="@string/create_support_ticket"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="156dp" />
-
-    <TextView
-        android:id="@+id/supportTicketOne"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="142dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="168dp" />
-
-    <TextView
-        android:id="@+id/supportTicketTwo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="212dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="168dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/supportTicketHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
