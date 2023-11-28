@@ -10,97 +10,80 @@
         android:id="@+id/creditCardInfoHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
         android:text="@string/credit_card_info_header"
         android:textAlignment="center"
         android:textSize="34sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="156dp" />
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoStatus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/creditCardInfoStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="91dp"
         android:text="@string/credit_card_info_status"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="139dp" />
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoNumber"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoHeader" />
 
     <EditText
         android:id="@+id/creditCardInfoNumber"
         android:layout_width="218dp"
         android:layout_height="84dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="135dp"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="512dp"
         android:ems="10"
         android:inputType="number"
         android:text="@string/credit_card_info_number"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoExpiration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoStatus" />
 
     <EditText
         android:id="@+id/creditCardInfoExpiration"
         android:layout_width="219dp"
         android:layout_height="93dp"
-        android:layout_marginStart="94dp"
-        android:layout_marginTop="237dp"
-        android:layout_marginEnd="98dp"
-        android:layout_marginBottom="401dp"
         android:ems="10"
         android:inputType="text"
         android:text="@string/credit_card_info_expiration"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoSecurityCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoNumber" />
 
     <EditText
         android:id="@+id/creditCardInfoSecurityCode"
         android:layout_width="216dp"
         android:layout_height="86dp"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="356dp"
-        android:layout_marginEnd="98dp"
-        android:layout_marginBottom="289dp"
         android:ems="10"
         android:inputType="number"
         android:text="@string/credit_card_info_security"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoSubmit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoExpiration" />
 
     <Button
         android:id="@+id/creditCardInfoSubmit"
         android:layout_width="240dp"
         android:layout_height="77dp"
-        android:layout_marginStart="85dp"
-        android:layout_marginTop="475dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="179dp"
         android:text="@string/credit_card_info_submit"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/creditCardInfoClear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoSecurityCode" />
 
     <Button
         android:id="@+id/creditCardInfoClear"
         android:layout_width="238dp"
         android:layout_height="79dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="580dp"
-        android:layout_marginEnd="86dp"
-        android:layout_marginBottom="75dp"
         android:text="@string/credit_card_info_clear"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/creditCardInfoSubmit" />
 </androidx.constraintlayout.widget.ConstraintLayout>
