@@ -130,7 +130,7 @@
     <string name="verification_workcountry">Work Country</string>
     <string name="verification_submit">Submit</string>
     <string name="support_ticket_details_header">Support Ticket Details</string>
-    <string name="support_ticket_details_name">I Cannot Get Verified</string>
+    <string name="support_ticket_details_name">Placeholder Title</string>
     <string name="support_ticket_details_comment_box">Add Comment Here</string>
     <string name="support_ticket_details_comment_box_submit">Submit</string>
     <string name="user_settings_header">User Settings</string>
