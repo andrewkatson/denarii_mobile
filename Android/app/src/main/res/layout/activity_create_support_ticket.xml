@@ -10,60 +10,49 @@
         android:id="@+id/createSupportTicketHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="648dp"
         android:text="@string/create_support_ticket_header"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="91dp" />
+        app:layout_constraintBottom_toTopOf="@+id/supportTicketTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/supportTicketTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginBottom="586dp"
         android:ems="10"
         android:inputType="text"
         android:text="@string/create_support_ticket_title"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/supportTicketDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/createSupportTicketHeader" />
 
     <EditText
         android:id="@+id/supportTicketDescription"
         android:layout_width="211dp"
         android:layout_height="280dp"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="182dp"
-        android:layout_marginEnd="107dp"
-        android:layout_marginBottom="269dp"
         android:ems="10"
         android:inputType="text"
         android:text="@string/create_support_ticket_description"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/createSupportTicketSubmit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/supportTicketTitle" />
 
     <Button
         android:id="@+id/createSupportTicketSubmit"
         android:layout_width="224dp"
         android:layout_height="104dp"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="498dp"
-        android:layout_marginEnd="94dp"
-        android:layout_marginBottom="129dp"
         android:text="@string/create_support_ticket_submit"
         android:textAlignment="center"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/supportTicketDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>
