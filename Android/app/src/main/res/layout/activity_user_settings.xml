@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="#FA1414"
-    tools:context=".user.UserSettings">
+    tools:context=".activities.usersettings.UserSettings">
 
     <TextView
         android:id="@+id/userSettingsHeader"
