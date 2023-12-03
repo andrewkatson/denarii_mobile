@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'androidx.navigation:navigation-fragment:2.7.5'
     implementation 'androidx.navigation:navigation-ui:2.7.5'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     testImplementation 'junit:junit:4.13.2'
     // Optional -- Robolectric environment
     testImplementation 'org.robolectric:robolectric:4.9'
