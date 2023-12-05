@@ -2,17 +2,34 @@ package com.denarii.android.user;
 
 import java.io.Serializable;
 
-public class CreditCard implements Serializable
-{
-    private String customerID;
+public class CreditCard implements Serializable {
+  private String customerID;
 
-    private String sourceTokenID;
+  private String sourceTokenID;
 
-    public void setCustomerID(String newID){customerID = newID;}
+  private boolean hasCreditCardInfo = false;
 
-    public void setSourceTokenID(String newSourceID){sourceTokenID = newSourceID;}
+  public void setCustomerID(String newID) {
+    customerID = newID;
+  }
 
-    public String getCustomerID(){return customerID;}
+  public void setSourceTokenID(String newSourceID) {
+    sourceTokenID = newSourceID;
+  }
 
-    public String getSourceTokenID(){return sourceTokenID;}
+  public void setHasCreditCardInfo(boolean hasCreditCardInfo) {
+    this.hasCreditCardInfo = hasCreditCardInfo;
+  }
+
+  public String getCustomerID() {
+    return customerID;
+  }
+
+  public String getSourceTokenID() {
+    return sourceTokenID;
+  }
+
+  public boolean getHasCreditCardInfo() {
+    return hasCreditCardInfo;
+  }
 }

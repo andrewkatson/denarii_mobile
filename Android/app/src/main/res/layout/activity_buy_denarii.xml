@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/a"
+    android:id="@+id/buy_denarii_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.buydenarii.BuyDenarii">
@@ -20,20 +20,20 @@
         tools:layout_editor_absoluteX="117dp" />
 
     <EditText
-        android:id="@+id/amount"
+        android:id="@+id/buy_denarii_amount"
         android:layout_width="237dp"
         android:layout_height="57dp"
         android:height="48dp"
         android:ems="10"
         android:inputType="text"
         android:text="@string/buy_amount_header"
-        app:layout_constraintBottom_toTopOf="@+id/price"
+        app:layout_constraintBottom_toTopOf="@+id/buy_denarii_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buyDenarii" />
 
     <EditText
-        android:id="@+id/price"
+        android:id="@+id/buy_denarii_price"
         android:layout_width="238dp"
         android:layout_height="59dp"
         android:ems="10"
@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toTopOf="@id/buyRegardlessPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amount" />
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_amount" />
 
     <TextView
         android:id="@+id/buyRegardlessPrice"
@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toTopOf="@id/trueBuyAnyPrice"
         app:layout_constraintEnd_toStartOf="@id/failIfFullAmountIsntMet"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_price" />
 
     <TextView
         android:id="@+id/failIfFullAmountIsntMet"
@@ -64,14 +64,14 @@
         app:layout_constraintBottom_toTopOf="@id/trueFailIfNotFull"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/buyRegardlessPrice"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_price" />
 
     <RadioButton
         android:id="@+id/trueBuyAnyPrice"
         android:layout_width="84dp"
         android:layout_height="49dp"
         android:text="@string/true_value"
-        app:layout_constraintBottom_toTopOf="@id/submit"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
         app:layout_constraintEnd_toStartOf="@+id/falseBuyAnyPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buyRegardlessPrice" />
@@ -82,7 +82,7 @@
         android:layout_height="48dp"
         android:checked="true"
         android:text="@string/true_value"
-        app:layout_constraintBottom_toTopOf="@id/submit"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
         app:layout_constraintEnd_toStartOf="@id/falseFailIfNotFull"
         app:layout_constraintStart_toEndOf="@id/falseBuyAnyPrice"
         app:layout_constraintTop_toBottomOf="@id/failIfFullAmountIsntMet" />
@@ -93,7 +93,7 @@
         android:layout_height="51dp"
         android:checked="true"
         android:text="@string/false_value"
-        app:layout_constraintBottom_toTopOf="@id/submit"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
         app:layout_constraintEnd_toStartOf="@id/trueFailIfNotFull"
         app:layout_constraintStart_toEndOf="@id/trueBuyAnyPrice"
         app:layout_constraintTop_toBottomOf="@id/buyRegardlessPrice" />
@@ -104,13 +104,13 @@
         android:layout_height="49dp"
         android:checked="false"
         android:text="@string/false_value"
-        app:layout_constraintBottom_toTopOf="@id/submit"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/trueFailIfNotFull"
         app:layout_constraintTop_toBottomOf="@id/failIfFullAmountIsntMet" />
 
     <Button
-        android:id="@+id/submit"
+        android:id="@+id/buy_denarii_submit"
         android:layout_width="189dp"
         android:layout_height="57dp"
         android:text="@string/submit"
@@ -130,7 +130,7 @@
         app:layout_constraintBottom_toTopOf="@id/askTableAmount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submit" />
+        app:layout_constraintTop_toBottomOf="@id/buy_denarii_submit" />
 
 
     <TextView

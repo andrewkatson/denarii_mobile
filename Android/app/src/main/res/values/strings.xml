@@ -144,6 +144,7 @@
     <string name="main_menu_title">Denarii</string>
     <string name="settings_menu_text">Settings</string>
     <string name="logout_button_text">Logout</string>
+    <string name="cancel">Cancel</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

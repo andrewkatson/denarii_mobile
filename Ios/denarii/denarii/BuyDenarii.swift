@@ -600,6 +600,7 @@ struct BuyDenarii: View {
                 }
             }
         }
+
         return failedReversals
     }
     
