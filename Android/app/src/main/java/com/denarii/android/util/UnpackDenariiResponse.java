@@ -139,4 +139,37 @@ public class UnpackDenariiResponse {
     ask.setAmountBought(response.amountBought);
     ask.setAmount(response.amount);
   }
+
+  public static void unpackGetAllAsks(List<DenariiAsk> ownAsks, List<DenariiResponse> responses) {
+    for (DenariiResponse response : responses) {
+      DenariiAsk ask = new DenariiAsk();
+      ask.setAskID(response.askID);
+      ask.setAmount(response.amount);
+      ask.setAskingPrice(response.askingPrice);
+      ask.setAmountBought(response.amountBought);
+
+      ownAsks.add(ask);
+    }
+  }
+
+  public static void unpackPollForEscrowedTransaction(
+      List<DenariiAsk> ownBoughtAsks, List<DenariiResponse> responses) {
+    for (DenariiResponse response : responses) {
+      DenariiAsk ask = new DenariiAsk();
+      ask.setAskID(response.askID);
+      ask.setAmount(response.amount);
+      ask.setAskingPrice(response.askingPrice);
+      ask.setAmountBought(response.amountBought);
+
+      ownBoughtAsks.add(ask);
+    }
+  }
+
+  public static boolean unpackMakeDenariiAsk(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
+
+  public static boolean unpackCancelAsk(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
 }

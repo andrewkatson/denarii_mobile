@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import retrofit2.Call;
@@ -47,7 +45,6 @@ import retrofit2.Response;
 
 public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-  private final Executor executor = Executors.newCachedThreadPool();
   private final ReentrantLock reentrantLock = new ReentrantLock();
   private final List<DenariiAsk> currentAsks = new ArrayList<>();
   private final List<DenariiAskArtifacts> currentAskArtifacts = new ArrayList<>();
@@ -276,6 +273,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
       artifacts.setAmountTextView(amount);
       artifacts.setAskingPriceTextView(askingPrice);
       artifacts.setAmountBoughtTextView(amountBought);
+      artifacts.setCancelButton(cancel);
 
       queuedBuysArtifacts.add(artifacts);
     }

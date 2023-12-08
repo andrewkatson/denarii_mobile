@@ -21,9 +21,8 @@ struct SellDenarii: View {
     @State private var isCancelled: Bool = false
     @State private var showingPopoverForSellDenarii = false
     @State private var showingPopoverForCancelSellDenarii = false
-    @State private var goingPrice: Double = 0.0
     
-    
+    @ObservedObject private var goingPrice : ObservableDouble = ObservableDouble()
     @ObservedObject private var user: ObservableUser = ObservableUser()
     @ObservedObject private var successOrFailureForSellDenarii: ObservableString = ObservableString()
     @ObservedObject private var successOrFailureForCancelSellDenarii: ObservableString = ObservableString()
@@ -159,6 +158,7 @@ struct SellDenarii: View {
                     escrowed.askID = response.askID
                     escrowed.amount = response.amount
                     escrowed.askingPrice = response.askingPrice
+                    escrowed.amountBought = response.amountBought
                     
                     escrowedAsks.append(escrowed)
                 }
@@ -182,6 +182,8 @@ struct SellDenarii: View {
                     goingPrice = ask.askingPrice
                 }
             }
+
+            self.goingPrice.setValue(goingPrice)
         }
     }
     
@@ -195,7 +197,7 @@ struct SellDenarii: View {
                         VStack(alignment: .center) {
                             Text("Sell Denarii").font(.largeTitle)
                             Spacer()
-                            Text("Going Price: \(goingPrice)")
+                            Text("Going Price: \(goingPrice.getValue())")
                             Text("Asks").font(.title)
                             ScrollView(.vertical, showsIndicators: true) {
                                 VStack {
@@ -320,7 +322,7 @@ struct SellDenarii: View {
                         VStack(alignment: .center) {
                             Text("Sell Denarii").font(.headline)
                             Spacer()
-                            Text("Going Price: \(goingPrice)").font(.subheadline)
+                            Text("Going Price: \(goingPrice.getValue())").font(.subheadline)
                             TextField("Amount", text: $amount)
                             TextField("Price", text: $price)
                             Button("Sell") {
