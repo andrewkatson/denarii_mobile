@@ -81,6 +81,7 @@ public class Login extends AppCompatActivity {
         denariiService.getUserId(
             userDetails.getUserName(), userDetails.getUserEmail(), userDetails.getUserPassword());
     UserDetails finalUserDetails = userDetails;
+    final boolean[] succeeded = {false};
     walletCall.enqueue(
         new Callback<>() {
           @Override
@@ -90,9 +91,14 @@ public class Login extends AppCompatActivity {
             if (response.isSuccessful()) {
               if (response.body() != null) {
                 // We only care about the first wallet.
-                UnpackDenariiResponse.unpackLoginOrRegister(finalUserDetails, response.body());
+                succeeded[0] =
+                    UnpackDenariiResponse.unpackLoginOrRegister(finalUserDetails, response.body());
                 // finalUserDetails.setWalletDetails(response.body());
-                createSuccessToast();
+                if (succeeded[0]) {
+                  createSuccessToast();
+                } else {
+                  createFailureToast("Failed to login");
+                }
               } else {
                 createFailureToast("No response body");
               }

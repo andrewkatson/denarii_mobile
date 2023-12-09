@@ -90,8 +90,13 @@ public class CreateWallet extends AppCompatActivity {
             if (response.isSuccessful()) {
               if (response.body() != null) {
                 // We only care about the first wallet.
-                UnpackDenariiResponse.unpackCreateWallet(finalUserDetails, response.body());
-                createSuccessToast(finalUserDetails.getWalletDetails().getSeed());
+                boolean succeeded =
+                    UnpackDenariiResponse.unpackCreateWallet(finalUserDetails, response.body());
+                if (succeeded) {
+                  createSuccessToast(finalUserDetails.getWalletDetails().getSeed());
+                } else {
+                  createFailureToast("Failed to create wallet");
+                }
               } else {
                 createFailureToast("No response body");
               }

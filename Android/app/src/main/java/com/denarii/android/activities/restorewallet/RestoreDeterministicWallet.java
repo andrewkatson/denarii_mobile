@@ -92,9 +92,14 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
             if (response.isSuccessful()) {
               if (response.body() != null) {
                 // We only care about the first wallet.
-                UnpackDenariiResponse.unpackRestoreDeterministicWallet(
-                    finalUserDetails, response.body());
-                createSuccessToast();
+                boolean succeeded =
+                    UnpackDenariiResponse.unpackRestoreDeterministicWallet(
+                        finalUserDetails, response.body());
+                if (succeeded) {
+                  createSuccessToast();
+                } else {
+                  createFailureToast("Failed to restore wallet");
+                }
               } else {
                 createFailureToast("No response body");
               }

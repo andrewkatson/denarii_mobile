@@ -114,7 +114,7 @@
         android:layout_width="189dp"
         android:layout_height="57dp"
         android:text="@string/submit"
-        app:layout_constraintBottom_toTopmOf="@id/asks"
+        app:layout_constraintBottom_toTopOf="@id/asks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/trueFailIfNotFull" />

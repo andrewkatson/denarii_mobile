@@ -5,43 +5,67 @@ import java.util.List;
 
 public class SupportTicket implements Serializable {
 
-    private String supportID;
+  private String supportID;
 
-    private String description;
+  private String description;
 
-    private String title;
+  private String title;
 
-    private boolean resolved;
+  private boolean resolved;
 
-    private List<SupportTicketComment> supportTicketCommentList;
+  private boolean isCurrentTicket;
 
-    public void setSupportID(String newID){supportID = newID;}
+  private List<SupportTicketComment> supportTicketCommentList;
 
-    public void setDescription(String newDescription){description = newDescription;}
+  public void setSupportID(String newID) {
+    supportID = newID;
+  }
 
-    public void setTitle(String newTitle) {title = newTitle;}
+  public void setDescription(String newDescription) {
+    description = newDescription;
+  }
 
-    public void setResolved(boolean isResolved){resolved = isResolved;}
+  public void setTitle(String newTitle) {
+    title = newTitle;
+  }
 
-    public void setSupportTicketCommentList(List<SupportTicketComment> newSupportTicketList) {supportTicketCommentList = newSupportTicketList;}
+  public void setResolved(boolean isResolved) {
+    resolved = isResolved;
+  }
 
-    public void addComment(SupportTicketComment comment) { supportTicketCommentList.add(comment);}
+  public void setIsCurrentTicket(boolean isCurrentTicket) {
+    this.isCurrentTicket = isCurrentTicket;
+  }
 
-    public String getSupportID() {
-        return supportID;
-    }
+  public void setSupportTicketCommentList(List<SupportTicketComment> newSupportTicketList) {
+    supportTicketCommentList = newSupportTicketList;
+  }
 
-    public String getDescription(){
-        return description;
-    }
+  public void addComment(SupportTicketComment comment) {
+    supportTicketCommentList.add(comment);
+  }
 
-    public String getTitle(){
-        return title;
-    }
+  public String getSupportID() {
+    return supportID;
+  }
 
-    public boolean getResolved(){
-        return resolved;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public List<SupportTicketComment> getSupportTicketCommentList() { return supportTicketCommentList;}
+  public String getTitle() {
+    return title;
+  }
+
+  public boolean getResolved() {
+    return resolved;
+  }
+
+  public boolean getIsCurrentTicket() {
+    return isCurrentTicket;
+  }
+
+  public List<SupportTicketComment> getSupportTicketCommentList() {
+    return supportTicketCommentList;
+  }
 }

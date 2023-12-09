@@ -4,6 +4,7 @@ import com.denarii.android.user.CreditCard;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.DenariiUser;
+import com.denarii.android.user.SupportTicket;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import java.util.List;
@@ -23,30 +24,54 @@ public class UnpackDenariiResponse {
     return userDetails;
   }
 
-  public static void unpackLoginOrRegister(UserDetails user, List<DenariiResponse> responses) {
+  public static boolean unpackLoginOrRegister(UserDetails user, List<DenariiResponse> responses) {
+    if (responses.isEmpty()) {
+      return false;
+    }
+
     user.setUserID(responses.get(0).userIdentifier);
     // creating a wallet details so we can set its values in the other scenes
     WalletDetails newWallet = new WalletDetails();
     user.setWalletDetails(newWallet);
+    return true;
   }
 
-  public static void unpackOpenedWallet(UserDetails user, List<DenariiResponse> responses) {
+  public static boolean unpackGetBalance(UserDetails user, List<DenariiResponse> responses) {
+    if (responses.isEmpty()) {
+      return false;
+    }
     user.getWalletDetails().setBalance(responses.get(0).balance);
+    return true;
   }
 
-  public static void unpackOpenWallet(UserDetails user, List<DenariiResponse> responses) {
+  public static boolean unpackOpenWallet(UserDetails user, List<DenariiResponse> responses) {
+    if (responses.isEmpty()) {
+      return false;
+    }
+
     user.getWalletDetails().setWalletAddress(responses.get(0).walletAddress);
     user.getWalletDetails().setSeed(responses.get(0).seed);
+    return true;
   }
 
-  public static void unpackRestoreDeterministicWallet(
-      UserDetails user, List<DenariiResponse> response) {
-    user.getWalletDetails().setWalletAddress(response.get(0).walletAddress);
+  public static boolean unpackRestoreDeterministicWallet(
+      UserDetails user, List<DenariiResponse> responses) {
+    if (responses.isEmpty()) {
+      return false;
+    }
+    user.getWalletDetails().setWalletAddress(responses.get(0).walletAddress);
+
+    return true;
   }
 
-  public static void unpackCreateWallet(UserDetails user, List<DenariiResponse> responses) {
+  public static boolean unpackCreateWallet(UserDetails user, List<DenariiResponse> responses) {
+
+    if (responses.isEmpty()) {
+      return false;
+    }
     user.getWalletDetails().setWalletAddress(responses.get(0).walletAddress);
     user.getWalletDetails().setSeed(responses.get(0).seed);
+    return true;
   }
 
   public static void unpackGetPrices(List<DenariiAsk> asks, List<DenariiResponse> responses) {
@@ -84,9 +109,14 @@ public class UnpackDenariiResponse {
       user.setDenariiUser(new DenariiUser());
     }
 
-    DenariiResponse response = responses.get(0);
+    if (responses.isEmpty()) {
+      user.getDenariiUser().setVerified(false);
+    } else {
 
-    user.getDenariiUser().setVerified(Objects.equals(response.verificationStatus, "is_verified"));
+      DenariiResponse response = responses.get(0);
+
+      user.getDenariiUser().setVerified(Objects.equals(response.verificationStatus, "is_verified"));
+    }
   }
 
   public static boolean unpackBuyDenarii(
@@ -171,5 +201,22 @@ public class UnpackDenariiResponse {
 
   public static boolean unpackCancelAsk(List<DenariiResponse> responses) {
     return !responses.isEmpty();
+  }
+
+  public static boolean unpackCreateSupportTicket(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+
+    if (responses.isEmpty()) {
+      return false;
+    }
+
+    DenariiResponse response = responses.get(0);
+
+    SupportTicket newTicket = new SupportTicket();
+    newTicket.setSupportID(response.supportTicketID);
+    newTicket.setIsCurrentTicket(true);
+
+    userDetails.addSupportTicket(newTicket);
+    return true;
   }
 }

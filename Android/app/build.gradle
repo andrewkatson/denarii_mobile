@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.denarii.android'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.denarii.android"
@@ -20,6 +20,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue("string", "is_debug", "false")
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue("string", "is_debug", "true")
         }
     }
     compileOptions {
