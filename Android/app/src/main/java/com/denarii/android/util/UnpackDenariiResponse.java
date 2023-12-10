@@ -99,6 +99,11 @@ public class UnpackDenariiResponse {
       user.setCreditCard(new CreditCard());
     }
 
+    if (responses.isEmpty()) {
+      user.getCreditCard().setHasCreditCardInfo(false);
+      return;
+    }
+
     DenariiResponse response = responses.get(0);
 
     user.getCreditCard().setHasCreditCardInfo(response.hasCreditCardInfo);
@@ -218,5 +223,29 @@ public class UnpackDenariiResponse {
 
     userDetails.addSupportTicket(newTicket);
     return true;
+  }
+
+  public static boolean unpackSetCreditCardInfo(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+    if (Objects.equals(userDetails.getCreditCard(), null)) {
+      userDetails.setCreditCard(new CreditCard());
+    }
+
+    if (responses.isEmpty()) {
+      userDetails.getCreditCard().setHasCreditCardInfo(false);
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public static boolean unpackClearCreditCardInfo(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+    if (responses.isEmpty()) {
+      return false;
+    } else {
+      userDetails.setCreditCard(null);
+      return true;
+    }
   }
 }

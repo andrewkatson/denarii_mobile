@@ -145,6 +145,8 @@
     <string name="settings_menu_text">Settings</string>
     <string name="logout_button_text">Logout</string>
     <string name="cancel">Cancel</string>
+    <string name="credit_card_info_has_info_status">Status: Have Info Set</string>
+    <string name="credit_card_info_does_not_have_info_status">Status: No Info Set</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
