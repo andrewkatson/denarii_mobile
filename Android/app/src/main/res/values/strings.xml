@@ -195,4 +195,6 @@
     <string name="submit">Submit</string>
     <string name="total_amount">Total Amount</string>
     <string name="create_support_ticket">Create Support Ticket</string>
+    <string name="resolve_support_ticket">Resolve</string>
+    <string name="delete_support_ticket">Delete</string>
 </resources>

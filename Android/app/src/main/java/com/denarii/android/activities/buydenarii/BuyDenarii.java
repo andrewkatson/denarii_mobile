@@ -107,8 +107,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
     TextView amountLabel = findViewById(R.id.askTableAmount);
     TextView priceLabel = findViewById(R.id.priceAskTable);
-    ConstraintLayout parentLayout = findViewById(R.id.buy_denarii_layout);
-    TextView queuedBuysLabel = findViewById(R.id.queuedBuys);
+    ConstraintLayout parentLayout = findViewById(R.id.asks_layout);
 
     // First we make all the artifacts
     for (DenariiAsk ask : currentAsks) {
@@ -153,10 +152,10 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             amount.getId(), ConstraintSet.TOP, amountLabel.getId(), ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == currentAskArtifacts.size() - 1) {
         amountConstraintSet.connect(
-            amount.getId(), ConstraintSet.BOTTOM, queuedBuysLabel.getId(), ConstraintSet.TOP);
+            amount.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);
       } else {
         // Otherwise constrain by the next artifact
         DenariiAskArtifacts nextArtifact = currentAskArtifacts.get(i + 1);
@@ -188,10 +187,10 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             askingPrice.getId(), ConstraintSet.TOP, priceLabel.getId(), ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == currentAskArtifacts.size() - 1) {
         askingPriceConstraintSet.connect(
-            askingPrice.getId(), ConstraintSet.BOTTOM, queuedBuysLabel.getId(), ConstraintSet.TOP);
+            askingPrice.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);
       } else {
         // Otherwise constrain by the next artifact
         DenariiAskArtifacts nextArtifact = currentAskArtifacts.get(i + 1);
@@ -242,7 +241,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
     TextView priceLabel = findViewById(R.id.buyPrice);
     TextView amountBoughtLabel = findViewById(R.id.buyAmountBought);
     TextView cancelLabel = findViewById(R.id.buyCancelBuy);
-    ConstraintLayout parentLayout = findViewById(R.id.buy_denarii_layout);
+    ConstraintLayout parentLayout = findViewById(R.id.queued_buys_layout);
 
     // First we make all the artifacts
     for (DenariiAsk ask : queuedBuys) {
@@ -292,7 +291,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
           amount.getId(), ConstraintSet.LEFT, parentLayout.getId(), ConstraintSet.LEFT);
       amountConstraintSet.connect(
           amount.getId(), ConstraintSet.RIGHT, askingPrice.getId(), ConstraintSet.LEFT);
-      // If this is not the first artifact then we should connecct the top to the previous artifact
+      // If this is not the first artifact then we should connect the top to the previous artifact
       if (!firstArtifact) {
         DenariiAskArtifacts previousArtifact = queuedBuysArtifacts.get(i - 1);
         TextView previousAmount = previousArtifact.getAmountTextView();
@@ -304,7 +303,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             amount.getId(), ConstraintSet.TOP, amountLabel.getId(), ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == queuedBuysArtifacts.size() - 1) {
         amountConstraintSet.connect(
             amount.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);
@@ -339,7 +338,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             askingPrice.getId(), ConstraintSet.TOP, priceLabel.getId(), ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == queuedBuysArtifacts.size() - 1) {
         askingPriceConstraintSet.connect(
             askingPrice.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);
@@ -377,7 +376,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == queuedBuysArtifacts.size() - 1) {
         amountBoughtConstraint.connect(
             amountBought.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);
@@ -412,7 +411,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
             cancel.getId(), ConstraintSet.TOP, cancelLabel.getId(), ConstraintSet.BOTTOM);
       }
 
-      // If we are at the end of the list then constrain by the label below the last artifact
+      // If we are at the end of the list then constrain by the parent
       if (i == queuedBuysArtifacts.size() - 1) {
         cancelConstraint.connect(
             cancel.getId(), ConstraintSet.BOTTOM, parentLayout.getId(), ConstraintSet.BOTTOM);

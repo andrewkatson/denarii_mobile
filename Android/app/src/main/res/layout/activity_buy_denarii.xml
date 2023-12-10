@@ -127,33 +127,50 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/askTableAmount"
+        app:layout_constraintBottom_toTopOf="@id/asksScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buy_denarii_submit" />
 
-
-    <TextView
-        android:id="@+id/askTableAmount"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ask_amount"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@id/queuedBuys"
-        app:layout_constraintEnd_toStartOf="@id/priceAskTable"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/asks" />
-
-    <TextView
-        android:id="@+id/priceAskTable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ask_price"
-        android:textAlignment="center"
+        android:id="@+id/asksScrollView"
         app:layout_constraintBottom_toTopOf="@id/queuedBuys"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/askTableAmount"
-        app:layout_constraintTop_toBottomOf="@id/asks" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/asks">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/asks_layout">
+
+            <TextView
+                android:id="@+id/askTableAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ask_amount"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/priceAskTable"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/priceAskTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ask_price"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/askTableAmount"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/queuedBuys"
@@ -163,55 +180,71 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/buyAmountTotal"
+        app:layout_constraintBottom_toTopOf="@id/queuedBuysScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/priceAskTable" />
+        app:layout_constraintTop_toBottomOf="@id/asksScrollView" />
 
-
-    <TextView
-        android:id="@+id/buyAmountTotal"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/total_amount"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buyPrice"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
-
-    <TextView
-        android:id="@+id/buyPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/queued_buy_price"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buyAmountBought"
-        app:layout_constraintStart_toEndOf="@id/buyAmountTotal"
-        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
-
-    <TextView
-        android:id="@+id/buyAmountBought"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/queued_buy_amount_bought"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buyCancelBuy"
-        app:layout_constraintStart_toEndOf="@id/buyPrice"
-        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
-
-    <TextView
-        android:id="@+id/buyCancelBuy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/queued_buy_cancel_buy"
-        android:textAlignment="center"
+        android:id="@+id/queuedBuysScrollView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/buyAmountBought"
-        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/queued_buys_layout">
+
+            <TextView
+                android:id="@+id/buyAmountTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/total_amount"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buyPrice"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/buyPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_price"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buyAmountBought"
+                app:layout_constraintStart_toEndOf="@id/buyAmountTotal"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/buyAmountBought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_amount_bought"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/buyCancelBuy"
+                app:layout_constraintStart_toEndOf="@id/buyPrice"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/buyCancelBuy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/queued_buy_cancel_buy"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/buyAmountBought"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

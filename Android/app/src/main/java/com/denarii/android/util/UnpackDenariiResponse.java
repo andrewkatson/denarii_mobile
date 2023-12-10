@@ -5,6 +5,7 @@ import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.DenariiUser;
 import com.denarii.android.user.SupportTicket;
+import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import java.util.List;
@@ -219,8 +220,7 @@ public class UnpackDenariiResponse {
 
     SupportTicket newTicket = new SupportTicket();
     newTicket.setSupportID(response.supportTicketID);
-    newTicket.setIsCurrentTicket(true);
-
+    userDetails.setCurrentTicket(newTicket);
     userDetails.addSupportTicket(newTicket);
     return true;
   }
@@ -247,5 +247,69 @@ public class UnpackDenariiResponse {
       userDetails.setCreditCard(null);
       return true;
     }
+  }
+
+  public static boolean unpackUpdateSupportTicket(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+    if (Objects.equals(userDetails.getCurrentTicket(), null)) {
+      userDetails.setCurrentTicket(new SupportTicket());
+    }
+
+    if (responses.isEmpty()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public static boolean unpackGetSupportTicket(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+    if (Objects.equals(userDetails.getCurrentTicket(), null)) {
+      userDetails.setCurrentTicket(new SupportTicket());
+    }
+
+    if (responses.isEmpty()) {
+      return false;
+    } else {
+      DenariiResponse response = responses.get(0);
+
+      SupportTicket currentTicket = userDetails.getCurrentTicket();
+      currentTicket.setTitle(response.title);
+      currentTicket.setDescription(response.description);
+
+      return true;
+    }
+  }
+
+  public static boolean unpackGetCommentsOnTicket(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+    if (Objects.equals(userDetails.getCurrentTicket(), null)) {
+      userDetails.setCurrentTicket(new SupportTicket());
+    }
+
+    if (responses.isEmpty()) {
+      return false;
+    } else {
+      SupportTicket currentTicket = userDetails.getCurrentTicket();
+      currentTicket.clearSupportTicketCommentList();
+
+      for (DenariiResponse response : responses) {
+        SupportTicketComment newComment = new SupportTicketComment();
+        newComment.setAuthor(response.author);
+        newComment.setContent(response.content);
+
+        currentTicket.addComment(newComment);
+      }
+
+      return true;
+    }
+  }
+
+  public static boolean unpackResolveSupportTicket(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
+
+  public static boolean unpackDeleteSupportTicket(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
   }
 }

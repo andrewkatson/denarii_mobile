@@ -31,6 +31,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/supportTicketDetailsHeader" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentsScrollView"
+        app:layout_constraintBottom_toTopOf="@id/supportTicketDetailsCommentBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/commentsLayout"></androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
     <EditText
         android:id="@+id/supportTicketDetailsCommentBox"
         android:layout_width="241dp"
@@ -41,7 +58,7 @@
         app:layout_constraintBottom_toTopOf="@id/commentBoxSubmit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/commentsScrollView" />
 
     <Button
         android:id="@+id/commentBoxSubmit"
@@ -49,9 +66,33 @@
         android:layout_height="72dp"
         android:text="@string/support_ticket_details_comment_box_submit"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/resolveSupportTicket"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/supportTicketDetailsCommentBox" />
+
+    <Button
+        android:id="@+id/resolveSupportTicket"
+        android:layout_width="181dp"
+        android:layout_height="72dp"
+        android:text="@string/resolve_support_ticket"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/deleteSupportTicket"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/commentBoxSubmit" />
+    
+    <Button
+        android:id="@+id/deleteSupportTicket"
+        android:layout_width="181dp"
+        android:backgroundTint="#BC0B0B"
+        android:layout_height="72dp"
+        android:text="@string/delete_support_ticket"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resolveSupportTicket" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

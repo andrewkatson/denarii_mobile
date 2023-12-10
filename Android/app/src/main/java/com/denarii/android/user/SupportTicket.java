@@ -13,8 +13,6 @@ public class SupportTicket implements Serializable {
 
   private boolean resolved;
 
-  private boolean isCurrentTicket;
-
   private List<SupportTicketComment> supportTicketCommentList;
 
   public void setSupportID(String newID) {
@@ -31,10 +29,6 @@ public class SupportTicket implements Serializable {
 
   public void setResolved(boolean isResolved) {
     resolved = isResolved;
-  }
-
-  public void setIsCurrentTicket(boolean isCurrentTicket) {
-    this.isCurrentTicket = isCurrentTicket;
   }
 
   public void setSupportTicketCommentList(List<SupportTicketComment> newSupportTicketList) {
@@ -61,11 +55,11 @@ public class SupportTicket implements Serializable {
     return resolved;
   }
 
-  public boolean getIsCurrentTicket() {
-    return isCurrentTicket;
-  }
-
   public List<SupportTicketComment> getSupportTicketCommentList() {
     return supportTicketCommentList;
+  }
+
+  public void clearSupportTicketCommentList() {
+    supportTicketCommentList.clear();
   }
 }

@@ -5,79 +5,112 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDetails implements Serializable {
-    private String userName;
-    private String userEmail;
-    private String userPassword;
-    private WalletDetails walletDetails = null;
-    private CreditCard creditCard = null;
-    private final List<SupportTicket> supportTicketList = new ArrayList<>();
-    private final List<DenariiAsk> denariiAskList = new ArrayList<>();
-    private String userID;
+  private String userName;
+  private String userEmail;
+  private String userPassword;
+  private WalletDetails walletDetails = null;
+  private CreditCard creditCard = null;
+  private final List<SupportTicket> supportTicketList = new ArrayList<>();
 
-    private DenariiUser denariiUser = null;
+  private SupportTicket currentTicket = null;
+  private final List<DenariiAsk> denariiAskList = new ArrayList<>();
+  private String userID;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+  private DenariiUser denariiUser = null;
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
+  public void setUserEmail(String userEmail) {
+    this.userEmail = userEmail;
+  }
 
-    public void setWalletDetails(WalletDetails walletDetails) {
-        this.walletDetails = walletDetails;
-    }
-    public void setUserID(String newID){ userID = newID;}
-    public void addSupportTicket(SupportTicket newTicket){
-        supportTicketList.add(newTicket);
-    }
-    public void setCreditCard(CreditCard newCard){
-        creditCard = newCard;
-    }
-    public void addDenariiAsk(DenariiAsk newAsk){
-        denariiAskList.add(newAsk);
-    }
-    public void addAllDenariiAsk(List<DenariiAsk> otherList) { denariiAskList.addAll(otherList);}
+  public void setUserPassword(String userPassword) {
+    this.userPassword = userPassword;
+  }
 
-    public void addAllSupportTicket(List<SupportTicket> otherList) {supportTicketList.addAll(otherList);}
+  public void setWalletDetails(WalletDetails walletDetails) {
+    this.walletDetails = walletDetails;
+  }
 
-    public void setDenariiUser(DenariiUser denariiUser) {
-        this.denariiUser = denariiUser;
-    }
+  public void setUserID(String newID) {
+    userID = newID;
+  }
 
-    public String getUserName() {
-        return this.userName;
-    }
+  public void setCurrentTicket(SupportTicket ticket) {
+    this.currentTicket = ticket;
+  }
 
-    public String getUserEmail() {
-        return this.userEmail;
-    }
+  public void addSupportTicket(SupportTicket newTicket) {
+    supportTicketList.add(newTicket);
+  }
 
-    public String getUserPassword() {
-        return this.userPassword;
-    }
+  public void setCreditCard(CreditCard newCard) {
+    creditCard = newCard;
+  }
 
-    public WalletDetails getWalletDetails() {
-        return this.walletDetails;
-    }
+  public void addDenariiAsk(DenariiAsk newAsk) {
+    denariiAskList.add(newAsk);
+  }
 
-    public String getUserID(){return userID;}
+  public void addAllDenariiAsk(List<DenariiAsk> otherList) {
+    denariiAskList.addAll(otherList);
+  }
 
-    public List<SupportTicket> getSupportTicketList() {return supportTicketList;}
+  public void addAllSupportTicket(List<SupportTicket> otherList) {
+    supportTicketList.addAll(otherList);
+  }
 
-    public CreditCard getCreditCard(){return creditCard;}
+  public void setDenariiUser(DenariiUser denariiUser) {
+    this.denariiUser = denariiUser;
+  }
 
-    public List<DenariiAsk> getDenariiAskList(){return denariiAskList;}
+  public String getUserName() {
+    return this.userName;
+  }
 
-    public DenariiUser getDenariiUser() {
-        return denariiUser;
-    }
+  public String getUserEmail() {
+    return this.userEmail;
+  }
 
-    public void clearDenariiAskList() {this.denariiAskList.clear();}
+  public String getUserPassword() {
+    return this.userPassword;
+  }
 
-    public void clearSupportTicketList() {this.supportTicketList.clear();}
+  public WalletDetails getWalletDetails() {
+    return this.walletDetails;
+  }
+
+  public String getUserID() {
+    return userID;
+  }
+
+  public List<SupportTicket> getSupportTicketList() {
+    return supportTicketList;
+  }
+
+  public CreditCard getCreditCard() {
+    return creditCard;
+  }
+
+  public List<DenariiAsk> getDenariiAskList() {
+    return denariiAskList;
+  }
+
+  public DenariiUser getDenariiUser() {
+    return denariiUser;
+  }
+
+  public SupportTicket getCurrentTicket() {
+    return currentTicket;
+  }
+
+  public void clearDenariiAskList() {
+    this.denariiAskList.clear();
+  }
+
+  public void clearSupportTicketList() {
+    this.supportTicketList.clear();
+  }
 }
