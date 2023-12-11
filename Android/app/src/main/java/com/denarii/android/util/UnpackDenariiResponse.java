@@ -312,4 +312,24 @@ public class UnpackDenariiResponse {
   public static boolean unpackDeleteSupportTicket(List<DenariiResponse> responses) {
     return !responses.isEmpty();
   }
+
+  public static boolean unpackGetSupportTickets(
+      UserDetails userDetails, List<DenariiResponse> responses) {
+
+    if (responses.isEmpty()) {
+      return false;
+    } else {
+      userDetails.clearSupportTicketList();
+
+      for (DenariiResponse response : responses) {
+        SupportTicket newTicket = new SupportTicket();
+        newTicket.setTitle(response.title);
+        newTicket.setDescription(response.description);
+
+        userDetails.addSupportTicket(newTicket);
+      }
+
+      return true;
+    }
+  }
 }

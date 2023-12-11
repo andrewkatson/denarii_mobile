@@ -52,7 +52,7 @@ public class SupportTicketDetails extends AppCompatActivity
 
   private UserDetails userDetails = null;
 
-  private Random random = new Random();
+  private final Random random = new Random();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -342,6 +342,8 @@ public class SupportTicketDetails extends AppCompatActivity
     for (DenariiCommentArtifacts artifact : denariiCommentArtifactsList) {
       artifact.getBodyTextView().setVisibility(View.GONE);
     }
+
+    denariiCommentArtifactsList.clear();
   }
 
   private void updateDenariiCommentArtifacts() {
