@@ -147,6 +147,11 @@
     <string name="cancel">Cancel</string>
     <string name="credit_card_info_has_info_status">Status: Have Info Set</string>
     <string name="credit_card_info_does_not_have_info_status">Status: No Info Set</string>
+    <string name="verification_verified_status">Status: Verified</string>
+    <string name="verification_failed_status">Status: Failed Verification</string>
+    <string name="verification_pending_status">Status: Verification Pending</string>
+    <string name="verification_not_yet_status">Status: Not Verified Yet</string>
+    <string name="verification_unknown_status">Status: Unknown</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

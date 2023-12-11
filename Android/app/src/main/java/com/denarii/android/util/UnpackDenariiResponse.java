@@ -117,11 +117,30 @@ public class UnpackDenariiResponse {
 
     if (responses.isEmpty()) {
       user.getDenariiUser().setVerified(false);
+      user.getDenariiUser().setVerificationReportStatus("unknown");
     } else {
 
       DenariiResponse response = responses.get(0);
 
       user.getDenariiUser().setVerified(Objects.equals(response.verificationStatus, "is_verified"));
+      user.getDenariiUser().setVerificationReportStatus(response.verificationStatus);
+    }
+  }
+
+  public static void unpackVerifyIdentity(UserDetails user, List<DenariiResponse> responses) {
+    if (Objects.equals(user.getDenariiUser(), null)) {
+      user.setDenariiUser(new DenariiUser());
+    }
+
+    if (responses.isEmpty()) {
+      user.getDenariiUser().setVerified(false);
+      user.getDenariiUser().setVerificationReportStatus("unknown");
+    } else {
+
+      DenariiResponse response = responses.get(0);
+
+      user.getDenariiUser().setVerified(Objects.equals(response.verificationStatus, "is_verified"));
+      user.getDenariiUser().setVerificationReportStatus(response.verificationStatus);
     }
   }
 
