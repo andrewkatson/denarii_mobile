@@ -332,4 +332,12 @@ public class UnpackDenariiResponse {
       return true;
     }
   }
+
+  public static boolean unpackLogout(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
+
+  public static boolean unpackDeleteUser(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
 }
