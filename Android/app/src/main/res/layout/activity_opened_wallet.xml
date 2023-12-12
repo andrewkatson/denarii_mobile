@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/opened_wallet_layout"
     tools:context=".activities.openedwallet.OpenedWallet">
 
     <androidx.constraintlayout.widget.ConstraintLayout

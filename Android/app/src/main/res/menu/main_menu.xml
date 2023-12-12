@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/file"
+    <item android:id="@+id/main_menu_layout"
         android:title="@string/main_menu_title" >
         <!-- "file" submenu -->
         <menu>

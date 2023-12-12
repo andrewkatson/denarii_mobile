@@ -8,7 +8,6 @@ import com.denarii.android.user.SupportTicket;
 import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-
 import retrofit2.Call;
 
 public class StubbedDenariiService implements DenariiService {
@@ -29,6 +27,8 @@ public class StubbedDenariiService implements DenariiService {
   private int lastAskId = 1;
 
   private int lastUserId = 1;
+
+  private int nextAddress = 1;
 
   private static class BuyDenariiTry {
     public String errorMessage;
@@ -81,7 +81,7 @@ public class StubbedDenariiService implements DenariiService {
   }
 
   private List<DenariiAsk> getAsksOfOtherUsers(String userIdentifier) {
-    List<DenariiAsk> asks = new  ArrayList<>();
+    List<DenariiAsk> asks = new ArrayList<>();
 
     for (UserDetails user : users.values()) {
       if (!Objects.equals(user.getUserID(), userIdentifier)) {
@@ -113,12 +113,14 @@ public class StubbedDenariiService implements DenariiService {
     return Optional.empty();
   }
 
-  private List<DenariiAsk> getAsksOfUser(String userIdentifier, boolean isSettled, boolean inEscrow) {
+  private List<DenariiAsk> getAsksOfUser(
+      String userIdentifier, boolean isSettled, boolean inEscrow) {
     Optional<UserDetails> user = getUserWithId(userIdentifier);
     List<DenariiAsk> filteredAsks = new ArrayList<>();
     if (user.isPresent()) {
       for (DenariiAsk ask : user.get().getDenariiAskList()) {
-        if (Objects.equals(isSettled, ask.getIsSettled()) && Objects.equals(inEscrow, ask.getInEscrow())) {
+        if (Objects.equals(isSettled, ask.getIsSettled())
+            && Objects.equals(inEscrow, ask.getInEscrow())) {
           filteredAsks.add(ask);
         }
       }
@@ -163,14 +165,21 @@ public class StubbedDenariiService implements DenariiService {
   private void requireLogin(String userIdentifier) {
     if (users.containsKey(userIdentifier)) {
       if (!Objects.equals(loggedInUser.getUserID(), userIdentifier)) {
-        throw new IllegalArgumentException(String.format(Locale.ENGLISH, "User with id: %s is not logged in", userIdentifier));
+        throw new IllegalArgumentException(
+            String.format(Locale.ENGLISH, "User with id: %s is not logged in", userIdentifier));
       }
     } else {
-      throw new IllegalArgumentException(String.format(Locale.ENGLISH, "No user with id: %s", userIdentifier));
+      throw new IllegalArgumentException(
+          String.format(Locale.ENGLISH, "No user with id: %s", userIdentifier));
     }
   }
 
-  private BuyDenariiTry tryToBuyDenarii(List<DenariiAsk> orderedAsks, double amount, double bidPrice, boolean buyRegardlessOfPrice, boolean failIfFullAmountIsntMet) {
+  private BuyDenariiTry tryToBuyDenarii(
+      List<DenariiAsk> orderedAsks,
+      double amount,
+      double bidPrice,
+      boolean buyRegardlessOfPrice,
+      boolean failIfFullAmountIsntMet) {
     double currentBoughtAmount = 0.0;
     double amountToBuyLeft = amount;
     double currentAskPrice = 0.0;
@@ -182,10 +191,10 @@ public class StubbedDenariiService implements DenariiService {
       if (!buyRegardlessOfPrice && currentAskPrice > bidPrice) {
 
         if (failIfFullAmountIsntMet) {
-         for (DenariiAsk reprocessedAsk : orderedAsks) {
-           reprocessedAsk.setInEscrow(false);
-           reprocessedAsk.setAmountBought(0.0);
-         }
+          for (DenariiAsk reprocessedAsk : orderedAsks) {
+            reprocessedAsk.setInEscrow(false);
+            reprocessedAsk.setAmountBought(0.0);
+          }
         }
         BuyDenariiTry buyDenariiTry = new BuyDenariiTry();
         buyDenariiTry.errorMessage = "Asking price was higher than bid price";
@@ -309,8 +318,8 @@ public class StubbedDenariiService implements DenariiService {
       UserDetails userDetails = user.get();
 
       if (Objects.equals(userDetails.getUserEmail(), email)) {
-       userDetails.setUserPassword(password);
-       responses.add(new DenariiResponse());
+        userDetails.setUserPassword(password);
+        responses.add(new DenariiResponse());
       }
     } else {
       // An empty responses list indicates failure
@@ -335,10 +344,10 @@ public class StubbedDenariiService implements DenariiService {
       if (Objects.equals(userDetails.getWalletDetails(), null)) {
         DenariiResponse response = new DenariiResponse();
 
-        Random rand = new Random();
-
-        response.walletAddress = String.valueOf(rand.nextInt(100));
-        response.seed = String.format(Locale.ENGLISH,"some seed here %d", rand.nextInt(100));
+        response.walletAddress = String.valueOf(nextAddress);
+        nextAddress += 1;
+        // static seed so it is easier to restore
+        response.seed = "some seed here";
 
         WalletDetails walletDetails = new WalletDetails();
         walletDetails.setWalletName(walletName);
@@ -376,23 +385,31 @@ public class StubbedDenariiService implements DenariiService {
 
       UserDetails userDetails = user.get();
 
-      DenariiResponse response = new DenariiResponse();
+      if (Objects.equals(userDetails.getWalletDetails().getWalletPassword(), password)
+          && Objects.equals(userDetails.getWalletDetails().getWalletName(), walletName)
+          && Objects.equals(userDetails.getWalletDetails().getSeed(), seed)) {
 
-      Random rand = new Random();
+        DenariiResponse response = new DenariiResponse();
 
-      response.walletAddress = String.valueOf(rand.nextInt(100));
+        Random rand = new Random();
 
-      WalletDetails walletDetails = new WalletDetails();
-      walletDetails.setWalletName(walletName);
-      walletDetails.setWalletPassword(password);
-      walletDetails.setSeed(seed);
-      walletDetails.setWalletAddress(response.walletAddress);
-      // Just give the wallet some balance so we can test
-      walletDetails.setBalance(10.0);
+        response.walletAddress = String.valueOf(rand.nextInt(100));
 
-      userDetails.setWalletDetails(walletDetails);
+        WalletDetails walletDetails = new WalletDetails();
+        walletDetails.setWalletName(walletName);
+        walletDetails.setWalletPassword(password);
+        walletDetails.setSeed(seed);
+        walletDetails.setWalletAddress(response.walletAddress);
+        // Just give the wallet some balance so we can test
+        walletDetails.setBalance(10.0);
 
-      responses.add(response);
+        userDetails.setWalletDetails(walletDetails);
+
+        responses.add(response);
+      } else {
+        // An empty responses list indicates failure
+        return new StubbedCall(responses);
+      }
     } else {
       // An empty responses list indicates failure
       return new StubbedCall(responses);
@@ -413,7 +430,8 @@ public class StubbedDenariiService implements DenariiService {
     if (user.isPresent()) {
       UserDetails userDetails = user.get();
 
-      if (Objects.equals(userDetails.getWalletDetails().getWalletPassword(), password) && Objects.equals(userDetails.getWalletDetails().getWalletName(), walletName)) {
+      if (Objects.equals(userDetails.getWalletDetails().getWalletPassword(), password)
+          && Objects.equals(userDetails.getWalletDetails().getWalletName(), walletName)) {
         DenariiResponse response = new DenariiResponse();
 
         WalletDetails walletDetails = userDetails.getWalletDetails();
@@ -478,9 +496,13 @@ public class StubbedDenariiService implements DenariiService {
       UserDetails receivingUserDetails = receivingUser.get();
 
       if (userDetails.getWalletDetails().getBalance() >= amountToSend) {
-        userDetails.getWalletDetails().setBalance(userDetails.getWalletDetails().getBalance() - amountToSend);
+        userDetails
+            .getWalletDetails()
+            .setBalance(userDetails.getWalletDetails().getBalance() - amountToSend);
 
-        receivingUserDetails.getWalletDetails().setBalance(receivingUserDetails.getWalletDetails().getBalance() + amountToSend);
+        receivingUserDetails
+            .getWalletDetails()
+            .setBalance(receivingUserDetails.getWalletDetails().getBalance() + amountToSend);
 
         responses.add(new DenariiResponse());
       } else {
@@ -507,13 +529,13 @@ public class StubbedDenariiService implements DenariiService {
       List<DenariiAsk> asksOfOtherUsers = getAsksOfOtherUsers(userIdentifier);
 
       for (DenariiAsk ask : asksOfOtherUsers) {
-       DenariiResponse response = new DenariiResponse();
+        DenariiResponse response = new DenariiResponse();
 
-       response.askID = ask.getAskID();
-       response.amount = ask.getAmount();
-       response.askingPrice = ask.getAskingPrice();
+        response.askID = ask.getAskID();
+        response.amount = ask.getAmount();
+        response.askingPrice = ask.getAskingPrice();
 
-       responses.add(response);
+        responses.add(response);
       }
     } else {
       // An empty responses list indicates failure
@@ -543,7 +565,13 @@ public class StubbedDenariiService implements DenariiService {
 
       allAsks.sort((askOne, askTwo) -> (int) (askOne.getAskingPrice() - askTwo.getAskingPrice()));
 
-      BuyDenariiTry buyDenariiTry = tryToBuyDenarii(allAsks, Double.parseDouble(amount), Double.parseDouble(bidPrice), Boolean.parseBoolean(buyRegardlessOfPrice), Boolean.parseBoolean(failIfFullAmountIsntMet));
+      BuyDenariiTry buyDenariiTry =
+          tryToBuyDenarii(
+              allAsks,
+              Double.parseDouble(amount),
+              Double.parseDouble(bidPrice),
+              Boolean.parseBoolean(buyRegardlessOfPrice),
+              Boolean.parseBoolean(failIfFullAmountIsntMet));
 
       for (DenariiAsk askMet : buyDenariiTry.asksMet) {
         askMet.setBuyer(userDetails);
@@ -556,7 +584,7 @@ public class StubbedDenariiService implements DenariiService {
 
           responses.add(response);
         }
-      } else if(buyDenariiTry.asksMet.isEmpty()) {
+      } else if (buyDenariiTry.asksMet.isEmpty()) {
         // An empty responses list indicates failure
         return new StubbedCall(responses);
       } else {
@@ -609,8 +637,16 @@ public class StubbedDenariiService implements DenariiService {
           DenariiAsk denariiAsk = ask.get();
 
           if (sendingUserDetails.getWalletDetails().getBalance() >= denariiAsk.getAmountBought()) {
-            sendingUserDetails.getWalletDetails().setBalance(sendingUserDetails.getWalletDetails().getBalance() - denariiAsk.getAmountBought());
-            receivingUserDetails.getWalletDetails().setBalance(receivingUserDetails.getWalletDetails().getBalance() + denariiAsk.getAmountBought());
+            sendingUserDetails
+                .getWalletDetails()
+                .setBalance(
+                    sendingUserDetails.getWalletDetails().getBalance()
+                        - denariiAsk.getAmountBought());
+            receivingUserDetails
+                .getWalletDetails()
+                .setBalance(
+                    receivingUserDetails.getWalletDetails().getBalance()
+                        + denariiAsk.getAmountBought());
 
             DenariiResponse response = new DenariiResponse();
 
@@ -636,7 +672,7 @@ public class StubbedDenariiService implements DenariiService {
         // An empty responses list indicates failure
         return new StubbedCall(responses);
       }
-    } else{
+    } else {
       // An empty responses list indicates failure
       return new StubbedCall(responses);
     }
@@ -737,7 +773,8 @@ public class StubbedDenariiService implements DenariiService {
         }
       }
 
-      userDetails.clearDenariiAskList();;
+      userDetails.clearDenariiAskList();
+      ;
       userDetails.addAllDenariiAsk(remainingAsks);
 
       if (deletedAnAsk) {
@@ -910,7 +947,8 @@ public class StubbedDenariiService implements DenariiService {
               }
             }
 
-            userDetails.clearDenariiAskList();;
+            userDetails.clearDenariiAskList();
+            ;
             userDetails.addAllDenariiAsk(remainingAsks);
           } else {
             denariiAsk.setIsSettled(false);
@@ -1015,8 +1053,16 @@ public class StubbedDenariiService implements DenariiService {
           DenariiAsk denariiAsk = ask.get();
 
           if (sendingUserDetails.getWalletDetails().getBalance() >= denariiAsk.getAmountBought()) {
-            sendingUserDetails.getWalletDetails().setBalance(sendingUserDetails.getWalletDetails().getBalance() - denariiAsk.getAmountBought());
-            receivingUserDetails.getWalletDetails().setBalance(receivingUserDetails.getWalletDetails().getBalance() + denariiAsk.getAmountBought());
+            sendingUserDetails
+                .getWalletDetails()
+                .setBalance(
+                    sendingUserDetails.getWalletDetails().getBalance()
+                        - denariiAsk.getAmountBought());
+            receivingUserDetails
+                .getWalletDetails()
+                .setBalance(
+                    receivingUserDetails.getWalletDetails().getBalance()
+                        + denariiAsk.getAmountBought());
 
             DenariiResponse response = new DenariiResponse();
 
@@ -1350,16 +1396,16 @@ public class StubbedDenariiService implements DenariiService {
       boolean canBeResolvedBool = Boolean.parseBoolean(canBeResolved);
       for (SupportTicket supportTicket : userDetails.getSupportTicketList()) {
         if (canBeResolvedBool || !supportTicket.getResolved()) {
-           DenariiResponse response = new DenariiResponse();
-           response.supportTicketID = supportTicket.getSupportID();
-           response.author = userDetails.getUserName();
-           response.title = supportTicket.getTitle();
-           response.description = supportTicket.getDescription();
-           response.updatedTimeBody = "";
-           response.creationTimeBody = "";
-           response.isResolved = supportTicket.getResolved();
+          DenariiResponse response = new DenariiResponse();
+          response.supportTicketID = supportTicket.getSupportID();
+          response.author = userDetails.getUserName();
+          response.title = supportTicket.getTitle();
+          response.description = supportTicket.getDescription();
+          response.updatedTimeBody = "";
+          response.creationTimeBody = "";
+          response.isResolved = supportTicket.getResolved();
 
-           responses.add(response);
+          responses.add(response);
         }
       }
     } else {
@@ -1381,7 +1427,8 @@ public class StubbedDenariiService implements DenariiService {
 
     if (user.isPresent()) {
 
-      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+      Optional<SupportTicket> supportTicketOptional =
+          getSupportTicketWithId(supportTicketIdentifier);
 
       if (supportTicketOptional.isPresent()) {
         SupportTicket supportTicket = supportTicketOptional.get();
@@ -1395,7 +1442,7 @@ public class StubbedDenariiService implements DenariiService {
         response.creationTimeBody = "";
 
         responses.add(response);
-      } else{
+      } else {
         // An empty responses list indicates failure
         return new StubbedCall(responses);
       }
@@ -1418,20 +1465,21 @@ public class StubbedDenariiService implements DenariiService {
 
     if (user.isPresent()) {
 
-      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+      Optional<SupportTicket> supportTicketOptional =
+          getSupportTicketWithId(supportTicketIdentifier);
 
       if (supportTicketOptional.isPresent()) {
-       SupportTicket supportTicket = supportTicketOptional.get();
+        SupportTicket supportTicket = supportTicketOptional.get();
 
-       for (SupportTicketComment comment : supportTicket.getSupportTicketCommentList()) {
-         DenariiResponse response = new DenariiResponse();
-         response.author = comment.getAuthor();
-         response.content = comment.getContent();
-         response.updatedTimeBody = "";
-         response.creationTimeBody = "";
+        for (SupportTicketComment comment : supportTicket.getSupportTicketCommentList()) {
+          DenariiResponse response = new DenariiResponse();
+          response.author = comment.getAuthor();
+          response.content = comment.getContent();
+          response.updatedTimeBody = "";
+          response.creationTimeBody = "";
 
-         responses.add(response);
-       }
+          responses.add(response);
+        }
       } else {
         // An empty responses list indicates failure
         return new StubbedCall(responses);
@@ -1454,7 +1502,8 @@ public class StubbedDenariiService implements DenariiService {
     Optional<UserDetails> user = getUserWithId(userIdentifier);
 
     if (user.isPresent()) {
-      Optional<SupportTicket> supportTicketOptional = getSupportTicketWithId(supportTicketIdentifier);
+      Optional<SupportTicket> supportTicketOptional =
+          getSupportTicketWithId(supportTicketIdentifier);
 
       if (supportTicketOptional.isPresent()) {
         SupportTicket supportTicket = supportTicketOptional.get();
@@ -1489,16 +1538,16 @@ public class StubbedDenariiService implements DenariiService {
     if (user.isPresent()) {
       UserDetails userDetails = user.get();
       for (DenariiAsk ask : userDetails.getDenariiAskList()) {
-       if (ask.getInEscrow() && !ask.getIsSettled()) {
-         DenariiResponse response = new DenariiResponse();
+        if (ask.getInEscrow() && !ask.getIsSettled()) {
+          DenariiResponse response = new DenariiResponse();
 
-         response.askID = ask.getAskID();
-         response.amount = ask.getAmount();
-         response.askingPrice = ask.getAskingPrice();
-         response.amountBought = ask.getAmountBought();
+          response.askID = ask.getAskID();
+          response.amount = ask.getAmount();
+          response.askingPrice = ask.getAskingPrice();
+          response.amountBought = ask.getAmountBought();
 
-         responses.add(response);
-       }
+          responses.add(response);
+        }
       }
     } else {
       // An empty responses list indicates failure
