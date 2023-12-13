@@ -1,19 +1,26 @@
 package com.denarii.android.navigation;
 
+import static androidx.test.core.graphics.BitmapStorage.writeToTestStorage;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.screenshot.ViewInteractionCapture.captureToBitmap;
+import static com.denarii.android.testing.ViewActionDenarii.withCustomConstraints;
+import static org.hamcrest.CoreMatchers.allOf;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import com.denarii.android.R;
 import com.denarii.android.activities.main.MainActivity;
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -310,7 +317,8 @@ public class ComplexNavigationTest {
       String otherEmail,
       String otherPassword,
       String otherWalletName,
-      String otherWalletPassword) {
+      String otherWalletPassword)
+      throws IOException {
     sellDenarii(otherName, otherEmail, otherPassword, otherWalletName, otherWalletPassword);
 
     logout();
@@ -358,7 +366,8 @@ public class ComplexNavigationTest {
   }
 
   private void commentOnResolveSupportTicket(
-      String name, String email, String password, String walletName, String walletPassword) {
+      String name, String email, String password, String walletName, String walletPassword)
+      throws IOException {
     createSupportTicket(name, email, password, walletName, walletPassword);
 
     commentOnSupportTicket();
@@ -367,7 +376,8 @@ public class ComplexNavigationTest {
   }
 
   private void commentOnDeleteSupportTicket(
-      String name, String email, String password, String walletName, String walletPassword) {
+      String name, String email, String password, String walletName, String walletPassword)
+      throws IOException {
     createSupportTicket(name, email, password, walletName, walletPassword);
 
     commentOnSupportTicket();
@@ -479,28 +489,195 @@ public class ComplexNavigationTest {
     strictlyLoginWithDenarii(name, email, password);
   }
 
-  private void strictlySetCreditCardInfo() {}
+  private void strictlySetCreditCardInfo() {
+    onView(withId(R.id.creditCardInfoNumber)).perform(typeText("123"), closeSoftKeyboard());
 
-  private void strictlyVerifyIdentity() {}
+    onView(withId(R.id.creditCardInfoExpiration)).perform(typeText("01/12"), closeSoftKeyboard());
+
+    onView(withId(R.id.creditCardInfoSecurityCode)).perform(typeText("001"), closeSoftKeyboard());
+
+    onView(withId(R.id.creditCardInfoSubmit)).perform(click());
+  }
+
+  private void strictlyVerifyIdentity(String email) {
+    onView(withId(R.id.firstName)).perform(typeText("andrew"), closeSoftKeyboard());
+
+    onView(withId(R.id.middleInitial)).perform(typeText("v"), closeSoftKeyboard());
+
+    onView(withId(R.id.lastName)).perform(typeText("poppy"), closeSoftKeyboard());
+
+    onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
+
+    onView(withId(R.id.dateOfBirth)).perform(typeText("01/22/1991"), closeSoftKeyboard());
+
+    onView(withId(R.id.socialSecurityNumber)).perform(typeText("11111111"), closeSoftKeyboard());
+
+    onView(withId(R.id.zipCode)).perform(typeText("33332232"), closeSoftKeyboard());
+
+    onView(withId(R.id.workCity)).perform(typeText("San Jose"), closeSoftKeyboard());
+
+    onView(withId(R.id.workState)).perform(typeText("California"), closeSoftKeyboard());
+
+    onView(withId(R.id.workCountry)).perform(typeText("United States"), closeSoftKeyboard());
+
+    onView(withId(R.id.verificationSubmit)).perform(click());
+  }
 
   private void setupToSellOrBuy(
-      String name, String email, String password, String walletName, String walletPassword) {}
+      String name, String email, String password, String walletName, String walletPassword) {
+    createWallet(name, email, password, walletName, walletPassword);
+
+    onView(withId(R.id.main_menu_layout)).perform(click());
+
+    onView(withId(R.id.credit_card_info)).perform(click());
+
+    // On credit card info
+    onView(withId(R.id.credit_card_info_layout)).check(matches(isDisplayed()));
+
+    strictlySetCreditCardInfo();
+
+    onView(withId(R.id.main_menu_layout)).perform(click());
+
+    onView(withId(R.id.verification)).perform(click());
+
+    // On verification
+    onView(withId(R.id.verification_layout)).check(matches(isDisplayed()));
+
+    strictlyVerifyIdentity(email);
+  }
 
   private void sellDenarii(
-      String name, String email, String password, String walletName, String walletPassword) {}
+      String name, String email, String password, String walletName, String walletPassword)
+      throws IOException {
+    setupToSellOrBuy(name, email, password, walletName, walletPassword);
+
+    onView(withId(R.id.main_menu_layout)).perform(click());
+
+    onView(withId(R.id.sell_denarii)).perform(click());
+
+    // On sell denarii
+    onView(withId(R.id.sell_denarii_layout)).check(matches(isDisplayed()));
+
+    onView(withId(R.id.sellAmount)).perform(typeText("2"), closeSoftKeyboard());
+
+    onView(withId(R.id.sellPrice)).perform(typeText("100"), closeSoftKeyboard());
+
+    onView(withId(R.id.submitSell)).perform(click());
+
+    // Refresh
+    onView(withId(R.id.sell_denarii_layout))
+        .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+    // Take a screenshot
+    writeToTestStorage(
+        captureToBitmap(onView(withId(R.id.sell_denarii_layout))),
+        getClass().getSimpleName() + "_" + testName.getMethodName());
+  }
 
   private void buyDenarii(
-      String name, String email, String password, String walletName, String walletPassword) {}
+      String name, String email, String password, String walletName, String walletPassword)
+      throws IOException {
+    setupToSellOrBuy(name, email, password, walletName, walletPassword);
+
+    onView(withId(R.id.main_menu_layout)).perform(click());
+
+    onView(withId(R.id.buy_denarii)).perform(click());
+
+    // On buy denarii
+    onView(withId(R.id.buy_denarii_layout)).check(matches(isDisplayed()));
+
+    onView(withId(R.id.buy_denarii_amount)).perform(typeText("1"), closeSoftKeyboard());
+
+    onView(withId(R.id.buy_denarii_price)).perform(typeText("110"), closeSoftKeyboard());
+
+    onView(withId(R.id.buy_denarii_submit)).perform(click());
+
+    // Refresh
+    onView(withId(R.id.buy_denarii_layout))
+        .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+    // Take a screenshot
+    writeToTestStorage(
+        captureToBitmap(onView(withId(R.id.buy_denarii_layout))),
+        getClass().getSimpleName() + "_" + testName.getMethodName());
+  }
 
   private void cancelBuyDenarii(
-      String name, String email, String password, String walletName, String walletPassword) {}
+      String name, String email, String password, String walletName, String walletPassword)
+      throws IOException {
+    buyDenarii(name, email, password, walletName, walletPassword);
+
+    onView(allOf(withId(R.id.queuedBuysScrollView), withText("Cancel"))).perform(click());
+
+    // Refresh
+    onView(withId(R.id.buy_denarii_layout))
+        .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+    // Take a screenshot
+    writeToTestStorage(
+        captureToBitmap(onView(withId(R.id.buy_denarii_layout))),
+        getClass().getSimpleName() + "_" + testName.getMethodName());
+  }
 
   private void createSupportTicket(
-      String name, String email, String password, String walletName, String walletPassword) {}
+      String name, String email, String password, String walletName, String walletPassword) {
+    createWallet(name, email, password, walletName, walletPassword);
 
-  private void commentOnSupportTicket() {}
+    onView(withId(R.id.main_menu_layout)).perform(click());
 
-  private void resolveSupportTicket() {}
+    onView(withId(R.id.settings)).perform(click());
 
-  private void deleteSupportTicket() {}
+    // On user settings
+    onView(withId(R.id.user_settings_layout)).check(matches(isDisplayed()));
+
+    onView(withId(R.id.supportTicketsButton)).perform(click());
+
+    // On support tickets
+    onView(withId(R.id.support_tickets_layout)).check(matches(isDisplayed()));
+
+    onView(withId(R.id.createSupportTicket)).perform(click());
+
+    // On create support ticket
+    onView(withId(R.id.create_support_ticket_layout)).check(matches(isDisplayed()));
+
+    onView(withId(R.id.supportTicketTitle)).perform(typeText("title"), closeSoftKeyboard());
+
+    onView(withId(R.id.supportTicketDescription))
+        .perform(typeText("description"), closeSoftKeyboard());
+
+    onView(withId(R.id.createSupportTicketSubmit)).perform(click());
+
+    // On support ticket details
+    onView(withId(R.id.create_support_ticket_layout)).check(matches(isDisplayed()));
+  }
+
+  private void commentOnSupportTicket() throws IOException {
+    onView(withId(R.id.supportTicketDetailsCommentBox))
+        .perform(typeText("comment"), closeSoftKeyboard());
+
+    onView(withId(R.id.commentBoxSubmit)).perform(click());
+
+    // Refresh
+    onView(withId(R.id.support_ticket_details_layout))
+        .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+
+    // Take a screenshot
+    writeToTestStorage(
+        captureToBitmap(onView(withId(R.id.buy_denarii_layout))),
+        getClass().getSimpleName() + "_" + testName.getMethodName());
+  }
+
+  private void resolveSupportTicket() {
+    onView(withId(R.id.resolveSupportTicket)).perform(click());
+
+    // On support tickets
+    onView(withId(R.id.support_tickets_layout)).check(matches(isDisplayed()));
+  }
+
+  private void deleteSupportTicket() {
+    onView(withId(R.id.deleteSupportTicket)).perform(click());
+
+    // On support tickets
+    onView(withId(R.id.support_tickets_layout)).check(matches(isDisplayed()));
+  }
 }
