@@ -7,6 +7,18 @@
     android:id="@+id/credit_card_info_layout"
     tools:context=".activities.creditcardinfo.CreditCardInfo">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/credit_card_info_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/creditCardInfoHeader"
         android:layout_width="match_parent"
@@ -17,7 +29,7 @@
         app:layout_constraintBottom_toTopOf="@id/creditCardInfoStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/credit_card_info_toolbar" />
 
     <TextView
         android:id="@+id/creditCardInfoStatus"

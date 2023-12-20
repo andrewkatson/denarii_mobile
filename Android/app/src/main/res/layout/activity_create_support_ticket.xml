@@ -7,6 +7,18 @@
     android:id="@+id/create_support_ticket_layout"
     tools:context=".activities.createsupportticket.CreateSupportTicket">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/create_support_ticket_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/createSupportTicketHeader"
         android:layout_width="match_parent"
@@ -19,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@+id/supportTicketTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/create_support_ticket_toolbar" />
 
     <EditText
         android:id="@+id/supportTicketTitle"

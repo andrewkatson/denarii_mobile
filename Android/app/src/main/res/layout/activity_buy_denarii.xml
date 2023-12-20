@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".activities.buydenarii.BuyDenarii">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/buy_denarii_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/buyDenarii"
         android:layout_width="match_parent"
@@ -16,7 +28,7 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buy_denarii_toolbar"
         tools:layout_editor_absoluteX="117dp" />
 
     <EditText

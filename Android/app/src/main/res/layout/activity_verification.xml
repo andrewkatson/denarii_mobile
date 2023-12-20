@@ -7,6 +7,18 @@
     android:id="@+id/verification_layout"
     tools:context=".activities.verification.Verification">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/verification_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/verificationHeader"
         android:layout_width="match_parent"
@@ -18,7 +30,7 @@
         app:layout_constraintBottom_toTopOf="@id/verificationStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/verification_toolbar" />
 
     <TextView
         android:id="@+id/verificationStatus"

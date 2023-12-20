@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import com.denarii.android.R;
 import com.denarii.android.activities.buydenarii.BuyDenarii;
 import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
@@ -44,6 +45,12 @@ public class CreateSupportTicket extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_create_support_ticket);
+
+    // Find the toolbar view inside the activity layout
+    Toolbar toolbar = (Toolbar) findViewById(R.id.create_support_ticket_toolbar);
+    // Sets the Toolbar to act as the ActionBar for this Activity window.
+    // Make sure the toolbar exists in the activity and is not null
+    setSupportActionBar(toolbar);
 
     denariiService = DenariiServiceHandler.returnDenariiService();
 

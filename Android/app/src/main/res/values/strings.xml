@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android</string>
+    <string name="app_name">Denarii</string>
     <string name="user_info_next">Next</string>
     <string name="user_info_enter_name_text">Name</string>
     <string name="user_info_enter_name_hint">Your name</string>

@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".activities.selldenarii.SellDenarii">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/sell_denarii_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/sellDenarii"
         android:layout_width="match_parent"
@@ -19,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@id/goingPrices"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/sell_denarii_toolbar" />
 
     <TextView
         android:id="@+id/goingPrices"

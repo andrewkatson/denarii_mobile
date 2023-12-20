@@ -26,7 +26,8 @@ public class StubbedCall implements Call<List<DenariiResponse>> {
   public Response<List<DenariiResponse>> execute() throws IOException {
     hasBeenExecuted = true;
     if (responses.isEmpty()) {
-      return Response.error(-1, ResponseBody.create(MediaType.get("plain"), "No responses"));
+      return Response.error(
+          -1, ResponseBody.create(MediaType.get("application/json"), "No responses"));
     }
     return Response.success(responses);
   }

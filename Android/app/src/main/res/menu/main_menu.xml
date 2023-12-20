@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/main_menu_layout"
-        android:title="@string/main_menu_title" >
-        <!-- "file" submenu -->
-        <menu>
-            <item android:id="@+id/wallet"
-                android:title="@string/wallet_name_menu_text" />
-            <item android:id="@+id/buy_denarii"
-                android:title="@string/buy_denarii_menu_text" />
-            <item android:id="@+id/sell_denarii"
-                android:title="@string/sell_denarii_menu_text" />
-            <item android:id="@+id/verification"
-                android:title="@string/verification_menu_text" />
-            <item android:id="@+id/credit_card_info"
-                android:title="@string/credit_card_info_menu_text" />
-            <item android:id="@+id/settings"
-                android:title="@string/settings_menu_text" />
-        </menu>
-    </item>
+    <item
+        android:id="@+id/wallet"
+        android:title="@string/wallet_name_menu_text" />
+    <item
+        android:id="@+id/buy_denarii"
+        android:title="@string/buy_denarii_menu_text" />
+    <item
+        android:id="@+id/sell_denarii"
+        android:title="@string/sell_denarii_menu_text" />
+    <item
+        android:id="@+id/verification"
+        android:title="@string/verification_menu_text" />
+    <item
+        android:id="@+id/credit_card_info"
+        android:title="@string/credit_card_info_menu_text" />
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings_menu_text" />
 </menu>

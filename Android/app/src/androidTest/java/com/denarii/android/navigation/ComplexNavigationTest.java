@@ -12,6 +12,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.screenshot.ViewInteractionCapture.captureToBitmap;
+import static com.adevinta.android.barista.interaction.BaristaMenuClickInteractions.clickMenu;
 import static com.denarii.android.testing.ViewActionDenarii.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.allOf;
 
@@ -118,7 +119,7 @@ public class ComplexNavigationTest {
   }
 
   @Test
-  public void cancelBuyDenarii_withValidData_cancelsBuyDenarii() {
+  public void cancelBuyDenarii_withValidData_cancelsBuyDenarii() throws IOException {
     cancelBuy(
         name,
         email,
@@ -136,7 +137,8 @@ public class ComplexNavigationTest {
 
   @Test
   public void
-      createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves() {
+      createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves()
+          throws IOException {
     commentOnResolveSupportTicket(name, email, password, walletName, walletPassword);
 
     logout();
@@ -144,7 +146,8 @@ public class ComplexNavigationTest {
 
   @Test
   public void
-      createSupportTicketCommentThenDelete_withValidData_createsSupportTicketCommentsThenDeletes() {
+      createSupportTicketCommentThenDelete_withValidData_createsSupportTicketCommentsThenDeletes()
+          throws IOException {
     commentOnDeleteSupportTicket(name, email, password, walletName, walletPassword);
 
     logout();
@@ -389,31 +392,27 @@ public class ComplexNavigationTest {
       String name, String email, String password, String walletName, String walletPassword) {
     createWallet(name, email, password, walletName, walletPassword);
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.settings)).perform(click());
+    clickMenu(R.id.settings);
 
     // On user settings
     onView(withId(R.id.user_settings_layout)).check(matches(isDisplayed()));
 
     onView(withId(R.id.deleteAccountButton)).perform(click());
 
-    // On login
-    onView(withId(R.id.login_layout)).check(matches(isDisplayed()));
+    // On login or register
+    onView(withId(R.id.login_or_register_layout)).check(matches(isDisplayed()));
   }
 
   private void logout() {
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.settings)).perform(click());
+    clickMenu(R.id.settings);
 
     // On user settings
     onView(withId(R.id.user_settings_layout)).check(matches(isDisplayed()));
 
     onView(withId(R.id.logoutButton)).perform(click());
 
-    // On login
-    onView(withId(R.id.login_layout)).check(matches(isDisplayed()));
+    // On login or register
+    onView(withId(R.id.login_or_register_layout)).check(matches(isDisplayed()));
   }
 
   private void navigateToLoginOrRegister() {
@@ -428,12 +427,6 @@ public class ComplexNavigationTest {
 
     // Now we are on Login
     onView(withId(R.id.login_layout)).check(matches(isDisplayed()));
-  }
-
-  private void navigateToLogin() {
-    navigateToLoginOrRegister();
-
-    strictlyNavigateToLogin();
   }
 
   private void registerWithDenarii(String name, String email, String password) {
@@ -527,18 +520,14 @@ public class ComplexNavigationTest {
       String name, String email, String password, String walletName, String walletPassword) {
     createWallet(name, email, password, walletName, walletPassword);
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.credit_card_info)).perform(click());
+    clickMenu(R.id.credit_card_info);
 
     // On credit card info
     onView(withId(R.id.credit_card_info_layout)).check(matches(isDisplayed()));
 
     strictlySetCreditCardInfo();
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.verification)).perform(click());
+    clickMenu(R.id.verification);
 
     // On verification
     onView(withId(R.id.verification_layout)).check(matches(isDisplayed()));
@@ -551,9 +540,7 @@ public class ComplexNavigationTest {
       throws IOException {
     setupToSellOrBuy(name, email, password, walletName, walletPassword);
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.sell_denarii)).perform(click());
+    clickMenu(R.id.sell_denarii);
 
     // On sell denarii
     onView(withId(R.id.sell_denarii_layout)).check(matches(isDisplayed()));
@@ -579,9 +566,7 @@ public class ComplexNavigationTest {
       throws IOException {
     setupToSellOrBuy(name, email, password, walletName, walletPassword);
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.buy_denarii)).perform(click());
+    clickMenu(R.id.buy_denarii);
 
     // On buy denarii
     onView(withId(R.id.buy_denarii_layout)).check(matches(isDisplayed()));
@@ -623,9 +608,7 @@ public class ComplexNavigationTest {
       String name, String email, String password, String walletName, String walletPassword) {
     createWallet(name, email, password, walletName, walletPassword);
 
-    onView(withId(R.id.main_menu_layout)).perform(click());
-
-    onView(withId(R.id.settings)).perform(click());
+    clickMenu(R.id.settings);
 
     // On user settings
     onView(withId(R.id.user_settings_layout)).check(matches(isDisplayed()));

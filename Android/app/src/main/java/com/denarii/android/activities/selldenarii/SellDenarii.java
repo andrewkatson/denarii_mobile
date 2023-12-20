@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -62,6 +63,12 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_sell_denarii);
+
+    // Find the toolbar view inside the activity layout
+    Toolbar toolbar = (Toolbar) findViewById(R.id.sell_denarii_toolbar);
+    // Sets the Toolbar to act as the ActionBar for this Activity window.
+    // Make sure the toolbar exists in the activity and is not null
+    setSupportActionBar(toolbar);
 
     Intent currentIntent = getIntent();
     userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
