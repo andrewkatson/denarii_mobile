@@ -4,6 +4,7 @@ import static androidx.test.core.graphics.BitmapStorage.writeToTestStorage;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -194,6 +195,10 @@ public class ComplexNavigationTest {
     // Now we are on reset password
     onView(withId(R.id.reset_password_layout)).check(matches(isDisplayed()));
 
+    onView(withId(R.id.rs_enter_name_edit_text)).perform(typeText(name), closeSoftKeyboard());
+
+    onView(withId(R.id.rs_enter_email_edit_text)).perform(typeText(email), closeSoftKeyboard());
+
     onView(withId(R.id.reset_password_enter_password_edit_text))
         .perform(typeText(newPassword), closeSoftKeyboard());
 
@@ -282,6 +287,8 @@ public class ComplexNavigationTest {
     createWallet(name, email, password, walletName, walletPassword);
 
     logout();
+
+    strictlyNavigateToLogin();
 
     strictlyLoginWithDenarii(name, email, password);
 
@@ -416,10 +423,15 @@ public class ComplexNavigationTest {
   }
 
   private void navigateToLoginOrRegister() {
-    onView(withId(R.id.main_next)).perform(click());
+    // Some tests start on login or register so check for that first
+    try {
+      onView(withId(R.id.main_layout)).check(matches(isDisplayed()));
 
-    // Now we are on LoginOrRegister
-    onView(withId(R.id.login_or_register_layout)).check(matches(isDisplayed()));
+      onView(withId(R.id.main_next)).perform(click());
+    } finally {
+      // Now we are on LoginOrRegister
+      onView(withId(R.id.login_or_register_layout)).check(matches(isDisplayed()));
+    }
   }
 
   private void strictlyNavigateToLogin() {
@@ -483,35 +495,39 @@ public class ComplexNavigationTest {
   }
 
   private void strictlySetCreditCardInfo() {
-    onView(withId(R.id.creditCardInfoNumber)).perform(typeText("123"), closeSoftKeyboard());
+    onView(withId(R.id.creditCardInfoNumber)).perform(replaceText("123"), closeSoftKeyboard());
 
-    onView(withId(R.id.creditCardInfoExpiration)).perform(typeText("01/12"), closeSoftKeyboard());
+    onView(withId(R.id.creditCardInfoExpiration))
+        .perform(replaceText("01/12"), closeSoftKeyboard());
 
-    onView(withId(R.id.creditCardInfoSecurityCode)).perform(typeText("001"), closeSoftKeyboard());
+    onView(withId(R.id.creditCardInfoSecurityCode))
+        .perform(replaceText("001"), closeSoftKeyboard());
 
     onView(withId(R.id.creditCardInfoSubmit)).perform(click());
   }
 
   private void strictlyVerifyIdentity(String email) {
-    onView(withId(R.id.firstName)).perform(typeText("andrew"), closeSoftKeyboard());
+    onView(withId(R.id.firstName)).perform(replaceText("andrew"), closeSoftKeyboard());
 
-    onView(withId(R.id.middleInitial)).perform(typeText("v"), closeSoftKeyboard());
+    onView(withId(R.id.middleInitial)).perform(replaceText("v"), closeSoftKeyboard());
 
-    onView(withId(R.id.lastName)).perform(typeText("poppy"), closeSoftKeyboard());
+    onView(withId(R.id.lastName)).perform(replaceText("poppy"), closeSoftKeyboard());
 
-    onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
+    onView(withId(R.id.email)).perform(replaceText(email), closeSoftKeyboard());
 
-    onView(withId(R.id.dateOfBirth)).perform(typeText("01/22/1991"), closeSoftKeyboard());
+    onView(withId(R.id.dateOfBirth)).perform(replaceText("01/22/1991"), closeSoftKeyboard());
 
-    onView(withId(R.id.socialSecurityNumber)).perform(typeText("11111111"), closeSoftKeyboard());
+    onView(withId(R.id.socialSecurityNumber)).perform(replaceText("11111111"), closeSoftKeyboard());
 
-    onView(withId(R.id.zipCode)).perform(typeText("33332232"), closeSoftKeyboard());
+    onView(withId(R.id.zipCode)).perform(replaceText("33332232"), closeSoftKeyboard());
 
-    onView(withId(R.id.workCity)).perform(typeText("San Jose"), closeSoftKeyboard());
+    onView(withText(R.id.phoneNumber)).perform(replaceText("1234567890"), closeSoftKeyboard());
 
-    onView(withId(R.id.workState)).perform(typeText("California"), closeSoftKeyboard());
+    onView(withId(R.id.workCity)).perform(replaceText("San Jose"), closeSoftKeyboard());
 
-    onView(withId(R.id.workCountry)).perform(typeText("United States"), closeSoftKeyboard());
+    onView(withId(R.id.workState)).perform(replaceText("California"), closeSoftKeyboard());
+
+    onView(withId(R.id.workCountry)).perform(replaceText("United States"), closeSoftKeyboard());
 
     onView(withId(R.id.verificationSubmit)).perform(click());
   }
