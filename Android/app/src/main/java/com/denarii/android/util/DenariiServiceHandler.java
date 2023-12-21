@@ -1,6 +1,8 @@
 package com.denarii.android.util;
 
 import android.os.Build;
+
+import com.denarii.android.BuildConfig;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.network.StubbedDenariiService;
@@ -34,6 +36,11 @@ public class DenariiServiceHandler {
   }
 
   private static boolean isDebug() {
+
+    if (BuildConfig.DEBUG) {
+      return true;
+    }
+
     return Build.FINGERPRINT.startsWith("generic")
         || Build.FINGERPRINT.startsWith("unknown")
         || Build.MODEL.contains("google_sdk")
