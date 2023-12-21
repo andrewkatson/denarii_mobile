@@ -252,6 +252,8 @@ public class ComplexNavigationTest {
 
     logout();
 
+    strictlyNavigateToLogin();
+
     strictlyLoginWithDenarii(name, email, password);
 
     // Now we are on wallet decision
@@ -266,7 +268,7 @@ public class ComplexNavigationTest {
         .perform(typeText(walletName), closeSoftKeyboard());
 
     onView(withId(R.id.restore_wallet_enter_password))
-        .perform(typeText(password), closeSoftKeyboard());
+        .perform(typeText(walletPassword), closeSoftKeyboard());
 
     // A static seed to make testing easier
     onView(withId(R.id.restore_wallet_enter_seed))
