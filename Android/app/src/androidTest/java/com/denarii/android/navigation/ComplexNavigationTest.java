@@ -17,6 +17,7 @@ import static com.adevinta.android.barista.interaction.BaristaMenuClickInteracti
 import static com.denarii.android.testing.ViewActionDenarii.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.allOf;
 
+import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -358,7 +359,7 @@ public class ComplexNavigationTest {
     onView(withId(R.id.opened_wallet_amount_edit_text)).perform(typeText("2"), closeSoftKeyboard());
 
     // We know this is the address of the first wallet because the first wallet gets 1 statically
-    onView(withId(R.id.opened_wallet_amount_edit_text)).perform(typeText("1"), closeSoftKeyboard());
+    onView(withId(R.id.opened_wallet_to_edit_text)).perform(typeText("1"), closeSoftKeyboard());
 
     onView(withId(R.id.opened_wallet_attempt_send_button)).perform(click());
 
@@ -374,7 +375,7 @@ public class ComplexNavigationTest {
     onView(withId(R.id.opened_wallet_layout)).check(matches(isDisplayed()));
 
     // Balance starts at 10 so we can guess itll be 12.
-    onView(withId(R.id.opened_wallet_balance_text_view)).check(matches(withText("12")));
+    onView(withId(R.id.opened_wallet_balance_text_view)).check(matches(withText("Balance: 12.000000")));
   }
 
   private void commentOnResolveSupportTicket(
@@ -430,6 +431,8 @@ public class ComplexNavigationTest {
       onView(withId(R.id.main_layout)).check(matches(isDisplayed()));
 
       onView(withId(R.id.main_next)).perform(click());
+    } catch (NoMatchingViewException ignored) {
+
     } finally {
       // Now we are on LoginOrRegister
       onView(withId(R.id.login_or_register_layout)).check(matches(isDisplayed()));

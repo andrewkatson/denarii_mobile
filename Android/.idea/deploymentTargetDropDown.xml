@@ -14,6 +14,9 @@
       <entry key="restoreWallet_withValidData_restoresWallet()">
         <State />
       </entry>
+      <entry key="sendDenarii_withValidData_sendsDenarii()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
