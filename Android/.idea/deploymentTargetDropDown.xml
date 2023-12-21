@@ -11,6 +11,9 @@
       <entry key="deleteAccount_withValidData_deletesAccount()">
         <State />
       </entry>
+      <entry key="restoreWallet_withValidData_restoresWallet()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
