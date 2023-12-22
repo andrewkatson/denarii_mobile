@@ -139,7 +139,7 @@ public class Verification extends AppCompatActivity
       TextView zipCodeTextView = findViewById(R.id.zipCode);
       String zipCode = zipCodeTextView.getText().toString();
 
-      TextView phoneNumberTextView = findViewById(R.id.phoneNumber);
+      TextView phoneNumberTextView = findViewById(R.id.verificationPhoneNumber);
       String phoneNumber = phoneNumberTextView.getText().toString();
 
       TextView workCityTextView = findViewById(R.id.workCity);
@@ -233,7 +233,7 @@ public class Verification extends AppCompatActivity
     TextView zipCodeTextView = findViewById(R.id.zipCode);
     zipCodeTextView.setVisibility(View.INVISIBLE);
 
-    TextView phoneNumberTextView = findViewById(R.id.phoneNumber);
+    TextView phoneNumberTextView = findViewById(R.id.verificationPhoneNumber);
     phoneNumberTextView.setVisibility(View.INVISIBLE);
 
     TextView workCityTextView = findViewById(R.id.workCity);

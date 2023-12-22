@@ -8,6 +8,9 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="cancelBuyDenarii_withValidData_cancelsBuyDenarii()">
+        <State />
+      </entry>
       <entry key="deleteAccount_withValidData_deletesAccount()">
         <State />
       </entry>

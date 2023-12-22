@@ -14,6 +14,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.screenshot.ViewInteractionCapture.captureToBitmap;
 import static com.adevinta.android.barista.interaction.BaristaMenuClickInteractions.clickMenu;
+import static com.adevinta.android.barista.interaction.BaristaMenuClickInteractions.openMenu;
 import static com.denarii.android.testing.ViewActionDenarii.withCustomConstraints;
 import static org.hamcrest.CoreMatchers.allOf;
 
@@ -526,7 +527,7 @@ public class ComplexNavigationTest {
 
     onView(withId(R.id.zipCode)).perform(replaceText("33332232"), closeSoftKeyboard());
 
-    onView(withText(R.id.phoneNumber)).perform(replaceText("1234567890"), closeSoftKeyboard());
+    onView(withId(R.id.verificationPhoneNumber)).perform(typeText("1234567890"), closeSoftKeyboard());
 
     onView(withId(R.id.workCity)).perform(replaceText("San Jose"), closeSoftKeyboard());
 
