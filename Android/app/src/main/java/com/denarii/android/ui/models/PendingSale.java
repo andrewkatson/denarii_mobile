@@ -5,7 +5,6 @@ public class PendingSale {
     private final String askId;
     private final double amount;
     private final double price;
-
     private final double amountBought;
 
     public PendingSale(String askId, double amount, double price, double amountBought) {

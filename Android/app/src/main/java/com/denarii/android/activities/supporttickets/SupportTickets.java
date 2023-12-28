@@ -20,11 +20,13 @@ import com.denarii.android.activities.createsupportticket.CreateSupportTicket;
 import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
 import com.denarii.android.activities.selldenarii.SellDenarii;
+import com.denarii.android.activities.supportticketdetails.SupportTicketDetails;
 import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
+import com.denarii.android.user.SupportTicket;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 import com.denarii.android.util.UnpackDenariiResponse;
@@ -79,6 +81,19 @@ public class SupportTickets extends AppCompatActivity
     @Override
     public void onRefresh() {
         getSupportTickets();
+    }
+
+    private void navigateToSupportTicket(String supportTicketId) {
+        Intent intent = new Intent(SupportTickets.this, SupportTicketDetails.class);
+
+        SupportTicket currentTicket = new SupportTicket();
+        currentTicket.setSupportID(supportTicketId);
+
+        userDetails.setCurrentTicket(currentTicket);
+
+        intent.putExtra(Constants.USER_DETAILS, userDetails);
+        
+        startActivity(intent);
     }
 
     private void getSupportTickets() {

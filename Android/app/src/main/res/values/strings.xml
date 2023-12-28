@@ -157,9 +157,8 @@
     <string name="ask_price_default">Ask Price</string>
     <string name="ask_amount_bought_default">Ask Amount Bought</string>
     <string name="ask_cancel_default">Cancel Ask Or Buy</string>
-    <string name="others_comment_author_default">Others Comment Author</string>
-    <string name="others_comment_body_default">Others Comment Body</string>
-    <string name="own_comment_body_default">Own Comment Body</string>
+    <string name="comment_author_default">Comment Author</string>
+    <string name="comment_body_default">Comment Body</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
