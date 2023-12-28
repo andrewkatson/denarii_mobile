@@ -49,6 +49,10 @@ public class SupportTickets extends AppCompatActivity
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
 
+    private SupportTicketRecyclerViewAdapter supportTicketRecyclerViewAdapter;
+
+    private final List<SupportTicketModel> supportTicketModels = new ArrayList<>();
+
     private DenariiService denariiService;
 
     private UserDetails userDetails = null;
@@ -82,30 +86,46 @@ public class SupportTickets extends AppCompatActivity
 
         getSupportTickets();
 
+        getSupportTicketModels();
+
         // Create the recycler view for the support tickets linear layout
         RecyclerView ticketsRecyclerView = (RecyclerView) findViewById(R.id.supportTicketsSupportTicketsRecyclerView);
 
-        SupportTicketRecyclerViewAdapter ticketAdapter = new SupportTicketRecyclerViewAdapter(getSupportTicketModels(), (supportTicketId) -> {
+        supportTicketRecyclerViewAdapter = new SupportTicketRecyclerViewAdapter(supportTicketModels, (supportTicketId) -> {
             navigateToSupportTicket(supportTicketId);
             return null;
         });
-        ticketsRecyclerView.setAdapter(ticketAdapter);
+        ticketsRecyclerView.setAdapter(supportTicketRecyclerViewAdapter);
         ticketsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onRefresh() {
         getSupportTickets();
+
+        updateSupportTicketModelsRecyclerView();
     }
 
-    private List<SupportTicketModel> getSupportTicketModels() {
-        List<SupportTicketModel> ticketModels = new ArrayList<>();
-
+    private void getSupportTicketModels() {
+        supportTicketModels.clear();
         for (SupportTicket ticket : userDetails.getSupportTicketList()) {
-            ticketModels.add(new SupportTicketModel(ticket.getSupportID(), ticket.getTitle(), ticket.getDescription()));
+            supportTicketModels.add(new SupportTicketModel(ticket.getSupportID(), ticket.getTitle(), ticket.getDescription()));
+        }
+    }
+
+    private void updateSupportTicketModelsRecyclerView() {
+        int itemCountMinusOne = supportTicketRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            supportTicketRecyclerViewAdapter.notifyItemRemoved(i);
         }
 
-        return ticketModels;
+        getSupportTicketModels();
+
+        int pos = 0;
+        for (SupportTicketModel unused : supportTicketModels) {
+            supportTicketRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
     }
 
     private void navigateToSupportTicket(String supportTicketId) {

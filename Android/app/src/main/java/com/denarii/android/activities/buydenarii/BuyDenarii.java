@@ -52,6 +52,15 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final List<DenariiAsk> currentAsks = new ArrayList<>();
+
+    private BuyDenariiAskRecyclerViewAdapter asksRecyclerViewAdapter;
+
+    private final List<Ask> allAsks = new ArrayList<>();
+
+    private QueuedBuyRecyclerViewAdapter queuedBuyRecyclerViewAdapter;
+
+    private final List<QueuedBuy> allQueuedBuys = new ArrayList<>();
+
     private List<DenariiAsk> queuedBuys = new ArrayList<>();
 
     private DenariiService denariiService;
@@ -77,6 +86,9 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
         getNewAsks();
         refreshSettledTransactions();
 
+        getCurrentAsks();
+        getQueuedBuys();
+
         Button submit = (Button) findViewById(R.id.buy_denarii_submit);
 
         submit.setOnClickListener(
@@ -87,18 +99,18 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
         // Create the recycler view for the asks grid
         RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiAsksRecyclerView);
 
-        BuyDenariiAskRecyclerViewAdapter asksAdapter = new BuyDenariiAskRecyclerViewAdapter(getCurrentAsks());
-        asksRecyclerView.setAdapter(asksAdapter);
+        asksRecyclerViewAdapter = new BuyDenariiAskRecyclerViewAdapter(allAsks);
+        asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
         asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         // Create the recycler view for the queued buys grid
         RecyclerView queuedBuysRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiQueuedBuysRecyclerView);
 
-        QueuedBuyRecyclerViewAdapter queuedBuysAdapter = new QueuedBuyRecyclerViewAdapter(getQueuedBuys(), (askIds) -> {
+        queuedBuyRecyclerViewAdapter = new QueuedBuyRecyclerViewAdapter(allQueuedBuys, (askIds) -> {
             cancelBuys(askIds);
             return null;
         });
-        queuedBuysRecyclerView.setAdapter(queuedBuysAdapter);
+        queuedBuysRecyclerView.setAdapter(queuedBuyRecyclerViewAdapter);
         queuedBuysRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
 
@@ -106,23 +118,53 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
     public void onRefresh() {
         getNewAsks();
         refreshSettledTransactions();
+
+        updateAsksRecyclerView();
+        updateQueuedBuysRecyclerView();
     }
 
-    private List<Ask> getCurrentAsks() {
-        List<Ask> asks = new ArrayList<>();
+    private void getCurrentAsks() {
+        allAsks.clear();
         for (DenariiAsk ask : currentAsks) {
-            asks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+            allAsks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
         }
-        return asks;
     }
 
-    private List<QueuedBuy> getQueuedBuys() {
-        List<QueuedBuy> buys = new ArrayList<>();
-
+    private void getQueuedBuys() {
+        allQueuedBuys.clear();
         for (DenariiAsk buy : queuedBuys) {
-            buys.add(new QueuedBuy(buy.getAskID(), buy.getAmount(), buy.getAskingPrice(), buy.getAmountBought()));
+            allQueuedBuys.add(new QueuedBuy(buy.getAskID(), buy.getAmount(), buy.getAskingPrice(), buy.getAmountBought()));
         }
-        return buys;
+    }
+
+    private void updateAsksRecyclerView() {
+        int itemCountMinusOne = asksRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            asksRecyclerViewAdapter.notifyItemRemoved(i);
+        }
+
+        getCurrentAsks();
+
+        int pos = 0;
+        for (Ask unused : allAsks) {
+            asksRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
+    }
+
+    private void updateQueuedBuysRecyclerView() {
+        int itemCountMinusOne = queuedBuyRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            queuedBuyRecyclerViewAdapter.notifyItemRemoved(i);
+        }
+
+        getQueuedBuys();
+
+        int pos = 0;
+        for (QueuedBuy unused : allQueuedBuys) {
+            queuedBuyRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
     }
 
     private void getNewAsks() {

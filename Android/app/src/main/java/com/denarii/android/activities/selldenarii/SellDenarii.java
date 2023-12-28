@@ -52,10 +52,23 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final List<DenariiAsk> currentAsks = new ArrayList<>();
+
+    private SellDenariiAskRecyclerViewAdapter asksRecyclerViewAdapter;
+
+    private final List<Ask> allAsks = new ArrayList<>();
+
     private final List<DenariiAsk> ownAsks = new ArrayList<>();
+
+    private OwnAskRecyclerViewAdapter ownAsksRecyclerViewAdapter;
+
+    private final List<OwnAsk> allOwnAsks = new ArrayList<>();
 
     // Pending Sales
     private final List<DenariiAsk> ownAsksBought = new ArrayList<>();
+
+    private PendingSaleRecyclerViewAdapter pendingSalesRecyclerViewAdapter;
+
+    private final List<PendingSale> allPendingSales = new ArrayList<>();
 
     private DenariiService denariiService;
 
@@ -89,28 +102,32 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
         refreshAsksInEscrow();
         refreshGoingPrice();
 
+        getCurrentAsks();
+        getOwnAsks();
+        getPendingSales();
+
         // Create the recycler view for the asks grid
         RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiAsksRecyclerView);
 
-        SellDenariiAskRecyclerViewAdapter asksAdapter = new SellDenariiAskRecyclerViewAdapter(getCurrentAsks());
-        asksRecyclerView.setAdapter(asksAdapter);
+        asksRecyclerViewAdapter = new SellDenariiAskRecyclerViewAdapter(allAsks);
+        asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
         asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         // Create the recycler view for the own asks grid
         RecyclerView ownAsksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiOwnAsksRecyclerView);
 
-        OwnAskRecyclerViewAdapter ownAsksAdapter = new OwnAskRecyclerViewAdapter(getOwnAsks(), (askIds) -> {
+        ownAsksRecyclerViewAdapter = new OwnAskRecyclerViewAdapter(allOwnAsks, (askIds) -> {
             cancelAsks(askIds);
             return null;
         });
-        ownAsksRecyclerView.setAdapter(ownAsksAdapter);
+        ownAsksRecyclerView.setAdapter(ownAsksRecyclerViewAdapter);
         ownAsksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         // Create the recycler view for the pending sales grid
         RecyclerView pendingSalesRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiPendingSalesRecyclerView);
 
-        PendingSaleRecyclerViewAdapter pendingSalesAdapter = new PendingSaleRecyclerViewAdapter(getPendingSales());
-        pendingSalesRecyclerView.setAdapter(pendingSalesAdapter);
+        pendingSalesRecyclerViewAdapter = new PendingSaleRecyclerViewAdapter(allPendingSales);
+        pendingSalesRecyclerView.setAdapter(pendingSalesRecyclerViewAdapter);
         pendingSalesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     }
 
@@ -120,36 +137,76 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
         refreshOwnAsks();
         refreshAsksInEscrow();
         refreshGoingPrice();
+
+        updateAsksRecyclerView();
+        updateOwnAsksRecyclerView();
+        updatePendingSalesRecyclerView();
     }
 
-    private List<Ask> getCurrentAsks() {
-        List<Ask> asks = new ArrayList<>();
-
+    private void getCurrentAsks() {
+        allAsks.clear();
         for (DenariiAsk ask : currentAsks) {
-            asks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+            allAsks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
         }
-
-        return asks;
     }
 
-    private List<OwnAsk> getOwnAsks() {
-        List<OwnAsk> asks = new ArrayList<>();
-
+    private void getOwnAsks() {
+        allOwnAsks.clear();
         for (DenariiAsk ask : ownAsks) {
-            asks.add(new OwnAsk(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+            allOwnAsks.add(new OwnAsk(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
         }
-
-        return asks;
     }
 
-    private List<PendingSale> getPendingSales() {
-        List<PendingSale> pendingSales = new ArrayList<>();
-
+    private void getPendingSales() {
+        allPendingSales.clear();
         for (DenariiAsk ask : ownAsksBought) {
-            pendingSales.add(new PendingSale(ask.getAskID(), ask.getAmount(), ask.getAskingPrice(), ask.getAmountBought()));
+            allPendingSales.add(new PendingSale(ask.getAskID(), ask.getAmount(), ask.getAskingPrice(), ask.getAmountBought()));
+        }
+    }
+
+    private void updateAsksRecyclerView() {
+        int itemCountMinusOne = asksRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            asksRecyclerViewAdapter.notifyItemRemoved(i);
         }
 
-        return pendingSales;
+        getCurrentAsks();
+
+        int pos = 0;
+        for (Ask unused : allAsks) {
+            asksRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
+    }
+
+    private void updateOwnAsksRecyclerView() {
+        int itemCountMinusOne = ownAsksRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            ownAsksRecyclerViewAdapter.notifyItemRemoved(i);
+        }
+
+        getOwnAsks();
+
+        int pos = 0;
+        for (OwnAsk unused : allOwnAsks) {
+            ownAsksRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
+    }
+
+    private void updatePendingSalesRecyclerView() {
+        int itemCountMinusOne = pendingSalesRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            pendingSalesRecyclerViewAdapter.notifyItemRemoved(i);
+        }
+
+        getPendingSales();
+
+        int pos = 0;
+        for (PendingSale unused : allPendingSales) {
+            pendingSalesRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
     }
 
     private void getNewAsks() {

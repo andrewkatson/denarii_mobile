@@ -50,6 +50,10 @@ public class SupportTicketDetails extends AppCompatActivity
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
 
+    private SupportTicketCommentRecyclerViewAdapter supportTicketCommentsRecyclerViewAdapter;
+
+    private final List<SupportTicketCommentModel> supportTicketCommentModels = new ArrayList<>();
+
     private DenariiService denariiService;
 
     private UserDetails userDetails = null;
@@ -72,6 +76,8 @@ public class SupportTicketDetails extends AppCompatActivity
 
         getSupportTicketDetails();
         getSupportTicketCommentDetails();
+
+        getComments();
 
         Button addNewCommentButton = findViewById(R.id.commentBoxSubmit);
 
@@ -97,24 +103,38 @@ public class SupportTicketDetails extends AppCompatActivity
         // Create the recycler view for the comments linear layout
         RecyclerView commentsRecyclerView = (RecyclerView) findViewById(R.id.supportTicketCommentsRecyclerView);
 
-        SupportTicketCommentRecyclerViewAdapter commentAdapter = new SupportTicketCommentRecyclerViewAdapter(getComments(), userDetails.getUserName());
-        commentsRecyclerView.setAdapter(commentAdapter);
+        supportTicketCommentsRecyclerViewAdapter = new SupportTicketCommentRecyclerViewAdapter(supportTicketCommentModels, userDetails.getUserName());
+        commentsRecyclerView.setAdapter(supportTicketCommentsRecyclerViewAdapter);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onRefresh() {
         getSupportTicketCommentDetails();
+
+        updateSupportTicketCommentsRecyclerView();
     }
 
-    private List<SupportTicketCommentModel> getComments() {
-        List<SupportTicketCommentModel> commentModels = new ArrayList<>();
-
+    private void getComments() {
+        supportTicketCommentModels.clear();
         for (SupportTicketComment comment : userDetails.getCurrentTicket().getSupportTicketCommentList()) {
-            commentModels.add(new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
+            supportTicketCommentModels.add(new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
+        }
+    }
+
+    private void updateSupportTicketCommentsRecyclerView() {
+        int itemCountMinusOne = supportTicketCommentsRecyclerViewAdapter.getItemCount() - 1;
+        for (int i = itemCountMinusOne; i >= 0; i--) {
+            supportTicketCommentsRecyclerViewAdapter.notifyItemRemoved(i);
         }
 
-        return commentModels;
+        getComments();
+
+        int pos = 0;
+        for (SupportTicketCommentModel unused : supportTicketCommentModels) {
+            supportTicketCommentsRecyclerViewAdapter.notifyItemInserted(pos);
+            pos += 1;
+        }
     }
 
     private void addNewComment() {
