@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.denarii.android.R;
@@ -24,6 +26,12 @@ import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.ui.models.Ask;
+import com.denarii.android.ui.models.OwnAsk;
+import com.denarii.android.ui.models.PendingSale;
+import com.denarii.android.ui.recyclerviewadapters.OwnAskRecyclerViewAdapter;
+import com.denarii.android.ui.recyclerviewadapters.PendingSaleRecyclerViewAdapter;
+import com.denarii.android.ui.recyclerviewadapters.SellDenariiAskRecyclerViewAdapter;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
@@ -80,6 +88,30 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
         refreshOwnAsks();
         refreshAsksInEscrow();
         refreshGoingPrice();
+
+        // Create the recycler view for the asks grid
+        RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiAsksRecyclerView);
+
+        SellDenariiAskRecyclerViewAdapter asksAdapter = new SellDenariiAskRecyclerViewAdapter(getCurrentAsks());
+        asksRecyclerView.setAdapter(asksAdapter);
+        asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        // Create the recycler view for the own asks grid
+        RecyclerView ownAsksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiOwnAsksRecyclerView);
+
+        OwnAskRecyclerViewAdapter ownAsksAdapter = new OwnAskRecyclerViewAdapter(getOwnAsks(), (askIds) -> {
+            cancelAsks(askIds);
+            return null;
+        });
+        ownAsksRecyclerView.setAdapter(ownAsksAdapter);
+        ownAsksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        // Create the recycler view for the pending sales grid
+        RecyclerView pendingSalesRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiPendingSalesRecyclerView);
+
+        PendingSaleRecyclerViewAdapter pendingSalesAdapter = new PendingSaleRecyclerViewAdapter(getPendingSales());
+        pendingSalesRecyclerView.setAdapter(pendingSalesAdapter);
+        pendingSalesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
     }
 
     @Override
@@ -88,6 +120,36 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
         refreshOwnAsks();
         refreshAsksInEscrow();
         refreshGoingPrice();
+    }
+
+    private List<Ask> getCurrentAsks() {
+        List<Ask> asks = new ArrayList<>();
+
+        for (DenariiAsk ask : currentAsks) {
+            asks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+        }
+
+        return asks;
+    }
+
+    private List<OwnAsk> getOwnAsks() {
+        List<OwnAsk> asks = new ArrayList<>();
+
+        for (DenariiAsk ask : ownAsks) {
+            asks.add(new OwnAsk(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+        }
+
+        return asks;
+    }
+
+    private List<PendingSale> getPendingSales() {
+        List<PendingSale> pendingSales = new ArrayList<>();
+
+        for (DenariiAsk ask : ownAsksBought) {
+            pendingSales.add(new PendingSale(ask.getAskID(), ask.getAmount(), ask.getAskingPrice(), ask.getAmountBought()));
+        }
+
+        return pendingSales;
     }
 
     private void getNewAsks() {

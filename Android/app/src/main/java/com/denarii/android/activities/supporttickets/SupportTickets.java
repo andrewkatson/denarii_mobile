@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.denarii.android.R;
@@ -25,12 +27,15 @@ import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.ui.models.SupportTicketModel;
+import com.denarii.android.ui.recyclerviewadapters.SupportTicketRecyclerViewAdapter;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.SupportTicket;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 import com.denarii.android.util.UnpackDenariiResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -76,11 +81,31 @@ public class SupportTickets extends AppCompatActivity
                 });
 
         getSupportTickets();
+
+        // Create the recycler view for the support tickets linear layout
+        RecyclerView ticketsRecyclerView = (RecyclerView) findViewById(R.id.supportTicketsSupportTicketsRecyclerView);
+
+        SupportTicketRecyclerViewAdapter ticketAdapter = new SupportTicketRecyclerViewAdapter(getSupportTicketModels(), (supportTicketId) -> {
+            navigateToSupportTicket(supportTicketId);
+            return null;
+        });
+        ticketsRecyclerView.setAdapter(ticketAdapter);
+        ticketsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onRefresh() {
         getSupportTickets();
+    }
+
+    private List<SupportTicketModel> getSupportTicketModels() {
+        List<SupportTicketModel> ticketModels = new ArrayList<>();
+
+        for (SupportTicket ticket : userDetails.getSupportTicketList()) {
+            ticketModels.add(new SupportTicketModel(ticket.getSupportID(), ticket.getTitle(), ticket.getDescription()));
+        }
+
+        return ticketModels;
     }
 
     private void navigateToSupportTicket(String supportTicketId) {
@@ -92,7 +117,7 @@ public class SupportTickets extends AppCompatActivity
         userDetails.setCurrentTicket(currentTicket);
 
         intent.putExtra(Constants.USER_DETAILS, userDetails);
-        
+
         startActivity(intent);
     }
 

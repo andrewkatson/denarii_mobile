@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.denarii.android.R;
@@ -24,6 +26,10 @@ import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.ui.models.Ask;
+import com.denarii.android.ui.models.QueuedBuy;
+import com.denarii.android.ui.recyclerviewadapters.BuyDenariiAskRecyclerViewAdapter;
+import com.denarii.android.ui.recyclerviewadapters.QueuedBuyRecyclerViewAdapter;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
@@ -77,12 +83,46 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                 v -> {
                     onSubmitClicked();
                 });
+
+        // Create the recycler view for the asks grid
+        RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiAsksRecyclerView);
+
+        BuyDenariiAskRecyclerViewAdapter asksAdapter = new BuyDenariiAskRecyclerViewAdapter(getCurrentAsks());
+        asksRecyclerView.setAdapter(asksAdapter);
+        asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
+        // Create the recycler view for the queued buys grid
+        RecyclerView queuedBuysRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiQueuedBuysRecyclerView);
+
+        QueuedBuyRecyclerViewAdapter queuedBuysAdapter = new QueuedBuyRecyclerViewAdapter(getQueuedBuys(), (askIds) -> {
+            cancelBuys(askIds);
+            return null;
+        });
+        queuedBuysRecyclerView.setAdapter(queuedBuysAdapter);
+        queuedBuysRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
     }
 
     @Override
     public void onRefresh() {
         getNewAsks();
         refreshSettledTransactions();
+    }
+
+    private List<Ask> getCurrentAsks() {
+        List<Ask> asks = new ArrayList<>();
+        for (DenariiAsk ask : currentAsks) {
+            asks.add(new Ask(ask.getAskID(), ask.getAmount(), ask.getAskingPrice()));
+        }
+        return asks;
+    }
+
+    private List<QueuedBuy> getQueuedBuys() {
+        List<QueuedBuy> buys = new ArrayList<>();
+
+        for (DenariiAsk buy : queuedBuys) {
+            buys.add(new QueuedBuy(buy.getAskID(), buy.getAmount(), buy.getAskingPrice(), buy.getAmountBought()));
+        }
+        return buys;
     }
 
     private void getNewAsks() {

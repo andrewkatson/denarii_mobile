@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.denarii.android.R;
@@ -26,11 +28,15 @@ import com.denarii.android.activities.usersettings.UserSettings;
 import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
+import com.denarii.android.ui.models.SupportTicketCommentModel;
+import com.denarii.android.ui.recyclerviewadapters.SupportTicketCommentRecyclerViewAdapter;
 import com.denarii.android.user.DenariiResponse;
+import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 import com.denarii.android.util.UnpackDenariiResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
@@ -87,11 +93,28 @@ public class SupportTicketDetails extends AppCompatActivity
                 v -> {
                     deleteSupportTicket();
                 });
+
+        // Create the recycler view for the comments linear layout
+        RecyclerView commentsRecyclerView = (RecyclerView) findViewById(R.id.supportTicketCommentsRecyclerView);
+
+        SupportTicketCommentRecyclerViewAdapter commentAdapter = new SupportTicketCommentRecyclerViewAdapter(getComments(), userDetails.getUserName());
+        commentsRecyclerView.setAdapter(commentAdapter);
+        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onRefresh() {
         getSupportTicketCommentDetails();
+    }
+
+    private List<SupportTicketCommentModel> getComments() {
+        List<SupportTicketCommentModel> commentModels = new ArrayList<>();
+
+        for (SupportTicketComment comment : userDetails.getCurrentTicket().getSupportTicketCommentList()) {
+            commentModels.add(new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
+        }
+
+        return commentModels;
     }
 
     private void addNewComment() {
