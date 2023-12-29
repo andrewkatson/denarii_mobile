@@ -1,9 +1,12 @@
 package com.denarii.android.network;
 
 import androidx.annotation.NonNull;
+
 import com.denarii.android.user.DenariiResponse;
+
 import java.io.IOException;
 import java.util.List;
+
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -13,67 +16,67 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class StubbedCall implements Call<List<DenariiResponse>> {
-  private final List<DenariiResponse> responses;
+    private final List<DenariiResponse> responses;
 
-  private boolean hasBeenExecuted = false;
+    private boolean hasBeenExecuted = false;
 
-  public StubbedCall(List<DenariiResponse> responses) {
-    this.responses = responses;
-  }
-
-  @NonNull
-  @Override
-  public Response<List<DenariiResponse>> execute() throws IOException {
-    hasBeenExecuted = true;
-    if (responses.isEmpty()) {
-      return Response.error(
-          -1, ResponseBody.create(MediaType.get("application/json"), "No responses"));
+    public StubbedCall(List<DenariiResponse> responses) {
+        this.responses = responses;
     }
-    return Response.success(responses);
-  }
 
-  @Override
-  public void enqueue(Callback callback) {
-    try {
-      callback.onResponse(this, this.execute());
-    } catch (IOException e) {
-      e.printStackTrace();
+    @NonNull
+    @Override
+    public Response<List<DenariiResponse>> execute() throws IOException {
+        hasBeenExecuted = true;
+        if (responses.isEmpty()) {
+            return Response.error(
+                    404, ResponseBody.create(MediaType.get("application/json"), "No responses"));
+        }
+        return Response.success(responses);
     }
-  }
 
-  @Override
-  public boolean isExecuted() {
-    return hasBeenExecuted;
-  }
-
-  @Override
-  public void cancel() {
-    hasBeenExecuted = false;
-  }
-
-  @Override
-  public boolean isCanceled() {
-    return false;
-  }
-
-  @NonNull
-  @Override
-  public Call<List<DenariiResponse>> clone() {
-    try {
-      super.clone();
-    } catch (CloneNotSupportedException e) {
-      e.printStackTrace();
+    @Override
+    public void enqueue(Callback callback) {
+        try {
+            callback.onResponse(this, this.execute());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    return new StubbedCall(responses);
-  }
 
-  @Override
-  public Request request() {
-    return null;
-  }
+    @Override
+    public boolean isExecuted() {
+        return hasBeenExecuted;
+    }
 
-  @Override
-  public Timeout timeout() {
-    return null;
-  }
+    @Override
+    public void cancel() {
+        hasBeenExecuted = false;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return false;
+    }
+
+    @NonNull
+    @Override
+    public Call<List<DenariiResponse>> clone() {
+        try {
+            super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new StubbedCall(responses);
+    }
+
+    @Override
+    public Request request() {
+        return null;
+    }
+
+    @Override
+    public Timeout timeout() {
+        return null;
+    }
 }

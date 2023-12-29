@@ -5,13 +5,13 @@
       <entry key="ComplexNavigationTest">
         <State />
       </entry>
+      <entry key="SimpleNavigationTest">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>
       <entry key="cancelBuyDenarii_withValidData_cancelsBuyDenarii()">
-        <State />
-      </entry>
-      <entry key="deleteAccount_withValidData_deletesAccount()">
         <State />
       </entry>
       <entry key="restoreWallet_withValidData_restoresWallet()">
