@@ -139,18 +139,40 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/buy_denarii_asks_refresh_layout"
+        app:layout_constraintBottom_toTopOf="@id/askTableAmount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buy_denarii_submit" />
 
+
+    <TextView
+        android:id="@+id/askTableAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ask_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_asks_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/priceAskTable"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/asks" />
+
+    <TextView
+        android:id="@+id/priceAskTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ask_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_asks_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/askTableAmount"
+        app:layout_constraintTop_toBottomOf="@id/asks" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/buy_denarii_asks_refresh_layout"
         app:layout_constraintBottom_toTopOf="@id/queuedBuys"
-        app:layout_constraintTop_toBottomOf="@id/asks"
+        app:layout_constraintTop_toBottomOf="@id/askTableAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -159,7 +181,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buyDenariiAsksRecyclerView"
             app:layout_constraintBottom_toTopOf="@id/queuedBuys"
-            app:layout_constraintTop_toBottomOf="@id/asks"
+            app:layout_constraintTop_toBottomOf="@id/askTableAmount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:itemCount="1" />
@@ -173,17 +195,61 @@
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/buy_denarii_queued_buys_refresh_layout"
+        app:layout_constraintBottom_toTopOf="@id/buyPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buy_denarii_asks_refresh_layout" />
+
+    <TextView
+        android:id="@+id/buyAmountTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_queued_buys_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/buyPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_queued_buys_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/buyAmountBought"
+        app:layout_constraintStart_toEndOf="@id/buyAmountTotal"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyAmountBought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_amount_bought"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_queued_buys_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/buyCancelBuy"
+        app:layout_constraintStart_toEndOf="@id/buyPrice"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyCancelBuy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_cancel_buy"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_queued_buys_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buyAmountBought"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/buy_denarii_queued_buys_refresh_layout"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/queuedBuys"
+        app:layout_constraintTop_toBottomOf="@id/buyPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -192,7 +258,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/buyDenariiQueuedBuysRecyclerView"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/queuedBuys"
+            app:layout_constraintTop_toBottomOf="@id/buyPrice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:itemCount="1" />

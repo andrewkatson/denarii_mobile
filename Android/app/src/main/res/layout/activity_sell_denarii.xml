@@ -52,18 +52,42 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/sell_denarii_asks_refresh_layout"
+        app:layout_constraintBottom_toTopOf="@id/sellAsksAmount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/goingPrices"
         tools:text="@string/asks_sell_header" />
+
+    <TextView
+        android:id="@+id/sellAsksAmount"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="@string/asks_sell_amount"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_asks_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/sellAsksPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/asks_sell" />
+
+    <TextView
+        android:id="@+id/sellAsksPrice"
+        android:layout_width="159dp"
+        android:layout_height="wrap_content"
+        android:text="@string/asks_sell_price"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_asks_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sellAsksAmount"
+        app:layout_constraintTop_toBottomOf="@id/asks_sell" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/sell_denarii_asks_refresh_layout"
         app:layout_constraintBottom_toTopOf="@id/sellAmount"
-        app:layout_constraintTop_toBottomOf="@id/asks_sell"
+        app:layout_constraintTop_toBottomOf="@id/sellAsksAmount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -72,7 +96,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/sellDenariiAsksRecyclerView"
             app:layout_constraintBottom_toTopOf="@id/sellAmount"
-            app:layout_constraintTop_toBottomOf="@id/asks_sell"
+            app:layout_constraintTop_toBottomOf="@id/sellAsksAmount"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:itemCount="1" />
@@ -122,17 +146,53 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"
+        app:layout_constraintBottom_toTopOf="@id/ownAsksPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/submitSell" />
+
+    <TextView
+        android:id="@+id/ownAsksAmount"
+        android:layout_width="113dp"
+        android:layout_height="wrap_content"
+        android:text="@string/own_asks_amount"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/ownAsksPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ownAsks" />
+
+    <TextView
+        android:id="@+id/ownAsksPrice"
+        android:layout_width="106dp"
+        android:layout_height="wrap_content"
+        android:text="@string/own_asks_price"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/ownAsksCancelBuy"
+        app:layout_constraintStart_toEndOf="@id/ownAsksAmount"
+        app:layout_constraintTop_toBottomOf="@id/ownAsks" />
+
+    <TextView
+        android:id="@+id/ownAsksCancelBuy"
+        android:layout_width="174dp"
+        android:layout_height="wrap_content"
+        android:text="@string/own_asks_cancel_buy"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ownAsksPrice"
+        app:layout_constraintTop_toBottomOf="@id/ownAsks" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/sell_denarii_own_asks_refresh_layout"
         app:layout_constraintBottom_toTopOf="@id/pendingSales"
-        app:layout_constraintTop_toBottomOf="@id/ownAsks"
+        app:layout_constraintTop_toBottomOf="@id/ownAsksPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -141,7 +201,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/sellDenariiOwnAsksRecyclerView"
             app:layout_constraintBottom_toTopOf="@id/pendingSales"
-            app:layout_constraintTop_toBottomOf="@id/ownAsks"
+            app:layout_constraintTop_toBottomOf="@id/ownAsksPrice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:itemCount="1" />
@@ -155,17 +215,53 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/sell_denarii_pending_sales_refresh_layout"
+        app:layout_constraintBottom_toTopOf="@id/pendingSalesPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sell_denarii_own_asks_refresh_layout" />
+
+    <TextView
+        android:id="@+id/pendingSalesAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pending_sales_amount"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_pending_sales_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/pendingSalesPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pendingSales" />
+
+    <TextView
+        android:id="@+id/pendingSalesPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pending_sales_price"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_pending_sales_refresh_layout"
+        app:layout_constraintEnd_toStartOf="@id/pendingSalesAmountBought"
+        app:layout_constraintStart_toEndOf="@id/pendingSalesAmount"
+        app:layout_constraintTop_toBottomOf="@id/pendingSales" />
+
+    <TextView
+        android:id="@+id/pendingSalesAmountBought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pending_sales_amount_bought"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/sell_denarii_pending_sales_refresh_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/pendingSalesPrice"
+        app:layout_constraintTop_toBottomOf="@id/pendingSales" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/sell_denarii_pending_sales_refresh_layout"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pendingSales"
+        app:layout_constraintTop_toBottomOf="@id/pendingSalesPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -174,7 +270,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/sellDenariiPendingSalesRecyclerView"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pendingSales"
+            app:layout_constraintTop_toBottomOf="@id/pendingSalesPrice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:itemCount="1" />
