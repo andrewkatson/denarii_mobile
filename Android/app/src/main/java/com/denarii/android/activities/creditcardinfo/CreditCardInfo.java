@@ -170,6 +170,8 @@ public class CreditCardInfo extends AppCompatActivity {
                                     } else {
                                         createToast("Failed to set credit card info");
                                     }
+
+                                    formatStatus();
                                 }
                             }
                         }
@@ -296,6 +298,10 @@ public class CreditCardInfo extends AppCompatActivity {
 
     private void formatStatus() {
         TextView statusTextView = findViewById(R.id.creditCardInfoStatus);
+        if (Objects.equals(userDetails.getCreditCard(), null)) {
+            statusTextView.setText(R.string.credit_card_info_does_not_have_info_status);
+            return;
+        }
         if (userDetails.getCreditCard().getHasCreditCardInfo()) {
             statusTextView.setText(R.string.credit_card_info_has_info_status);
         } else {

@@ -14,9 +14,6 @@
       <entry key="cancelBuyDenarii_withValidData_cancelsBuyDenarii()">
         <State />
       </entry>
-      <entry key="restoreWallet_withValidData_restoresWallet()">
-        <State />
-      </entry>
       <entry key="sendDenarii_withValidData_sendsDenarii()">
         <State />
       </entry>

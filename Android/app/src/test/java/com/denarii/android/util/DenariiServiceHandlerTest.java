@@ -1,4 +1,5 @@
 package com.denarii.android.util;
+
 import static org.junit.Assert.assertEquals;
 
 import com.denarii.android.constants.Constants;
@@ -20,6 +21,8 @@ public class DenariiServiceHandlerTest {
         DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
 
         assertEquals(denariiService.getClass(), StubbedDenariiService.class);
+
+        assertEquals(denariiService, DenariiServiceHandler.returnDenariiService());
     }
 
 }
