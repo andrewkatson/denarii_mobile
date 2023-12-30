@@ -149,7 +149,7 @@ public class SupportTickets extends AppCompatActivity
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalUserDetails = userDetails;
+            final UserDetails[] finalUserDetails = {userDetails};
 
             // TODO: allow the user to request resolved tickets.
             Call<List<DenariiResponse>> call =
@@ -165,7 +165,7 @@ public class SupportTickets extends AppCompatActivity
                                 if (response.body() != null) {
                                     succeeded[0] =
                                             UnpackDenariiResponse.unpackGetSupportTickets(
-                                                    finalUserDetails, response.body());
+                                                    finalUserDetails[0], response.body());
 
                                     if (succeeded[0]) {
 

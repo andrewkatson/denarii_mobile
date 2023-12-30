@@ -262,7 +262,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalDetails = userDetails;
+            final UserDetails[] finalDetails = {userDetails};
 
             Call<List<DenariiResponse>> hasCreditCardInfoCall =
                     denariiService.hasCreditCardInfo(userDetails.getUserID());
@@ -275,7 +275,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    UnpackDenariiResponse.unpackHasCreditCardInfo(finalDetails, response.body());
+                                    UnpackDenariiResponse.unpackHasCreditCardInfo(finalDetails[0], response.body());
                                 }
                             }
                         }
@@ -297,7 +297,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    UnpackDenariiResponse.unpackIsAVerifiedPerson(finalDetails, response.body());
+                                    UnpackDenariiResponse.unpackIsAVerifiedPerson(finalDetails[0], response.body());
                                 }
                             }
                         }
@@ -308,8 +308,8 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                         }
                     });
 
-            if (finalDetails.getDenariiUser().getIsVerified()
-                    && finalDetails.getCreditCard().getHasCreditCardInfo()) {
+            if (finalDetails[0].getDenariiUser().getIsVerified()
+                    && finalDetails[0].getCreditCard().getHasCreditCardInfo()) {
 
                 EditText amountEditText = findViewById(R.id.buy_denarii_amount);
                 String amount = amountEditText.getText().toString();
@@ -325,7 +325,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
                 Call<List<DenariiResponse>> buyDenariiCall =
                         denariiService.buyDenarii(
-                                finalDetails.getUserID(),
+                                finalDetails[0].getUserID(),
                                 amount,
                                 askingPrice,
                                 String.valueOf(buyRegardlessOfPrice),
@@ -359,7 +359,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
                     // TODO use other currencies
                     Call<List<DenariiResponse>> getMoneyFromBuyerCall =
-                            denariiService.getMoneyFromBuyer(finalDetails.getUserID(), amount, "usd");
+                            denariiService.getMoneyFromBuyer(finalDetails[0].getUserID(), amount, "usd");
 
                     final boolean[] getMoneyFromBuyerSucceeded = {false};
                     getMoneyFromBuyerCall.enqueue(
@@ -389,7 +389,7 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
                         boolean anyAskFailed = false;
                         for (DenariiAsk ask : newQueuedBuys) {
                             Call<List<DenariiResponse>> transferDenariiCall =
-                                    denariiService.transferDenarii(finalDetails.getUserID(), ask.getAskID());
+                                    denariiService.transferDenarii(finalDetails[0].getUserID(), ask.getAskID());
 
                             final boolean[] transferDenariiSucceeded = {false};
                             final double[] amountBoughtTransfer = {0.0};

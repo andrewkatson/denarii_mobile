@@ -145,7 +145,7 @@ public class SupportTicketDetails extends AppCompatActivity
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalDetails = userDetails;
+            final UserDetails[] finalDetails = {userDetails};
 
             EditText commentEditText = findViewById(R.id.supportTicketDetailsCommentBox);
             String comment = commentEditText.getText().toString();
@@ -164,7 +164,7 @@ public class SupportTicketDetails extends AppCompatActivity
                                 if (response.body() != null) {
                                     succeeded[0] =
                                             UnpackDenariiResponse.unpackUpdateSupportTicket(
-                                                    finalDetails, response.body());
+                                                    finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
                                         createToast("Added comment");
@@ -195,7 +195,7 @@ public class SupportTicketDetails extends AppCompatActivity
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalDetails = userDetails;
+            final UserDetails[] finalDetails = {userDetails};
 
             Call<List<DenariiResponse>> call =
                     denariiService.getSupportTicket(
@@ -210,15 +210,15 @@ public class SupportTicketDetails extends AppCompatActivity
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
                                     succeeded[0] =
-                                            UnpackDenariiResponse.unpackGetSupportTicket(finalDetails, response.body());
+                                            UnpackDenariiResponse.unpackGetSupportTicket(finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
                                         TextView supportTicketTitle = findViewById(R.id.supportTicketTitle);
-                                        supportTicketTitle.setText(finalDetails.getCurrentTicket().getTitle());
+                                        supportTicketTitle.setText(finalDetails[0].getCurrentTicket().getTitle());
 
                                         TextView supportTicketDescription = findViewById(R.id.supportTicketDescription);
                                         supportTicketDescription.setText(
-                                                finalDetails.getCurrentTicket().getDescription());
+                                                finalDetails[0].getCurrentTicket().getDescription());
                                     } else {
                                         createToast("Failed to fetch support ticket");
                                     }
@@ -245,7 +245,7 @@ public class SupportTicketDetails extends AppCompatActivity
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalDetails = userDetails;
+            final UserDetails[] finalDetails = {userDetails};
 
             Call<List<DenariiResponse>> call =
                     denariiService.getCommentsOnTicket(
@@ -261,7 +261,7 @@ public class SupportTicketDetails extends AppCompatActivity
                                 if (response.body() != null) {
                                     succeeded[0] =
                                             UnpackDenariiResponse.unpackGetCommentsOnTicket(
-                                                    finalDetails, response.body());
+                                                    finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
 

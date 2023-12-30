@@ -559,7 +559,7 @@ public class ComplexNavigationTest {
 
         onView(withId(R.id.zipCode)).perform(replaceText("33332232"), closeSoftKeyboard());
 
-        onView(withId(R.id.verificationPhoneNumber)).perform(typeText("1234567890"), closeSoftKeyboard());
+        onView(withId(R.id.verificationPhoneNumber)).perform(replaceText("1234567890"), closeSoftKeyboard());
 
         onView(withId(R.id.workCity)).perform(replaceText("San Jose"), closeSoftKeyboard());
 

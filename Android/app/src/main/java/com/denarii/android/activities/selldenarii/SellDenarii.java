@@ -350,7 +350,7 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
                 userDetails = UnpackDenariiResponse.validUserDetails();
             }
 
-            final UserDetails finalDetails = userDetails;
+            final UserDetails[] finalDetails = {userDetails};
 
             Call<List<DenariiResponse>> hasCreditCardInfoCall =
                     denariiService.hasCreditCardInfo(userDetails.getUserID());
@@ -363,7 +363,7 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    UnpackDenariiResponse.unpackHasCreditCardInfo(finalDetails, response.body());
+                                    UnpackDenariiResponse.unpackHasCreditCardInfo(finalDetails[0], response.body());
                                 }
                             }
                         }
@@ -385,7 +385,7 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    UnpackDenariiResponse.unpackIsAVerifiedPerson(finalDetails, response.body());
+                                    UnpackDenariiResponse.unpackIsAVerifiedPerson(finalDetails[0], response.body());
                                 }
                             }
                         }
@@ -396,8 +396,8 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
                         }
                     });
 
-            if (finalDetails.getDenariiUser().getIsVerified()
-                    && finalDetails.getCreditCard().getHasCreditCardInfo()) {
+            if (finalDetails[0].getDenariiUser().getIsVerified()
+                    && finalDetails[0].getCreditCard().getHasCreditCardInfo()) {
 
                 EditText amountEditText = findViewById(R.id.sellAmount);
                 String amount = amountEditText.getText().toString();
