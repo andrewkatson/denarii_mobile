@@ -646,7 +646,7 @@ public class ComplexNavigationTest {
             throws IOException {
         buyDenarii(name, email, password, walletName, walletPassword);
 
-        onView(allOf(withId(R.id.buyDenariiQueuedBuysRecyclerView), withText("Cancel"))).perform(click());
+        onView(allOf(withId(R.id.buyCancelBuyItem), withText("Cancel"))).perform(click());
 
         // Refresh
         onView(withId(R.id.buy_denarii_queued_buys_refresh_layout))
