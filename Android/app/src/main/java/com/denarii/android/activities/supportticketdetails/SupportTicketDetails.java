@@ -57,7 +57,7 @@ public class SupportTicketDetails extends AppCompatActivity {
 
     private UserDetails userDetails = null;
 
-    private final SwipeRefreshLayout commentsRefreshLayout = findViewById(R.id.support_ticket_details_refresh_layout);
+    private SwipeRefreshLayout commentsRefreshLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,8 @@ public class SupportTicketDetails extends AppCompatActivity {
 
         Intent currentIntent = getIntent();
         userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+        commentsRefreshLayout = findViewById(R.id.support_ticket_details_refresh_layout);
 
         commentsRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

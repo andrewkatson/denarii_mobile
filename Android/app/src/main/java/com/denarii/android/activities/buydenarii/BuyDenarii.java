@@ -67,9 +67,9 @@ public class BuyDenarii extends AppCompatActivity {
 
     private UserDetails userDetails = null;
 
-    private final SwipeRefreshLayout asksRefreshLayout = findViewById(R.id.buy_denarii_asks_refresh_layout);
+    private SwipeRefreshLayout asksRefreshLayout = null;
 
-    private final SwipeRefreshLayout queuedBuysRefreshLayout = findViewById(R.id.buy_denarii_queued_buys_refresh_layout);
+    private SwipeRefreshLayout queuedBuysRefreshLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +87,8 @@ public class BuyDenarii extends AppCompatActivity {
         Intent currentIntent = getIntent();
         userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
+        asksRefreshLayout = findViewById(R.id.buy_denarii_asks_refresh_layout);
+
         asksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -97,6 +99,8 @@ public class BuyDenarii extends AppCompatActivity {
                 asksRefreshLayout.setRefreshing(false);
             }
         });
+
+        queuedBuysRefreshLayout = findViewById(R.id.buy_denarii_queued_buys_refresh_layout);
 
         queuedBuysRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

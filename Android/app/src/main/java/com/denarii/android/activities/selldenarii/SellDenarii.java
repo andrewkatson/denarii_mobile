@@ -74,13 +74,13 @@ public class SellDenarii extends AppCompatActivity {
 
     private UserDetails userDetails = null;
 
-    private final SwipeRefreshLayout asksRefreshLayout = findViewById(R.id.sell_denarii_asks_refresh_layout);
+    private SwipeRefreshLayout asksRefreshLayout = null;
 
-    private final SwipeRefreshLayout ownAsksRefreshLayout = findViewById(R.id.sell_denarii_own_asks_refresh_layout);
+    private SwipeRefreshLayout ownAsksRefreshLayout = null;
 
-    private final SwipeRefreshLayout pendingSalesRefreshLayout = findViewById(R.id.sell_denarii_pending_sales_refresh_layout);
+    private SwipeRefreshLayout pendingSalesRefreshLayout = null;
 
-    private final SwipeRefreshLayout goingPriceRefreshLayout = findViewById(R.id.sell_denarii_going_price_refresh_layout);
+    private SwipeRefreshLayout goingPriceRefreshLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +105,8 @@ public class SellDenarii extends AppCompatActivity {
                     onSubmitClicked();
                 });
 
+        asksRefreshLayout = findViewById(R.id.sell_denarii_asks_refresh_layout);
+
         asksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -115,6 +117,8 @@ public class SellDenarii extends AppCompatActivity {
                 asksRefreshLayout.setRefreshing(false);
             }
         });
+
+        ownAsksRefreshLayout = findViewById(R.id.sell_denarii_own_asks_refresh_layout);
 
         ownAsksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -127,6 +131,8 @@ public class SellDenarii extends AppCompatActivity {
             }
         });
 
+        pendingSalesRefreshLayout = findViewById(R.id.sell_denarii_pending_sales_refresh_layout);
+
         pendingSalesRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -137,6 +143,8 @@ public class SellDenarii extends AppCompatActivity {
                 pendingSalesRefreshLayout.setRefreshing(false);
             }
         });
+
+        goingPriceRefreshLayout = findViewById(R.id.sell_denarii_going_price_refresh_layout);
 
         goingPriceRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

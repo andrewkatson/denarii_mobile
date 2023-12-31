@@ -56,7 +56,7 @@ public class SupportTickets extends AppCompatActivity {
 
     private UserDetails userDetails = null;
 
-    private final SwipeRefreshLayout supportTicketsListRefreshLayout = findViewById(R.id.support_tickets_support_tickets_refresh_layout);
+    private SwipeRefreshLayout supportTicketsListRefreshLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,8 @@ public class SupportTickets extends AppCompatActivity {
 
                     startActivity(intent);
                 });
+
+        supportTicketsListRefreshLayout = findViewById(R.id.support_tickets_support_tickets_refresh_layout);
 
         supportTicketsListRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
