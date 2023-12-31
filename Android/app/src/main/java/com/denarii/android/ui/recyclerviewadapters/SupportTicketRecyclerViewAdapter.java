@@ -49,6 +49,7 @@ public class SupportTicketRecyclerViewAdapter extends
 
         // Set item views based on your views and data model
         Button navigate = holder.navigate;
+        navigate.setText(ticket.getTitle());
         navigate.setOnClickListener(v -> {
             navigateToSupportTicketDetailsFunction.apply(ticket.getSupportTicketId());
         });

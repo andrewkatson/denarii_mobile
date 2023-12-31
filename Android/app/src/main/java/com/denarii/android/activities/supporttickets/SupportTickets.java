@@ -175,7 +175,7 @@ public class SupportTickets extends AppCompatActivity {
                                                     finalUserDetails[0], response.body());
 
                                     if (succeeded[0]) {
-
+                                        createToast("Successfully fetched support tickets");
                                     } else {
                                         createToast("Failed to fetch support tickets.");
                                     }

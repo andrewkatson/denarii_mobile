@@ -11,7 +11,7 @@
         android:id="@+id/comment_author"
         android:text="@string/comment_author_default"
         android:background="@color/purple_200"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/comment_body"
         android:textSize="11sp" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/comment_body"
         android:text="@string/comment_body_default"
         android:background="@color/purple_200"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/comment_author" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -98,7 +98,7 @@
     <string name="own_asks">Own Asks</string>
     <string name="own_asks_amount">Amount</string>
     <string name="own_asks_price">Price</string>
-    <string name="own_asks_cancel_buy">Cancel Buy</string>
+    <string name="own_asks_cancel_sell">Cancel Sell</string>
     <string name="pending_sales">Pending Sales</string>
     <string name="pending_sales_amount">Amount</string>
     <string name="pending_sales_price">Price</string>
@@ -130,7 +130,8 @@
     <string name="verification_workcountry">Work Country</string>
     <string name="verification_submit">Submit</string>
     <string name="support_ticket_details_header">Support Ticket Details</string>
-    <string name="support_ticket_details_name">Placeholder Title</string>
+    <string name="support_ticket_details_title">Placeholder Title</string>
+    <string name="support_ticket_details_description">Placeholder Description</string>
     <string name="support_ticket_details_comment_box">Add Comment Here</string>
     <string name="support_ticket_details_comment_box_submit">Submit</string>
     <string name="user_settings_header">User Settings</string>

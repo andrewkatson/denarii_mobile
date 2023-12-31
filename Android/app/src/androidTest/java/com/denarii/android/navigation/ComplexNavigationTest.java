@@ -677,15 +677,15 @@ public class ComplexNavigationTest {
         // On create support ticket
         onView(withId(R.id.create_support_ticket_layout)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.supportTicketTitle)).perform(typeText("title"), closeSoftKeyboard());
+        onView(withId(R.id.supportTicketTitle)).perform(replaceText("title"), closeSoftKeyboard());
 
         onView(withId(R.id.supportTicketDescription))
-                .perform(typeText("description"), closeSoftKeyboard());
+                .perform(replaceText("description"), closeSoftKeyboard());
 
         onView(withId(R.id.createSupportTicketSubmit)).perform(click());
 
         // On support ticket details
-        onView(withId(R.id.create_support_ticket_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.support_ticket_details_layout)).check(matches(isDisplayed()));
     }
 
     private void commentOnSupportTicket() throws IOException {

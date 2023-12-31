@@ -183,15 +183,15 @@
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"
-        app:layout_constraintEnd_toStartOf="@id/ownAsksCancelBuy"
+        app:layout_constraintEnd_toStartOf="@id/ownAsksCancelSell"
         app:layout_constraintStart_toEndOf="@id/ownAsksAmount"
         app:layout_constraintTop_toBottomOf="@id/ownAsks" />
 
     <TextView
-        android:id="@+id/ownAsksCancelBuy"
+        android:id="@+id/ownAsksCancelSell"
         android:layout_width="174dp"
         android:layout_height="wrap_content"
-        android:text="@string/own_asks_cancel_buy"
+        android:text="@string/own_asks_cancel_sell"
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/sell_denarii_own_asks_refresh_layout"

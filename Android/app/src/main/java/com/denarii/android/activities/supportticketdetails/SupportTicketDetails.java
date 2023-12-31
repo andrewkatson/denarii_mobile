@@ -175,7 +175,7 @@ public class SupportTicketDetails extends AppCompatActivity {
 
                                     if (succeeded[0]) {
                                         createToast("Added comment");
-
+                                        commentEditText.setText(null);
                                         getSupportTicketCommentDetails();
                                     } else {
                                         createToast("Failed to add comment");
@@ -220,10 +220,10 @@ public class SupportTicketDetails extends AppCompatActivity {
                                             UnpackDenariiResponse.unpackGetSupportTicket(finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
-                                        TextView supportTicketTitle = findViewById(R.id.supportTicketTitle);
+                                        TextView supportTicketTitle = findViewById(R.id.title);
                                         supportTicketTitle.setText(finalDetails[0].getCurrentTicket().getTitle());
 
-                                        TextView supportTicketDescription = findViewById(R.id.supportTicketDescription);
+                                        TextView supportTicketDescription = findViewById(R.id.description);
                                         supportTicketDescription.setText(
                                                 finalDetails[0].getCurrentTicket().getDescription());
                                     } else {
@@ -301,6 +301,7 @@ public class SupportTicketDetails extends AppCompatActivity {
                     denariiService.resolveSupportTicket(
                             userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
             final boolean[] succeeded = {false};
+            final UserDetails[] finalDetails = {userDetails};
             call.enqueue(
                     new Callback<>() {
                         @Override
@@ -309,14 +310,14 @@ public class SupportTicketDetails extends AppCompatActivity {
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    succeeded[0] = UnpackDenariiResponse.unpackResolveSupportTicket(response.body());
+                                    succeeded[0] = UnpackDenariiResponse.unpackResolveSupportTicket(finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
                                         createToast("Resolved ticket!");
 
                                         Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
 
-                                        intent.putExtra(Constants.USER_DETAILS, userDetails);
+                                        intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
 
                                         startActivity(intent);
                                     } else {
@@ -348,6 +349,7 @@ public class SupportTicketDetails extends AppCompatActivity {
                     denariiService.deleteSupportTicket(
                             userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
             final boolean[] succeeded = {false};
+            final UserDetails[] finalDetails = {userDetails};
             call.enqueue(
                     new Callback<>() {
                         @Override
@@ -356,14 +358,14 @@ public class SupportTicketDetails extends AppCompatActivity {
                                 @NonNull Response<List<DenariiResponse>> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    succeeded[0] = UnpackDenariiResponse.unpackDeleteSupportTicket(response.body());
+                                    succeeded[0] = UnpackDenariiResponse.unpackDeleteSupportTicket(finalDetails[0], response.body());
 
                                     if (succeeded[0]) {
                                         createToast("Deleted ticket!");
 
                                         Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
 
-                                        intent.putExtra(Constants.USER_DETAILS, userDetails);
+                                        intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
 
                                         startActivity(intent);
                                     } else {

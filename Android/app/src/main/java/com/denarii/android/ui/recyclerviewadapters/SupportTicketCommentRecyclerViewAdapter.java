@@ -1,8 +1,7 @@
 package com.denarii.android.ui.recyclerviewadapters;
 
-import static com.google.android.material.color.MaterialColors.getColor;
-
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,6 @@ public class SupportTicketCommentRecyclerViewAdapter extends
 
     // Involves populating data into the item through holder
     @Override
-    @SuppressWarnings("ResourceType")
     public void onBindViewHolder(SupportTicketCommentRecyclerViewAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
         SupportTicketCommentModel commentModel = comments.get(position);
@@ -69,7 +67,8 @@ public class SupportTicketCommentRecyclerViewAdapter extends
             constraintSet.connect(body.getId(), ConstraintSet.RIGHT, constraintLayout.getId(), ConstraintSet.RIGHT, 0);
             constraintSet.applyTo(constraintLayout);
 
-            body.setBackgroundColor(getColor(holder.itemView, R.color.teal_200));
+            // teal
+            body.setBackgroundColor(Color.parseColor("#00eddb"));
         }
         body.setText(commentModel.getBody());
     }
@@ -84,14 +83,12 @@ public class SupportTicketCommentRecyclerViewAdapter extends
 
         private final TextView author;
         private final TextView body;
-        private final View itemView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             author = itemView.findViewById(R.id.comment_author);
             body = itemView.findViewById(R.id.comment_body);
-            this.itemView = itemView;
         }
     }
 }

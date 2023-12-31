@@ -248,7 +248,7 @@ public class StubbedDenariiService implements DenariiService {
             response.userIdentifier = foundUser.getUserID();
             loggedInUser = foundUser;
         } else if (loggedInUser != null) {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         } else {
             // This is the same as registering
@@ -281,7 +281,7 @@ public class StubbedDenariiService implements DenariiService {
             // Static reset id to make testing easier.
             userDetails.getDenariiUser().setResetID(123);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -299,11 +299,11 @@ public class StubbedDenariiService implements DenariiService {
             if (user.get().getDenariiUser().getResetID() == resetId) {
                 responses.add(new DenariiResponse());
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -324,7 +324,7 @@ public class StubbedDenariiService implements DenariiService {
                 responses.add(new DenariiResponse());
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -363,11 +363,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -409,11 +409,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -443,11 +443,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -472,11 +472,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -508,11 +508,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(new DenariiResponse());
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -540,7 +540,7 @@ public class StubbedDenariiService implements DenariiService {
                 responses.add(response);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -587,7 +587,7 @@ public class StubbedDenariiService implements DenariiService {
                     responses.add(response);
                 }
             } else if (buyDenariiTry.asksMet.isEmpty()) {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             } else {
                 if (Boolean.parseBoolean(failIfFullAmountIsntMet)) {
@@ -597,7 +597,7 @@ public class StubbedDenariiService implements DenariiService {
                         askMet.setAmountBought(0.0);
                     }
 
-                    // An empty responses list indicates failure
+
                     return new StubbedCall(responses);
                 } else {
                     for (DenariiAsk askMet : buyDenariiTry.asksMet) {
@@ -610,7 +610,7 @@ public class StubbedDenariiService implements DenariiService {
             }
 
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -663,19 +663,19 @@ public class StubbedDenariiService implements DenariiService {
 
                         responses.add(response);
                     } else {
-                        // An empty responses list indicates failure
+
                         return new StubbedCall(responses);
                     }
                 } else {
-                    // An empty responses list indicates failure
+
                     return new StubbedCall(responses);
                 }
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -713,7 +713,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(response);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -745,7 +745,7 @@ public class StubbedDenariiService implements DenariiService {
             }
 
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -789,7 +789,7 @@ public class StubbedDenariiService implements DenariiService {
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -814,7 +814,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(response);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -847,7 +847,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -869,7 +869,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -888,7 +888,7 @@ public class StubbedDenariiService implements DenariiService {
         if (user.isPresent()) {
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -907,7 +907,7 @@ public class StubbedDenariiService implements DenariiService {
         if (user.isPresent()) {
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -958,11 +958,11 @@ public class StubbedDenariiService implements DenariiService {
                     }
                 }
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -980,7 +980,7 @@ public class StubbedDenariiService implements DenariiService {
         if (user.isPresent()) {
 
             if (hasRemainingAsks(userIdentifier) || hasRemainingBuys(userIdentifier)) {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             } else {
                 loggedInUser = null;
@@ -990,7 +990,7 @@ public class StubbedDenariiService implements DenariiService {
                 responses.add(new DenariiResponse());
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1021,11 +1021,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1079,19 +1079,19 @@ public class StubbedDenariiService implements DenariiService {
 
                         responses.add(response);
                     } else {
-                        // An empty responses list indicates failure
+
                         return new StubbedCall(responses);
                     }
                 } else {
-                    // An empty responses list indicates failure
+
                     return new StubbedCall(responses);
                 }
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1110,7 +1110,7 @@ public class StubbedDenariiService implements DenariiService {
         if (user.isPresent()) {
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1135,16 +1135,20 @@ public class StubbedDenariiService implements DenariiService {
                     denariiAsk.setInEscrow(false);
                     denariiAsk.setBuyer(null);
                     denariiAsk.setAmountBought(0.0);
+
+                    DenariiResponse response = new DenariiResponse();
+                    response.askID = askIdentifier;
+                    responses.add(response);
                 } else {
-                    // An empty responses list indicates failure
+
                     return new StubbedCall(responses);
                 }
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1179,7 +1183,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(response);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1206,7 +1210,7 @@ public class StubbedDenariiService implements DenariiService {
             }
             responses.add(response);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1232,12 +1236,12 @@ public class StubbedDenariiService implements DenariiService {
 
                     responses.add(response);
                 } else {
-                    // An empty responses list indicates failure
+
                     return new StubbedCall(responses);
                 }
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1267,7 +1271,7 @@ public class StubbedDenariiService implements DenariiService {
                 }
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1303,7 +1307,7 @@ public class StubbedDenariiService implements DenariiService {
             responses.add(response);
 
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1339,11 +1343,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1377,7 +1381,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(response);
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1410,11 +1414,7 @@ public class StubbedDenariiService implements DenariiService {
                     responses.add(response);
                 }
             }
-        } else {
-            // An empty responses list indicates failure
-            return new StubbedCall(responses);
         }
-
         return new StubbedCall(responses);
     }
 
@@ -1445,11 +1445,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1483,11 +1483,11 @@ public class StubbedDenariiService implements DenariiService {
                     responses.add(response);
                 }
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1518,11 +1518,11 @@ public class StubbedDenariiService implements DenariiService {
 
                 responses.add(response);
             } else {
-                // An empty responses list indicates failure
+
                 return new StubbedCall(responses);
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1552,7 +1552,7 @@ public class StubbedDenariiService implements DenariiService {
                 }
             }
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 
@@ -1572,7 +1572,7 @@ public class StubbedDenariiService implements DenariiService {
 
             responses.add(new DenariiResponse());
         } else {
-            // An empty responses list indicates failure
+
             return new StubbedCall(responses);
         }
 

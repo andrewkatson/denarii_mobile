@@ -105,7 +105,7 @@ public class CreateSupportTicket extends AppCompatActivity {
                                         Intent intent =
                                                 new Intent(CreateSupportTicket.this, SupportTicketDetails.class);
 
-                                        intent.putExtra(Constants.USER_DETAILS, userDetails);
+                                        intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
 
                                         startActivity(intent);
                                     } else {

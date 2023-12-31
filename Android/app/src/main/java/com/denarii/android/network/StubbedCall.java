@@ -7,9 +7,7 @@ import com.denarii.android.user.DenariiResponse;
 import java.io.IOException;
 import java.util.List;
 
-import okhttp3.MediaType;
 import okhttp3.Request;
-import okhttp3.ResponseBody;
 import okio.Timeout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,10 +26,7 @@ public class StubbedCall implements Call<List<DenariiResponse>> {
     @Override
     public Response<List<DenariiResponse>> execute() throws IOException {
         hasBeenExecuted = true;
-        if (responses.isEmpty()) {
-            return Response.error(
-                    404, ResponseBody.create(MediaType.get("application/json"), "No responses"));
-        }
+        // We always return success because the actual view will deal with failure
         return Response.success(responses);
     }
 

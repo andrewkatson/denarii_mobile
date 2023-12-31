@@ -9,6 +9,7 @@ import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -310,9 +311,7 @@ public class UnpackDenariiResponse {
             userDetails.setCurrentTicket(new SupportTicket());
         }
 
-        if (responses.isEmpty()) {
-            return false;
-        } else {
+        if (!responses.isEmpty()) {
             SupportTicket currentTicket = userDetails.getCurrentTicket();
             currentTicket.clearSupportTicketCommentList();
 
@@ -323,26 +322,40 @@ public class UnpackDenariiResponse {
 
                 currentTicket.addComment(newComment);
             }
-
-            return true;
         }
+        // Even no comments is success
+        return true;
     }
 
-    public static boolean unpackResolveSupportTicket(List<DenariiResponse> responses) {
-        return !responses.isEmpty();
+    public static boolean unpackResolveSupportTicket(UserDetails userDetails, List<DenariiResponse> responses) {
+        boolean succeeded = !responses.isEmpty();
+        if (succeeded) {
+            userDetails.getCurrentTicket().setResolved(true);
+        }
+        return succeeded;
     }
 
-    public static boolean unpackDeleteSupportTicket(List<DenariiResponse> responses) {
+    public static boolean unpackDeleteSupportTicket(UserDetails userDetails, List<DenariiResponse> responses) {
+        List<SupportTicket> remainingTickets = new ArrayList<>();
+
+        if (!responses.isEmpty()) {
+
+            for (SupportTicket ticket : userDetails.getSupportTicketList()) {
+                if (!Objects.equals(ticket.getSupportID(), userDetails.getCurrentTicket().getSupportID())) {
+                    remainingTickets.add(ticket);
+                }
+            }
+        }
+        userDetails.clearSupportTicketList();
+        userDetails.addAllSupportTicket(remainingTickets);
         return !responses.isEmpty();
     }
 
     public static boolean unpackGetSupportTickets(
             UserDetails userDetails, List<DenariiResponse> responses) {
+        userDetails.clearSupportTicketList();
 
-        if (responses.isEmpty()) {
-            return false;
-        } else {
-            userDetails.clearSupportTicketList();
+        if (!responses.isEmpty()) {
 
             for (DenariiResponse response : responses) {
                 SupportTicket newTicket = new SupportTicket();
@@ -352,8 +365,9 @@ public class UnpackDenariiResponse {
                 userDetails.addSupportTicket(newTicket);
             }
 
-            return true;
         }
+        // This is true because no support tickets is valid
+        return true;
     }
 
     public static boolean unpackLogout(List<DenariiResponse> responses) {
