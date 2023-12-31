@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -170,7 +170,7 @@ public class SellDenarii extends AppCompatActivity {
 
         asksRecyclerViewAdapter = new SellDenariiAskRecyclerViewAdapter(allAsks);
         asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
-        asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        asksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the recycler view for the own asks grid
         RecyclerView ownAsksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiOwnAsksRecyclerView);
@@ -180,14 +180,14 @@ public class SellDenarii extends AppCompatActivity {
             return null;
         });
         ownAsksRecyclerView.setAdapter(ownAsksRecyclerViewAdapter);
-        ownAsksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        ownAsksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the recycler view for the pending sales grid
         RecyclerView pendingSalesRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiPendingSalesRecyclerView);
 
         pendingSalesRecyclerViewAdapter = new PendingSaleRecyclerViewAdapter(allPendingSales);
         pendingSalesRecyclerView.setAdapter(pendingSalesRecyclerViewAdapter);
-        pendingSalesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        pendingSalesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void getCurrentAsks() {

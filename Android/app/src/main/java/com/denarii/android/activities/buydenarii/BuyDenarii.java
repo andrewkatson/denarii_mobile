@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -131,7 +131,7 @@ public class BuyDenarii extends AppCompatActivity {
 
         asksRecyclerViewAdapter = new BuyDenariiAskRecyclerViewAdapter(allAsks);
         asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
-        asksRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        asksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Create the recycler view for the queued buys grid
         RecyclerView queuedBuysRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiQueuedBuysRecyclerView);
@@ -141,7 +141,7 @@ public class BuyDenarii extends AppCompatActivity {
             return null;
         });
         queuedBuysRecyclerView.setAdapter(queuedBuyRecyclerViewAdapter);
-        queuedBuysRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        queuedBuysRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void getCurrentAsks() {

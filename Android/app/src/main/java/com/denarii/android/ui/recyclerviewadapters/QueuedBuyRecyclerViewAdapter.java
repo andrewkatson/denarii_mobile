@@ -60,6 +60,7 @@ public class QueuedBuyRecyclerViewAdapter extends
         amountBought.setText(String.valueOf(ask.getAmountBought()));
 
         Button cancel = holder.cancel;
+        cancel.setText(R.string.cancel);
         cancel.setOnClickListener(v -> {
             Set<String> askIdsToCancel = new HashSet<>();
             askIdsToCancel.add(ask.getAskId());
