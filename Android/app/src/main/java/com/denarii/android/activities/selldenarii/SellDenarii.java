@@ -48,7 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class SellDenarii extends AppCompatActivity {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final List<DenariiAsk> currentAsks = new ArrayList<>();
@@ -74,6 +74,14 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
 
     private UserDetails userDetails = null;
 
+    private final SwipeRefreshLayout asksRefreshLayout = findViewById(R.id.sell_denarii_asks_refresh_layout);
+
+    private final SwipeRefreshLayout ownAsksRefreshLayout = findViewById(R.id.sell_denarii_own_asks_refresh_layout);
+
+    private final SwipeRefreshLayout pendingSalesRefreshLayout = findViewById(R.id.sell_denarii_pending_sales_refresh_layout);
+
+    private final SwipeRefreshLayout goingPriceRefreshLayout = findViewById(R.id.sell_denarii_going_price_refresh_layout);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +104,49 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
                 v -> {
                     onSubmitClicked();
                 });
+
+        asksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNewAsks();
+
+                updateAsksRecyclerView();
+
+                asksRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        ownAsksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshOwnAsks();
+
+                updateOwnAsksRecyclerView();
+
+                ownAsksRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        pendingSalesRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshAsksInEscrow();
+
+                updatePendingSalesRecyclerView();
+
+                pendingSalesRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        goingPriceRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                refreshGoingPrice();
+
+                goingPriceRefreshLayout.setRefreshing(false);
+            }
+        });
 
         getNewAsks();
         refreshOwnAsks();
@@ -129,18 +180,6 @@ public class SellDenarii extends AppCompatActivity implements SwipeRefreshLayout
         pendingSalesRecyclerViewAdapter = new PendingSaleRecyclerViewAdapter(allPendingSales);
         pendingSalesRecyclerView.setAdapter(pendingSalesRecyclerViewAdapter);
         pendingSalesRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-    }
-
-    @Override
-    public void onRefresh() {
-        getNewAsks();
-        refreshOwnAsks();
-        refreshAsksInEscrow();
-        refreshGoingPrice();
-
-        updateAsksRecyclerView();
-        updateOwnAsksRecyclerView();
-        updatePendingSalesRecyclerView();
     }
 
     private void getCurrentAsks() {

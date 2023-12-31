@@ -44,8 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SupportTickets extends AppCompatActivity
-        implements SwipeRefreshLayout.OnRefreshListener {
+public class SupportTickets extends AppCompatActivity {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
 
@@ -56,6 +55,8 @@ public class SupportTickets extends AppCompatActivity
     private DenariiService denariiService;
 
     private UserDetails userDetails = null;
+
+    private final SwipeRefreshLayout supportTicketsListRefreshLayout = findViewById(R.id.support_tickets_support_tickets_refresh_layout);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,17 @@ public class SupportTickets extends AppCompatActivity
                     startActivity(intent);
                 });
 
+        supportTicketsListRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getSupportTickets();
+
+                updateSupportTicketModelsRecyclerView();
+
+                supportTicketsListRefreshLayout.setRefreshing(false);
+            }
+        });
+
         getSupportTickets();
 
         getSupportTicketModels();
@@ -97,13 +109,6 @@ public class SupportTickets extends AppCompatActivity
         });
         ticketsRecyclerView.setAdapter(supportTicketRecyclerViewAdapter);
         ticketsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    @Override
-    public void onRefresh() {
-        getSupportTickets();
-
-        updateSupportTicketModelsRecyclerView();
     }
 
     private void getSupportTicketModels() {

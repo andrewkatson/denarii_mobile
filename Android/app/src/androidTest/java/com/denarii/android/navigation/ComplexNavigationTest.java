@@ -599,15 +599,15 @@ public class ComplexNavigationTest {
         // On sell denarii
         onView(withId(R.id.sell_denarii_layout)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.sellAmount)).perform(typeText("2"), closeSoftKeyboard());
+        onView(withId(R.id.sellAmount)).perform(replaceText("2"), closeSoftKeyboard());
 
-        onView(withId(R.id.sellPrice)).perform(typeText("100"), closeSoftKeyboard());
+        onView(withId(R.id.sellPrice)).perform(replaceText("100"), closeSoftKeyboard());
 
         onView(withId(R.id.submitSell)).perform(click());
 
         // Refresh
-        onView(withId(R.id.sell_denarii_layout))
-                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        onView(withId(R.id.sell_denarii_own_asks_refresh_layout))
+                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(80)));
 
         // Take a screenshot
         writeToTestStorage(
@@ -625,15 +625,15 @@ public class ComplexNavigationTest {
         // On buy denarii
         onView(withId(R.id.buy_denarii_layout)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.buy_denarii_amount)).perform(typeText("1"), closeSoftKeyboard());
+        onView(withId(R.id.buy_denarii_amount)).perform(replaceText("1"), closeSoftKeyboard());
 
-        onView(withId(R.id.buy_denarii_price)).perform(typeText("110"), closeSoftKeyboard());
+        onView(withId(R.id.buy_denarii_price)).perform(replaceText("110"), closeSoftKeyboard());
 
         onView(withId(R.id.buy_denarii_submit)).perform(click());
 
         // Refresh
-        onView(withId(R.id.buy_denarii_layout))
-                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        onView(withId(R.id.buy_denarii_queued_buys_refresh_layout))
+                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(80)));
 
         // Take a screenshot
         writeToTestStorage(
@@ -649,8 +649,8 @@ public class ComplexNavigationTest {
         onView(allOf(withId(R.id.buyDenariiQueuedBuysRecyclerView), withText("Cancel"))).perform(click());
 
         // Refresh
-        onView(withId(R.id.buy_denarii_layout))
-                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        onView(withId(R.id.buy_denarii_queued_buys_refresh_layout))
+                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(80)));
 
         // Take a screenshot
         writeToTestStorage(
@@ -695,12 +695,12 @@ public class ComplexNavigationTest {
         onView(withId(R.id.commentBoxSubmit)).perform(click());
 
         // Refresh
-        onView(withId(R.id.support_ticket_details_layout))
-                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+        onView(withId(R.id.support_ticket_details_refresh_layout))
+                .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(80)));
 
         // Take a screenshot
         writeToTestStorage(
-                captureToBitmap(onView(withId(R.id.buy_denarii_layout))),
+                captureToBitmap(onView(withId(R.id.support_ticket_details_layout))),
                 getClass().getSimpleName() + "_" + testName.getMethodName());
     }
 

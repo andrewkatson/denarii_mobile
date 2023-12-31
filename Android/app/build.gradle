@@ -14,6 +14,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments useTestStorageService: "true"
     }
 
     buildTypes {
@@ -76,4 +77,5 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.5.4"
     // Optional -- Barista (used with espresso)
     androidTestImplementation "com.adevinta.android:barista:4.2.0"
+    androidTestUtil "androidx.test.services:test-services:1.4.2"
 }

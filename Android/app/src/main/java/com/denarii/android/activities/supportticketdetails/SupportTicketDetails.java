@@ -45,8 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SupportTicketDetails extends AppCompatActivity
-        implements SwipeRefreshLayout.OnRefreshListener {
+public class SupportTicketDetails extends AppCompatActivity {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
 
@@ -57,6 +56,8 @@ public class SupportTicketDetails extends AppCompatActivity
     private DenariiService denariiService;
 
     private UserDetails userDetails = null;
+
+    private final SwipeRefreshLayout commentsRefreshLayout = findViewById(R.id.support_ticket_details_refresh_layout);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,17 @@ public class SupportTicketDetails extends AppCompatActivity
 
         Intent currentIntent = getIntent();
         userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+        commentsRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getSupportTicketCommentDetails();
+
+                updateSupportTicketCommentsRecyclerView();
+
+                commentsRefreshLayout.setRefreshing(false);
+            }
+        });
 
         getSupportTicketDetails();
         getSupportTicketCommentDetails();
@@ -106,13 +118,6 @@ public class SupportTicketDetails extends AppCompatActivity
         supportTicketCommentsRecyclerViewAdapter = new SupportTicketCommentRecyclerViewAdapter(supportTicketCommentModels, userDetails.getUserName());
         commentsRecyclerView.setAdapter(supportTicketCommentsRecyclerViewAdapter);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    @Override
-    public void onRefresh() {
-        getSupportTicketCommentDetails();
-
-        updateSupportTicketCommentsRecyclerView();
     }
 
     private void getComments() {

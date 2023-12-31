@@ -48,7 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class BuyDenarii extends AppCompatActivity {
 
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final List<DenariiAsk> currentAsks = new ArrayList<>();
@@ -67,6 +67,10 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
     private UserDetails userDetails = null;
 
+    private final SwipeRefreshLayout asksRefreshLayout = findViewById(R.id.buy_denarii_asks_refresh_layout);
+
+    private final SwipeRefreshLayout queuedBuysRefreshLayout = findViewById(R.id.buy_denarii_queued_buys_refresh_layout);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +86,28 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
 
         Intent currentIntent = getIntent();
         userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+        asksRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getNewAsks();
+
+                updateAsksRecyclerView();
+
+                asksRefreshLayout.setRefreshing(false);
+            }
+        });
+
+        queuedBuysRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshSettledTransactions();
+
+                updateQueuedBuysRecyclerView();
+
+                queuedBuysRefreshLayout.setRefreshing(false);
+            }
+        });
 
         getNewAsks();
         refreshSettledTransactions();
@@ -112,15 +138,6 @@ public class BuyDenarii extends AppCompatActivity implements SwipeRefreshLayout.
         });
         queuedBuysRecyclerView.setAdapter(queuedBuyRecyclerViewAdapter);
         queuedBuysRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-    }
-
-    @Override
-    public void onRefresh() {
-        getNewAsks();
-        refreshSettledTransactions();
-
-        updateAsksRecyclerView();
-        updateQueuedBuysRecyclerView();
     }
 
     private void getCurrentAsks() {
