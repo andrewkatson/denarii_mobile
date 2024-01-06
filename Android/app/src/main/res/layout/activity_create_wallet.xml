@@ -83,12 +83,11 @@
             android:id="@+id/create_wallet_seed_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="88dp"
-            android:layout_marginTop="176dp"
             android:text="@string/wallet_seed_text"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_wallet_submit_button" />
 
         <Button

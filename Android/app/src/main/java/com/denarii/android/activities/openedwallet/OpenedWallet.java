@@ -36,246 +36,251 @@ import retrofit2.Response;
 
 public class OpenedWallet extends AppCompatActivity {
 
-    private UserDetails userDetails = null;
+  private UserDetails userDetails = null;
 
-    private DenariiService denariiService;
+  private DenariiService denariiService;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_opened_wallet);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_opened_wallet);
 
-        // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.opened_wallet_toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-        // Make sure the toolbar exists in the activity and is not null
-        setSupportActionBar(toolbar);
+    // Find the toolbar view inside the activity layout
+    Toolbar toolbar = (Toolbar) findViewById(R.id.opened_wallet_toolbar);
+    // Sets the Toolbar to act as the ActionBar for this Activity window.
+    // Make sure the toolbar exists in the activity and is not null
+    setSupportActionBar(toolbar);
 
-        denariiService = DenariiServiceHandler.returnDenariiService();
+    denariiService = DenariiServiceHandler.returnDenariiService();
 
-        Intent currentIntent = getIntent();
-        userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+    Intent currentIntent = getIntent();
+    userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
-        if (userDetails != null && userDetails.getWalletDetails() != null) {
-            TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
-            seed.setText(String.format("Seed: %s", userDetails.getWalletDetails().getSeed()));
-        }
-
-        getBalance(userDetails);
-
-        Button send = (Button) findViewById(R.id.opened_wallet_attempt_send_button);
-
-        send.setOnClickListener(v -> attemptToSendMoney(userDetails));
-
-        Button refresh = (Button) findViewById(R.id.opened_wallet_refresh_balance_button);
-
-        refresh.setOnClickListener(v -> getBalance(userDetails));
+    if (userDetails != null && userDetails.getWalletDetails() != null) {
+      TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
+      seed.setText(
+          String.format(
+              Locale.US,
+              "%s: %s",
+              getString(R.string.opened_wallet_seed_text),
+              userDetails.getWalletDetails().getSeed()));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
+    getBalance(userDetails);
+
+    Button send = (Button) findViewById(R.id.opened_wallet_attempt_send_button);
+
+    send.setOnClickListener(v -> attemptToSendMoney(userDetails));
+
+    Button refresh = (Button) findViewById(R.id.opened_wallet_refresh_balance_button);
+
+    refresh.setOnClickListener(v -> getBalance(userDetails));
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main_menu, menu);
+    return true;
+  }
+
+  private void getBalance(UserDetails localUserDetails) {
+    if (localUserDetails == null) {
+      localUserDetails = UnpackDenariiResponse.validUserDetails();
+    }
+    Call<List<DenariiResponse>> walletCall =
+        denariiService.getBalance(
+            localUserDetails.getUserID(), localUserDetails.getWalletDetails().getWalletName());
+
+    final UserDetails[] finalUserDetails = {localUserDetails};
+    walletCall.enqueue(
+        new Callback<List<DenariiResponse>>() {
+          @Override
+          public void onResponse(
+              @NonNull Call<List<DenariiResponse>> call,
+              @NonNull Response<List<DenariiResponse>> response) {
+            if (response.isSuccessful()) {
+              if (response.body() != null) {
+                // We only care about the first wallet.
+                boolean success =
+                    UnpackDenariiResponse.unpackGetBalance(finalUserDetails[0], response.body());
+                if (success) {
+                  createSuccessToast(
+                      "Got Balance",
+                      finalUserDetails[0].getWalletDetails().getBalance(),
+                      finalUserDetails[0].getWalletDetails().getWalletAddress());
+                } else {
+                  createFailureToast("Failed to get balance");
+                }
+              } else {
+                createFailureToast("Response body was null for get balance");
+              }
+            } else {
+              createFailureToast("Response was not successful for get balance");
+            }
+          }
+
+          @Override
+          public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+            createFailureToast(String.format("%s %s", "Response failed for get balance", t));
+          }
+        });
+  }
+
+  private void attemptToSendMoney(UserDetails userDetails) {
+    if (userDetails == null) {
+      userDetails = UnpackDenariiResponse.validUserDetails();
     }
 
-    private void getBalance(UserDetails localUserDetails) {
-        if (localUserDetails == null) {
-            localUserDetails = UnpackDenariiResponse.validUserDetails();
-        }
-        Call<List<DenariiResponse>> walletCall =
-                denariiService.getBalance(
-                        localUserDetails.getUserID(), localUserDetails.getWalletDetails().getWalletName());
+    EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
+    EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
 
-        final UserDetails[] finalUserDetails = {localUserDetails};
-        walletCall.enqueue(
-                new Callback<List<DenariiResponse>>() {
-                    @Override
-                    public void onResponse(
-                            @NonNull Call<List<DenariiResponse>> call,
-                            @NonNull Response<List<DenariiResponse>> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body() != null) {
-                                // We only care about the first wallet.
-                                boolean success =
-                                        UnpackDenariiResponse.unpackGetBalance(finalUserDetails[0], response.body());
-                                if (success) {
-                                    createSuccessToast(
-                                            "Got Balance",
-                                            finalUserDetails[0].getWalletDetails().getBalance(),
-                                            finalUserDetails[0].getWalletDetails().getWalletAddress());
-                                } else {
-                                    createFailureToast("Failed to get balance");
-                                }
-                            } else {
-                                createFailureToast("Response body was null for get balance");
-                            }
-                        } else {
-                            createFailureToast("Response was not successful for get balance");
-                        }
-                    }
+    TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
 
-                    @Override
-                    public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                        createFailureToast(String.format("%s %s", "Response failed for get balance", t));
-                    }
-                });
+    Pattern pattern = Pattern.compile("Balance: (\\d+\\.\\d+)");
+    Matcher matcher = pattern.matcher(balance.getText().toString());
+    String balanceText = "0.0";
+
+    if (matcher.find()) {
+      balanceText = matcher.group(1);
+    }
+    assert balanceText != null;
+    if (Double.parseDouble(balanceText) < Double.parseDouble(amount.getText().toString())) {
+      createFailureToast("Balance was less than the amount to send");
+      return;
     }
 
-    private void attemptToSendMoney(UserDetails userDetails) {
-        if (userDetails == null) {
-            userDetails = UnpackDenariiResponse.validUserDetails();
-        }
+    try {
+      Call<List<DenariiResponse>> walletCall =
+          denariiService.sendDenarii(
+              userDetails.getUserID(),
+              userDetails.getWalletDetails().getWalletName(),
+              sendTo.getText().toString(),
+              Double.parseDouble(amount.getText().toString()));
 
-        EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
-        EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
+      final UserDetails[] finalUserDetails = {userDetails};
+      walletCall.enqueue(
+          new Callback<List<DenariiResponse>>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  // Update the balance now that we sent denarii.
+                  getBalance(finalUserDetails[0]);
 
-        TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
+                  createSuccessToast(
+                      "Sent Money",
+                      finalUserDetails[0].getWalletDetails().getBalance(),
+                      finalUserDetails[0].getWalletDetails().getWalletAddress());
+                } else {
+                  createFailureToast("Response body was null for send money");
+                }
+              } else {
+                createFailureToast("Response was not successful for send money");
+              }
+            }
 
-        Pattern pattern = Pattern.compile("Balance: (\\d+\\.\\d+)");
-        Matcher matcher = pattern.matcher(balance.getText().toString());
-        String balanceText = "0.0";
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              createFailureToast(String.format("%s %s", "Response failed for send money", t));
+            }
+          });
+    } catch (NumberFormatException e) {
+      createFailureToast("Not a number provided for amount to send");
+    }
+  }
 
-        if (matcher.find()) {
-            balanceText = matcher.group(1);
-        }
-        assert balanceText != null;
-        if (Double.parseDouble(balanceText) < Double.parseDouble(amount.getText().toString())) {
-            createFailureToast("Balance was less than the amount to send");
-            return;
-        }
+  private void createSuccessToast(String successMessage, double newBalance, String walletAddress) {
+    TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
 
-        try {
-            Call<List<DenariiResponse>> walletCall =
-                    denariiService.sendDenarii(
-                            userDetails.getUserID(),
-                            userDetails.getWalletDetails().getWalletName(),
-                            sendTo.getText().toString(),
-                            Double.parseDouble(amount.getText().toString()));
+    balance.setText(
+        String.format(
+            Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), newBalance));
 
-            final UserDetails[] finalUserDetails = {userDetails};
-            walletCall.enqueue(
-                    new Callback<List<DenariiResponse>>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    // Update the balance now that we sent denarii.
-                                    getBalance(finalUserDetails[0]);
+    TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
 
-                                    createSuccessToast(
-                                            "Sent Money",
-                                            finalUserDetails[0].getWalletDetails().getBalance(),
-                                            finalUserDetails[0].getWalletDetails().getWalletAddress());
-                                } else {
-                                    createFailureToast("Response body was null for send money");
-                                }
-                            } else {
-                                createFailureToast("Response was not successful for send money");
-                            }
-                        }
+    address.setText(
+        String.format(
+            Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), walletAddress));
 
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            createFailureToast(String.format("%s %s", "Response failed for send money", t));
-                        }
-                    });
-        } catch (NumberFormatException e) {
-            createFailureToast("Not a number provided for amount to send");
-        }
+    Context context = getApplicationContext();
+    int duration = Toast.LENGTH_SHORT;
+
+    Toast toast = Toast.makeText(context, successMessage, duration);
+    toast.show();
+  }
+
+  private void createFailureToast(String failureMessage) {
+    TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
+
+    balance.setText(
+        String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), 0.0d));
+
+    TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
+
+    address.setText(
+        String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), ""));
+
+    Context context = getApplicationContext();
+    int duration = Toast.LENGTH_SHORT;
+
+    Toast toast = Toast.makeText(context, failureMessage, duration);
+    toast.show();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    if (Objects.equals(userDetails, null)) {
+      return true;
     }
 
-    private void createSuccessToast(String successMessage, double newBalance, String walletAddress) {
-        TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
+    // Handle item selection.
+    if (Objects.equals(item.getItemId(), R.id.buy_denarii)) {
+      Intent intent = new Intent(OpenedWallet.this, BuyDenarii.class);
 
-        balance.setText(
-                String.format(
-                        Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), newBalance));
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
 
-        TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
+      startActivity(intent);
 
-        address.setText(
-                String.format(
-                        Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), walletAddress));
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.sell_denarii)) {
+      Intent intent = new Intent(OpenedWallet.this, SellDenarii.class);
 
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
 
-        Toast toast = Toast.makeText(context, successMessage, duration);
-        toast.show();
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.wallet)) {
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.verification)) {
+      Intent intent = new Intent(OpenedWallet.this, Verification.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.credit_card_info)) {
+      Intent intent = new Intent(OpenedWallet.this, CreditCardInfo.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.settings)) {
+      Intent intent = new Intent(OpenedWallet.this, UserSettings.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
-
-    private void createFailureToast(String failureMessage) {
-        TextView balance = (TextView) findViewById(R.id.opened_wallet_balance_text_view);
-
-        balance.setText(
-                String.format(Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), 0.0d));
-
-        TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
-
-        address.setText(
-                String.format(Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), ""));
-
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, failureMessage, duration);
-        toast.show();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (Objects.equals(userDetails, null)) {
-            return true;
-        }
-
-        // Handle item selection.
-        if (Objects.equals(item.getItemId(), R.id.buy_denarii)) {
-            Intent intent = new Intent(OpenedWallet.this, BuyDenarii.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.sell_denarii)) {
-            Intent intent = new Intent(OpenedWallet.this, SellDenarii.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.wallet)) {
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.verification)) {
-            Intent intent = new Intent(OpenedWallet.this, Verification.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.credit_card_info)) {
-            Intent intent = new Intent(OpenedWallet.this, CreditCardInfo.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.settings)) {
-            Intent intent = new Intent(OpenedWallet.this, UserSettings.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
+  }
 }
