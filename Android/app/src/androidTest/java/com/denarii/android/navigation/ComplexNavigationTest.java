@@ -22,18 +22,15 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-
 import com.denarii.android.R;
 import com.denarii.android.activities.main.MainActivity;
-
+import java.io.IOException;
+import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.function.Function;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -250,6 +247,8 @@ public class ComplexNavigationTest {
 
         onView(withId(R.id.create_wallet_enter_password))
                 .perform(typeText(walletPassword), closeSoftKeyboard());
+
+        onView(withId(R.id.create_wallet_confirm_password)).perform(typeText(walletPassword), closeSoftKeyboard());
 
         onView(withId(R.id.create_wallet_submit_button)).perform(click());
 

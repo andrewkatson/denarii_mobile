@@ -5,16 +5,10 @@
       <entry key="ComplexNavigationTest">
         <State />
       </entry>
+      <entry key="Tests in 'com.denarii.android'">
+        <State />
+      </entry>
       <entry key="app">
-        <State />
-      </entry>
-      <entry key="cancelBuyDenarii_withValidData_cancelsBuyDenarii()">
-        <State />
-      </entry>
-      <entry key="createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves()">
-        <State />
-      </entry>
-      <entry key="sendDenarii_withValidData_sendsDenarii()">
         <State />
       </entry>
     </value>

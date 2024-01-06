@@ -13,6 +13,7 @@
     <string name="wallet_seed_text">Seed</string>
     <string name="wallet_name_text">Wallet Name</string>
     <string name="wallet_password_text">Wallet Password</string>
+    <string name="confirm_wallet_password_text">Confirm Wallet Password</string>
     <string name="create_wallet_submit_text">Submit</string>
     <string name="create_wallet_failure_text">Failure</string>
     <string name="create_wallet_success_text">Success</string>
