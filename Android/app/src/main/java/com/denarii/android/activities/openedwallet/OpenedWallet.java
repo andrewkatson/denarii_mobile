@@ -61,7 +61,7 @@ public class OpenedWallet extends AppCompatActivity {
       seed.setText(
           String.format(
               Locale.US,
-              "%s: %s",
+              "%s %s",
               getString(R.string.opened_wallet_seed_text),
               userDetails.getWalletDetails().getSeed()));
     }
@@ -197,13 +197,13 @@ public class OpenedWallet extends AppCompatActivity {
 
     balance.setText(
         String.format(
-            Locale.US, "%s: %f", getString(R.string.opened_wallet_balance_text), newBalance));
+            Locale.US, "%s %f", getString(R.string.opened_wallet_balance_text), newBalance));
 
     TextView address = (TextView) findViewById(R.id.opened_wallet_address_text_view);
 
     address.setText(
         String.format(
-            Locale.US, "%s: %s", getString(R.string.opened_wallet_address_text), walletAddress));
+            Locale.US, "%s %s", getString(R.string.opened_wallet_address_text), walletAddress));
 
     Context context = getApplicationContext();
     int duration = Toast.LENGTH_SHORT;
