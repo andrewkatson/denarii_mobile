@@ -90,8 +90,8 @@
 
     <Button
         android:id="@+id/commentBoxSubmit"
-        android:layout_width="181dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/support_ticket_details_comment_box_submit"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/resolveSupportTicket"
@@ -101,8 +101,8 @@
 
     <Button
         android:id="@+id/resolveSupportTicket"
-        android:layout_width="181dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/resolve_support_ticket"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/deleteSupportTicket"
@@ -112,9 +112,9 @@
 
     <Button
         android:id="@+id/deleteSupportTicket"
-        android:layout_width="181dp"
+        android:layout_width="wrap_content"
         android:backgroundTint="#BC0B0B"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:text="@string/delete_support_ticket"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

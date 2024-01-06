@@ -123,7 +123,7 @@
     <string name="verification_lastname">Last Name</string>
     <string name="verification_email">Email</string>
     <string name="verification_dob">Date of Birth</string>
-    <string name="verification_ssn">Social Security Number</string>
+    <string name="verification_ssn">SSN</string>
     <string name="verification_zipcode">Zip Code</string>
     <string name="verification_phone">Phone Number</string>
     <string name="verification_workcity">Work City</string>

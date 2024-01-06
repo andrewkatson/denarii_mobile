@@ -11,6 +11,9 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

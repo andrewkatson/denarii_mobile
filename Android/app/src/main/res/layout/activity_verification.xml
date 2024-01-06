@@ -23,7 +23,6 @@
         android:id="@+id/verificationHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:text="@string/verification_header"
         android:textAlignment="center"
         android:textSize="34sp"
@@ -48,11 +47,11 @@
         android:id="@+id/firstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_firstname"
-        app:layout_constraintBottom_toTopOf="@id/middleInitial"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lastName"
+        app:layout_constraintEnd_toStartOf="@id/middleInitial"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/verificationStatus" />
 
@@ -60,91 +59,91 @@
         android:id="@+id/middleInitial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_middle"
         app:layout_constraintBottom_toTopOf="@id/lastName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/firstName" />
+        app:layout_constraintStart_toEndOf="@id/firstName"
+        app:layout_constraintTop_toBottomOf="@id/verificationStatus" />
 
     <EditText
         android:id="@+id/lastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_lastname"
-        app:layout_constraintBottom_toTopOf="@id/email"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dateOfBirth"
+        app:layout_constraintEnd_toStartOf="@id/email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/middleInitial" />
+        app:layout_constraintTop_toBottomOf="@id/firstName" />
 
     <EditText
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="textEmailAddress"
         android:text="@string/verification_email"
         app:layout_constraintBottom_toTopOf="@id/dateOfBirth"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lastName" />
+        app:layout_constraintStart_toEndOf="@id/lastName"
+        app:layout_constraintTop_toBottomOf="@id/middleInitial" />
 
     <EditText
         android:id="@+id/dateOfBirth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="date"
-        app:layout_constraintBottom_toTopOf="@id/socialSecurityNumber"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/zipCode"
+        app:layout_constraintEnd_toStartOf="@id/socialSecurityNumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email"
+        app:layout_constraintTop_toBottomOf="@id/lastName"
         tools:text="@string/verification_dob" />
 
     <EditText
         android:id="@+id/socialSecurityNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="number"
         android:text="@string/verification_ssn"
         app:layout_constraintBottom_toTopOf="@id/zipCode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dateOfBirth" />
+        app:layout_constraintStart_toEndOf="@id/dateOfBirth"
+        app:layout_constraintTop_toBottomOf="@id/email" />
 
     <EditText
         android:id="@+id/zipCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="number"
         android:text="@string/verification_zipcode"
-        app:layout_constraintBottom_toTopOf="@id/verificationPhoneNumber"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/workCity"
+        app:layout_constraintEnd_toStartOf="@id/verificationPhoneNumber"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/socialSecurityNumber" />
+        app:layout_constraintTop_toBottomOf="@id/dateOfBirth" />
 
     <EditText
         android:id="@+id/verificationPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="phone"
         android:text="@string/verification_phone"
         app:layout_constraintBottom_toTopOf="@id/workCity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/zipCode" />
+        app:layout_constraintStart_toEndOf="@id/zipCode"
+        app:layout_constraintTop_toBottomOf="@id/socialSecurityNumber" />
 
     <EditText
         android:id="@+id/workCity"
-        android:layout_width="201dp"
-        android:layout_height="48dp"
-        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_workcity"
         app:layout_constraintBottom_toTopOf="@id/workState"
@@ -156,7 +155,7 @@
         android:id="@+id/workState"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:ems="10"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_workstate"
         app:layout_constraintBottom_toTopOf="@id/workCountry"
@@ -168,7 +167,7 @@
         android:id="@+id/workCountry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:ems="8"
         android:inputType="text"
         android:text="@string/verification_workcountry"
         app:layout_constraintBottom_toTopOf="@id/verificationSubmit"
