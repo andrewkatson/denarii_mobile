@@ -10,11 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import com.denarii.android.R;
 import com.denarii.android.activities.buydenarii.BuyDenarii;
 import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
@@ -27,13 +25,11 @@ import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 import com.denarii.android.util.UnpackDenariiResponse;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,7 +58,7 @@ public class OpenedWallet extends AppCompatActivity {
 
         if (userDetails != null && userDetails.getWalletDetails() != null) {
             TextView seed = (TextView) findViewById(R.id.opened_wallet_seed_text_view);
-            seed.setText(String.format("Seed %s", userDetails.getWalletDetails().getSeed()));
+            seed.setText(String.format("Seed: %s", userDetails.getWalletDetails().getSeed()));
         }
 
         getBalance(userDetails);
