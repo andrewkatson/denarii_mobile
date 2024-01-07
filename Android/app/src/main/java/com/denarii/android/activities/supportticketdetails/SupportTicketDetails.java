@@ -10,14 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.denarii.android.R;
 import com.denarii.android.activities.buydenarii.BuyDenarii;
 import com.denarii.android.activities.creditcardinfo.CreditCardInfo;
@@ -34,13 +32,12 @@ import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -155,6 +152,7 @@ public class SupportTicketDetails extends AppCompatActivity {
             final UserDetails[] finalDetails = {userDetails};
 
             EditText commentEditText = findViewById(R.id.supportTicketDetailsCommentBox);
+            commentEditText.addTextChangedListener(new PatternTextWatcher(commentEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN));
             String comment = commentEditText.getText().toString();
 
             Call<List<DenariiResponse>> call =

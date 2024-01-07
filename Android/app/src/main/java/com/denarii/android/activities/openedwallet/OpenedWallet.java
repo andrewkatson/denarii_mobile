@@ -24,6 +24,7 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Locale;
@@ -133,7 +134,9 @@ public class OpenedWallet extends AppCompatActivity {
     }
 
     EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
+    amount.addTextChangedListener(new PatternTextWatcher(amount, Constants.DOUBLE_PATTERN));
     EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
+    sendTo.addTextChangedListener(new PatternTextWatcher(sendTo, Constants.DOUBLE_PATTERN));
 
     TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
 

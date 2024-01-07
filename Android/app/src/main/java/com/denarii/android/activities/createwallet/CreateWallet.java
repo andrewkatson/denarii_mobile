@@ -9,10 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.denarii.android.R;
 import com.denarii.android.activities.openedwallet.OpenedWallet;
 import com.denarii.android.constants.Constants;
@@ -20,11 +18,10 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
+import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
-
 import java.util.List;
 import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,7 +34,16 @@ public class CreateWallet extends AppCompatActivity {
     setContentView(R.layout.activity_create_wallet);
 
     EditText password = findViewById(R.id.create_wallet_enter_password);
+    // Match any alphanumeric or underscore. Also special characters
+    password.addTextChangedListener(
+        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
     password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+    EditText confirmPassword = findViewById(R.id.create_wallet_confirm_password);
+    // Match any alphanumeric or underscore. Also special characters
+    confirmPassword.addTextChangedListener(
+        new PatternTextWatcher(confirmPassword, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
+    confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
     Button submit = (Button) findViewById(R.id.create_wallet_submit_button);
 
@@ -73,6 +79,9 @@ public class CreateWallet extends AppCompatActivity {
       userDetails = UnpackDenariiResponse.validUserDetails();
     }
     EditText walletName = (EditText) findViewById(R.id.create_wallet_enter_name);
+    // Match any alphanumeric or underscore. Also special characters
+    walletName.addTextChangedListener(
+        new PatternTextWatcher(walletName, Constants.ALPHANUMERIC_PATTERN));
     EditText walletPassword = (EditText) findViewById(R.id.create_wallet_enter_password);
     EditText confirmPassword = findViewById(R.id.create_wallet_confirm_password);
 

@@ -1,8 +1,5 @@
 package com.denarii.android.activities.requestreset;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.denarii.android.R;
 import com.denarii.android.activities.verifyreset.VerifyReset;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
-
+import com.denarii.android.util.PatternTextWatcher;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +40,8 @@ public class RequestReset extends AppCompatActivity {
             Intent intent = new Intent(RequestReset.this, VerifyReset.class);
 
             EditText usernameOrEmail = (EditText) findViewById(R.id.request_reset_username_or_email_edit_text);
+            usernameOrEmail.addTextChangedListener(new PatternTextWatcher(usernameOrEmail, Constants.EMAIL_PATTERN, Constants.ALPHANUMERIC_PATTERN));
+
 
             intent.putExtra(Constants.RESET_PASSWORD_USERNAME_OR_EMAIL, usernameOrEmail.getText().toString());
 

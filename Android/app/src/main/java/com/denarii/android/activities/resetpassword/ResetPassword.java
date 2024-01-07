@@ -1,8 +1,5 @@
 package com.denarii.android.activities.resetpassword;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,15 +8,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import com.denarii.android.R;
 import com.denarii.android.activities.login.Login;
+import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
-
+import com.denarii.android.util.PatternTextWatcher;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,9 +31,11 @@ public class ResetPassword extends AppCompatActivity {
 
         EditText password = findViewById(R.id.reset_password_enter_password_edit_text);
         password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        password.addTextChangedListener(new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
 
         EditText confirmPassword = findViewById(R.id.reset_password_confirm_password_edit_text);
         confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        confirmPassword.addTextChangedListener(new PatternTextWatcher(confirmPassword, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
 
         Button resetPasswordButton = (Button) findViewById(R.id.reset_password_reset_password_button);
 
@@ -55,7 +55,9 @@ public class ResetPassword extends AppCompatActivity {
     private void resetPassword() {
 
         EditText username = (EditText) findViewById(R.id.rs_enter_name_edit_text);
+        username.addTextChangedListener(new PatternTextWatcher(username,Constants.ALPHANUMERIC_PATTERN));
         EditText email = (EditText) findViewById(R.id.rs_enter_email_edit_text);
+        email.addTextChangedListener(new PatternTextWatcher(email, Constants.EMAIL_PATTERN));
         EditText password = (EditText) findViewById(R.id.reset_password_enter_password_edit_text);
         EditText confirmPassword = (EditText) findViewById(R.id.reset_password_confirm_password_edit_text);
 
