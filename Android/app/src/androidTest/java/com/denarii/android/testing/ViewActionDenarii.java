@@ -5,10 +5,12 @@ import static org.hamcrest.Matchers.allOf;
 
 import android.view.View;
 import android.widget.EditText;
-
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
-
+import androidx.test.espresso.action.GeneralLocation;
+import androidx.test.espresso.action.GeneralSwipeAction;
+import androidx.test.espresso.action.Press;
+import androidx.test.espresso.action.Swipe;
 import org.hamcrest.Matcher;
 
 public class ViewActionDenarii {
@@ -35,6 +37,7 @@ public class ViewActionDenarii {
       }
     };
   }
+
   public static ViewAction withCustomConstraints(
       final ViewAction action, final org.hamcrest.Matcher<View> constraints) {
     return new ViewAction() {
@@ -53,5 +56,10 @@ public class ViewActionDenarii {
         action.perform(uiController, view);
       }
     };
+  }
+
+  public static ViewAction hardSwipeDown() {
+    return new GeneralSwipeAction(
+        Swipe.SLOW, GeneralLocation.TOP_CENTER, GeneralLocation.BOTTOM_CENTER, Press.THUMB);
   }
 }

@@ -44,417 +44,428 @@ import retrofit2.Response;
 
 public class SupportTicketDetails extends AppCompatActivity {
 
-    private final ReentrantLock reentrantLock = new ReentrantLock();
+  private final ReentrantLock reentrantLock = new ReentrantLock();
 
-    private SupportTicketCommentRecyclerViewAdapter supportTicketCommentsRecyclerViewAdapter;
+  private SupportTicketCommentRecyclerViewAdapter supportTicketCommentsRecyclerViewAdapter;
 
-    private final List<SupportTicketCommentModel> supportTicketCommentModels = new ArrayList<>();
+  private final List<SupportTicketCommentModel> supportTicketCommentModels = new ArrayList<>();
 
-    private DenariiService denariiService;
+  private DenariiService denariiService;
 
-    private UserDetails userDetails = null;
+  private UserDetails userDetails = null;
 
-    private SwipeRefreshLayout commentsRefreshLayout = null;
+  private SwipeRefreshLayout commentsRefreshLayout = null;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_support_ticket_details);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_support_ticket_details);
 
-        // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.support_ticket_details_toolbar);
-        // Sets the Toolbar to act as the ActionBar for this Activity window.
-        // Make sure the toolbar exists in the activity and is not null
-        setSupportActionBar(toolbar);
+    // Find the toolbar view inside the activity layout
+    Toolbar toolbar = (Toolbar) findViewById(R.id.support_ticket_details_toolbar);
+    // Sets the Toolbar to act as the ActionBar for this Activity window.
+    // Make sure the toolbar exists in the activity and is not null
+    setSupportActionBar(toolbar);
 
-        denariiService = DenariiServiceHandler.returnDenariiService();
+    denariiService = DenariiServiceHandler.returnDenariiService();
 
-        Intent currentIntent = getIntent();
-        userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+    Intent currentIntent = getIntent();
+    userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
-        commentsRefreshLayout = findViewById(R.id.support_ticket_details_refresh_layout);
+    commentsRefreshLayout = findViewById(R.id.support_ticket_details_refresh_layout);
 
-        commentsRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getSupportTicketCommentDetails();
+    commentsRefreshLayout.setOnRefreshListener(
+        new SwipeRefreshLayout.OnRefreshListener() {
+          @Override
+          public void onRefresh() {
+            getSupportTicketCommentDetails();
 
-                updateSupportTicketCommentsRecyclerView();
+            updateSupportTicketCommentsRecyclerView();
 
-                commentsRefreshLayout.setRefreshing(false);
-            }
+            commentsRefreshLayout.setRefreshing(false);
+          }
         });
 
-        getSupportTicketDetails();
-        getSupportTicketCommentDetails();
+    getSupportTicketDetails();
+    getSupportTicketCommentDetails();
 
-        getComments();
+    getComments();
 
-        Button addNewCommentButton = findViewById(R.id.commentBoxSubmit);
+    Button addNewCommentButton = findViewById(R.id.commentBoxSubmit);
 
-        addNewCommentButton.setOnClickListener(
-                v -> {
-                    addNewComment();
-                });
+    addNewCommentButton.setOnClickListener(
+        v -> {
+          addNewComment();
+        });
 
-        Button resolveButton = findViewById(R.id.resolveSupportTicket);
+    Button resolveButton = findViewById(R.id.resolveSupportTicket);
 
-        resolveButton.setOnClickListener(
-                v -> {
-                    resolveSupportTicket();
-                });
+    resolveButton.setOnClickListener(
+        v -> {
+          resolveSupportTicket();
+        });
 
-        Button deleteButton = findViewById(R.id.deleteSupportTicket);
+    Button deleteButton = findViewById(R.id.deleteSupportTicket);
 
-        deleteButton.setOnClickListener(
-                v -> {
-                    deleteSupportTicket();
-                });
+    deleteButton.setOnClickListener(
+        v -> {
+          deleteSupportTicket();
+        });
 
-        // Create the recycler view for the comments linear layout
-        RecyclerView commentsRecyclerView = (RecyclerView) findViewById(R.id.supportTicketCommentsRecyclerView);
+    // Create the recycler view for the comments linear layout
+    RecyclerView commentsRecyclerView =
+        (RecyclerView) findViewById(R.id.supportTicketCommentsRecyclerView);
 
-        supportTicketCommentsRecyclerViewAdapter = new SupportTicketCommentRecyclerViewAdapter(supportTicketCommentModels, userDetails.getUserName());
-        commentsRecyclerView.setAdapter(supportTicketCommentsRecyclerViewAdapter);
-        commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    supportTicketCommentsRecyclerViewAdapter =
+        new SupportTicketCommentRecyclerViewAdapter(
+            supportTicketCommentModels, userDetails.getUserName());
+    commentsRecyclerView.setAdapter(supportTicketCommentsRecyclerViewAdapter);
+    commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
+
+  private void getComments() {
+    supportTicketCommentModels.clear();
+    for (SupportTicketComment comment :
+        userDetails.getCurrentTicket().getSupportTicketCommentList()) {
+      supportTicketCommentModels.add(
+          new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
+    }
+  }
+
+  private void updateSupportTicketCommentsRecyclerView() {
+    int itemCountMinusOne = supportTicketCommentsRecyclerViewAdapter.getItemCount() - 1;
+    for (int i = itemCountMinusOne; i >= 0; i--) {
+      supportTicketCommentsRecyclerViewAdapter.notifyItemRemoved(i);
     }
 
-    private void getComments() {
-        supportTicketCommentModels.clear();
-        for (SupportTicketComment comment : userDetails.getCurrentTicket().getSupportTicketCommentList()) {
-            supportTicketCommentModels.add(new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
-        }
+    getComments();
+
+    int pos = 0;
+    for (SupportTicketCommentModel unused : supportTicketCommentModels) {
+      supportTicketCommentsRecyclerViewAdapter.notifyItemInserted(pos);
+      pos += 1;
     }
+  }
 
-    private void updateSupportTicketCommentsRecyclerView() {
-        int itemCountMinusOne = supportTicketCommentsRecyclerViewAdapter.getItemCount() - 1;
-        for (int i = itemCountMinusOne; i >= 0; i--) {
-            supportTicketCommentsRecyclerViewAdapter.notifyItemRemoved(i);
-        }
+  private void addNewComment() {
+    try {
+      reentrantLock.lock();
 
-        getComments();
+      if (Objects.equals(userDetails, null)) {
+        userDetails = UnpackDenariiResponse.validUserDetails();
+      }
 
-        int pos = 0;
-        for (SupportTicketCommentModel unused : supportTicketCommentModels) {
-            supportTicketCommentsRecyclerViewAdapter.notifyItemInserted(pos);
-            pos += 1;
-        }
-    }
+      final UserDetails[] finalDetails = {userDetails};
 
-    private void addNewComment() {
-        try {
-            reentrantLock.lock();
+      EditText commentEditText = findViewById(R.id.supportTicketDetailsCommentBox);
+      commentEditText.addTextChangedListener(
+          new PatternTextWatcher(commentEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN));
+      String comment = commentEditText.getText().toString();
 
-            if (Objects.equals(userDetails, null)) {
-                userDetails = UnpackDenariiResponse.validUserDetails();
+      Call<List<DenariiResponse>> call =
+          denariiService.updateSupportTicket(
+              userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID(), comment);
+      final boolean[] succeeded = {false};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] =
+                      UnpackDenariiResponse.unpackUpdateSupportTicket(
+                          finalDetails[0], response.body());
+
+                  if (succeeded[0]) {
+                    createToast("Added comment");
+                    getSupportTicketCommentDetails();
+                  } else {
+                    createToast("Failed to add comment");
+                  }
+                }
+              }
             }
 
-            final UserDetails[] finalDetails = {userDetails};
-
-            EditText commentEditText = findViewById(R.id.supportTicketDetailsCommentBox);
-            commentEditText.addTextChangedListener(new PatternTextWatcher(commentEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN));
-            String comment = commentEditText.getText().toString();
-
-            Call<List<DenariiResponse>> call =
-                    denariiService.updateSupportTicket(
-                            userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID(), comment);
-            final boolean[] succeeded = {false};
-            call.enqueue(
-                    new Callback<>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    succeeded[0] =
-                                            UnpackDenariiResponse.unpackUpdateSupportTicket(
-                                                    finalDetails[0], response.body());
-
-                                    if (succeeded[0]) {
-                                        createToast("Added comment");
-                                        commentEditText.setText(null);
-                                        getSupportTicketCommentDetails();
-                                    } else {
-                                        createToast("Failed to add comment");
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            // TODO log this
-                        }
-                    });
-        } finally {
-            reentrantLock.unlock();
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+    } finally {
+      reentrantLock.unlock();
     }
+  }
 
-    private void getSupportTicketDetails() {
-        try {
-            reentrantLock.lock();
+  private void getSupportTicketDetails() {
+    try {
+      reentrantLock.lock();
 
-            if (Objects.equals(userDetails, null)) {
-                userDetails = UnpackDenariiResponse.validUserDetails();
+      if (Objects.equals(userDetails, null)) {
+        userDetails = UnpackDenariiResponse.validUserDetails();
+      }
+
+      final UserDetails[] finalDetails = {userDetails};
+
+      Call<List<DenariiResponse>> call =
+          denariiService.getSupportTicket(
+              userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
+      final boolean[] succeeded = {false};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] =
+                      UnpackDenariiResponse.unpackGetSupportTicket(
+                          finalDetails[0], response.body());
+
+                  if (succeeded[0]) {
+                    TextView supportTicketTitle = findViewById(R.id.title);
+                    supportTicketTitle.setText(finalDetails[0].getCurrentTicket().getTitle());
+
+                    TextView supportTicketDescription = findViewById(R.id.description);
+                    supportTicketDescription.setText(
+                        finalDetails[0].getCurrentTicket().getDescription());
+                  } else {
+                    createToast("Failed to fetch support ticket");
+                  }
+                }
+              }
             }
 
-            final UserDetails[] finalDetails = {userDetails};
-
-            Call<List<DenariiResponse>> call =
-                    denariiService.getSupportTicket(
-                            userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
-            final boolean[] succeeded = {false};
-            call.enqueue(
-                    new Callback<>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    succeeded[0] =
-                                            UnpackDenariiResponse.unpackGetSupportTicket(finalDetails[0], response.body());
-
-                                    if (succeeded[0]) {
-                                        TextView supportTicketTitle = findViewById(R.id.title);
-                                        supportTicketTitle.setText(finalDetails[0].getCurrentTicket().getTitle());
-
-                                        TextView supportTicketDescription = findViewById(R.id.description);
-                                        supportTicketDescription.setText(
-                                                finalDetails[0].getCurrentTicket().getDescription());
-                                    } else {
-                                        createToast("Failed to fetch support ticket");
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            // TODO log this
-                        }
-                    });
-        } finally {
-            reentrantLock.unlock();
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+    } finally {
+      reentrantLock.unlock();
     }
+  }
 
-    private void getSupportTicketCommentDetails() {
+  private void getSupportTicketCommentDetails() {
 
-        try {
-            reentrantLock.lock();
+    try {
+      reentrantLock.lock();
 
-            if (Objects.equals(userDetails, null)) {
-                userDetails = UnpackDenariiResponse.validUserDetails();
+      if (Objects.equals(userDetails, null)) {
+        userDetails = UnpackDenariiResponse.validUserDetails();
+      }
+
+      final UserDetails[] finalDetails = {userDetails};
+
+      Call<List<DenariiResponse>> call =
+          denariiService.getCommentsOnTicket(
+              userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
+      final boolean[] succeeded = {false};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] =
+                      UnpackDenariiResponse.unpackGetCommentsOnTicket(
+                          finalDetails[0], response.body());
+
+                  if (succeeded[0]) {
+
+                  } else {
+                    createToast("Failed to fetch the comments");
+                  }
+                }
+              }
             }
 
-            final UserDetails[] finalDetails = {userDetails};
-
-            Call<List<DenariiResponse>> call =
-                    denariiService.getCommentsOnTicket(
-                            userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
-            final boolean[] succeeded = {false};
-            call.enqueue(
-                    new Callback<>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    succeeded[0] =
-                                            UnpackDenariiResponse.unpackGetCommentsOnTicket(
-                                                    finalDetails[0], response.body());
-
-                                    if (succeeded[0]) {
-
-                                    } else {
-                                        createToast("Failed to fetch the comments");
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            // TODO log this
-                        }
-                    });
-        } finally {
-            reentrantLock.unlock();
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+    } finally {
+      reentrantLock.unlock();
     }
+  }
 
-    private void resolveSupportTicket() {
-        try {
-            reentrantLock.lock();
+  private void resolveSupportTicket() {
+    try {
+      reentrantLock.lock();
 
-            if (Objects.equals(userDetails, null)) {
-                userDetails = UnpackDenariiResponse.validUserDetails();
+      if (Objects.equals(userDetails, null)) {
+        userDetails = UnpackDenariiResponse.validUserDetails();
+      }
+
+      Call<List<DenariiResponse>> call =
+          denariiService.resolveSupportTicket(
+              userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
+      final boolean[] succeeded = {false};
+      final UserDetails[] finalDetails = {userDetails};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] =
+                      UnpackDenariiResponse.unpackResolveSupportTicket(
+                          finalDetails[0], response.body());
+
+                  if (succeeded[0]) {
+                    createToast("Resolved ticket!");
+
+                    Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
+
+                    intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
+
+                    startActivity(intent);
+                  } else {
+                    createToast("Failed to resolve ticket");
+                  }
+                }
+              }
             }
 
-            Call<List<DenariiResponse>> call =
-                    denariiService.resolveSupportTicket(
-                            userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
-            final boolean[] succeeded = {false};
-            final UserDetails[] finalDetails = {userDetails};
-            call.enqueue(
-                    new Callback<>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    succeeded[0] = UnpackDenariiResponse.unpackResolveSupportTicket(finalDetails[0], response.body());
-
-                                    if (succeeded[0]) {
-                                        createToast("Resolved ticket!");
-
-                                        Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
-
-                                        intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
-
-                                        startActivity(intent);
-                                    } else {
-                                        createToast("Failed to resolve ticket");
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            // TODO log this
-                        }
-                    });
-        } finally {
-            reentrantLock.unlock();
-        }
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+    } finally {
+      reentrantLock.unlock();
     }
+  }
 
-    private void deleteSupportTicket() {
-        try {
-            reentrantLock.lock();
+  private void deleteSupportTicket() {
+    try {
+      reentrantLock.lock();
 
-            if (Objects.equals(userDetails, null)) {
-                userDetails = UnpackDenariiResponse.validUserDetails();
+      if (Objects.equals(userDetails, null)) {
+        userDetails = UnpackDenariiResponse.validUserDetails();
+      }
+
+      Call<List<DenariiResponse>> call =
+          denariiService.deleteSupportTicket(
+              userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
+      final boolean[] succeeded = {false};
+      final UserDetails[] finalDetails = {userDetails};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] =
+                      UnpackDenariiResponse.unpackDeleteSupportTicket(
+                          finalDetails[0], response.body());
+
+                  if (succeeded[0]) {
+                    createToast("Deleted ticket!");
+
+                    Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
+
+                    intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
+
+                    startActivity(intent);
+                  } else {
+                    createToast("Failed to delete ticket");
+                  }
+                }
+              }
             }
 
-            Call<List<DenariiResponse>> call =
-                    denariiService.deleteSupportTicket(
-                            userDetails.getUserID(), userDetails.getCurrentTicket().getSupportID());
-            final boolean[] succeeded = {false};
-            final UserDetails[] finalDetails = {userDetails};
-            call.enqueue(
-                    new Callback<>() {
-                        @Override
-                        public void onResponse(
-                                @NonNull Call<List<DenariiResponse>> call,
-                                @NonNull Response<List<DenariiResponse>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    succeeded[0] = UnpackDenariiResponse.unpackDeleteSupportTicket(finalDetails[0], response.body());
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+    } finally {
+      reentrantLock.unlock();
+    }
+  }
 
-                                    if (succeeded[0]) {
-                                        createToast("Deleted ticket!");
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main_menu, menu);
+    return true;
+  }
 
-                                        Intent intent = new Intent(SupportTicketDetails.this, SupportTickets.class);
-
-                                        intent.putExtra(Constants.USER_DETAILS, finalDetails[0]);
-
-                                        startActivity(intent);
-                                    } else {
-                                        createToast("Failed to delete ticket");
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
-                            // TODO log this
-                        }
-                    });
-        } finally {
-            reentrantLock.unlock();
-        }
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    if (Objects.equals(userDetails, null)) {
+      return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
+    // Handle item selection.
+    if (Objects.equals(item.getItemId(), R.id.buy_denarii)) {
+      Intent intent = new Intent(SupportTicketDetails.this, BuyDenarii.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.sell_denarii)) {
+      Intent intent = new Intent(SupportTicketDetails.this, SellDenarii.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.wallet)) {
+      Intent intent = new Intent(SupportTicketDetails.this, OpenedWallet.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.verification)) {
+      Intent intent = new Intent(SupportTicketDetails.this, Verification.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.credit_card_info)) {
+      Intent intent = new Intent(SupportTicketDetails.this, CreditCardInfo.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else if (Objects.equals(item.getItemId(), R.id.settings)) {
+      Intent intent = new Intent(SupportTicketDetails.this, UserSettings.class);
+
+      intent.putExtra(Constants.USER_DETAILS, userDetails);
+
+      startActivity(intent);
+
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
     }
+  }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (Objects.equals(userDetails, null)) {
-            return true;
-        }
+  private void createToast(String message) {
+    Context context = getApplicationContext();
+    int duration = Toast.LENGTH_SHORT;
 
-        // Handle item selection.
-        if (Objects.equals(item.getItemId(), R.id.buy_denarii)) {
-            Intent intent = new Intent(SupportTicketDetails.this, BuyDenarii.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.sell_denarii)) {
-            Intent intent = new Intent(SupportTicketDetails.this, SellDenarii.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.wallet)) {
-            Intent intent = new Intent(SupportTicketDetails.this, OpenedWallet.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.verification)) {
-            Intent intent = new Intent(SupportTicketDetails.this, Verification.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.credit_card_info)) {
-            Intent intent = new Intent(SupportTicketDetails.this, CreditCardInfo.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else if (Objects.equals(item.getItemId(), R.id.settings)) {
-            Intent intent = new Intent(SupportTicketDetails.this, UserSettings.class);
-
-            intent.putExtra(Constants.USER_DETAILS, userDetails);
-
-            startActivity(intent);
-
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void createToast(String message) {
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, message, duration);
-        toast.show();
-    }
+    Toast toast = Toast.makeText(context, message, duration);
+    toast.show();
+  }
 }

@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="All Tests">
+        <State />
+      </entry>
       <entry key="ComplexNavigationTest">
         <State />
       </entry>
@@ -11,7 +14,7 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="createSupportTicketCommentThenDelete_withValidData_createsSupportTicketCommentsThenDeletes()">
+      <entry key="cancelSellDenarii_withValidData_cancelsSellDenarii()">
         <State />
       </entry>
       <entry key="createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves()">

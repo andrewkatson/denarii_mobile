@@ -7,7 +7,7 @@ public class Constants {
   public static boolean DEBUG = false;
 
   public static final String ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS =
-      "[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]";
+      "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]+$";
 
   public static final String DOUBLE_PATTERN = "^\\d+[.,]\\d+$";
 
