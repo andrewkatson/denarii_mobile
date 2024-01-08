@@ -1,6 +1,6 @@
 package com.denarii.android.activities.restorewallet;
 
-import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import retrofit2.Call;
@@ -41,8 +40,6 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
           Intent currentIntent = getIntent();
           UserDetails userDetails =
               (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
-
-          isValidPassword(password.getText().toString());
 
           // Makes the call to create the wallet and then we check if the success box
           // has the right text to continue to the next activity.
@@ -70,11 +67,21 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
       userDetails = UnpackDenariiResponse.validUserDetails();
     }
     EditText walletName = (EditText) findViewById(R.id.restore_wallet_enter_name);
-    walletName.addTextChangedListener(
-        new PatternTextWatcher(walletName, Constants.ALPHANUMERIC_PATTERN));
+    if (!isValidInput(walletName, Constants.ALPHANUMERIC_PATTERN)) {
+      createFailureToast("Not a valid wallet nane");
+      return;
+    }
     EditText walletPassword = (EditText) findViewById(R.id.restore_wallet_enter_password);
+    if (!isValidInput(walletPassword, Constants.PASSWORD_PATTERN)) {
+      createFailureToast("Not a valid wallet password");
+      return;
+    }
     EditText walletSeed = (EditText) findViewById(R.id.restore_wallet_enter_seed);
-    walletSeed.addTextChangedListener(new PatternTextWatcher(walletSeed, Constants.SEED_PATTERN));
+
+    if (!isValidInput(walletSeed, Constants.SEED_PATTERN)) {
+      createFailureToast("Not a valid wallet seed");
+      return;
+    }
 
     userDetails.getWalletDetails().setWalletName(walletName.getText().toString());
     userDetails.getWalletDetails().setWalletPassword(walletPassword.getText().toString());

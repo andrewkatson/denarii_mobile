@@ -1,14 +1,14 @@
 package com.denarii.android.activities.selldenarii;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,14 +27,12 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.ui.models.Ask;
 import com.denarii.android.ui.models.OwnAsk;
 import com.denarii.android.ui.models.PendingSale;
-import com.denarii.android.ui.recyclerviewadapters.OwnAskRecyclerViewAdapter;
-import com.denarii.android.ui.recyclerviewadapters.PendingSaleRecyclerViewAdapter;
-import com.denarii.android.ui.recyclerviewadapters.SellDenariiAskRecyclerViewAdapter;
+import com.denarii.android.ui.models.SellDenariiModel;
+import com.denarii.android.ui.recyclerviewadapters.SellDenariiRecyclerViewAdapter;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,21 +47,14 @@ public class SellDenarii extends AppCompatActivity {
 
   private final ReentrantLock reentrantLock = new ReentrantLock();
   private final List<DenariiAsk> currentAsks = new ArrayList<>();
-
-  private SellDenariiAskRecyclerViewAdapter asksRecyclerViewAdapter;
-
   private final List<Ask> allAsks = new ArrayList<>();
 
   private final List<DenariiAsk> ownAsks = new ArrayList<>();
-
-  private OwnAskRecyclerViewAdapter ownAsksRecyclerViewAdapter;
 
   private final List<OwnAsk> allOwnAsks = new ArrayList<>();
 
   // Pending Sales
   private final List<DenariiAsk> ownAsksBought = new ArrayList<>();
-
-  private PendingSaleRecyclerViewAdapter pendingSalesRecyclerViewAdapter;
 
   private final List<PendingSale> allPendingSales = new ArrayList<>();
 
@@ -71,13 +62,9 @@ public class SellDenarii extends AppCompatActivity {
 
   private UserDetails userDetails = null;
 
-  private SwipeRefreshLayout asksRefreshLayout = null;
+  private SwipeRefreshLayout sellDenariiRefreshLayout = null;
 
-  private SwipeRefreshLayout ownAsksRefreshLayout = null;
-
-  private SwipeRefreshLayout pendingSalesRefreshLayout = null;
-
-  private SwipeRefreshLayout goingPriceRefreshLayout = null;
+  private SellDenariiRecyclerViewAdapter sellDenariiRecyclerViewAdapter = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -95,102 +82,61 @@ public class SellDenarii extends AppCompatActivity {
 
     denariiService = DenariiServiceHandler.returnDenariiService();
 
-    Button submit = (Button) findViewById(R.id.submitSell);
-
-    submit.setOnClickListener(
-        v -> {
-          onSubmitClicked();
-        });
-
-    asksRefreshLayout = findViewById(R.id.sell_denarii_asks_refresh_layout);
-
-    asksRefreshLayout.setOnRefreshListener(
-        new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-            getNewAsks();
-
-            updateAsksRecyclerView();
-
-            asksRefreshLayout.setRefreshing(false);
-          }
-        });
-
-    ownAsksRefreshLayout = findViewById(R.id.sell_denarii_own_asks_refresh_layout);
-
-    ownAsksRefreshLayout.setOnRefreshListener(
+    sellDenariiRefreshLayout = findViewById(R.id.sell_denarii_refresh_layout);
+    sellDenariiRefreshLayout.setOnRefreshListener(
         () -> {
+          getNewAsks();
           refreshOwnAsks();
+          refreshAsksInEscrow();
 
-          updateOwnAsksRecyclerView();
+          sellDenariiRecyclerViewAdapter.refresh();
 
-          ownAsksRefreshLayout.setRefreshing(false);
-        });
-
-    pendingSalesRefreshLayout = findViewById(R.id.sell_denarii_pending_sales_refresh_layout);
-
-    pendingSalesRefreshLayout.setOnRefreshListener(
-        new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-            refreshAsksInEscrow();
-
-            updatePendingSalesRecyclerView();
-
-            pendingSalesRefreshLayout.setRefreshing(false);
-          }
-        });
-
-    goingPriceRefreshLayout = findViewById(R.id.sell_denarii_going_price_refresh_layout);
-
-    goingPriceRefreshLayout.setOnRefreshListener(
-        new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-
-            refreshGoingPrice();
-
-            goingPriceRefreshLayout.setRefreshing(false);
-          }
+          sellDenariiRefreshLayout.setRefreshing(false);
         });
 
     getNewAsks();
     refreshOwnAsks();
     refreshAsksInEscrow();
-    refreshGoingPrice();
 
     getCurrentAsks();
     getOwnAsks();
     getPendingSales();
 
     // Create the recycler view for the asks grid
-    RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.sellDenariiAsksRecyclerView);
+    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.sellDenariiRecylerView);
 
-    asksRecyclerViewAdapter = new SellDenariiAskRecyclerViewAdapter(allAsks);
-    asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
-    asksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    // Create the recycler view for the own asks grid
-    RecyclerView ownAsksRecyclerView =
-        (RecyclerView) findViewById(R.id.sellDenariiOwnAsksRecyclerView);
-
-    ownAsksRecyclerViewAdapter =
-        new OwnAskRecyclerViewAdapter(
-            allOwnAsks,
-            (askIds) -> {
-              cancelAsks(askIds);
-              return null;
-            });
-    ownAsksRecyclerView.setAdapter(ownAsksRecyclerViewAdapter);
-    ownAsksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    // Create the recycler view for the pending sales grid
-    RecyclerView pendingSalesRecyclerView =
-        (RecyclerView) findViewById(R.id.sellDenariiPendingSalesRecyclerView);
-
-    pendingSalesRecyclerViewAdapter = new PendingSaleRecyclerViewAdapter(allPendingSales);
-    pendingSalesRecyclerView.setAdapter(pendingSalesRecyclerViewAdapter);
-    pendingSalesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    sellDenariiRecyclerViewAdapter =
+        new SellDenariiRecyclerViewAdapter(
+            new SellDenariiModel(
+                () -> allAsks,
+                () -> allOwnAsks,
+                () -> allPendingSales,
+                (askIds) -> {
+                  cancelAsks(askIds);
+                  return null;
+                },
+                () -> {
+                  onSubmitClicked();
+                  return null;
+                },
+                () -> {
+                  getCurrentAsks();
+                  return null;
+                },
+                () -> {
+                  getOwnAsks();
+                  return null;
+                },
+                () -> {
+                  getPendingSales();
+                  return null;
+                },
+                (viewHolder) -> {
+                  refreshGoingPrice(viewHolder);
+                  return null;
+                }));
+    recyclerView.setAdapter(sellDenariiRecyclerViewAdapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   private void getCurrentAsks() {
@@ -213,51 +159,6 @@ public class SellDenarii extends AppCompatActivity {
       allPendingSales.add(
           new PendingSale(
               ask.getAskID(), ask.getAmount(), ask.getAskingPrice(), ask.getAmountBought()));
-    }
-  }
-
-  private void updateAsksRecyclerView() {
-    int itemCountMinusOne = asksRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      asksRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getCurrentAsks();
-
-    int pos = 0;
-    for (Ask unused : allAsks) {
-      asksRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
-    }
-  }
-
-  private void updateOwnAsksRecyclerView() {
-    int itemCountMinusOne = ownAsksRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      ownAsksRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getOwnAsks();
-
-    int pos = 0;
-    for (OwnAsk unused : allOwnAsks) {
-      ownAsksRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
-    }
-  }
-
-  private void updatePendingSalesRecyclerView() {
-    int itemCountMinusOne = pendingSalesRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      pendingSalesRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getPendingSales();
-
-    int pos = 0;
-    for (PendingSale unused : allPendingSales) {
-      pendingSalesRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
     }
   }
 
@@ -374,7 +275,7 @@ public class SellDenarii extends AppCompatActivity {
     }
   }
 
-  private void refreshGoingPrice() {
+  private void refreshGoingPrice(SellDenariiRecyclerViewAdapter.ViewHolder holder) {
     try {
       reentrantLock.lock();
 
@@ -389,8 +290,7 @@ public class SellDenarii extends AppCompatActivity {
         }
       }
 
-      TextView goingPriceTextView = findViewById(R.id.goingPrices);
-      goingPriceTextView.setText(String.format("Going Price: %s", goingPrice));
+      sellDenariiRecyclerViewAdapter.setGoingPrice(String.valueOf(goingPrice), holder);
     } finally {
       reentrantLock.unlock();
     }
@@ -454,13 +354,17 @@ public class SellDenarii extends AppCompatActivity {
           && finalDetails[0].getCreditCard().getHasCreditCardInfo()) {
 
         EditText amountEditText = findViewById(R.id.sellAmount);
-        amountEditText.addTextChangedListener(
-            new PatternTextWatcher(amountEditText, Constants.DOUBLE_PATTERN));
+        if (!isValidInput(amountEditText, Constants.DOUBLE_PATTERN)) {
+          createToast("Not a valid amount");
+          return;
+        }
         String amount = amountEditText.getText().toString();
 
         EditText priceEditText = findViewById(R.id.sellPrice);
-        priceEditText.addTextChangedListener(
-            new PatternTextWatcher(priceEditText, Constants.DOUBLE_PATTERN));
+        if (!isValidInput(priceEditText, Constants.DOUBLE_PATTERN)) {
+          createToast("Not a valid price");
+          return;
+        }
         String askingPrice = priceEditText.getText().toString();
 
         Call<List<DenariiResponse>> makeDenariiAskCall =

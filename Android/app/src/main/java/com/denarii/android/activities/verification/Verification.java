@@ -1,7 +1,11 @@
 package com.denarii.android.activities.verification;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,7 +30,6 @@ import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.DenariiUser;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Objects;
@@ -122,58 +126,81 @@ public class Verification extends AppCompatActivity
       final UserDetails[] finalUserDetails = {userDetails};
 
       EditText firstNameTextView = findViewById(R.id.firstName);
-      firstNameTextView.addTextChangedListener(
-          new PatternTextWatcher(firstNameTextView, Constants.ALPHANUMERIC_PATTERN));
+      if (!isValidInput(firstNameTextView, Constants.NAME_PATTERN)) {
+        createToast("Not a valid first name");
+        return;
+      }
       String firstName = firstNameTextView.getText().toString();
 
       EditText middleInitialTextView = findViewById(R.id.middleInitial);
-      middleInitialTextView.addTextChangedListener(
-          new PatternTextWatcher(middleInitialTextView, Constants.ALPHANUMERIC_PATTERN));
+      if (!isValidInput(middleInitialTextView, Constants.SINGLE_LETTER_PATTERN)) {
+        createToast("Not a valid middle initial");
+        return;
+      }
+
       String middleInital = middleInitialTextView.getText().toString();
 
       EditText lastNameTextView = findViewById(R.id.lastName);
-      lastNameTextView.addTextChangedListener(
-          new PatternTextWatcher(lastNameTextView, Constants.ALPHANUMERIC_PATTERN));
+      if (!isValidInput(lastNameTextView, Constants.NAME_PATTERN)) {
+        createToast("Not a valid last name");
+        return;
+      }
       String lastName = lastNameTextView.getText().toString();
 
       EditText emailTextView = findViewById(R.id.email);
-      emailTextView.addTextChangedListener(
-          new PatternTextWatcher(emailTextView, Constants.EMAIL_PATTERN));
+      if (!isValidInput(emailTextView, Patterns.EMAIL_ADDRESS)) {
+        createToast("Not a valid email");
+        return;
+      }
       String email = emailTextView.getText().toString();
 
       EditText dobTextView = findViewById(R.id.dateOfBirth);
-      dobTextView.addTextChangedListener(
-          new PatternTextWatcher(dobTextView, Constants.SLASH_DATE_PATTERN));
+      if (!isValidInput(dobTextView, Constants.SLASH_DATE_PATTERN)) {
+        createToast("Not a valid date of birth");
+        return;
+      }
       String dob = dobTextView.getText().toString();
 
       EditText ssnTextView = findViewById(R.id.socialSecurityNumber);
-      ssnTextView.addTextChangedListener(
-          new PatternTextWatcher(ssnTextView, Constants.DIGITS_AND_DASHES_PATTERN));
+      if (!isValidInput(ssnTextView, Constants.DIGITS_AND_DASHES_PATTERN)) {
+        createToast("Not a valid social security number");
+        return;
+      }
       String ssn = ssnTextView.getText().toString();
 
       EditText zipCodeTextView = findViewById(R.id.zipCode);
-      zipCodeTextView.addTextChangedListener(
-          new PatternTextWatcher(zipCodeTextView, Constants.DIGITS_AND_DASHES_PATTERN));
+      if (!isValidInput(zipCodeTextView, Constants.DIGITS_AND_DASHES_PATTERN)) {
+        createToast("Not a valid zip code");
+        return;
+      }
       String zipCode = zipCodeTextView.getText().toString();
 
       EditText phoneNumberTextView = findViewById(R.id.verificationPhoneNumber);
-      phoneNumberTextView.addTextChangedListener(
-          new PatternTextWatcher(phoneNumberTextView, Constants.PHONE_NUMBER_PATTERN));
+      if (!isValidInput(phoneNumberTextView, Constants.PHONE_NUMBER_PATTERN)) {
+        createToast("Not a valid phone number");
+        return;
+      }
       String phoneNumber = phoneNumberTextView.getText().toString();
 
       EditText workCityTextView = findViewById(R.id.workCity);
-      workCityTextView.addTextChangedListener(
-          new PatternTextWatcher(workCityTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES));
+      if (!isValidInput(workCityTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES)) {
+        createToast("Not a valid work city");
+        return;
+      }
       String workCity = workCityTextView.getText().toString();
 
       EditText workCountryTextView = findViewById(R.id.workCountry);
-      workCountryTextView.addTextChangedListener(
-          new PatternTextWatcher(workCountryTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES));
+      if (!isValidInput(workCountryTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES)) {
+        createToast("Not a valid work country");
+        return;
+      }
       String workCountry = workCountryTextView.getText().toString();
 
       EditText workStateTextView = findViewById(R.id.workState);
-      workStateTextView.addTextChangedListener(
-          new PatternTextWatcher(workStateTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES));
+      if (!isValidInput(workStateTextView, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES)) {
+        createToast("Not a valid work state");
+        return;
+      }
       String workState = workStateTextView.getText().toString();
 
       Call<List<DenariiResponse>> call =
@@ -333,5 +360,13 @@ public class Verification extends AppCompatActivity
     } else {
       return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void createToast(String message) {
+    Context context = getApplicationContext();
+    int duration = Toast.LENGTH_SHORT;
+
+    Toast toast = Toast.makeText(context, message, duration);
+    toast.show();
   }
 }

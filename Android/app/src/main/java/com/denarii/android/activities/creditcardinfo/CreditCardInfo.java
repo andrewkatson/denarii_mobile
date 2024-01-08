@@ -1,5 +1,7 @@
 package com.denarii.android.activities.creditcardinfo;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +27,6 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Objects;
@@ -124,16 +125,18 @@ public class CreditCardInfo extends AppCompatActivity {
       final UserDetails[] finalDetails = {userDetails};
 
       EditText numberEditText = findViewById(R.id.creditCardInfoNumber);
-      // Match any digit
-      numberEditText.addTextChangedListener(
-          new PatternTextWatcher(numberEditText, Constants.DIGITS_ONLY));
+      if (!isValidInput(numberEditText, Constants.DIGITS_AND_DASHES_PATTERN)) {
+        createToast("Not a valid credit card number");
+        return;
+      }
       String number = numberEditText.getText().toString();
 
       EditText expirationDateEditText = findViewById(R.id.creditCardInfoExpiration);
       String expirationDate = expirationDateEditText.getText().toString();
-      // Date slash pattern. Like 2023/02/12 or 2023/02
-      expirationDateEditText.addTextChangedListener(
-          new PatternTextWatcher(expirationDateEditText, Constants.SLASH_DATE_PATTERN));
+      if (!isValidInput(expirationDateEditText, Constants.SLASH_DATE_PATTERN)) {
+        createToast("Not a valid expiration date");
+        return;
+      }
       String expirationDateMonth = "";
       String expirationDateYear = "";
       if (!expirationDate.isEmpty()) {
@@ -143,9 +146,10 @@ public class CreditCardInfo extends AppCompatActivity {
       }
 
       EditText securityCodeEditText = findViewById(R.id.creditCardInfoSecurityCode);
-      // Match any digits
-      securityCodeEditText.addTextChangedListener(
-          new PatternTextWatcher(securityCodeEditText, Constants.DIGITS_ONLY));
+      if (!isValidInput(securityCodeEditText, Constants.DIGITS_ONLY)) {
+        createToast("Not a valid security code");
+        return;
+      }
       String securityCode = securityCodeEditText.getText().toString();
 
       Call<List<DenariiResponse>> call =

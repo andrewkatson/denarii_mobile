@@ -1,14 +1,14 @@
 package com.denarii.android.activities.supportticketdetails;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +27,12 @@ import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.ui.models.SupportTicketCommentModel;
-import com.denarii.android.ui.recyclerviewadapters.SupportTicketCommentRecyclerViewAdapter;
+import com.denarii.android.ui.models.SupportTicketDetailsModel;
+import com.denarii.android.ui.recyclerviewadapters.SupportTicketDetailsRecyclerViewAdapter;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.SupportTicketComment;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class SupportTicketDetails extends AppCompatActivity {
 
   private final ReentrantLock reentrantLock = new ReentrantLock();
 
-  private SupportTicketCommentRecyclerViewAdapter supportTicketCommentsRecyclerViewAdapter;
+  private SupportTicketDetailsRecyclerViewAdapter supportTicketDetailsRecyclerViewAdapter;
 
   private final List<SupportTicketCommentModel> supportTicketCommentModels = new ArrayList<>();
 
@@ -80,46 +80,45 @@ public class SupportTicketDetails extends AppCompatActivity {
           public void onRefresh() {
             getSupportTicketCommentDetails();
 
-            updateSupportTicketCommentsRecyclerView();
+            supportTicketDetailsRecyclerViewAdapter.refresh();
 
             commentsRefreshLayout.setRefreshing(false);
           }
         });
 
-    getSupportTicketDetails();
     getSupportTicketCommentDetails();
 
     getComments();
 
-    Button addNewCommentButton = findViewById(R.id.commentBoxSubmit);
-
-    addNewCommentButton.setOnClickListener(
-        v -> {
-          addNewComment();
-        });
-
-    Button resolveButton = findViewById(R.id.resolveSupportTicket);
-
-    resolveButton.setOnClickListener(
-        v -> {
-          resolveSupportTicket();
-        });
-
-    Button deleteButton = findViewById(R.id.deleteSupportTicket);
-
-    deleteButton.setOnClickListener(
-        v -> {
-          deleteSupportTicket();
-        });
-
-    // Create the recycler view for the comments linear layout
     RecyclerView commentsRecyclerView =
-        (RecyclerView) findViewById(R.id.supportTicketCommentsRecyclerView);
+        (RecyclerView) findViewById(R.id.supportTicketDetailsRecyclerView);
 
-    supportTicketCommentsRecyclerViewAdapter =
-        new SupportTicketCommentRecyclerViewAdapter(
-            supportTicketCommentModels, userDetails.getUserName());
-    commentsRecyclerView.setAdapter(supportTicketCommentsRecyclerViewAdapter);
+    supportTicketDetailsRecyclerViewAdapter =
+        new SupportTicketDetailsRecyclerViewAdapter(
+            new SupportTicketDetailsModel(
+                () -> supportTicketCommentModels,
+                () -> {
+                  addNewComment();
+                  return null;
+                },
+                () -> {
+                  resolveSupportTicket();
+                  return null;
+                },
+                () -> {
+                  deleteSupportTicket();
+                  return null;
+                },
+                () -> userDetails.getUserName(),
+                () -> {
+                  getComments();
+                  return null;
+                },
+                (viewHolder) -> {
+                  getSupportTicketDetails(viewHolder);
+                  return null;
+                }));
+    commentsRecyclerView.setAdapter(supportTicketDetailsRecyclerViewAdapter);
     commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
@@ -129,21 +128,6 @@ public class SupportTicketDetails extends AppCompatActivity {
         userDetails.getCurrentTicket().getSupportTicketCommentList()) {
       supportTicketCommentModels.add(
           new SupportTicketCommentModel(comment.getAuthor(), comment.getContent()));
-    }
-  }
-
-  private void updateSupportTicketCommentsRecyclerView() {
-    int itemCountMinusOne = supportTicketCommentsRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      supportTicketCommentsRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getComments();
-
-    int pos = 0;
-    for (SupportTicketCommentModel unused : supportTicketCommentModels) {
-      supportTicketCommentsRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
     }
   }
 
@@ -158,8 +142,10 @@ public class SupportTicketDetails extends AppCompatActivity {
       final UserDetails[] finalDetails = {userDetails};
 
       EditText commentEditText = findViewById(R.id.supportTicketDetailsCommentBox);
-      commentEditText.addTextChangedListener(
-          new PatternTextWatcher(commentEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN));
+      if (!isValidInput(commentEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN)) {
+        createToast("Not a valid comment");
+        return;
+      }
       String comment = commentEditText.getText().toString();
 
       Call<List<DenariiResponse>> call =
@@ -198,7 +184,8 @@ public class SupportTicketDetails extends AppCompatActivity {
     }
   }
 
-  private void getSupportTicketDetails() {
+  private void getSupportTicketDetails(
+      SupportTicketDetailsRecyclerViewAdapter.ViewHolder viewHolder) {
     try {
       reentrantLock.lock();
 
@@ -225,12 +212,10 @@ public class SupportTicketDetails extends AppCompatActivity {
                           finalDetails[0], response.body());
 
                   if (succeeded[0]) {
-                    TextView supportTicketTitle = findViewById(R.id.title);
-                    supportTicketTitle.setText(finalDetails[0].getCurrentTicket().getTitle());
-
-                    TextView supportTicketDescription = findViewById(R.id.description);
-                    supportTicketDescription.setText(
-                        finalDetails[0].getCurrentTicket().getDescription());
+                    supportTicketDetailsRecyclerViewAdapter.setTitle(
+                        finalDetails[0].getCurrentTicket().getTitle(), viewHolder);
+                    supportTicketDetailsRecyclerViewAdapter.setDescription(
+                        finalDetails[0].getCurrentTicket().getDescription(), viewHolder);
                   } else {
                     createToast("Failed to fetch support ticket");
                   }

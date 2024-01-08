@@ -1,12 +1,13 @@
 package com.denarii.android.activities.buydenarii;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -25,14 +26,13 @@ import com.denarii.android.activities.verification.Verification;
 import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.ui.models.Ask;
+import com.denarii.android.ui.models.BuyDenariiModel;
 import com.denarii.android.ui.models.QueuedBuy;
-import com.denarii.android.ui.recyclerviewadapters.BuyDenariiAskRecyclerViewAdapter;
-import com.denarii.android.ui.recyclerviewadapters.QueuedBuyRecyclerViewAdapter;
+import com.denarii.android.ui.recyclerviewadapters.BuyDenariiRecyclerViewAdapter;
 import com.denarii.android.user.DenariiAsk;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,12 +49,7 @@ public class BuyDenarii extends AppCompatActivity {
 
   private final ReentrantLock reentrantLock = new ReentrantLock();
   private final List<DenariiAsk> currentAsks = new ArrayList<>();
-
-  private BuyDenariiAskRecyclerViewAdapter asksRecyclerViewAdapter;
-
   private final List<Ask> allAsks = new ArrayList<>();
-
-  private QueuedBuyRecyclerViewAdapter queuedBuyRecyclerViewAdapter;
 
   private final List<QueuedBuy> allQueuedBuys = new ArrayList<>();
 
@@ -64,9 +59,9 @@ public class BuyDenarii extends AppCompatActivity {
 
   private UserDetails userDetails = null;
 
-  private SwipeRefreshLayout asksRefreshLayout = null;
+  private SwipeRefreshLayout buyDenariiSwipeRefreshLayout = null;
 
-  private SwipeRefreshLayout queuedBuysRefreshLayout = null;
+  private BuyDenariiRecyclerViewAdapter recyclerViewAdapter = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,32 +79,16 @@ public class BuyDenarii extends AppCompatActivity {
     Intent currentIntent = getIntent();
     userDetails = (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
 
-    asksRefreshLayout = findViewById(R.id.buy_denarii_asks_refresh_layout);
+    buyDenariiSwipeRefreshLayout = findViewById(R.id.buy_denarii_refresh_layout);
+    buyDenariiSwipeRefreshLayout.setOnRefreshListener(
+        () -> {
+          getNewAsks();
 
-    asksRefreshLayout.setOnRefreshListener(
-        new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-            getNewAsks();
+          refreshSettledTransactions();
 
-            updateAsksRecyclerView();
+          recyclerViewAdapter.refresh();
 
-            asksRefreshLayout.setRefreshing(false);
-          }
-        });
-
-    queuedBuysRefreshLayout = findViewById(R.id.buy_denarii_queued_buys_refresh_layout);
-
-    queuedBuysRefreshLayout.setOnRefreshListener(
-        new SwipeRefreshLayout.OnRefreshListener() {
-          @Override
-          public void onRefresh() {
-            refreshSettledTransactions();
-
-            updateQueuedBuysRecyclerView();
-
-            queuedBuysRefreshLayout.setRefreshing(false);
-          }
+          buyDenariiSwipeRefreshLayout.setRefreshing(false);
         });
 
     getNewAsks();
@@ -118,33 +97,33 @@ public class BuyDenarii extends AppCompatActivity {
     getCurrentAsks();
     getQueuedBuys();
 
-    Button submit = (Button) findViewById(R.id.buy_denarii_submit);
+    // Create the recycler view for the interior
+    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.buyDenariiRecylerView);
 
-    submit.setOnClickListener(
-        v -> {
-          onSubmitClicked();
-        });
+    recyclerViewAdapter =
+        new BuyDenariiRecyclerViewAdapter(
+            new BuyDenariiModel(
+                () -> allAsks,
+                () -> allQueuedBuys,
+                () -> {
+                  onSubmitClicked();
+                  return null;
+                },
+                (askIds) -> {
+                  cancelBuys(askIds);
 
-    // Create the recycler view for the asks grid
-    RecyclerView asksRecyclerView = (RecyclerView) findViewById(R.id.buyDenariiAsksRecyclerView);
-
-    asksRecyclerViewAdapter = new BuyDenariiAskRecyclerViewAdapter(allAsks);
-    asksRecyclerView.setAdapter(asksRecyclerViewAdapter);
-    asksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    // Create the recycler view for the queued buys grid
-    RecyclerView queuedBuysRecyclerView =
-        (RecyclerView) findViewById(R.id.buyDenariiQueuedBuysRecyclerView);
-
-    queuedBuyRecyclerViewAdapter =
-        new QueuedBuyRecyclerViewAdapter(
-            allQueuedBuys,
-            (askIds) -> {
-              cancelBuys(askIds);
-              return null;
-            });
-    queuedBuysRecyclerView.setAdapter(queuedBuyRecyclerViewAdapter);
-    queuedBuysRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                  return null;
+                },
+                () -> {
+                  getCurrentAsks();
+                  return null;
+                },
+                () -> {
+                  getQueuedBuys();
+                  return null;
+                }));
+    recyclerView.setAdapter(recyclerViewAdapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   private void getCurrentAsks() {
@@ -160,36 +139,6 @@ public class BuyDenarii extends AppCompatActivity {
       allQueuedBuys.add(
           new QueuedBuy(
               buy.getAskID(), buy.getAmount(), buy.getAskingPrice(), buy.getAmountBought()));
-    }
-  }
-
-  private void updateAsksRecyclerView() {
-    int itemCountMinusOne = asksRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      asksRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getCurrentAsks();
-
-    int pos = 0;
-    for (Ask unused : allAsks) {
-      asksRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
-    }
-  }
-
-  private void updateQueuedBuysRecyclerView() {
-    int itemCountMinusOne = queuedBuyRecyclerViewAdapter.getItemCount() - 1;
-    for (int i = itemCountMinusOne; i >= 0; i--) {
-      queuedBuyRecyclerViewAdapter.notifyItemRemoved(i);
-    }
-
-    getQueuedBuys();
-
-    int pos = 0;
-    for (QueuedBuy unused : allQueuedBuys) {
-      queuedBuyRecyclerViewAdapter.notifyItemInserted(pos);
-      pos += 1;
     }
   }
 
@@ -338,15 +287,17 @@ public class BuyDenarii extends AppCompatActivity {
           && finalDetails[0].getCreditCard().getHasCreditCardInfo()) {
 
         EditText amountEditText = findViewById(R.id.buy_denarii_amount);
-        // Match a pattern of digits[comma or period]digits
-        amountEditText.addTextChangedListener(
-            new PatternTextWatcher(amountEditText, Constants.DOUBLE_PATTERN));
+        if (!isValidInput(amountEditText, Constants.DOUBLE_PATTERN)) {
+          createToast("Not a valid amount");
+          return;
+        }
         String amount = amountEditText.getText().toString();
 
         EditText priceEditText = findViewById(R.id.buy_denarii_price);
-        // Match a pattern of digits[comma or period]digits
-        priceEditText.addTextChangedListener(
-            new PatternTextWatcher(priceEditText, Constants.DOUBLE_PATTERN));
+        if (!isValidInput(priceEditText, Constants.DOUBLE_PATTERN)) {
+          createToast("Not a valid amount");
+          return;
+        }
         String askingPrice = priceEditText.getText().toString();
 
         RadioButton trueBuyAnyPrice = findViewById(R.id.trueBuyAnyPrice);

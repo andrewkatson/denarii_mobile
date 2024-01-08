@@ -1,5 +1,7 @@
 package com.denarii.android.activities.verifyreset;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +18,6 @@ import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +32,6 @@ public class VerifyReset extends AppCompatActivity {
 
     EditText resetId = findViewById(R.id.verify_reset_reset_id_edit_text);
     resetId.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    resetId.addTextChangedListener(new PatternTextWatcher(resetId, Constants.DIGITS_ONLY));
 
     Button verifyResetButton = (Button) findViewById(R.id.verify_reset_verify_reset_button);
 
@@ -57,6 +57,11 @@ public class VerifyReset extends AppCompatActivity {
         (String) currentIntent.getSerializableExtra(Constants.RESET_PASSWORD_USERNAME_OR_EMAIL);
 
     EditText resetId = (EditText) findViewById(R.id.verify_reset_reset_id_edit_text);
+
+    if (!isValidInput(resetId, Constants.DIGITS_ONLY)) {
+      createFailureToast("Not a valid reset id");
+      return;
+    }
 
     DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
 

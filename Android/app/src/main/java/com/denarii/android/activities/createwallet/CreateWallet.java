@@ -1,6 +1,6 @@
 package com.denarii.android.activities.createwallet;
 
-import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +19,6 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Objects;
@@ -72,9 +71,10 @@ public class CreateWallet extends AppCompatActivity {
       userDetails = UnpackDenariiResponse.validUserDetails();
     }
     EditText walletName = (EditText) findViewById(R.id.create_wallet_enter_name);
-    // Match any alphanumeric or underscore. Also special characters
-    walletName.addTextChangedListener(
-        new PatternTextWatcher(walletName, Constants.ALPHANUMERIC_PATTERN));
+    if (!isValidInput(walletName, Constants.ALPHANUMERIC_PATTERN)) {
+      createFailureToast("Not a valid wallet name");
+      return;
+    }
     EditText walletPassword = (EditText) findViewById(R.id.create_wallet_enter_password);
     EditText confirmPassword = findViewById(R.id.create_wallet_confirm_password);
 
@@ -86,8 +86,15 @@ public class CreateWallet extends AppCompatActivity {
       return;
     }
 
-    isValidPassword(walletPasswordText);
-    isValidPassword(confirmWalletPasswordText);
+    if (!isValidInput(walletPassword, Constants.PASSWORD_PATTERN)) {
+      createFailureToast("Not a valid password");
+      return;
+    }
+
+    if (!isValidInput(confirmPassword, Constants.PASSWORD_PATTERN)) {
+      createFailureToast("Not a valid confirm password");
+      return;
+    }
 
     userDetails.getWalletDetails().setWalletName(walletName.getText().toString());
     userDetails.getWalletDetails().setWalletPassword(walletPassword.getText().toString());

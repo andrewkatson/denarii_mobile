@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/buy_denarii_interior_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/buyDenarii"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/buy_denarii_header"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="117dp" />
+
+    <EditText
+        android:id="@+id/buy_denarii_amount"
+        android:layout_width="237dp"
+        android:layout_height="57dp"
+        android:height="48dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/buy_amount_header"
+        app:layout_constraintBottom_toTopOf="@+id/buy_denarii_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buyDenarii" />
+
+    <EditText
+        android:id="@+id/buy_denarii_price"
+        android:layout_width="238dp"
+        android:layout_height="59dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/buy_price_header"
+        app:layout_constraintBottom_toTopOf="@id/buyRegardlessPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_amount" />
+
+    <TextView
+        android:id="@+id/buyRegardlessPrice"
+        android:layout_width="181dp"
+        android:layout_height="22dp"
+        android:text="@string/buy_regardless_of_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/trueBuyAnyPrice"
+        app:layout_constraintEnd_toStartOf="@id/failIfFullAmountIsntMet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_price" />
+
+    <TextView
+        android:id="@+id/failIfFullAmountIsntMet"
+        android:layout_width="197dp"
+        android:layout_height="21dp"
+        android:text="@string/fail_if_full_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/trueFailIfNotFull"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buyRegardlessPrice"
+        app:layout_constraintTop_toBottomOf="@+id/buy_denarii_price" />
+
+    <RadioButton
+        android:id="@+id/trueBuyAnyPrice"
+        android:layout_width="84dp"
+        android:layout_height="49dp"
+        android:text="@string/true_value"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
+        app:layout_constraintEnd_toStartOf="@+id/falseBuyAnyPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buyRegardlessPrice" />
+
+    <RadioButton
+        android:id="@+id/trueFailIfNotFull"
+        android:layout_width="90dp"
+        android:layout_height="48dp"
+        android:checked="true"
+        android:text="@string/true_value"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
+        app:layout_constraintEnd_toStartOf="@id/falseFailIfNotFull"
+        app:layout_constraintStart_toEndOf="@id/falseBuyAnyPrice"
+        app:layout_constraintTop_toBottomOf="@id/failIfFullAmountIsntMet" />
+
+    <RadioButton
+        android:id="@+id/falseBuyAnyPrice"
+        android:layout_width="79dp"
+        android:layout_height="51dp"
+        android:checked="true"
+        android:text="@string/false_value"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
+        app:layout_constraintEnd_toStartOf="@id/trueFailIfNotFull"
+        app:layout_constraintStart_toEndOf="@id/trueBuyAnyPrice"
+        app:layout_constraintTop_toBottomOf="@id/buyRegardlessPrice" />
+
+    <RadioButton
+        android:id="@+id/falseFailIfNotFull"
+        android:layout_width="86dp"
+        android:layout_height="49dp"
+        android:checked="false"
+        android:text="@string/false_value"
+        app:layout_constraintBottom_toTopOf="@id/buy_denarii_submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/trueFailIfNotFull"
+        app:layout_constraintTop_toBottomOf="@id/failIfFullAmountIsntMet" />
+
+    <Button
+        android:id="@+id/buy_denarii_submit"
+        android:layout_width="189dp"
+        android:layout_height="57dp"
+        android:text="@string/submit"
+        app:layout_constraintBottom_toTopOf="@id/asks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/trueFailIfNotFull" />
+
+    <TextView
+        android:id="@+id/asks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ask_header"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/askTableAmount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buy_denarii_submit" />
+
+
+    <TextView
+        android:id="@+id/askTableAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ask_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiAsksRecyclerView"
+        app:layout_constraintEnd_toStartOf="@id/priceAskTable"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/asks" />
+
+    <TextView
+        android:id="@+id/priceAskTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ask_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiAsksRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/askTableAmount"
+        app:layout_constraintTop_toBottomOf="@id/asks" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buyDenariiAsksRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/queuedBuys"
+        app:layout_constraintTop_toBottomOf="@id/askTableAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:itemCount="1" />
+
+    <TextView
+        android:id="@+id/queuedBuys"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buys"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/buyPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buyDenariiAsksRecyclerView" />
+
+    <TextView
+        android:id="@+id/buyAmountTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_amount"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiQueuedBuysRecyclerView"
+        app:layout_constraintEnd_toStartOf="@id/buyPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_price"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiQueuedBuysRecyclerView"
+        app:layout_constraintEnd_toStartOf="@id/buyAmountBought"
+        app:layout_constraintStart_toEndOf="@id/buyAmountTotal"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyAmountBought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_amount_bought"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiQueuedBuysRecyclerView"
+        app:layout_constraintEnd_toStartOf="@id/buyCancelBuy"
+        app:layout_constraintStart_toEndOf="@id/buyPrice"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <TextView
+        android:id="@+id/buyCancelBuy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/queued_buy_cancel_buy"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/buyDenariiQueuedBuysRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buyAmountBought"
+        app:layout_constraintTop_toBottomOf="@id/queuedBuys" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buyDenariiQueuedBuysRecyclerView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buyPrice"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:itemCount="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

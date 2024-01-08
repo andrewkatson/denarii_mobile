@@ -1,5 +1,7 @@
 package com.denarii.android.activities.createsupportticket;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +27,6 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Objects;
@@ -77,15 +78,17 @@ public class CreateSupportTicket extends AppCompatActivity {
       final UserDetails[] finalDetails = {userDetails};
 
       EditText titleEditText = findViewById(R.id.supportTicketTitle);
-      // Match any alphanumeric or underscore
-      titleEditText.addTextChangedListener(
-          new PatternTextWatcher(titleEditText, Constants.ALPHANUMERIC_PATTERN));
+      if (!isValidInput(titleEditText, Constants.ALPHANUMERIC_PATTERN_WITH_SPACES)) {
+        createToast("Not a valid title");
+        return;
+      }
       String title = titleEditText.getText().toString();
 
       EditText descriptionEditText = findViewById(R.id.supportTicketDescription);
-      // Match any alphanumeric or underscore or space or newline
-      descriptionEditText.addTextChangedListener(
-          new PatternTextWatcher(descriptionEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN));
+      if (!isValidInput(descriptionEditText, Constants.PARAGRAPH_OF_CHARS_PATTERN)) {
+        createToast("Not a valid description");
+        return;
+      }
       String description = descriptionEditText.getText().toString();
 
       Call<List<DenariiResponse>> call =

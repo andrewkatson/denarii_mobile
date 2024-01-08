@@ -66,16 +66,16 @@ public class ComplexNavigationTest {
   public void beforeTest() {
     name = String.format("%s_name", testName.getMethodName());
     email = String.format("%s_email@email.com", testName.getMethodName());
-    password = String.format("%s_password", testName.getMethodName());
-    newPassword = String.format("%s_new_password", testName.getMethodName());
+    password = String.format("%s_password1#", testName.getMethodName());
+    newPassword = String.format("%s_new_password1&", testName.getMethodName());
     walletName = String.format("%s_wallet_name", testName.getMethodName());
-    walletPassword = String.format("%s_wallet_password", testName.getMethodName());
+    walletPassword = String.format("%s_wallet_password9$", testName.getMethodName());
 
     otherName = String.format("%s_name_other", testName.getMethodName());
     otherEmail = String.format("%s_email_other@email.com", testName.getMethodName());
-    otherPassword = String.format("%s_password_other", testName.getMethodName());
+    otherPassword = String.format("%s_password_other7#", testName.getMethodName());
     otherWalletName = String.format("%s_wallet_name_other", testName.getMethodName());
-    otherWalletPassword = String.format("%s_wallet_password_other", testName.getMethodName());
+    otherWalletPassword = String.format("%s_wallet_password_other2#", testName.getMethodName());
   }
 
   @Test
@@ -280,9 +280,9 @@ public class ComplexNavigationTest {
       return "-1";
     }
 
-    int address = 0;
-    Function<Integer, String> getAddressString =
-        (addressInt) -> String.format("Own Address: %s", addressInt);
+    long address = 1000000000L;
+    Function<Long, String> getAddressString =
+        (addressLong) -> String.format("Own Address: %s", addressLong);
     boolean addressNotFound = true;
 
     while (addressNotFound) {
@@ -629,7 +629,7 @@ public class ComplexNavigationTest {
     onView(withId(R.id.submitSell)).perform(click());
 
     // Refresh
-    onView(withId(R.id.sell_denarii_own_asks_refresh_layout))
+    onView(withId(R.id.sell_denarii_refresh_layout))
         .perform(repeatedlyUntil(hardSwipeDown(), hasDescendant(withText("Cancel")), 10));
 
     // Take a screenshot
@@ -655,7 +655,7 @@ public class ComplexNavigationTest {
     onView(withId(R.id.buy_denarii_submit)).perform(click());
 
     // Refresh
-    onView(withId(R.id.buy_denarii_queued_buys_refresh_layout))
+    onView(withId(R.id.buy_denarii_refresh_layout))
         .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
     // Take a screenshot
@@ -672,7 +672,7 @@ public class ComplexNavigationTest {
     onView(allOf(withId(R.id.ownAsksCancelBuyItem), withText("Cancel"))).perform(click());
 
     // Refresh
-    onView(withId(R.id.sell_denarii_own_asks_refresh_layout))
+    onView(withId(R.id.sell_denarii_refresh_layout))
         .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
     // Take a screenshot
@@ -689,7 +689,7 @@ public class ComplexNavigationTest {
     onView(allOf(withId(R.id.buyCancelBuyItem), withText("Cancel"))).perform(click());
 
     // Refresh
-    onView(withId(R.id.buy_denarii_queued_buys_refresh_layout))
+    onView(withId(R.id.buy_denarii_refresh_layout))
         .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
 
     // Take a screenshot

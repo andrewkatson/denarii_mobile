@@ -1,5 +1,7 @@
 package com.denarii.android.activities.openedwallet;
 
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +26,6 @@ import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.List;
 import java.util.Locale;
@@ -134,10 +135,15 @@ public class OpenedWallet extends AppCompatActivity {
     }
 
     EditText amount = (EditText) findViewById(R.id.opened_wallet_amount_edit_text);
-    amount.addTextChangedListener(new PatternTextWatcher(amount, Constants.DOUBLE_PATTERN));
+    if (!isValidInput(amount, Constants.DOUBLE_PATTERN)) {
+      createFailureToast("Not a valid amount");
+      return;
+    }
     EditText sendTo = (EditText) findViewById(R.id.opened_wallet_to_edit_text);
-    sendTo.addTextChangedListener(new PatternTextWatcher(sendTo, Constants.DOUBLE_PATTERN));
-
+    if (!isValidInput(sendTo, Constants.ALPHANUMERIC_PATTERN)) {
+      createFailureToast("Not a valid address");
+      return;
+    }
     TextView balance = findViewById(R.id.opened_wallet_balance_text_view);
 
     Pattern pattern = Pattern.compile("Balance: (\\d+\\.\\d+)");

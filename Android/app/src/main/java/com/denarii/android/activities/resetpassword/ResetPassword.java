@@ -1,10 +1,11 @@
 package com.denarii.android.activities.resetpassword;
 
-import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+import static com.denarii.android.util.InputPatternValidator.isValidInput;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +18,6 @@ import com.denarii.android.constants.Constants;
 import com.denarii.android.network.DenariiService;
 import com.denarii.android.user.DenariiResponse;
 import com.denarii.android.util.DenariiServiceHandler;
-import com.denarii.android.util.PatternTextWatcher;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,10 +54,16 @@ public class ResetPassword extends AppCompatActivity {
   private void resetPassword() {
 
     EditText username = (EditText) findViewById(R.id.rs_enter_name_edit_text);
-    username.addTextChangedListener(
-        new PatternTextWatcher(username, Constants.ALPHANUMERIC_PATTERN));
+    if (!isValidInput(username, Constants.ALPHANUMERIC_PATTERN)) {
+      createFailureToast("Not a valid name");
+      return;
+    }
     EditText email = (EditText) findViewById(R.id.rs_enter_email_edit_text);
-    email.addTextChangedListener(new PatternTextWatcher(email, Constants.EMAIL_PATTERN));
+    if (!isValidInput(email, Patterns.EMAIL_ADDRESS)) {
+      createFailureToast("Not a valid email");
+      return;
+    }
+
     EditText password = (EditText) findViewById(R.id.reset_password_enter_password_edit_text);
     EditText confirmPassword =
         (EditText) findViewById(R.id.reset_password_confirm_password_edit_text);
@@ -67,8 +73,15 @@ public class ResetPassword extends AppCompatActivity {
       return;
     }
 
-    isValidPassword(password.getText().toString());
-    isValidPassword(confirmPassword.getText().toString());
+    if (!isValidInput(password, Constants.PASSWORD_PATTERN)) {
+      createFailureToast("Not a valid password");
+      return;
+    }
+
+    if (!isValidInput(confirmPassword, Constants.PASSWORD_PATTERN)) {
+      createFailureToast("Not a valid confirm password");
+      return;
+    }
 
     DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
     Call<List<DenariiResponse>> walletCall =
