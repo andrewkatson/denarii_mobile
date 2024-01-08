@@ -1,9 +1,10 @@
 package com.denarii.android.activities.openwallet;
 
+import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,9 +34,6 @@ public class OpenWallet extends AppCompatActivity {
     setContentView(R.layout.activity_open_wallet);
 
     EditText password = findViewById(R.id.open_wallet_enter_password);
-    password.addTextChangedListener(
-        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
-    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
     Button submit = (Button) findViewById(R.id.open_wallet_submit_button);
 
@@ -44,6 +42,8 @@ public class OpenWallet extends AppCompatActivity {
           Intent currentIntent = getIntent();
           UserDetails userDetails =
               (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+          isValidPassword(password.getText().toString());
 
           // Makes the call to create the wallet and then we check if the success box
           // has the right text to continue to the next activity.

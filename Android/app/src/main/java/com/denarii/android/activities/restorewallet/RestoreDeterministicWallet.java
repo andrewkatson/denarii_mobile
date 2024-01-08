@@ -1,9 +1,10 @@
 package com.denarii.android.activities.restorewallet;
 
+import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,9 +33,6 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
     setContentView(R.layout.activity_restore_deterministic_wallet);
 
     EditText password = findViewById(R.id.restore_wallet_enter_password);
-    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    password.addTextChangedListener(
-        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
 
     Button submit = (Button) findViewById(R.id.restore_wallet_submit_button);
 
@@ -43,6 +41,8 @@ public class RestoreDeterministicWallet extends AppCompatActivity {
           Intent currentIntent = getIntent();
           UserDetails userDetails =
               (UserDetails) currentIntent.getSerializableExtra(Constants.USER_DETAILS);
+
+          isValidPassword(password.getText().toString());
 
           // Makes the call to create the wallet and then we check if the success box
           // has the right text to continue to the next activity.

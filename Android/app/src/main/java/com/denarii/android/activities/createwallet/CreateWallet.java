@@ -1,9 +1,10 @@
 package com.denarii.android.activities.createwallet;
 
+import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,16 +35,8 @@ public class CreateWallet extends AppCompatActivity {
     setContentView(R.layout.activity_create_wallet);
 
     EditText password = findViewById(R.id.create_wallet_enter_password);
-    // Match any alphanumeric or underscore. Also special characters
-    password.addTextChangedListener(
-        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
-    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
     EditText confirmPassword = findViewById(R.id.create_wallet_confirm_password);
-    // Match any alphanumeric or underscore. Also special characters
-    confirmPassword.addTextChangedListener(
-        new PatternTextWatcher(confirmPassword, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
-    confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
     Button submit = (Button) findViewById(R.id.create_wallet_submit_button);
 
@@ -92,6 +85,10 @@ public class CreateWallet extends AppCompatActivity {
       createFailureToast("Passwords do not match");
       return;
     }
+
+    isValidPassword(walletPasswordText);
+    isValidPassword(confirmWalletPasswordText);
+
     userDetails.getWalletDetails().setWalletName(walletName.getText().toString());
     userDetails.getWalletDetails().setWalletPassword(walletPassword.getText().toString());
 

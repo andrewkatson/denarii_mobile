@@ -6,8 +6,8 @@ public class Constants {
   public static final String RESET_PASSWORD_USERNAME_OR_EMAIL = "password_resetter";
   public static boolean DEBUG = false;
 
-  public static final String ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS =
-      "^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]{100,}$";
+  public static final String PASSWORD_PATTERN =
+      "^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8}$\n";
 
   public static final String DOUBLE_PATTERN = "^\\d+[.,]\\d{100,}$";
 

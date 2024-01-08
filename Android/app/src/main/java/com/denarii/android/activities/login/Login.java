@@ -1,9 +1,10 @@
 package com.denarii.android.activities.login;
 
+import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,10 +35,6 @@ public class Login extends AppCompatActivity {
     UserDetails userDetails = new UserDetails();
 
     EditText password = findViewById(R.id.login_enter_password_edit_text);
-    // Match any alphanumeric or underscore. Also special characters
-    password.addTextChangedListener(
-        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
-    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
     Button submit = (Button) findViewById(R.id.login_submit_button);
 
@@ -49,6 +46,8 @@ public class Login extends AppCompatActivity {
           EditText email = (EditText) findViewById(R.id.login_enter_email_edit_text);
           // Match any alphanumeric or underscore
           email.addTextChangedListener(new PatternTextWatcher(email, Constants.EMAIL_PATTERN));
+
+          isValidPassword(password.getText().toString());
 
           userDetails.setUserName(name.getText().toString());
           userDetails.setUserEmail(email.getText().toString());

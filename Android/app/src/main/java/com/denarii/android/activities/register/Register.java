@@ -1,9 +1,10 @@
 package com.denarii.android.activities.register;
 
+import static com.denarii.android.util.PasswordPatternValidator.isValidPassword;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,14 +34,8 @@ public class Register extends AppCompatActivity {
     UserDetails userDetails = new UserDetails();
 
     EditText password = findViewById(R.id.register_enter_password_edit_text);
-    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    password.addTextChangedListener(
-        new PatternTextWatcher(password, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
 
     EditText confirmPassword = findViewById(R.id.register_confirm_password_edit_text);
-    confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    confirmPassword.addTextChangedListener(
-        new PatternTextWatcher(confirmPassword, Constants.ALPHANUMERIC_UNDERSCORE_ALLOWED_CHARS));
 
     Button submit = (Button) findViewById(R.id.register_submit_button);
 
@@ -55,6 +50,8 @@ public class Register extends AppCompatActivity {
             createFailureToast("Passwords do not match");
             return;
           }
+
+          isValidPassword(password.getText().toString());
 
           userDetails.setUserName(name.getText().toString());
           userDetails.setUserEmail(email.getText().toString());
