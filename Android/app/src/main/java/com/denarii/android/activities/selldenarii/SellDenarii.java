@@ -35,7 +35,9 @@ import com.denarii.android.user.UserDetails;
 import com.denarii.android.util.DenariiServiceHandler;
 import com.denarii.android.util.UnpackDenariiResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -245,6 +247,11 @@ public class SellDenarii extends AppCompatActivity {
         userDetails = UnpackDenariiResponse.validUserDetails();
       }
 
+      Map<String, DenariiAsk> asksSettled = new HashMap<>();
+      for (DenariiAsk ask : ownAsksBought) {
+        asksSettled.put(ask.getAskID(), ask);
+      }
+
       ownAsksBought.clear();
 
       Call<List<DenariiResponse>> call =
@@ -260,7 +267,7 @@ public class SellDenarii extends AppCompatActivity {
                 if (response.body() != null) {
                   // We only care about the first wallet.
                   UnpackDenariiResponse.unpackPollForEscrowedTransaction(
-                      ownAsksBought, response.body());
+                      ownAsksBought, asksSettled, response.body());
                 }
               }
             }
@@ -270,6 +277,39 @@ public class SellDenarii extends AppCompatActivity {
               // TODO log this
             }
           });
+
+      for (DenariiAsk settledAsk : asksSettled.values()) {
+        // TODO use other currencies
+        Call<List<DenariiResponse>> sendMoneyToSellerCall =
+            denariiService.sendMoneyToSeller(
+                userDetails.getUserID(), String.valueOf(settledAsk.getAmountBought()), "usd");
+
+        final boolean[] succeeded = {false};
+
+        sendMoneyToSellerCall.enqueue(
+            new Callback<>() {
+              @Override
+              public void onResponse(
+                  @NonNull Call<List<DenariiResponse>> call,
+                  @NonNull Response<List<DenariiResponse>> response) {
+                if (response.isSuccessful()) {
+                  if (response.body() != null) {
+                    succeeded[0] = UnpackDenariiResponse.unpackSendMoneyToSeller(response.body());
+
+                    if (!succeeded[0]) {
+                      completelyReverseTransaction(settledAsk);
+                    }
+                  }
+                }
+              }
+
+              @Override
+              public void onFailure(
+                  @NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+                // TODO log this
+              }
+            });
+      }
     } finally {
       reentrantLock.unlock();
     }
@@ -433,6 +473,72 @@ public class SellDenarii extends AppCompatActivity {
         createToast("Cancelled ask!");
       } else {
         createToast("Failed to cancel ask");
+      }
+    }
+  }
+
+  private void completelyReverseTransaction(DenariiAsk askToReverse) {
+    // TODO do other currencies
+    Call<List<DenariiResponse>> call =
+        denariiService.transferDenariiBackToSeller(
+            userDetails.getUserID(), askToReverse.getAskID());
+
+    final boolean[] succeeded = {false};
+    call.enqueue(
+        new Callback<>() {
+          @Override
+          public void onResponse(
+              @NonNull Call<List<DenariiResponse>> call,
+              @NonNull Response<List<DenariiResponse>> response) {
+            if (response.isSuccessful()) {
+              if (response.body() != null) {
+                succeeded[0] =
+                    UnpackDenariiResponse.unpackTransferDenariiBackToSeller(response.body());
+              }
+            }
+          }
+
+          @Override
+          public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+            // TODO log this
+          }
+        });
+    if (!succeeded[0]) {
+      createToast(
+          String.format(
+              "Failed to transfer denarii back to seller for ask %s", askToReverse.getAskID()));
+    }
+  }
+
+  private void reverseTransactions(List<DenariiAsk> asksToReverse) {
+    for (DenariiAsk ask : asksToReverse) {
+      // TODO do other currencies
+      Call<List<DenariiResponse>> call =
+          denariiService.sendMoneyBackToBuyer(
+              userDetails.getUserID(), String.valueOf(ask.getAmountBought()), "usd");
+
+      final boolean[] succeeded = {false};
+      call.enqueue(
+          new Callback<>() {
+            @Override
+            public void onResponse(
+                @NonNull Call<List<DenariiResponse>> call,
+                @NonNull Response<List<DenariiResponse>> response) {
+              if (response.isSuccessful()) {
+                if (response.body() != null) {
+                  succeeded[0] = UnpackDenariiResponse.unpackSendMoneyBackToBuyer(response.body());
+                }
+              }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<DenariiResponse>> call, @NonNull Throwable t) {
+              // TODO log this
+            }
+          });
+      if (!succeeded[0]) {
+        createToast(
+            String.format("Failed to send money back to the buyer for ask %s", ask.getAskID()));
       }
     }
   }

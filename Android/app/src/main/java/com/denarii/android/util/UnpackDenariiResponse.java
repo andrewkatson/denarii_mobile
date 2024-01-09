@@ -10,6 +10,7 @@ import com.denarii.android.user.UserDetails;
 import com.denarii.android.user.WalletDetails;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -214,7 +215,9 @@ public class UnpackDenariiResponse {
   }
 
   public static void unpackPollForEscrowedTransaction(
-      List<DenariiAsk> ownBoughtAsks, List<DenariiResponse> responses) {
+      List<DenariiAsk> ownBoughtAsks,
+      Map<String, DenariiAsk> asksSettled,
+      List<DenariiResponse> responses) {
     for (DenariiResponse response : responses) {
       DenariiAsk ask = new DenariiAsk();
       ask.setAskID(response.askID);
@@ -223,6 +226,9 @@ public class UnpackDenariiResponse {
       ask.setAmountBought(response.amountBought);
 
       ownBoughtAsks.add(ask);
+
+      // Each ask here is in escrow and therefore unsettled. So remove them
+      asksSettled.remove(ask.getAskID());
     }
   }
 
@@ -378,6 +384,14 @@ public class UnpackDenariiResponse {
   }
 
   public static boolean unpackDeleteUser(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
+
+  public static boolean unpackSendMoneyToSeller(List<DenariiResponse> responses) {
+    return !responses.isEmpty();
+  }
+
+  public static boolean unpackTransferDenariiBackToSeller(List<DenariiResponse> responses) {
     return !responses.isEmpty();
   }
 }
