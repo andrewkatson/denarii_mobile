@@ -9,6 +9,8 @@ try:
 except ImportError as e:
     from test.settings import DEBUG, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 
+from DenariiMobile.constants import Patterns, Params
+from DenariiMobile.input_pattern_validator import is_valid_pattern
 from DenariiMobile.interface import wallet
 from DenariiMobile.models import DenariiUser, DenariiAsk, Response, SupportTicket
 
@@ -174,6 +176,19 @@ def update_user_verification_status(user):
 # In spite of its name this function handles login and registration
 # TODO: split up
 def get_user_id(request, username, email, password):
+    invalid_fields = []
+    if not is_valid_pattern(username, Patterns.name):
+        invalid_fields.append(Params.username)
+
+    if not is_valid_pattern(email, Patterns.email):
+        invalid_fields.append(Params.email)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user(username, email, password)
     if existing is not None:
         login(request, existing)
@@ -201,6 +216,14 @@ def get_user_id(request, username, email, password):
 
 
 def request_reset(request, username_or_email):
+    invalid_fields = []
+    if not is_valid_pattern(username_or_email, Patterns.name) and not is_valid_pattern(username_or_email,
+                                                                                       Patterns.email):
+        invalid_fields.append(Params.username_or_email)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     user = get_user_with_username_or_email(username_or_email)
 
     if user is not None:
@@ -226,6 +249,13 @@ def request_reset(request, username_or_email):
 
 
 def verify_reset(request, username_or_email, reset_id):
+    invalid_fields = []
+    if not is_valid_pattern(username_or_email, Patterns.name) and not is_valid_pattern(username_or_email, Params.email):
+        invalid_fields.append(Params.username_or_email)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     user = get_user_with_username_or_email(username_or_email)
 
     if user is not None:
@@ -248,6 +278,19 @@ def verify_reset(request, username_or_email, reset_id):
 
 
 def reset_password(request, username, email, password):
+    invalid_fields = []
+    if not is_valid_pattern(username, Patterns.name):
+        invalid_fields.append(Params.username)
+
+    if not is_valid_pattern(email, Patterns.email):
+        invalid_fields.append(Params.email)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     user = get_user_with_username_and_email(username, email)
 
     if user is not None:
@@ -267,6 +310,19 @@ def reset_password(request, username, email, password):
 
 @login_required
 def create_wallet(request, user_id, wallet_name, password):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(wallet_name, Patterns.alphanumeric):
+        invalid_fields.append(Params.wallet_name)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
     if existing is not None:
         existing_wallet = get_wallet(existing)
@@ -311,6 +367,19 @@ def create_wallet(request, user_id, wallet_name, password):
 
 @login_required
 def restore_wallet(request, user_id, wallet_name, password, seed):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(wallet_name, Patterns.alphanumeric):
+        invalid_fields.append(Params.wallet_name)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
     if existing is not None:
 
@@ -352,6 +421,19 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 
 @login_required
 def open_wallet(request, user_id, wallet_name, password):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(wallet_name, Patterns.alphanumeric):
+        invalid_fields.append(Params.wallet_name)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
     if existing is not None:
         existing_wallet = get_wallet(existing)
@@ -398,6 +480,16 @@ def open_wallet(request, user_id, wallet_name, password):
 
 @login_required
 def get_balance(request, user_id, wallet_name):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(wallet_name, Patterns.alphanumeric):
+        invalid_fields.append(Params.wallet_name)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
     if existing is not None:
         existing_wallet = get_wallet(existing)
@@ -425,6 +517,22 @@ def get_balance(request, user_id, wallet_name):
 
 @login_required
 def send_denarii(request, user_id, wallet_name, address, amount):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(wallet_name, Patterns.alphanumeric):
+        invalid_fields.append(Params.wallet_name)
+
+    if not is_valid_pattern(address, Patterns.alphanumeric):
+        invalid_fields.append(Params.address)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
     if existing is not None:
         existing_wallet = get_wallet(existing)
@@ -460,6 +568,13 @@ def send_denarii(request, user_id, wallet_name, address, amount):
 
 @login_required
 def get_prices(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -487,6 +602,22 @@ def get_prices(request, user_id):
 
 @login_required
 def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fail_if_full_amount_isnt_met):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(bid_price, Patterns.boolean):
+        invalid_fields.append(Params.buy_regardless_of_price)
+
+    if not is_valid_pattern(fail_if_full_amount_isnt_met, Patterns.boolean):
+        invalid_fields.append(Params.fail_if_full_amount_isnt_met)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -528,6 +659,16 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
 
 @login_required
 def transfer_denarii(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -592,6 +733,19 @@ def transfer_denarii(request, user_id, ask_id):
 
 @login_required
 def make_denarii_ask(request, user_id, amount, asking_price):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(asking_price, Patterns.double):
+        invalid_fields.append(Params.asking_price)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     # TODO do we want to be disallowing new asks when existing asks exceed amount of denarii a user has?
@@ -618,6 +772,13 @@ def make_denarii_ask(request, user_id, amount, asking_price):
 
 @login_required
 def poll_for_completed_transaction(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -640,6 +801,16 @@ def poll_for_completed_transaction(request, user_id):
 
 @login_required
 def cancel_ask(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -663,6 +834,13 @@ def cancel_ask(request, user_id, ask_id):
 
 @login_required
 def has_credit_card_info(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -681,6 +859,25 @@ def has_credit_card_info(request, user_id):
 
 @login_required
 def set_credit_card_info(request, user_id, card_number, expiration_date_month, expiration_date_year, security_code):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(card_number, Patterns.digits_and_dashes):
+        invalid_fields.append(Params.card_number)
+
+    if not is_valid_pattern(expiration_date_month, Patterns.digits_only):
+        invalid_fields.append(Params.expiration_date_month)
+
+    if not is_valid_pattern(expiration_date_year, Patterns.digits_only):
+        invalid_fields.append(Params.expiration_date_year)
+
+    if not is_valid_pattern(security_code, Patterns.digits_only):
+        invalid_fields.append(Params.security_code)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -741,6 +938,13 @@ def set_credit_card_info(request, user_id, card_number, expiration_date_month, e
 
 @login_required
 def clear_credit_card_info(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -770,6 +974,19 @@ def clear_credit_card_info(request, user_id):
 
 @login_required
 def get_money_from_buyer(request, user_id, amount, currency):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(currency, Patterns.currency):
+        invalid_fields.append(Params.currency)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -825,6 +1042,19 @@ def get_money_from_buyer(request, user_id, amount, currency):
 
 @login_required
 def send_money_to_seller(request, user_id, amount, currency):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(currency, Patterns.currency):
+        invalid_fields.append(Params.currency)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -855,6 +1085,16 @@ def send_money_to_seller(request, user_id, amount, currency):
 
 @login_required
 def is_transaction_settled(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -887,6 +1127,13 @@ def is_transaction_settled(request, user_id, ask_id):
 
 @login_required
 def delete_user(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -911,6 +1158,19 @@ def delete_user(request, user_id):
 
 @login_required
 def get_ask_with_identifier(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -931,6 +1191,16 @@ def get_ask_with_identifier(request, user_id, ask_id):
 
 @login_required
 def transfer_denarii_back_to_seller(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -989,6 +1259,19 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
 
 @login_required
 def send_money_back_to_buyer(request, user_id, amount, currency):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(amount, Patterns.double):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(currency, Patterns.currency):
+        invalid_fields.append(Params.currency)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1018,6 +1301,16 @@ def send_money_back_to_buyer(request, user_id, amount, currency):
 
 @login_required
 def cancel_buy_of_ask(request, user_id, ask_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(ask_id, Patterns.uuid4):
+        invalid_fields.append(Params.ask_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1051,6 +1344,37 @@ def cancel_buy_of_ask(request, user_id, ask_id):
 @login_required
 def verify_identity(request, user_id, first_name, middle_name, last_name, email, dob, ssn, zipcode, phone,
                     work_locations):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(first_name, Patterns.name):
+        invalid_fields.append(Params.first_name)
+
+    if not is_valid_pattern(middle_name, Patterns.single_letter):
+        invalid_fields.append(Params.middle_name)
+
+    if not is_valid_pattern(last_name, Patterns.name):
+        invalid_fields.append(Params.last_name)
+
+    if not is_valid_pattern(email, Patterns.email):
+        invalid_fields.append(Params.email)
+
+    if not is_valid_pattern(dob, Patterns.slash_date):
+        invalid_fields.append(Params.amount)
+
+    if not is_valid_pattern(ssn, Patterns.digits_and_dashes):
+        invalid_fields.append(Params.ssn)
+
+    if not is_valid_pattern(phone, Patterns.phone_number):
+        invalid_fields.append(Params.phone)
+
+    if not is_valid_pattern(work_locations, Patterns.json_dict_of_upper_and_lower_case_chars):
+        invalid_fields.append(Params.work_locations)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1097,6 +1421,13 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
 
 @login_required
 def is_a_verified_person(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1127,6 +1458,13 @@ def is_a_verified_person(request, user_id):
 
 @login_required
 def get_all_asks(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1150,6 +1488,13 @@ def get_all_asks(request, user_id):
 
 @login_required
 def get_all_buys(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1173,6 +1518,19 @@ def get_all_buys(request, user_id):
 
 @login_required
 def create_support_ticket(request, user_id, title, description):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(title, Patterns.alphanumeric_with_spaces):
+        invalid_fields.append(Params.title)
+
+    if not is_valid_pattern(description, Patterns.paragraph_of_chars):
+        invalid_fields.append(Params.description)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1195,6 +1553,19 @@ def create_support_ticket(request, user_id, title, description):
 
 @login_required
 def update_support_ticket(request, user_id, support_ticket_id, comment):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
+        invalid_fields.append(Params.title)
+
+    if not is_valid_pattern(comment, Patterns.paragraph_of_chars):
+        invalid_fields.append(Params.comment)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1226,6 +1597,16 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
 
 @login_required
 def delete_support_ticket(request, user_id, support_ticket_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
+        invalid_fields.append(Params.title)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1249,6 +1630,16 @@ def delete_support_ticket(request, user_id, support_ticket_id):
 
 @login_required
 def get_support_tickets(request, user_id, can_be_resolved):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(can_be_resolved, Patterns.boolean):
+        invalid_fields.append(Params.can_be_resolved)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1282,6 +1673,16 @@ def get_support_tickets(request, user_id, can_be_resolved):
 
 @login_required
 def get_support_ticket(request, user_id, support_ticket_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
+        invalid_fields.append(Params.title)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1315,6 +1716,16 @@ def get_support_ticket(request, user_id, support_ticket_id):
 
 @login_required
 def get_comments_on_ticket(request, user_id, support_ticket_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
+        invalid_fields.append(Params.title)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1345,6 +1756,16 @@ def get_comments_on_ticket(request, user_id, support_ticket_id):
 
 @login_required
 def resolve_support_ticket(request, user_id, support_ticket_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
+        invalid_fields.append(Params.title)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1371,6 +1792,13 @@ def resolve_support_ticket(request, user_id, support_ticket_id):
 
 @login_required
 def poll_for_escrowed_transaction(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
@@ -1392,6 +1820,13 @@ def poll_for_escrowed_transaction(request, user_id):
 
 @login_required
 def logout_user(request, user_id):
+    invalid_fields = []
+    if not is_valid_pattern(user_id, Patterns.uuid4):
+        invalid_fields.append(Params.user_id)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
     existing = get_user_with_id(user_id)
 
     if existing is not None:
