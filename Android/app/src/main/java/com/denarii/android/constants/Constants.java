@@ -7,7 +7,7 @@ public class Constants {
   public static boolean DEBUG = false;
 
   public static final String PASSWORD_PATTERN =
-      "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+      "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$).{8,}$";
 
   public static final String DOUBLE_PATTERN = "^\\d{1,100}[.,]{0,1}\\d{0,100}$";
 

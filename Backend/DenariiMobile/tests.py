@@ -99,9 +99,9 @@ def run_general_setup(user_name, email, user_password, wallet_name, wallet_passw
 def get_all_test_values(prefix):
     new_user = f"{prefix}_user"
     new_email = f"{prefix}_email@email.com"
-    new_password = f"{prefix}_password"
+    new_password = f"{prefix}_password1$A"
     new_wallet_name = f"{prefix}_name"
-    new_wallet_password = f"{prefix}_password"
+    new_wallet_password = f"{prefix}_password2#B"
     user_id = run_general_setup(new_user, new_email, new_password, new_wallet_name, new_wallet_password)
 
     request = create_user_request(user_id)
@@ -135,13 +135,13 @@ class ViewsTestCase(TestCase):
     user = "user"
     email = "email@email.com"
     wallet_name = "new_wallet"
-    wallet_password = "new_password"
+    wallet_password = "new_password4%C"
     seed = "Person Man Camera Tv"
     other_address = "ADJAFSDJFGADSLFJDASKLFKDSA"
     amount_to_send = 1.0
 
     def test_get_user_id_new_user_returns_empty_wallet(self):
-        password = "my_password"
+        password = "my_password1@O"
         response = get_user_id(None, self.user, self.email, password)
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
@@ -151,7 +151,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(new_wallet_fields['user_identifier'], str(new_user.id))
 
     def test_get_user_id_old_user_returns_existing_wallet(self):
-        password = "other_password"
+        password = "other_password8=F"
         _ = get_user_id(None, self.user, self.email, password)
         new_user = get_user(self.user, self.email, password)
 
@@ -165,7 +165,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(wallet_fields['user_identifier'], str(new_user.id))
 
     def test_get_user_id_existing_username_clashes_returns_error(self):
-        password = "lastpass"
+        password = "lastpass9$G"
         _ = get_user_id(None, self.user, self.email, password)
 
         response = get_user_id(None, self.user, "otheremail@email.com", "otherpassword")
@@ -173,7 +173,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(type(response), HttpResponseBadRequest)
 
     def test_get_user_id_existing_email_clashes_returns_error(self):
-        password = "lastpass"
+        password = "lastpass3#M"
         _ = get_user_id(None, self.user, self.email, password)
 
         response = get_user_id(None, "otheruser", self.email, "otherpassword")
@@ -190,7 +190,7 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, Params.password)
 
     def test_create_wallet_attempts_to_create_wallet(self):
-        password = "other_other_password"
+        password = "other_other_passwordD%6"
         user_id = create_user(self.user, self.email, password)
 
         request = create_user_request(user_id)

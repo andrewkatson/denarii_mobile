@@ -177,7 +177,7 @@ def update_user_verification_status(user):
 # TODO: split up
 def get_user_id(request, username, email, password):
     invalid_fields = []
-    if not is_valid_pattern(username, Patterns.name):
+    if not is_valid_pattern(username, Patterns.alphanumeric):
         invalid_fields.append(Params.username)
 
     if not is_valid_pattern(email, Patterns.email):
