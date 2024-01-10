@@ -16,6 +16,7 @@ class Patterns:
     uuid4 = "^[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}\\Z$"
     boolean = "^(?i)(true|false)$"
     json_dict_of_upper_and_lower_case_chars = "^[{}:\"a-zA-Z]{2, 5000}$"
+    reset_id = "^\\d{6}$"
 
 
 class Params:
@@ -50,3 +51,5 @@ class Params:
     support_ticket_id = "SUPPORT_TICKET_ID"
     comment = "COMMENT"
     can_be_resolved = "CAN_BE_RESOLVED"
+    seed = "SEED"
+    reset_id = "RESET_ID"

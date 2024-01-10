@@ -180,6 +180,15 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+    def test_get_user_id_invalid_params_returns_all_invalid_params(self):
+        response = get_user_id(None, "124", "1", "a")
+
+        self.assertEqual(type(Response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.username)
+        self.assertContains(response, Params.email)
+        self.assertContains(response, Params.password)
+
     def test_create_wallet_attempts_to_create_wallet(self):
         password = "other_other_password"
         user_id = create_user(self.user, self.email, password)
@@ -194,6 +203,17 @@ class ViewsTestCase(TestCase):
         self.assertTrue('seed' in fields)
         self.assertTrue('wallet_address' in fields)
 
+    def test_create_wallet_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("create_wallet_invalid_params_returns_all_invalid_params")
+
+        response = create_wallet(dict_of_values['request'], "123", "123", "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.wallet_name)
+        self.assertContains(response, Params.password)
+
     def test_open_wallet_attempts_to_open_wallet(self):
         dict_of_values = get_all_test_values("open_wallet")
 
@@ -206,6 +226,17 @@ class ViewsTestCase(TestCase):
 
         self.assertTrue('seed' in fields)
         self.assertTrue('wallet_address' in fields)
+
+    def test_open_wallet_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("open_wallet_invalid_params_returns_all_invalid_params")
+
+        response = open_wallet(dict_of_values['request'], "123", "123", "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.wallet_name)
+        self.assertContains(response, Params.password)
 
     def test_restore_wallet_attempts_to_restore_wallet(self):
         dict_of_values = get_all_test_values("restore_wallet")
@@ -220,6 +251,18 @@ class ViewsTestCase(TestCase):
         self.assertFalse('seed' in fields)
         self.assertTrue('wallet_address' in fields)
 
+    def test_restore_wallet_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("restore_wallet_invalid_params_returns_all_invalid_params")
+
+        response = restore_wallet(dict_of_values['request'], "123", "123", "123", "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.wallet_name)
+        self.assertContains(response, Params.password)
+        self.assertContains(response, Params.seed)
+
     def test_get_balance_attempts_to_get_balance(self):
         dict_of_values = get_all_test_values("get_balance")
 
@@ -230,6 +273,16 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(response)
 
         self.assertEquals(fields['balance'], 2.0)
+
+    def test_get_balance_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_balance_invalid_params_returns_all_invalid_params")
+
+        response = get_balance(dict_of_values['request'], "123", "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.wallet_name)
 
     def test_send_denarii_attempts_to_send_denarii(self):
         dict_of_values = get_all_test_values("send_denarii")
@@ -242,6 +295,18 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(response)
 
         self.assertFalse("balance" in fields)
+
+    def test_send_denarii_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("send_denarii_invalid_params_returns_all_invalid_params")
+
+        response = send_denarii(dict_of_values['request'], "123", "123", "a", "b")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.wallet_name)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.address)
 
     def test_request_reset_with_username(self):
         dict_of_values = get_all_test_values("request_reset_with_username")
@@ -266,6 +331,15 @@ class ViewsTestCase(TestCase):
         user = get_user_with_username_and_email(dict_of_values['username'], dict_of_values['email'])
 
         self.assertNotEqual(user.reset_id, 0)
+
+    def test_request_reset_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("request_reset_invalid_params_returns_all_invalid_params")
+
+        response = request_reset(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.username_or_email)
 
     def test_verify_reset_with_username(self):
         dict_of_values = get_all_test_values("verify_reset_with_username")
@@ -297,6 +371,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(user.reset_id, 0)
 
+    def test_verify_reset_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("verify_reset_invalid_params_returns_all_invalid_params")
+
+        response = verify_reset(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.username_or_email)
+        self.assertContains(response, Params.reset_id)
+
     def test_reset_password(self):
         dict_of_values = get_all_test_values("reset_password")
 
@@ -309,6 +393,17 @@ class ViewsTestCase(TestCase):
         user = get_user_with_username_and_email(dict_of_values['username'], dict_of_values['email'])
 
         self.assertEqual(user.password, new_password)
+
+    def test_reset_password_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("reset_password_invalid_params_returns_all_invalid_params")
+
+        response = reset_password(dict_of_values['request'], "123", "A", "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.username)
+        self.assertContains(response, Params.email)
+        self.assertContains(response, Params.password)
 
     def test_get_prices_with_less_than_num_asks(self):
         seller_test_values = get_all_test_values("get_prices_with_less_than_num_asks_seller")
@@ -346,6 +441,15 @@ class ViewsTestCase(TestCase):
 
         for ask in low_asks:
             self.assertIn(ask.ask_id, ask_ids)
+
+    def test_get_prices_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_prices_invalid_params_returns_all_invalid_params")
+
+        response = get_prices(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_buy_denarii_regardless_of_price_with_enough_to_buy(self):
         test_values = get_all_test_values("buy_denarii_regardless_of_price_with_enough_to_buy")
@@ -502,6 +606,19 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+    def test_buy_denarii_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("buy_denarii_invalid_params_returns_all_invalid_params")
+
+        response = buy_denarii(dict_of_values['request'], "123", "A", "B", "C", "D")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.asking_price)
+        self.assertContains(response, Params.buy_regardless_of_price)
+        self.assertContains(response, Params.fail_if_full_amount_isnt_met)
+
     def test_transfer_denarii_with_exactly_amount(self):
 
         # First we create the seller and some asks
@@ -625,12 +742,33 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(second_transfer_response), HttpResponseBadRequest)
 
+    def test_transfer_denarii_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("transfer_denarii_invalid_params_returns_all_invalid_params")
+
+        response = transfer_denarii(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
+
     def test_make_denarii_ask(self):
         test_values = get_all_test_values('make_denarii_ask')
 
         response = make_denarii_ask(test_values['request'], test_values['user_id'], 1.0, 10.0)
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+    def test_make_denarii_ask_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("make_denarii_ask_invalid_params_returns_all_invalid_params")
+
+        response = make_denarii_ask(dict_of_values['request'], "123", "A", "B")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.asking_price)
 
     def test_poll_for_completed_transaction(self):
         seller_test_values = get_all_test_values("poll_for_completed_transaction_seller")
@@ -689,6 +827,15 @@ class ViewsTestCase(TestCase):
         for ask_id in ask_ids:
             self.assertTrue(get_ask_with_id(ask_id).is_settled)
             self.assertFalse(get_ask_with_id(ask_id).in_escrow)
+
+    def test_poll_for_completed_transaction_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("poll_for_completed_transaction_invalid_params_returns_all_invalid_params")
+
+        response = poll_for_completed_transaction(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_cancel_ask_that_still_exists_but_isnt_settled(self):
         test_values = get_all_test_values("cancel_ask_that_still_exists")
@@ -751,6 +898,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
+    def test_cancel_ask_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("cancel_ask_invalid_params_returns_all_invalid_params")
+
+        response = cancel_ask(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
+
     def test_has_credit_card_info_with_info(self):
         test_values = get_all_test_values("has_credit_card_info_with_info")
 
@@ -777,6 +934,15 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(has_response)
 
         self.assertEqual(fields['has_credit_card_info'], False)
+
+    def test_has_credit_card_info_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("has_credit_card_info_invalid_params_returns_all_invalid_params")
+
+        response = has_credit_card_info(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_set_credit_card_info(self):
         test_values = get_all_test_values("set_credit_card_info")
@@ -827,6 +993,19 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(set_response_two), HttpResponseBadRequest)
 
+    def test_set_credit_card_info_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("set_credit_card_info_invalid_params_returns_all_invalid_params")
+
+        response = set_credit_card_info(dict_of_values['request'], "123", "A", "B", "C", "D")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.card_number)
+        self.assertContains(response, Params.expiration_date_month)
+        self.assertContains(response, Params.expiration_date_year)
+        self.assertContains(response, Params.security_code)
+
     def test_clear_credit_card_info(self):
         test_values = get_all_test_values("clear_credit_card_info")
 
@@ -858,6 +1037,15 @@ class ViewsTestCase(TestCase):
         clear_response = clear_credit_card_info(test_values['request'], test_values['user_id'])
 
         self.assertEqual(type(clear_response), HttpResponseBadRequest)
+
+    def test_clear_credit_card_info_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("clear_credit_card_info_invalid_params_returns_all_invalid_params")
+
+        response = clear_credit_card_info(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_get_money_from_buyer(self):
         test_values = get_all_test_values("get_money_from_buyer")
@@ -917,6 +1105,17 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(get_money_response), HttpResponseBadRequest)
 
+    def test_get_money_from_buyer_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_money_from_buyer_invalid_params_returns_all_invalid_params")
+
+        response = get_money_from_buyer(dict_of_values['request'], "123", "A", "1")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.currency)
+
     def test_send_money_to_seller(self):
         test_values = get_all_test_values("send_money_to_seller")
 
@@ -948,6 +1147,17 @@ class ViewsTestCase(TestCase):
         send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+    def test_send_money_to_seller_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("send_money_to_seller_invalid_params_returns_all_invalid_params")
+
+        response = send_money_to_seller(dict_of_values['request'], "123", "A", "1")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.currency)
 
     def test_is_transaction_settled_that_is_settled_with_remaining_ask(self):
         seller_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_remaining_ask_seller")
@@ -1061,6 +1271,16 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(is_settled_response)
         self.assertFalse(fields['transaction_was_settled'])
 
+    def test_is_transaction_settled_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("is_transaction_settled_invalid_params_returns_all_invalid_params")
+
+        response = is_transaction_settled(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
+
     def test_delete_user_with_existing_user(self):
         test_values = get_all_test_values("delete_user_with_existing_user")
 
@@ -1159,6 +1379,15 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+    def test_delete_user_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("delete_user_invalid_params_returns_all_invalid_params")
+
+        response = delete_user(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+
     def test_get_ask_with_identifier_with_existing_ask(self):
         test_values = get_all_test_values("get_ask_with_identifier_with_existing_ask")
 
@@ -1182,6 +1411,16 @@ class ViewsTestCase(TestCase):
         response = get_ask_with_identifier(test_values['request'], test_values['user_id'], -1)
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+    def test_get_ask_with_identifier_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_ask_with_identifier_invalid_params_returns_all_invalid_params")
+
+        response = get_ask_with_identifier(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
 
     def test_transfer_denarii_back_to_seller_with_exactly_amount(self):
         # First we create the seller and some asks
@@ -1291,6 +1530,17 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(transfer_response), HttpResponseBadRequest)
 
+    def test_transfer_denarii_back_to_seller_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values(
+            "transfer_denarii_back_to_seller_invalid_params_returns_all_invalid_params")
+
+        response = transfer_denarii_back_to_seller(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
+
     def test_send_money_back_to_buyer(self):
         test_values = get_all_test_values("send_money_back_to_buyer")
 
@@ -1321,6 +1571,17 @@ class ViewsTestCase(TestCase):
         send_response = send_money_back_to_buyer(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+    def test_send_money_back_to_buyer_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("send_money_back_to_buyer_invalid_params_returns_all_invalid_params")
+
+        response = send_money_back_to_buyer(dict_of_values['request'], "123", "A", "1")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.amount)
+        self.assertContains(response, Params.currency)
 
     def test_cancel_buy_of_ask(self):
         # First we create the seller and some asks
@@ -1419,6 +1680,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
+    def test_cancel_buy_of_ask_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("cancel_buy_of_ask_invalid_params_returns_all_invalid_params")
+
+        response = cancel_buy_of_ask(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.ask_id)
+
     def test_verify_identity(self):
         test_values = get_all_test_values("verify_identity")
 
@@ -1449,6 +1720,24 @@ class ViewsTestCase(TestCase):
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
+
+    def test_verify_identity_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("verify_identity_invalid_params_returns_all_invalid_params")
+
+        response = verify_identity(dict_of_values['request'], "123", "A", "2", "C", "D", "E", "F", "H", "G", "I")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.first_name)
+        self.assertContains(response, Params.middle_name)
+        self.assertContains(response, Params.last_name)
+        self.assertContains(response, Params.email)
+        self.assertContains(response, Params.dob)
+        self.assertContains(response, Params.ssn)
+        self.assertContains(response, Params.zipcode)
+        self.assertContains(response, Params.phone)
+        self.assertContains(response, Params.work_locations)
 
     def test_is_a_verified_person_where_identity_is_verified(self):
         test_values = get_all_test_values("is_a_verified_person_where_identity_is_verified")
@@ -1511,6 +1800,15 @@ class ViewsTestCase(TestCase):
         fields = get_json_fields(is_verified_response)
 
         self.assertEqual(fields['verification_status'], "is_not_verified")
+
+    def test_is_a_verified_person_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("is_a_verified_person_invalid_params_returns_all_invalid_params")
+
+        response = is_a_verified_person(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_get_all_asks(self):
         seller_test_values = get_all_test_values("get_all_asks_seller")
@@ -1580,6 +1878,15 @@ class ViewsTestCase(TestCase):
         ask_ids = get_all_json_objects_field(response, "ask_id")
 
         self.assertEqual(len(ask_ids), 0)
+
+    def test_get_all_asks_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_all_asks_invalid_params_returns_all_invalid_params")
+
+        response = get_all_asks(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
 
     def test_get_all_buys(self):
         seller_test_values = get_all_test_values("get_all_buys_seller")
@@ -1652,12 +1959,32 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(len(ask_ids), 0)
 
+    def test_get_all_buys_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_all_buys_invalid_params_returns_all_invalid_params")
+
+        response = get_all_buys(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+
     def test_create_support_ticket(self):
         test_values = get_all_test_values("create_support_ticket")
 
         response = create_support_ticket(test_values['request'], test_values['user_id'], "Title", "description")
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+    def test_create_support_ticket_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("create_support_ticket_invalid_params_returns_all_invalid_params")
+
+        response = create_support_ticket(dict_of_values['request'], "123", "A", "2")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.title)
+        self.assertContains(response, Params.description)
 
     def test_update_support_ticket(self):
         test_values = get_all_test_values("update_support_ticket")
@@ -1681,6 +2008,17 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(update_response), HttpResponseBadRequest)
 
+    def test_update_support_ticket_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("update_support_ticket_invalid_params_returns_all_invalid_params")
+
+        response = update_support_ticket(dict_of_values['request'], "123", "A", "2")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.support_ticket_id)
+        self.assertContains(response, Params.comment)
+
     def test_delete_support_ticket(self):
         test_values = get_all_test_values("delete_support_ticket")
 
@@ -1702,6 +2040,16 @@ class ViewsTestCase(TestCase):
                                                 -1)
 
         self.assertEqual(type(delete_response), HttpResponseBadRequest)
+
+    def test_delete_support_ticket_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("delete_support_ticket_invalid_params_returns_all_invalid_params")
+
+        response = delete_support_ticket(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.support_ticket_id)
 
     def test_get_all_tickets(self):
         test_values = get_all_test_values("get_all_tickets")
@@ -1770,6 +2118,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(len(ticket_ids), 0)
 
+    def test_get_all_tickets_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_all_tickets_invalid_params_returns_all_invalid_params")
+
+        response = get_support_tickets(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.can_be_resolved)
+
     def test_get_support_ticket_comments(self):
         test_values = get_all_test_values("get_support_ticket_comments")
 
@@ -1825,6 +2183,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(get_comments_response), HttpResponseBadRequest)
 
+    def test_get_support_ticket_comments_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_support_ticket_comments_invalid_params_returns_all_invalid_params")
+
+        response = get_comments_on_ticket(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.support_ticket_id)
+
     def test_resolve_support_ticket(self):
         test_values = get_all_test_values("resolve_support_ticket")
 
@@ -1844,6 +2212,16 @@ class ViewsTestCase(TestCase):
         resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
                                                   -1)
         self.assertEqual(type(resolve_response), HttpResponseBadRequest)
+
+    def test_resolve_ticket_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("resolve_ticket_invalid_params_returns_all_invalid_params")
+
+        response = resolve_support_ticket(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.support_ticket_id)
 
     def test_poll_for_escrowed_transaction(self):
         seller_test_values = get_all_test_values("poll_for_escrowed_transaction_seller")
@@ -1903,6 +2281,15 @@ class ViewsTestCase(TestCase):
             self.assertFalse(get_ask_with_id(ask_id).is_settled)
             self.assertTrue(get_ask_with_id(ask_id).in_escrow)
 
+    def test_poll_for_escrowed_transaction_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("poll_for_escrowed_transaction_invalid_params_returns_all_invalid_params")
+
+        response = poll_for_escrowed_transaction(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+
     def test_get_support_ticket(self):
 
         test_values = get_all_test_values("get_support_ticket")
@@ -1947,6 +2334,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(get_all_response), HttpResponseBadRequest)
 
+    def test_get_support_ticket_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("get_support_ticket_invalid_params_returns_all_invalid_params")
+
+        response = get_support_ticket(dict_of_values['request'], "123", "A")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.support_ticket_id)
+
     def test_logout_user_logs_them_out(self):
         test_values = get_all_test_values("logout_user_logs_them_out")
 
@@ -1958,3 +2355,12 @@ class ViewsTestCase(TestCase):
                                              "other description")
 
         self.assertEqual(type(response_two), HttpResponseRedirect)
+
+    def test_logout_invalid_params_returns_all_invalid_params(self):
+        dict_of_values = get_all_test_values("logout_invalid_params_returns_all_invalid_params")
+
+        response = logout_user(dict_of_values['request'], "123")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.user_id)

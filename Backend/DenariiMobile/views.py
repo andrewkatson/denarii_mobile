@@ -253,6 +253,9 @@ def verify_reset(request, username_or_email, reset_id):
     if not is_valid_pattern(username_or_email, Patterns.name) and not is_valid_pattern(username_or_email, Params.email):
         invalid_fields.append(Params.username_or_email)
 
+    if not is_valid_pattern(username_or_email, Patterns.reset_id):
+        invalid_fields.append(Params.reset_id)
+
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
 
@@ -376,6 +379,9 @@ def restore_wallet(request, user_id, wallet_name, password, seed):
 
     if not is_valid_pattern(password, Patterns.password):
         invalid_fields.append(Params.password)
+
+    if not is_valid_pattern(seed, Patterns.seed):
+        invalid_fields.append(Params.seed)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
