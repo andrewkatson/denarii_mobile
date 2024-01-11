@@ -77,6 +77,20 @@ def create_random_asks(request, user_id, num):
     return asks
 
 
+def create_user_request(user_id):
+    user = DenariiUser.objects.get(id=user_id)
+    request = HttpRequest()
+    request.user = user
+    request.session = SessionStore()
+    request.META["SERVER_NAME"] = "localhost"
+    request.META["SERVER_PORT"] = "8000"
+    return request
+
+
+def request_a_reset(username):
+    request_reset(None, username)
+
+
 def make_wallet(user_id, wallet_name, password):
     request = create_user_request(user_id)
     response = create_wallet(request, user_id, wallet_name, password)
@@ -117,22 +131,8 @@ def get_all_test_values(prefix):
     }
 
 
-def create_user_request(user_id):
-    user = DenariiUser.objects.get(id=user_id)
-    request = HttpRequest()
-    request.user = user
-    request.session = SessionStore()
-    request.META["SERVER_NAME"] = "localhost"
-    request.META["SERVER_PORT"] = "8000"
-    return request
-
-
-def request_a_reset(username):
-    request_reset(None, username)
-
-
 class ViewsTestCase(TestCase):
-    user = "user"
+    user = "username_is"
     email = "email@email.com"
     wallet_name = "new_wallet"
     wallet_password = "new_password4%C"
@@ -176,18 +176,18 @@ class ViewsTestCase(TestCase):
         password = "lastpass3#M"
         _ = get_user_id(None, self.user, self.email, password)
 
-        response = get_user_id(None, "otheruser", self.email, "otherpassword")
+        response = get_user_id(None, "otheruser", self.email, "otherpassword3#M")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
     def test_get_user_id_invalid_params_returns_all_invalid_params(self):
         response = get_user_id(None, "124", "1", "a")
 
-        self.assertEqual(type(Response), HttpResponseBadRequest)
+        self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.username)
-        self.assertContains(response, Params.email)
-        self.assertContains(response, Params.password)
+        self.assertContains(response, Params.username, status_code=400)
+        self.assertContains(response, Params.email, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
 
     def test_create_wallet_attempts_to_create_wallet(self):
         password = "other_other_passwordD%6"
@@ -210,9 +210,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.wallet_name)
-        self.assertContains(response, Params.password)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.wallet_name, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
 
     def test_open_wallet_attempts_to_open_wallet(self):
         dict_of_values = get_all_test_values("open_wallet")
@@ -234,9 +234,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.wallet_name)
-        self.assertContains(response, Params.password)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.wallet_name, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
 
     def test_restore_wallet_attempts_to_restore_wallet(self):
         dict_of_values = get_all_test_values("restore_wallet")
@@ -258,10 +258,10 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.wallet_name)
-        self.assertContains(response, Params.password)
-        self.assertContains(response, Params.seed)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.wallet_name, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
+        self.assertContains(response, Params.seed, status_code=400)
 
     def test_get_balance_attempts_to_get_balance(self):
         dict_of_values = get_all_test_values("get_balance")
@@ -281,8 +281,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.wallet_name)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.wallet_name, status_code=400)
 
     def test_send_denarii_attempts_to_send_denarii(self):
         dict_of_values = get_all_test_values("send_denarii")
@@ -303,10 +303,10 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.wallet_name)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.address)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.wallet_name, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.address, status_code=400)
 
     def test_request_reset_with_username(self):
         dict_of_values = get_all_test_values("request_reset_with_username")
@@ -339,7 +339,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.username_or_email)
+        self.assertContains(response, Params.username_or_email, status_code=400)
 
     def test_verify_reset_with_username(self):
         dict_of_values = get_all_test_values("verify_reset_with_username")
@@ -378,13 +378,13 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.username_or_email)
-        self.assertContains(response, Params.reset_id)
+        self.assertContains(response, Params.username_or_email, status_code=400)
+        self.assertContains(response, Params.reset_id, status_code=400)
 
     def test_reset_password(self):
         dict_of_values = get_all_test_values("reset_password")
 
-        new_password = "newpassword"
+        new_password = "newpassword#2E"
         response = reset_password(dict_of_values['request'], dict_of_values['username'], dict_of_values['email'],
                                   new_password)
 
@@ -401,9 +401,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.username)
-        self.assertContains(response, Params.email)
-        self.assertContains(response, Params.password)
+        self.assertContains(response, Params.username, status_code=400)
+        self.assertContains(response, Params.email, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
 
     def test_get_prices_with_less_than_num_asks(self):
         seller_test_values = get_all_test_values("get_prices_with_less_than_num_asks_seller")
@@ -449,7 +449,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_buy_denarii_regardless_of_price_with_enough_to_buy(self):
         test_values = get_all_test_values("buy_denarii_regardless_of_price_with_enough_to_buy")
@@ -613,11 +613,11 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.asking_price)
-        self.assertContains(response, Params.buy_regardless_of_price)
-        self.assertContains(response, Params.fail_if_full_amount_isnt_met)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.bid_price, status_code=400)
+        self.assertContains(response, Params.buy_regardless_of_price, status_code=400)
+        self.assertContains(response, Params.fail_if_full_amount_isnt_met, status_code=400)
 
     def test_transfer_denarii_with_exactly_amount(self):
 
@@ -703,7 +703,7 @@ class ViewsTestCase(TestCase):
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_ask_that_doesnt_exist_buyer")
 
-        response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], -1)
+        response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], "-1")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -749,8 +749,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_make_denarii_ask(self):
         test_values = get_all_test_values('make_denarii_ask')
@@ -766,9 +766,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.asking_price)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.asking_price, status_code=400)
 
     def test_poll_for_completed_transaction(self):
         seller_test_values = get_all_test_values("poll_for_completed_transaction_seller")
@@ -835,7 +835,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_cancel_ask_that_still_exists_but_isnt_settled(self):
         test_values = get_all_test_values("cancel_ask_that_still_exists")
@@ -852,7 +852,7 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("cancel_ask_that_does_not_exist")
 
         _ = create_asks(test_values['request'], test_values['user_id'])
-        response = cancel_ask(test_values['request'], test_values['user_id'], -1)
+        response = cancel_ask(test_values['request'], test_values['user_id'], "-1")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -905,13 +905,13 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_has_credit_card_info_with_info(self):
         test_values = get_all_test_values("has_credit_card_info_with_info")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -942,12 +942,12 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_set_credit_card_info(self):
         test_values = get_all_test_values("set_credit_card_info")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -963,9 +963,9 @@ class ViewsTestCase(TestCase):
 
     def test_set_credit_card_info_fail_customer_create(self):
         # The prefix will cause a failure to create a customer
-        test_values = get_all_test_values("fail")
+        test_values = get_all_test_values("fail_create_customer")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertEqual(type(set_response), HttpResponseBadRequest)
@@ -974,7 +974,7 @@ class ViewsTestCase(TestCase):
         # The prefix will cause a failure to create a setup intent
         test_values = get_all_test_values("fail_setup_intent")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertEqual(type(set_response), HttpResponseBadRequest)
@@ -982,7 +982,7 @@ class ViewsTestCase(TestCase):
     def test_set_credit_card_info_with_info_already_set(self):
         test_values = get_all_test_values("set_credit_card_info_with_info_already_set")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1000,16 +1000,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.card_number)
-        self.assertContains(response, Params.expiration_date_month)
-        self.assertContains(response, Params.expiration_date_year)
-        self.assertContains(response, Params.security_code)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.card_number, status_code=400)
+        self.assertContains(response, Params.expiration_date_month, status_code=400)
+        self.assertContains(response, Params.expiration_date_year, status_code=400)
+        self.assertContains(response, Params.security_code, status_code=400)
 
     def test_clear_credit_card_info(self):
         test_values = get_all_test_values("clear_credit_card_info")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1022,7 +1022,7 @@ class ViewsTestCase(TestCase):
         # This prefix causes the customer deletion to fail
         test_values = get_all_test_values("fail_delete")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1045,12 +1045,12 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_get_money_from_buyer(self):
         test_values = get_all_test_values("get_money_from_buyer")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1062,7 +1062,7 @@ class ViewsTestCase(TestCase):
     def test_get_money_from_buyer_fail_payment_intent_create(self):
         test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_create")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1075,7 +1075,7 @@ class ViewsTestCase(TestCase):
     def test_get_money_from_buyer_fail_payment_intent_confirm(self):
         test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_confirm")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1088,7 +1088,7 @@ class ViewsTestCase(TestCase):
     def test_get_money_from_buyer_fail_payment_intent_cancel(self):
         test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_cancel")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1112,14 +1112,14 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.currency)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.currency, status_code=400)
 
     def test_send_money_to_seller(self):
         test_values = get_all_test_values("send_money_to_seller")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1131,7 +1131,7 @@ class ViewsTestCase(TestCase):
     def test_send_money_to_seller_fail_payout_create(self):
         test_values = get_all_test_values("send_money_to_seller_fail_payout_create")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1155,9 +1155,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.currency)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.currency, status_code=400)
 
     def test_is_transaction_settled_that_is_settled_with_remaining_ask(self):
         seller_test_values = get_all_test_values("is_transaction_settled_that_is_settled_with_remaining_ask_seller")
@@ -1278,8 +1278,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_delete_user_with_existing_user(self):
         test_values = get_all_test_values("delete_user_with_existing_user")
@@ -1375,7 +1375,7 @@ class ViewsTestCase(TestCase):
     def test_delete_user_with_non_existent_user(self):
         test_values = get_all_test_values("delete_user_with_non_existent_user")
 
-        response = delete_user(test_values['request'], -1)
+        response = delete_user(test_values['request'], "-1")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -1386,7 +1386,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_get_ask_with_identifier_with_existing_ask(self):
         test_values = get_all_test_values("get_ask_with_identifier_with_existing_ask")
@@ -1408,7 +1408,7 @@ class ViewsTestCase(TestCase):
     def test_get_ask_with_identifier_with_non_existent_ask(self):
         test_values = get_all_test_values("get_ask_with_identifier_with_non_existent_ask")
 
-        response = get_ask_with_identifier(test_values['request'], test_values['user_id'], -1)
+        response = get_ask_with_identifier(test_values['request'], test_values['user_id'], "-1")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -1419,8 +1419,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_transfer_denarii_back_to_seller_with_exactly_amount(self):
         # First we create the seller and some asks
@@ -1503,7 +1503,7 @@ class ViewsTestCase(TestCase):
         buyer_test_values = get_all_test_values("transfer_denarii_back_to_seller_with_ask_that_doesnt_exist_buyer")
 
         transfer_response = transfer_denarii_back_to_seller(buyer_test_values['request'], buyer_test_values['user_id'],
-                                                            -1)
+                                                            "-1")
 
         self.assertEqual(type(transfer_response), HttpResponseBadRequest)
 
@@ -1538,13 +1538,13 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_send_money_back_to_buyer(self):
         test_values = get_all_test_values("send_money_back_to_buyer")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1556,7 +1556,7 @@ class ViewsTestCase(TestCase):
     def test_send_money_back_to_buyer_fail_payout_create(self):
         test_values = get_all_test_values("send_money_back_to_buyer_fail_payout_create")
 
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "card_number", "2", "1997",
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "123-456-7890", "2", "1997",
                                             "123")
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
@@ -1579,9 +1579,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.amount)
-        self.assertContains(response, Params.currency)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.amount, status_code=400)
+        self.assertContains(response, Params.currency, status_code=400)
 
     def test_cancel_buy_of_ask(self):
         # First we create the seller and some asks
@@ -1624,7 +1624,7 @@ class ViewsTestCase(TestCase):
 
         test_values = get_all_test_values("cancel_buy_of_ask_that_doesnt_exist")
 
-        cancel_response = cancel_buy_of_ask(test_values['request'], test_values['user_id'], -1)
+        cancel_response = cancel_buy_of_ask(test_values['request'], test_values['user_id'], "-1")
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
@@ -1687,14 +1687,14 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.ask_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.ask_id, status_code=400)
 
     def test_verify_identity(self):
         test_values = get_all_test_values("verify_identity")
 
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "first_name",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "firstname",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertNotEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1706,8 +1706,8 @@ class ViewsTestCase(TestCase):
     def test_verify_identity_but_cannot_create_candidate(self):
         test_values = get_all_test_values("verify_identity_but_cannot_create_candidate")
 
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_candidate",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "failcandidate",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1715,8 +1715,8 @@ class ViewsTestCase(TestCase):
     def test_verify_identity_but_cannot_create_invitation(self):
         test_values = get_all_test_values("verify_identity_but_cannot_create_invitation")
 
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "fail_invitation",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "failinvitation",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1728,22 +1728,22 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.first_name)
-        self.assertContains(response, Params.middle_name)
-        self.assertContains(response, Params.last_name)
-        self.assertContains(response, Params.email)
-        self.assertContains(response, Params.dob)
-        self.assertContains(response, Params.ssn)
-        self.assertContains(response, Params.zipcode)
-        self.assertContains(response, Params.phone)
-        self.assertContains(response, Params.work_locations)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.first_name, status_code=400)
+        self.assertContains(response, Params.middle_name, status_code=400)
+        self.assertContains(response, Params.last_name, status_code=400)
+        self.assertContains(response, Params.email, status_code=400)
+        self.assertContains(response, Params.dob, status_code=400)
+        self.assertContains(response, Params.ssn, status_code=400)
+        self.assertContains(response, Params.zipcode, status_code=400)
+        self.assertContains(response, Params.phone, status_code=400)
+        self.assertContains(response, Params.work_locations, status_code=400)
 
     def test_is_a_verified_person_where_identity_is_verified(self):
         test_values = get_all_test_values("is_a_verified_person_where_identity_is_verified")
 
         verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "andrew",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertNotEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1759,8 +1759,8 @@ class ViewsTestCase(TestCase):
     def test_is_a_verified_person_where_identity_was_not_verified(self):
         test_values = get_all_test_values("is_a_verified_person_where_identity_was_not_verified")
 
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "report_not_clear",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "reportnotclear",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertNotEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1776,8 +1776,8 @@ class ViewsTestCase(TestCase):
     def test_is_a_verified_person_where_identity_verification_is_pending(self):
         test_values = get_all_test_values("is_a_verified_person_where_identity_verification_is_pending")
 
-        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "report_pending",
-                                                   "middle", "last_name", "email@email.com", "1999-02-07",
+        verify_identity_response = verify_identity(test_values['request'], test_values['user_id'], "reportpending",
+                                                   "m", "lastname", "email@email.com", "1999/02/07",
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertNotEqual(type(verify_identity_response), HttpResponseBadRequest)
@@ -1808,7 +1808,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_get_all_asks(self):
         seller_test_values = get_all_test_values("get_all_asks_seller")
@@ -1886,7 +1886,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_get_all_buys(self):
         seller_test_values = get_all_test_values("get_all_buys_seller")
@@ -1966,7 +1966,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_create_support_ticket(self):
         test_values = get_all_test_values("create_support_ticket")
@@ -1982,9 +1982,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.title)
-        self.assertContains(response, Params.description)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.title, status_code=400)
+        self.assertContains(response, Params.description, status_code=400)
 
     def test_update_support_ticket(self):
         test_values = get_all_test_values("update_support_ticket")
@@ -2004,7 +2004,7 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("update_non_existent_support_ticket")
 
         update_response = update_support_ticket(test_values['request'], test_values['user_id'],
-                                                -1, "update comment")
+                                                "-1", "update comment")
 
         self.assertEqual(type(update_response), HttpResponseBadRequest)
 
@@ -2015,9 +2015,9 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.support_ticket_id)
-        self.assertContains(response, Params.comment)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.support_ticket_id, status_code=400)
+        self.assertContains(response, Params.comment, status_code=400)
 
     def test_delete_support_ticket(self):
         test_values = get_all_test_values("delete_support_ticket")
@@ -2037,7 +2037,7 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("delete_non_existent_support_ticket")
 
         delete_response = delete_support_ticket(test_values['request'], test_values['user_id'],
-                                                -1)
+                                                "98756ed1-e1b0-41a6-abd7-5e3a675ea5c0")
 
         self.assertEqual(type(delete_response), HttpResponseBadRequest)
 
@@ -2048,8 +2048,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.support_ticket_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.support_ticket_id, status_code=400)
 
     def test_get_all_tickets(self):
         test_values = get_all_test_values("get_all_tickets")
@@ -2125,8 +2125,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.can_be_resolved)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.can_be_resolved, status_code=400)
 
     def test_get_support_ticket_comments(self):
         test_values = get_all_test_values("get_support_ticket_comments")
@@ -2179,7 +2179,7 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("get_support_ticket_comments_for_non_existent_support_ticket")
 
         get_comments_response = get_comments_on_ticket(test_values['request'], test_values['user_id'],
-                                                       -1)
+                                                       "-1")
 
         self.assertEqual(type(get_comments_response), HttpResponseBadRequest)
 
@@ -2190,8 +2190,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.support_ticket_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.support_ticket_id, status_code=400)
 
     def test_resolve_support_ticket(self):
         test_values = get_all_test_values("resolve_support_ticket")
@@ -2210,7 +2210,7 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("resolve_non_existent_support_ticket")
 
         resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
-                                                  -1)
+                                                  "-1")
         self.assertEqual(type(resolve_response), HttpResponseBadRequest)
 
     def test_resolve_ticket_invalid_params_returns_all_invalid_params(self):
@@ -2220,8 +2220,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.support_ticket_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.support_ticket_id, status_code=400)
 
     def test_poll_for_escrowed_transaction(self):
         seller_test_values = get_all_test_values("poll_for_escrowed_transaction_seller")
@@ -2288,7 +2288,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)
 
     def test_get_support_ticket(self):
 
@@ -2330,7 +2330,7 @@ class ViewsTestCase(TestCase):
         self.assertNotEqual(type(response_two), HttpResponseBadRequest)
 
         get_all_response = get_support_ticket(test_values['request'], test_values['user_id'],
-                                              -1)
+                                              "-1")
 
         self.assertEqual(type(get_all_response), HttpResponseBadRequest)
 
@@ -2341,8 +2341,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
-        self.assertContains(response, Params.support_ticket_id)
+        self.assertContains(response, Params.user_id, status_code=400)
+        self.assertContains(response, Params.support_ticket_id, status_code=400)
 
     def test_logout_user_logs_them_out(self):
         test_values = get_all_test_values("logout_user_logs_them_out")
@@ -2363,4 +2363,4 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-        self.assertContains(response, Params.user_id)
+        self.assertContains(response, Params.user_id, status_code=400)

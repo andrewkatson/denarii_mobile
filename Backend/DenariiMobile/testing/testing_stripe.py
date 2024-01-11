@@ -22,7 +22,7 @@ class CustomerClass:
         self.name = name
         self.source = source
 
-        if name == "fail_user":
+        if name == "fail_create_customer_user":
             raise Exception("Failed to create customer")
         if name == "fail_setup_intent_user":
             return {'id': "cus_fail_intent"}

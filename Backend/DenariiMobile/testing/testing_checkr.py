@@ -1,6 +1,3 @@
-import requests
-
-
 def identifier(first, last, email):
     return f"{first}:{last}:{email}"
 
@@ -72,7 +69,7 @@ class CheckrClient:
                 return False, {}
             else:
 
-                if first_name == "fail_candidate":
+                if first_name == "failcandidate":
                     return False, {}
 
                 candidate_id = first_name
@@ -83,7 +80,7 @@ class CheckrClient:
                 return True, {"id": candidate_id}
 
         else:
-            if first_name == "fail_candidate":
+            if first_name == "failcandidate":
                 return False, {}
 
             candidate_id = first_name
@@ -101,16 +98,16 @@ class CheckrClient:
             return False, {}
         else:
 
-            if candidate_id == "fail_invitation":
+            if candidate_id == "failinvitation":
                 return False, {}
 
-            if candidate_id == "fail_report":
+            if candidate_id == "failreport":
                 return True, {"report_id": candidate_id, "status": "unknown"}
 
-            if candidate_id == "report_not_clear":
+            if candidate_id == "reportnotclear":
                 return True, {"report_id": candidate_id, "status": "complete"}
 
-            if candidate_id == "report_pending":
+            if candidate_id == "reportpending":
                 return True, {"report_id": candidate_id, "status": "pending"}
 
             report_id = "id"
@@ -126,11 +123,11 @@ class CheckrClient:
 
         if report_id == "id":
             return True, {"status": "complete", "result": "clear"}
-        elif report_id == "fail_report":
+        elif report_id == "failreport":
             return False, {}
-        elif report_id == "report_not_clear":
+        elif report_id == "reportnotclear":
             return True, {"status": "complete", "result": "not_clear"}
-        elif report_id == "report_pending":
+        elif report_id == "reportpending":
             return True, {"status": "pending", "result": "unclear"}
         else:
             return False, {}

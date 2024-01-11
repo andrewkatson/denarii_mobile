@@ -1,4 +1,3 @@
-import datetime
 import uuid
 
 from django.contrib.auth.models import AbstractUser
@@ -12,6 +11,10 @@ class DenariiUser(AbstractUser):
     identity_is_verified = models.BooleanField(default=False)
     creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
+    id = models.UUIDField(default=uuid.uuid4,
+                          primary_key=True,
+                          unique=True,
+                          editable=False)
 
     def __str__(self):
         if self.username is None or self.email is None:
@@ -21,16 +24,11 @@ class DenariiUser(AbstractUser):
     class Meta:
         unique_together = ('username', 'email')
 
-    @classmethod
-    def get_default_pk(cls):
-        user, created = cls.objects.get_or_create(username="Test", email="test@email.com")
-        return user.id
-
 
 class CreditCard(models.Model):
     customer_id = models.TextField(null=True)
     source_token_id = models.TextField(null=True)
-    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=DenariiUser.get_default_pk)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, null=True)
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
@@ -48,7 +46,7 @@ class SupportTicket(models.Model):
     support_id = models.TextField(null=True)
     description = models.TextField(null=True)
     title = models.TextField(null=True)
-    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=DenariiUser.get_default_pk)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, null=True)
     creation_time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)
     resolved = models.BooleanField(default=False)
@@ -108,7 +106,7 @@ class WalletDetails(models.Model):
     seed = models.TextField(null=True)
     balance = models.FloatField(null=True)
     wallet_address = models.TextField(null=True)
-    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=DenariiUser.get_default_pk)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, null=True)
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
@@ -128,7 +126,7 @@ class DenariiAsk(models.Model):
     primary_key = models.UUIDField(primary_key=True,
                                    default=uuid.uuid4,
                                    editable=False)
-    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, default=DenariiUser.get_default_pk)
+    denarii_user = models.ForeignKey(DenariiUser, on_delete=models.CASCADE, null=True)
     ask_id = models.TextField(null=True)
     amount = models.FloatField(null=True)
     asking_price = models.FloatField(null=True)

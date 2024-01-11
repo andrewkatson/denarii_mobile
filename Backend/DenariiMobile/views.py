@@ -217,8 +217,8 @@ def get_user_id(request, username, email, password):
 
 def request_reset(request, username_or_email):
     invalid_fields = []
-    if not is_valid_pattern(username_or_email, Patterns.name) and not is_valid_pattern(username_or_email,
-                                                                                       Patterns.email):
+    if not is_valid_pattern(username_or_email, Patterns.alphanumeric) and not is_valid_pattern(username_or_email,
+                                                                                               Patterns.email):
         invalid_fields.append(Params.username_or_email)
 
     if len(invalid_fields) > 0:
@@ -250,10 +250,11 @@ def request_reset(request, username_or_email):
 
 def verify_reset(request, username_or_email, reset_id):
     invalid_fields = []
-    if not is_valid_pattern(username_or_email, Patterns.name) and not is_valid_pattern(username_or_email, Params.email):
+    if not is_valid_pattern(username_or_email, Patterns.alphanumeric) and not is_valid_pattern(username_or_email,
+                                                                                               Patterns.email):
         invalid_fields.append(Params.username_or_email)
 
-    if not is_valid_pattern(username_or_email, Patterns.reset_id):
+    if not is_valid_pattern(reset_id, Patterns.reset_id):
         invalid_fields.append(Params.reset_id)
 
     if len(invalid_fields) > 0:
@@ -282,7 +283,7 @@ def verify_reset(request, username_or_email, reset_id):
 
 def reset_password(request, username, email, password):
     invalid_fields = []
-    if not is_valid_pattern(username, Patterns.name):
+    if not is_valid_pattern(username, Patterns.alphanumeric):
         invalid_fields.append(Params.username)
 
     if not is_valid_pattern(email, Patterns.email):
@@ -615,11 +616,14 @@ def buy_denarii(request, user_id, amount, bid_price, buy_regardless_of_price, fa
     if not is_valid_pattern(amount, Patterns.double):
         invalid_fields.append(Params.amount)
 
-    if not is_valid_pattern(bid_price, Patterns.boolean):
-        invalid_fields.append(Params.buy_regardless_of_price)
+    if not is_valid_pattern(bid_price, Patterns.double):
+        invalid_fields.append(Params.bid_price)
 
     if not is_valid_pattern(fail_if_full_amount_isnt_met, Patterns.boolean):
         invalid_fields.append(Params.fail_if_full_amount_isnt_met)
+
+    if not is_valid_pattern(buy_regardless_of_price, Patterns.boolean):
+        invalid_fields.append(Params.buy_regardless_of_price)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
@@ -1367,10 +1371,13 @@ def verify_identity(request, user_id, first_name, middle_name, last_name, email,
         invalid_fields.append(Params.email)
 
     if not is_valid_pattern(dob, Patterns.slash_date):
-        invalid_fields.append(Params.amount)
+        invalid_fields.append(Params.dob)
 
     if not is_valid_pattern(ssn, Patterns.digits_and_dashes):
         invalid_fields.append(Params.ssn)
+
+    if not is_valid_pattern(zipcode, Patterns.digits_and_dashes):
+        invalid_fields.append(Params.zipcode)
 
     if not is_valid_pattern(phone, Patterns.phone_number):
         invalid_fields.append(Params.phone)
@@ -1564,7 +1571,7 @@ def update_support_ticket(request, user_id, support_ticket_id, comment):
         invalid_fields.append(Params.user_id)
 
     if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
-        invalid_fields.append(Params.title)
+        invalid_fields.append(Params.support_ticket_id)
 
     if not is_valid_pattern(comment, Patterns.paragraph_of_chars):
         invalid_fields.append(Params.comment)
@@ -1608,7 +1615,7 @@ def delete_support_ticket(request, user_id, support_ticket_id):
         invalid_fields.append(Params.user_id)
 
     if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
-        invalid_fields.append(Params.title)
+        invalid_fields.append(Params.support_ticket_id)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
@@ -1684,7 +1691,7 @@ def get_support_ticket(request, user_id, support_ticket_id):
         invalid_fields.append(Params.user_id)
 
     if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
-        invalid_fields.append(Params.title)
+        invalid_fields.append(Params.support_ticket_id)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
@@ -1727,7 +1734,7 @@ def get_comments_on_ticket(request, user_id, support_ticket_id):
         invalid_fields.append(Params.user_id)
 
     if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
-        invalid_fields.append(Params.title)
+        invalid_fields.append(Params.support_ticket_id)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
@@ -1767,7 +1774,7 @@ def resolve_support_ticket(request, user_id, support_ticket_id):
         invalid_fields.append(Params.user_id)
 
     if not is_valid_pattern(support_ticket_id, Patterns.uuid4):
-        invalid_fields.append(Params.title)
+        invalid_fields.append(Params.support_ticket_id)
 
     if len(invalid_fields) > 0:
         return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
