@@ -15,7 +15,7 @@ class Patterns:
     email = r"^[^@]+@[^@]+\.[^@]+$"
     uuid4 = r"^[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}\Z$"
     boolean = r"^(?i)(true|false)$"
-    json_dict_of_upper_and_lower_case_chars = r"^[\]\[{}:\"\\a-zA-Z]{2,5000}$"
+    json_dict_of_upper_and_lower_case_chars = r"^[\]\[{}:\"\\, a-zA-Z]{2,5000}$"
     reset_id = r"^\d{6}$"
 
 
