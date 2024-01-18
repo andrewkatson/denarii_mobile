@@ -531,7 +531,7 @@ class StubbedAPI: API {
             return denariiResponses
         }
         
-        denariiResponses.responseCode = -1
+        denariiResponse.responseCode = -1
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -591,7 +591,7 @@ class StubbedAPI: API {
             let user = self.users[index]
             if user.userID == String(userIdentifier) {
                  
-                if user.walletDetails.password == password && user.walletDetails.walletName == walletName {
+                if user.walletDetails.walletPassword == password && user.walletDetails.walletName == walletName {
                     denariiResponse.walletAddress = user.walletDetails.walletAddress
                     denariiResponse.seed = user.walletDetails.seed
                 } else {
@@ -1049,7 +1049,7 @@ class StubbedAPI: API {
         var denariiResponses = Array<DenariiResponse>()
         var denariiResponse = DenariiResponse()
         
-        if !requireLogin(userIdentifier) || hasRemainingAsks(userIdentifier) || hasRemainingBuys(userIdentifier) {
+        if !requireLogin(userIdentifier) || hasRemainingAsks(String(userIdentifier)) || hasRemainingBuys(String(userIdentifier)) {
             denariiResponse.responseCode = -1
             denariiResponses.append(denariiResponse)
             return denariiResponses
@@ -1463,7 +1463,6 @@ class StubbedAPI: API {
         if !requireLogin(userIdentifier) {
             return denariiResponses
         }
-        denariiResponse.responseCode = 200
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1472,6 +1471,7 @@ class StubbedAPI: API {
                 if supportTicket.supportID == supportTicketId {
                     for comment in supportTicket.supportTicketCommentList {
                         var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
 
                         denariiResponse.author = comment.author
                         denariiResponse.content = comment.content
@@ -1523,7 +1523,6 @@ class StubbedAPI: API {
         if !requireLogin(userIdentifier) {
             return denariiResponses
         }
-        denariiResponse.responseCode = 200
 
         for index in self.users.indices {
             let user = self.users[index]
@@ -1532,6 +1531,8 @@ class StubbedAPI: API {
                     let ask = user.denariiAskList[askIndex]
                     if ask.inEscrow && !ask.isSettled {
                         var denariiResponse = DenariiResponse()
+                        denariiResponse.responseCode = 200
+
 
                         denariiResponse.askID = ask.askID
                         denariiResponse.amount = ask.amount

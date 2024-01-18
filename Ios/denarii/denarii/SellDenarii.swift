@@ -459,6 +459,21 @@ struct SellDenarii: View {
             }
             lock.lock()
             
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(amount, Constants.Patterns.double) {
+                invalid_fields.append(Constants.Params.amount)
+            }
+            
+            if !is_valid_input(price, Constants.Patterns.double) {
+                invalid_fields.append(Constants.Params.askingPrice)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailureForSellDenarii.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             let userId = self.user.getValue().userID

@@ -123,6 +123,21 @@ struct CreateSupportTicket: View {
                 successOrFailure.setValue("Failed to create support ticket")
                 return false
             }
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(title, Constants.Patterns.alphanumericWithSpaces) {
+                invalid_fields.append(Constants.Params.title)
+            }
+            
+            if !is_valid_input(description, Constants.Patterns.paragraphOfChars) {
+                invalid_fields.append(Constants.Params.description)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
                 
             let responses = api.createSupportTicket(Int(self.user.getValue().userID)!, title, description)

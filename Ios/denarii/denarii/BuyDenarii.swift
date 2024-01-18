@@ -404,6 +404,21 @@ struct BuyDenarii: View {
             
             if hasCreditCardInfo(api, userId) && isVerified(api, userId){
                 
+                var invalid_fields: Array<String> = Array()
+                
+                if !is_valid_input(amount, Constants.Patterns.double) {
+                    invalid_fields.append(Constants.Params.amount)
+                }
+                
+                if !is_valid_input(price, Constants.Patterns.double) {
+                    invalid_fields.append(Constants.Params.bidPrice)
+                }
+                
+                if !invalid_fields.isEmpty {
+                    successOrFailureForBuyDenarii.setValue("Invalid fields: \(invalid_fields)")
+                    return false
+                }
+                
                 let asksBought = tryToBuyDenarii(api, userId)
                 
                 if !asksBought.isEmpty {

@@ -64,6 +64,26 @@ struct LoginView: View {
             successOrFailure.setValue("Logged In in DEBUG mode")
             return true
         } else {
+            
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(username, Constants.Patterns.alphanumeric) {
+                invalid_fields.append(Constants.Params.username)
+            }
+            
+            if !is_valid_input(email, Constants.Patterns.email) {
+                invalid_fields.append(Constants.Params.email)
+            }
+            
+            if !is_valid_input(password, Constants.Patterns.password) {
+                invalid_fields.append(Constants.Params.password)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             let denariiResponses = api.getUserId(username, email, password)
             if denariiResponses.isEmpty {

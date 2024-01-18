@@ -200,6 +200,29 @@ struct CreditCardInfo: View {
                 return false
             }
             
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(number, Constants.Patterns.digitsAndDashes) {
+                invalid_fields.append(Constants.Params.cardNumber)
+            }
+            
+            if !is_valid_input(expirationDateMonth, Constants.Patterns.digitsOnly) {
+                invalid_fields.append(Constants.Params.expirationDateMonth)
+            }
+            
+            if !is_valid_input(expirationDateYear, Constants.Patterns.digitsOnly) {
+                invalid_fields.append(Constants.Params.expirationDateYear)
+            }
+            
+            if !is_valid_input(securityCode, Constants.Patterns.digitsOnly) {
+                invalid_fields.append(Constants.Params.securityCode)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailureForSet.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             let responses = api.setCreditCardInfo(Int(self.user.getValue().userID)!, number, expirationDateMonth, expirationDateYear, securityCode)

@@ -217,6 +217,49 @@ struct Verification: View {
                 return false
             }
             
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(firstName, Constants.Patterns.name) {
+                invalid_fields.append(Constants.Params.firstName)
+            }
+            
+            if !is_valid_input(middleName, Constants.Patterns.singleLetter) {
+                invalid_fields.append(Constants.Params.middleName)
+            }
+            
+            if !is_valid_input(lastName, Constants.Patterns.name) {
+                invalid_fields.append(Constants.Params.lastName)
+            }
+            
+            if !is_valid_input(email, Constants.Patterns.email) {
+                invalid_fields.append(Constants.Params.email)
+            }
+            
+            if !is_valid_input(dob, Constants.Patterns.slashDate) {
+                invalid_fields.append(Constants.Params.dob)
+            }
+            
+            if !is_valid_input(ssn, Constants.Patterns.digitsAndDashes) {
+                invalid_fields.append(Constants.Params.ssn)
+            }
+            
+            if !is_valid_input(zipcode, Constants.Patterns.digitsAndDashes) {
+                invalid_fields.append(Constants.Params.zipcode)
+            }
+            
+            if !is_valid_input(phone, Constants.Patterns.phoneNumber) {
+                invalid_fields.append(Constants.Params.phone)
+            }
+            
+            if !is_valid_input(formatWorkLocations(workCity, workState, workCountry), Constants.Patterns.jsonDictOfUpperAndLowerCaseChars) {
+                invalid_fields.append(Constants.Params.workLocations)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             let responses = api.verifyIdentity(Int(self.user.getValue().userID)!, firstName, middleName, lastName, email, dob, ssn, zipcode, phone, formatWorkLocations(workCity, workState, workCountry))

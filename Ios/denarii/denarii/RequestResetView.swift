@@ -52,6 +52,17 @@ struct RequestResetView: View {
             successOrFailure.setValue("Requested password reset in DEBUG mode")
             return true
         } else {
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(usernameOrEmail, Constants.Patterns.alphanumeric) && !is_valid_input(usernameOrEmail, Constants.Patterns.email){
+                invalid_fields.append(Constants.Params.usernameOrEmail)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             let denariiResponses = api.requestPasswordReset(usernameOrEmail)
             if denariiResponses.isEmpty {

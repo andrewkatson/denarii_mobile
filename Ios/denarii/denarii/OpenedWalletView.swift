@@ -205,6 +205,21 @@ struct OpenedWalletView: View {
             successOrFailureForSendDenarii.setValue("Sent denarii in DEBUG mode")
             return true
         } else {
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(addressToSendTo, Constants.Patterns.alphanumeric) {
+                invalid_fields.append(Constants.Params.address)
+            }
+            
+            if !is_valid_input(amountToSend, Constants.Patterns.double) {
+                invalid_fields.append(Constants.Params.amount)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailureForSendDenarii.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             var userId = -1

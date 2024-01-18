@@ -60,6 +60,17 @@ struct VerifyResetView: View {
             successOrFailure.setValue("Verified password reset in DEBUG mode")
             return true
         } else {
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(resetId, Constants.Patterns.resetId) {
+                invalid_fields.append(Constants.Params.resetId)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             let denariiResponses = api.verifyReset(usernameOrEmail.getValue(), Int(resetId)!)
             if denariiResponses.isEmpty {

@@ -99,6 +99,12 @@
 		244E38F02A27E5B60011B999 /* ChangingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E38ED2A27E5B60011B999 /* ChangingTextView.swift */; };
 		2463910D2AE9518F00EC840F /* ObservableUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910C2AE9518F00EC840F /* ObservableUser.swift */; };
 		2463910F2AE9566300EC840F /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2463910E2AE9566300EC840F /* UserSettings.swift */; };
+		248798512B59DFB700DA0C7A /* InputPatternValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798502B59DFB700DA0C7A /* InputPatternValidator.swift */; };
+		248798522B59E62B00DA0C7A /* InputPatternValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798502B59DFB700DA0C7A /* InputPatternValidator.swift */; };
+		248798532B59E62C00DA0C7A /* InputPatternValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798502B59DFB700DA0C7A /* InputPatternValidator.swift */; };
+		248798552B59E99200DA0C7A /* ObservableDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798542B59E99200DA0C7A /* ObservableDouble.swift */; };
+		248798562B59E99200DA0C7A /* ObservableDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798542B59E99200DA0C7A /* ObservableDouble.swift */; };
+		248798572B59E99200DA0C7A /* ObservableDouble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248798542B59E99200DA0C7A /* ObservableDouble.swift */; };
 		24FDF7BA2AC8BFEA00EF9822 /* CreditCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7B92AC8BFEA00EF9822 /* CreditCard.swift */; };
 		24FDF7BC2AC8BFFB00EF9822 /* DenariiAsk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */; };
 		24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */; };
@@ -189,6 +195,8 @@
 		244E38ED2A27E5B60011B999 /* ChangingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangingTextView.swift; sourceTree = "<group>"; };
 		2463910C2AE9518F00EC840F /* ObservableUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableUser.swift; sourceTree = "<group>"; };
 		2463910E2AE9566300EC840F /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		248798502B59DFB700DA0C7A /* InputPatternValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPatternValidator.swift; sourceTree = "<group>"; };
+		248798542B59E99200DA0C7A /* ObservableDouble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableDouble.swift; sourceTree = "<group>"; };
 		24FDF7B92AC8BFEA00EF9822 /* CreditCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditCard.swift; sourceTree = "<group>"; };
 		24FDF7BB2AC8BFFB00EF9822 /* DenariiAsk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenariiAsk.swift; sourceTree = "<group>"; };
 		24FDF7BD2AC8C00300EF9822 /* DenariiResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DenariiResponse.swift; sourceTree = "<group>"; };
@@ -270,6 +278,7 @@
 		244E386E2A113D1A0011B999 /* denarii */ = {
 			isa = PBXGroup;
 			children = (
+				2487984F2B59DF9500DA0C7A /* validators */,
 				2427B7AB2AFF0D2B0020E1E0 /* coordinator */,
 				2427B7972AF94EA70020E1E0 /* exceptions */,
 				24FDF7DA2ACA43A500EF9822 /* constants */,
@@ -330,6 +339,14 @@
 			path = denariiUITests;
 			sourceTree = "<group>";
 		};
+		2487984F2B59DF9500DA0C7A /* validators */ = {
+			isa = PBXGroup;
+			children = (
+				248798502B59DFB700DA0C7A /* InputPatternValidator.swift */,
+			);
+			path = validators;
+			sourceTree = "<group>";
+		};
 		24FDF7B82AC8BFC400EF9822 /* user */ = {
 			isa = PBXGroup;
 			children = (
@@ -353,6 +370,7 @@
 				244E38E92A23BB8B0011B999 /* ObservableBool.swift */,
 				2463910C2AE9518F00EC840F /* ObservableUser.swift */,
 				2427B77F2AF08B900020E1E0 /* ObservableArray.swift */,
+				248798542B59E99200DA0C7A /* ObservableDouble.swift */,
 			);
 			path = wrappedprimitives;
 			sourceTree = "<group>";
@@ -446,7 +464,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					244E386B2A113D1A0011B999 = {
 						CreatedOnToolsVersion = 14.3;
@@ -520,6 +538,7 @@
 				2463910F2AE9566300EC840F /* UserSettings.swift in Sources */,
 				24FDF7C42AC8C02700EF9822 /* SupportTicketComment.swift in Sources */,
 				244E389E2A1144570011B999 /* LoginView.swift in Sources */,
+				248798552B59E99200DA0C7A /* ObservableDouble.swift in Sources */,
 				24FDF7D22ACA42D800EF9822 /* SupportTickets.swift in Sources */,
 				24FDF7C62AC8C0DB00EF9822 /* UserDetails.swift in Sources */,
 				24FDF7CC2ACA429A00EF9822 /* SellDenarii.swift in Sources */,
@@ -546,6 +565,7 @@
 				244E38EE2A27E5B60011B999 /* ChangingTextView.swift in Sources */,
 				24FDF7C02AC8C01500EF9822 /* DenariiUser.swift in Sources */,
 				2427B7AD2AFF0D420020E1E0 /* NavigationCoordinator.swift in Sources */,
+				248798512B59DFB700DA0C7A /* InputPatternValidator.swift in Sources */,
 				244E38EA2A23BB8B0011B999 /* ObservableBool.swift in Sources */,
 				24FDF7BE2AC8C00300EF9822 /* DenariiResponse.swift in Sources */,
 				24FDF7CA2ACA428300EF9822 /* BuyDenarii.swift in Sources */,
@@ -597,6 +617,8 @@
 				24FDF7EA2ACB9A5E00EF9822 /* CreditCard.swift in Sources */,
 				2427B78A2AF7BA620020E1E0 /* CreditCardInfo.swift in Sources */,
 				24FDF7EB2ACB9A5E00EF9822 /* DenariiUser.swift in Sources */,
+				248798562B59E99200DA0C7A /* ObservableDouble.swift in Sources */,
+				248798522B59E62B00DA0C7A /* InputPatternValidator.swift in Sources */,
 				244E38B72A116E2E0011B999 /* RestoreDeterministicWalletView.swift in Sources */,
 				2427B7812AF7BA3F0020E1E0 /* ObservableUser.swift in Sources */,
 				2427B79A2AF94EC70020E1E0 /* NotLoggedInException.swift in Sources */,
@@ -631,10 +653,12 @@
 				244E38B42A116E210011B999 /* OpenedWalletView.swift in Sources */,
 				2427B7822AF7BA400020E1E0 /* ObservableUser.swift in Sources */,
 				244E389C2A1141F60011B999 /* LoginOrRegisterView.swift in Sources */,
+				248798572B59E99200DA0C7A /* ObservableDouble.swift in Sources */,
 				244E38CC2A1EC33B0011B999 /* Constants.swift in Sources */,
 				2427B78F2AF7BA620020E1E0 /* SupportTicketDetails.swift in Sources */,
 				24FDF7EE2ACB9A5E00EF9822 /* SupportTicket.swift in Sources */,
 				2427B7AF2AFF0D420020E1E0 /* NavigationCoordinator.swift in Sources */,
+				248798532B59E62C00DA0C7A /* InputPatternValidator.swift in Sources */,
 				2427B7842AF7BA430020E1E0 /* ObservableArray.swift in Sources */,
 				2427B78E2AF7BA620020E1E0 /* SupportTickets.swift in Sources */,
 				244E38E82A23B32B0011B999 /* ObservableInt.swift in Sources */,
@@ -675,6 +699,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -736,6 +761,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

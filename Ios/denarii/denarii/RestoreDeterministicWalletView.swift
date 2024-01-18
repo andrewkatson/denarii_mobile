@@ -55,6 +55,26 @@ struct RestoreDeterministicWalletView: View {
             successOrFailure.setValue("Restored wallet in DEBUG mode")
             return true
         } else {
+            
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(walletName, Constants.Patterns.alphanumeric) {
+                invalid_fields.append(Constants.Params.walletName)
+            }
+            
+            if !is_valid_input(walletPassword, Constants.Patterns.password) {
+                invalid_fields.append(Constants.Params.password)
+            }
+            
+            if !is_valid_input(walletSeed, Constants.Patterns.seed) {
+                invalid_fields.append(Constants.Params.seed)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailure.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             var userId = -1
@@ -63,7 +83,7 @@ struct RestoreDeterministicWalletView: View {
                 userId = Int(user.getValue().userID)!
             }
             
-            let denariiResponses = api.restoreWallet(userId,walletName, walletPassword, walletSeed)
+            let denariiResponses = api.restoreWallet(userId, walletName, walletPassword, walletSeed)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
                 return false

@@ -1,6 +1,13 @@
+//
+//  ObservableDouble.swift
+//  denarii
+//
+//  Created by Andrew Katson on 1/18/24.
+//
+
 import Foundation
 
-class ObservableDouble:  ObservableObject {
+class ObservableDouble : ObservableObject {
     @Published var value: Double = 0.0
     
     func setValue(_ newVal: Double) {

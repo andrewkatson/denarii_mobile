@@ -304,6 +304,18 @@ struct SupportTicketDetails: View {
             successOrFailureForCreateNewComment.setValue("Successfully added a new comment in DEBUG mode")
             return true
         } else {
+            
+            var invalid_fields: Array<String> = Array()
+            
+            if !is_valid_input(comment, Constants.Patterns.paragraphOfChars) {
+                invalid_fields.append(Constants.Params.comment)
+            }
+            
+            if !invalid_fields.isEmpty {
+                successOrFailureForCreateNewComment.setValue("Invalid fields: \(invalid_fields)")
+                return false
+            }
+            
             let api = Config.api
             
             if self.user.getValue().userID.isEmpty {
