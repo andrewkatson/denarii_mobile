@@ -154,7 +154,7 @@ final class denariiUITests: XCTestCase {
         
         let passwordSecureTextField = app.secureTextFields["Password"]
         tapElementAndWaitForKeyboardToAppear(passwordSecureTextField)
-        passwordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
+        passwordSecureTextField.typeText("Password1#_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -190,14 +190,14 @@ final class denariiUITests: XCTestCase {
         
         let passwordSecureTextField = app.secureTextFields["Password"]
         tapElementAndWaitForKeyboardToAppear(passwordSecureTextField)
-        passwordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
+        passwordSecureTextField.typeText("Password1#_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmPasswordSecureTextField = app.secureTextFields["Confirm Password"]
         tapElementAndWaitForKeyboardToAppear(confirmPasswordSecureTextField)
-        confirmPasswordSecureTextField.typeText("Password_\(self.currentTestName)_\(suffix)")
+        confirmPasswordSecureTextField.typeText("Password1#_\(self.currentTestName)_\(suffix)")
 
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -278,14 +278,14 @@ final class denariiUITests: XCTestCase {
         
         let passwordTextField = app.secureTextFields["Password"]
         tapElementAndWaitForKeyboardToAppear(passwordTextField)
-        passwordTextField.typeText("password_\(self.currentTestName)_\(suffix)")
+        passwordTextField.typeText("password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmPasswordTextField = app.secureTextFields["Confirm Password"]
         tapElementAndWaitForKeyboardToAppear(confirmPasswordTextField)
-        confirmPasswordTextField.typeText("password_\(self.currentTestName)_\(suffix)")
+        confirmPasswordTextField.typeText("password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -314,14 +314,14 @@ final class denariiUITests: XCTestCase {
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         tapElementAndWaitForKeyboardToAppear(walletPasswordSecureTextField)
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
+        walletPasswordSecureTextField.typeText("wallet_password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let confirmWalletPasswordSecureTextField = app.secureTextFields["Confirm Wallet Password"]
         tapElementAndWaitForKeyboardToAppear(confirmWalletPasswordSecureTextField)
-        confirmWalletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
+        confirmWalletPasswordSecureTextField.typeText("wallet_password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -364,7 +364,7 @@ final class denariiUITests: XCTestCase {
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         tapElementAndWaitForKeyboardToAppear(walletPasswordSecureTextField)
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
+        walletPasswordSecureTextField.typeText("wallet_password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -401,7 +401,7 @@ final class denariiUITests: XCTestCase {
         
         let walletPasswordSecureTextField = app.secureTextFields["Wallet Password"]
         tapElementAndWaitForKeyboardToAppear(walletPasswordSecureTextField)
-        walletPasswordSecureTextField.typeText("wallet_password_\(self.currentTestName)_\(suffix)")
+        walletPasswordSecureTextField.typeText("wallet_password1#A_\(self.currentTestName)_\(suffix)")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -589,21 +589,21 @@ final class denariiUITests: XCTestCase {
         
         let firstNameTextField = app.textFields["First Name"]
         tapElementAndWaitForKeyboardToAppear(firstNameTextField)
-        firstNameTextField.typeText("first_name_\(self.currentTestName)_\(suffix)")
+        firstNameTextField.typeText("first name")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let middleNameTextField = app.textFields["Middle Initial"]
         tapElementAndWaitForKeyboardToAppear(middleNameTextField)
-        middleNameTextField.typeText("middle_name_\(self.currentTestName)_\(suffix)")
+        middleNameTextField.typeText("i")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let lastNameTextField = app.textFields["Last Name"]
         tapElementAndWaitForKeyboardToAppear(lastNameTextField)
-        lastNameTextField.typeText("last_name_\(self.currentTestName)_\(suffix)")
+        lastNameTextField.typeText("last name")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -631,35 +631,35 @@ final class denariiUITests: XCTestCase {
         
         let zipcodeTextField = app.textFields["Zipcode"]
         tapElementAndWaitForKeyboardToAppear(zipcodeTextField)
-        zipcodeTextField.typeText("Zipcode")
+        zipcodeTextField.typeText("123-456")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let phoneNumberTextField = app.textFields["Phone Number"]
         tapElementAndWaitForKeyboardToAppear(phoneNumberTextField)
-        phoneNumberTextField.typeText("123")
+        phoneNumberTextField.typeText("123456789")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let workCityTextField = app.textFields["Work City"]
         tapElementAndWaitForKeyboardToAppear(workCityTextField)
-        workCityTextField.typeText("city_\(self.currentTestName)_\(suffix)")
+        workCityTextField.typeText("San Jose")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let workStateTexttField = app.textFields["Work State"]
         tapElementAndWaitForKeyboardToAppear(workStateTexttField)
-        workStateTexttField.typeText("state_\(self.currentTestName)_\(suffix)")
+        workStateTexttField.typeText("California")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let workCountryTextField = app.textFields["Work Country"]
         tapElementAndWaitForKeyboardToAppear(workCountryTextField)
-        workCountryTextField.typeText("country_\(self.currentTestName)_\(suffix)")
+        workCountryTextField.typeText("United States")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -760,14 +760,14 @@ final class denariiUITests: XCTestCase {
         
         let titleTextField = app.textFields["Title"]
         tapElementAndWaitForKeyboardToAppear(titleTextField)
-        titleTextField.typeText("title_\(self.currentTestName)_\(suffix)")
+        titleTextField.typeText("Title Is")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
         
         let descriptionTextField = app.textFields["Description"]
         tapElementAndWaitForKeyboardToAppear(descriptionTextField)
-        descriptionTextField.typeText("description_\(self.currentTestName)_\(suffix)")
+        descriptionTextField.typeText("Description is of this")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -784,7 +784,7 @@ final class denariiUITests: XCTestCase {
         
         let newCommentTextField = app.textFields["New Comment"]
         tapElementAndWaitForKeyboardToAppear(newCommentTextField)
-        newCommentTextField.typeText("comment_\(self.currentTestName)_\(suffix)")
+        newCommentTextField.typeText("Comment here this stuff")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
