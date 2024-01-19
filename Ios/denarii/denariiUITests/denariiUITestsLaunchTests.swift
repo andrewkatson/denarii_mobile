@@ -602,7 +602,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
         
         let firstNameTextField = app.textFields["First Name"]
         tapElementAndWaitForKeyboardToAppear(firstNameTextField)
-        firstNameTextField.typeText("first name")
+        firstNameTextField.typeText("first")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -616,7 +616,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
         
         let lastNameTextField = app.textFields["Last Name"]
         tapElementAndWaitForKeyboardToAppear(lastNameTextField)
-        lastNameTextField.typeText("last name")
+        lastNameTextField.typeText("last")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -651,7 +651,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
         
         let phoneNumberTextField = app.textFields["Phone Number"]
         tapElementAndWaitForKeyboardToAppear(phoneNumberTextField)
-        phoneNumberTextField.typeText("123456789")
+        phoneNumberTextField.typeText("1234567890")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)

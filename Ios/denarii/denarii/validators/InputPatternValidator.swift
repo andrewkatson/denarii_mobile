@@ -8,13 +8,10 @@
 import Foundation
 
 
-func is_valid_input(_ text: String, _ pattern: String) -> Bool {
-    
-    do {
-        let regexObj = try Regex(pattern)
-        
-        return regexObj.contains(captureNamed: text)
-    } catch {
-        return false
-    }
+func is_valid_input(_ text: String, _ pattern: Regex<Substring>) -> Bool {
+    return text.contains(pattern)
+}
+
+func is_valid_input(_ text: String, _ pattern: Regex<(Substring, Substring?)>) -> Bool {
+    return text.contains(pattern)
 }

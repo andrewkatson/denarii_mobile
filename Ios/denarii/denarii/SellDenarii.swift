@@ -182,7 +182,9 @@ struct SellDenarii: View {
                     goingPrice = ask.askingPrice
                 }
             }
-
+            if goingPrice == Double.greatestFiniteMagnitude {
+                goingPrice = 1
+            }
             self.goingPrice.setValue(goingPrice)
         }
     }

@@ -276,7 +276,7 @@ struct Verification: View {
     
     func formatWorkLocations(_ city: String, _ state: String, _ country: String) -> String {
         
-        return "[{'country': \(country), 'state': \(state), 'city': \(city)}]"
+        return "[{\"country\": \(country), \"state\": \(state), \"city\": \(city)}]"
     }
 }
 

@@ -36,24 +36,24 @@ struct Constants {
     
 
     class Patterns {
-        static var password = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$).{8,}$"
-        static var double = "^\\d{1,100}[.,]{0,1}\\d{0,100}$"
-        static var paragraphOfChars = "^[\\w \\n]{5,3000}$"
-        static var alphanumeric = "^\\w{10,500}$"
-        static var singleLetter = "^[a-zA-Z]{1}$"
-        static var name = "^[a-zA-Z]{3,100}$"
-        static var currency = "[a-zA-Z]{3,5}$"
-        static var digitsOnly = "^\\d{1,100}$"
-        static var slashDate = "[\\d+/]{3,100}$"
-        static var seed = "^[\\w ]{10,1000}$"
-        static var digitsAndDashes = "^[\\d-]{3,100}$"
-        static var phoneNumber = "^(\\+\\d{1,2}\\s?)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$"
-        static var alphanumericWithSpaces = "^[\\w ]{5,100}$"
-        static var email = "^[^@]+@[^@]+\\.[^@]+$"
-        static var uuid4 = "^[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}\\Z$"
-        static var boolean = "^(?i)(true|false)$"
-        static var jsonDictOfUpperAndLowerCaseChars = "^[\\]\\[{}:\"\\\\, a-zA-Z]{2,5000}$"
-        static var resetId = "^\\d{6}$"
+        static var password = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\S+$).{8,}$/
+        static var double = /^\d{1,100}[.,]{0,1}\d{0,100}$/
+        static var paragraphOfChars = /^[\w \n]{5,3000}$/
+        static var alphanumeric = /^\w{10,500}$/
+        static var singleLetter = /^[a-zA-Z]{1}$/
+        static var name = /^[a-zA-Z]{3,100}$/
+        static var currency = /[a-zA-Z]{3,5}$/
+        static var digitsOnly = /^\d{1,100}$/
+        static var slashDate = /[\d+\/]{3,100}$/
+        static var seed = /^[\w ]{10,1000}$/
+        static var digitsAndDashes = /^[\d-]{3,100}$/
+        static var phoneNumber = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
+        static var alphanumericWithSpaces = /^[\w ]{5,100}$/
+        static var email = /^[^@]+@[^@]+\.[^@]+$/
+        static var uuid4 = /^[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}\Z$/
+        static var boolean = /^(?i)(true|false)$/
+        static var jsonDictOfUpperAndLowerCaseChars = /^[\]\[{}:\"\\, a-zA-Z]{2,5000}$/
+        static var resetId = /^\d{6}$/
     }
 
     class Params {

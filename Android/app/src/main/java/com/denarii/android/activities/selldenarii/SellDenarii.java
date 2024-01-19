@@ -329,7 +329,9 @@ public class SellDenarii extends AppCompatActivity {
           goingPrice = ask.getAskingPrice();
         }
       }
-
+      if (goingPrice == Double.MAX_VALUE) {
+        goingPrice = 1;
+      }
       sellDenariiRecyclerViewAdapter.setGoingPrice(String.valueOf(goingPrice), holder);
     } finally {
       reentrantLock.unlock();
