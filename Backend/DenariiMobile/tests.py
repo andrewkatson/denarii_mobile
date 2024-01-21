@@ -37,10 +37,19 @@ def get_all_json_objects_field(response, field):
 
 
 def create_user(name, email, password):
-    response = get_user_id(None, name, email, password)
+    response = register(None, name, email, password)
 
     fields = get_json_fields(response)
     return fields['user_identifier']
+
+
+def login_the_user(username_or_email, password, user_id):
+    request = create_user_request(user_id)
+    response = login_user(request, username_or_email, password)
+
+    assert type(response) != HttpResponseBadRequest
+
+    return response
 
 
 def create_ask(request, user_id, amount, asking_price):
@@ -104,6 +113,7 @@ def make_wallet(user_id, wallet_name, password):
 
 def run_general_setup(user_name, email, user_password, wallet_name, wallet_password):
     user_id = create_user(user_name, email, user_password)
+    _ = login_the_user(user_name, user_password, user_id)
     output = make_wallet(user_id, wallet_name, wallet_password)
     if output is False:
         raise Exception("No output from make_wallet")
@@ -140,48 +150,38 @@ class ViewsTestCase(TestCase):
     other_address = "ADJAFSDJFGADSLFJDASKLFKDSA"
     amount_to_send = 1.0
 
-    def test_get_user_id_new_user_returns_empty_wallet(self):
+    def test_register_new_user_returns_empty_user(self):
         password = "my_password1@O"
-        response = get_user_id(None, self.user, self.email, password)
+        response = register(None, self.user, self.email, password)
 
         self.assertNotEqual(type(response), HttpResponseBadRequest)
 
         new_user = get_user(self.user, self.email, password)
-        new_wallet_fields = get_json_fields(response)
-        self.assertEqual(new_wallet_fields['user_identifier'], str(new_user.id))
+        new_user_fields = get_json_fields(response)
+        self.assertEqual(new_user_fields['user_identifier'], str(new_user.id))
 
-    def test_get_user_id_old_user_returns_existing_wallet(self):
-        password = "other_password8=F"
-        _ = get_user_id(None, self.user, self.email, password)
-        new_user = get_user(self.user, self.email, password)
-
-        request = create_user_request(new_user.id)
-
-        response = get_user_id(request, self.user, self.email, password)
-
-        self.assertNotEqual(type(response), HttpResponseBadRequest)
-
-        wallet_fields = get_json_fields(response)
-        self.assertEqual(wallet_fields['user_identifier'], str(new_user.id))
-
-    def test_get_user_id_existing_username_clashes_returns_error(self):
+    def test_register_existing_username_clashes_returns_error(self):
         password = "lastpass9$G"
-        _ = get_user_id(None, self.user, self.email, password)
+        _ = register(None, self.user, self.email, password)
 
-        response = get_user_id(None, self.user, "otheremail@email.com", "otherpassword")
+        response = register(None, self.user, "otheremail@email.com", "otherpassword9$G")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-    def test_get_user_id_existing_email_clashes_returns_error(self):
+        self.assertContains(response, "User already exists", status_code=400)
+
+    def test_register_existing_email_clashes_returns_error(self):
         password = "lastpass3#M"
-        _ = get_user_id(None, self.user, self.email, password)
+        _ = register(None, self.user, self.email, password)
 
-        response = get_user_id(None, "otheruser", self.email, "otherpassword3#M")
+        response = register(None, "otheruserhere", self.email, "otherpassword3#M")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
-    def test_get_user_id_invalid_params_returns_all_invalid_params(self):
-        response = get_user_id(None, "124", "1", "a")
+        self.assertContains(response, "User already exists", status_code=400)
+
+    def test_register_invalid_params_returns_all_invalid_params(self):
+        response = register(None, "124", "1", "a")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
@@ -189,9 +189,59 @@ class ViewsTestCase(TestCase):
         self.assertContains(response, Params.email, status_code=400)
         self.assertContains(response, Params.password, status_code=400)
 
+    def test_login_old_user_with_username_returns_existing_user(self):
+        password = "other_password8=F"
+        _ = register(None, self.user, self.email, password)
+        new_user = get_user(self.user, self.email, password)
+
+        request = create_user_request(new_user.id)
+
+        response = login_user(request, self.user, password)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        fields = get_json_fields(response)
+        self.assertEqual(fields['user_identifier'], str(new_user.id))
+
+    def test_login_old_user_with_email_returns_existing_user(self):
+        password = "other_password8=F"
+        _ = register(None, self.user, self.email, password)
+        new_user = get_user(self.user, self.email, password)
+
+        request = create_user_request(new_user.id)
+
+        response = login_user(request, self.email, password)
+
+        self.assertNotEqual(type(response), HttpResponseBadRequest)
+
+        fields = get_json_fields(response)
+        self.assertEqual(fields['user_identifier'], str(new_user.id))
+
+    def test_login_old_user_with_wrong_password_returns_existing_user(self):
+        password = "other_password8=F"
+        _ = register(None, self.user, self.email, password)
+        new_user = get_user(self.user, self.email, password)
+
+        request = create_user_request(new_user.id)
+
+        response = login_user(request, self.user, f"f{password}_1")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "Password was not correct", status_code=400)
+
+    def test_login_invalid_params_returns_all_invalid_params(self):
+        response = login_user(None, "124", "a")
+
+        self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, Params.username_or_email, status_code=400)
+        self.assertContains(response, Params.password, status_code=400)
+
     def test_create_wallet_attempts_to_create_wallet(self):
         password = "other_other_passwordD%6"
         user_id = create_user(self.user, self.email, password)
+        _ = login_the_user(self.user, password, user_id)
 
         request = create_user_request(user_id)
         response = create_wallet(request, user_id, self.wallet_name, self.wallet_password)
@@ -483,6 +533,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+        self.assertContains(response, "Could not buy the asked amount", status_code=400)
+
     def test_buy_denarii_regardless_of_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought(self):
         test_values = get_all_test_values(
             "buy_denarii_regardless_of_price_without_enough_to_buy_succeed_on_not_enough_to_buy_but_some_bought")
@@ -537,6 +589,8 @@ class ViewsTestCase(TestCase):
         response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 10.0, "False", "True")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "Could not buy the asked amount", status_code=400)
 
     def test_buy_denarii_considering_price_with_enough_to_buy_outside_of_asking_price_succeed_on_not_enough_in_asking_price(
             self):
@@ -595,6 +649,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+        self.assertContains(response, "Could not buy the asked amount", status_code=400)
+
     def test_buy_denarii_considering_price_with_zero_matches(self):
         test_values = get_all_test_values("buy_denarii_considering_price_with_zero_matches")
 
@@ -605,6 +661,8 @@ class ViewsTestCase(TestCase):
         response = buy_denarii(test_values['request'], test_values['user_id'], amount_to_buy, 0.0, "False", "True")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "No asks could be met with the bid price", status_code=400)
 
     def test_buy_denarii_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("buy_denarii_invalid_params_returns_all_invalid_params")
@@ -703,9 +761,12 @@ class ViewsTestCase(TestCase):
         # Then we create the buyer
         buyer_test_values = get_all_test_values("transfer_denarii_with_ask_that_doesnt_exist_buyer")
 
-        response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], "-1")
+        response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'],
+                                    "349424ec-17d2-41d4-8bd2-4ff8de3de4a4")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "No ask with id", status_code=400)
 
     def test_transfer_denarii_with_ask_not_in_escrow(self):
         # First we create the seller and some asks
@@ -741,6 +802,8 @@ class ViewsTestCase(TestCase):
         second_transfer_response = transfer_denarii(buyer_test_values['request'], buyer_test_values['user_id'], ask_id)
 
         self.assertEqual(type(second_transfer_response), HttpResponseBadRequest)
+
+        self.assertContains(second_transfer_response, "Ask was not bought", status_code=400)
 
     def test_transfer_denarii_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("transfer_denarii_invalid_params_returns_all_invalid_params")
@@ -852,9 +915,11 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("cancel_ask_that_does_not_exist")
 
         _ = create_asks(test_values['request'], test_values['user_id'])
-        response = cancel_ask(test_values['request'], test_values['user_id'], "-1")
+        response = cancel_ask(test_values['request'], test_values['user_id'], "a0c3f8f1-6f4d-4b00-822c-58c7c313ac79")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "No ask with id", status_code=400)
 
     def test_cancel_ask_that_is_in_escrow(self):
         seller_test_values = get_all_test_values("cancel_ask_that_is_in_escrow_seller")
@@ -874,6 +939,8 @@ class ViewsTestCase(TestCase):
         cancel_response = cancel_ask(seller_test_values['request'], seller_test_values['user_id'], ask_ids[0])
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
+
+        self.assertContains(cancel_response, "Ask was already purchased", status_code=400)
 
     def test_cancel_ask_that_was_settled(self):
         seller_test_values = get_all_test_values("cancel_ask_that_was_settled_seller")
@@ -897,6 +964,8 @@ class ViewsTestCase(TestCase):
         cancel_response = cancel_ask(seller_test_values['request'], seller_test_values['user_id'], ask_ids[0])
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
+
+        self.assertContains(cancel_response, "Ask was already purchased", status_code=400)
 
     def test_cancel_ask_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("cancel_ask_invalid_params_returns_all_invalid_params")
@@ -955,11 +1024,14 @@ class ViewsTestCase(TestCase):
     def test_set_credit_card_info_fail_token_create(self):
         test_values = get_all_test_values("set_credit_card_info_fail_token_create")
 
-        # A -1 card number will cause token creation to fail
-        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "-1", "2", "1997",
+        # A 1999-999-9999 card number will cause token creation to fail
+        set_response = set_credit_card_info(test_values['request'], test_values['user_id'], "1999-999-9999", "2",
+                                            "1997",
                                             "123")
 
         self.assertEqual(type(set_response), HttpResponseBadRequest)
+
+        self.assertContains(set_response, "Could not create customer card", status_code=400)
 
     def test_set_credit_card_info_fail_customer_create(self):
         # The prefix will cause a failure to create a customer
@@ -970,6 +1042,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(set_response), HttpResponseBadRequest)
 
+        self.assertContains(set_response, "Could not create customer", status_code=400)
+
     def test_set_credit_card_info_fail_setup_intent_create(self):
         # The prefix will cause a failure to create a setup intent
         test_values = get_all_test_values("fail_setup_intent")
@@ -979,6 +1053,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(set_response), HttpResponseBadRequest)
 
+        self.assertContains(set_response, "Could not create setup intent", status_code=400)
+
     def test_set_credit_card_info_with_info_already_set(self):
         test_values = get_all_test_values("set_credit_card_info_with_info_already_set")
 
@@ -987,11 +1063,13 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        set_response_two = set_credit_card_info(test_values['request'], test_values['user_id'], "other_card_number",
+        set_response_two = set_credit_card_info(test_values['request'], test_values['user_id'], "223-456-7890",
                                                 "3",
                                                 "2002", "456")
 
         self.assertEqual(type(set_response_two), HttpResponseBadRequest)
+
+        self.assertContains(set_response_two, "User already has credit card info", status_code=400)
 
     def test_set_credit_card_info_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("set_credit_card_info_invalid_params_returns_all_invalid_params")
@@ -1031,12 +1109,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(clear_response), HttpResponseBadRequest)
 
+        self.assertContains(clear_response, "Could not delete customer", status_code=400)
+
     def test_clear_credit_card_info_without_credit_card(self):
         test_values = get_all_test_values("clear_credit_card_info_without_credit_card")
 
         clear_response = clear_credit_card_info(test_values['request'], test_values['user_id'])
 
         self.assertEqual(type(clear_response), HttpResponseBadRequest)
+
+        self.assertContains(clear_response, "No credit card for user", status_code=400)
 
     def test_clear_credit_card_info_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("clear_credit_card_info_invalid_params_returns_all_invalid_params")
@@ -1067,10 +1149,12 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        # -3 amount will cause a payment intent creation failure
-        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-3", "usd")
+        # 103 amount will cause a payment intent creation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "103", "usd")
 
         self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+        self.assertContains(get_money_response, "Could not create payment intent", status_code=400)
 
     def test_get_money_from_buyer_fail_payment_intent_confirm(self):
         test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_confirm")
@@ -1080,10 +1164,12 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        # -2 amount will cause a payment intent confirmation failure
-        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-2", "usd")
+        # 102 amount will cause a payment intent confirmation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "102", "usd")
 
         self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+        self.assertContains(get_money_response, "Could not confirm payment intent", status_code=400)
 
     def test_get_money_from_buyer_fail_payment_intent_cancel(self):
         test_values = get_all_test_values("get_money_from_buyer_fail_payment_intent_cancel")
@@ -1093,10 +1179,12 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        # -1 amount will cause a payment intent cancellation failure
-        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "-1", "usd")
+        # 101 amount will cause a payment intent cancellation failure
+        get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "101", "usd")
 
         self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+        self.assertContains(get_money_response, "Could not cancel payment intent", status_code=400)
 
     def test_get_money_from_buyer_without_credit_card(self):
         test_values = get_all_test_values("get_money_from_buyer_without_credit_card")
@@ -1104,6 +1192,8 @@ class ViewsTestCase(TestCase):
         get_money_response = get_money_from_buyer(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(get_money_response), HttpResponseBadRequest)
+
+        self.assertContains(get_money_response, "No credit card for user", status_code=400)
 
     def test_get_money_from_buyer_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("get_money_from_buyer_invalid_params_returns_all_invalid_params")
@@ -1136,10 +1226,12 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        # -1 amount will cause a payout creation failure
-        send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "-1", "usd")
+        # 101 amount will cause a payout creation failure
+        send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "101", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+        self.assertContains(send_response, "Could not create payout", status_code=400)
 
     def test_send_money_to_seller_without_credit_card(self):
         test_values = get_all_test_values("send_money_to_seller_without_credit_card")
@@ -1147,6 +1239,8 @@ class ViewsTestCase(TestCase):
         send_response = send_money_to_seller(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+        self.assertContains(send_response, "No credit card for user", status_code=400)
 
     def test_send_money_to_seller_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("send_money_to_seller_invalid_params_returns_all_invalid_params")
@@ -1331,6 +1425,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+        self.assertContains(response, "Outstanding asks or buys so cannot delete user", status_code=400)
+
     def test_delete_user_with_outstanding_buys(self):
         seller_test_values = get_all_test_values("delete_user_with_outstanding_buys_seller")
 
@@ -1372,12 +1468,16 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(response), HttpResponseBadRequest)
 
+        self.assertContains(response, "Outstanding asks or buys so cannot delete user", status_code=400)
+
     def test_delete_user_with_non_existent_user(self):
         test_values = get_all_test_values("delete_user_with_non_existent_user")
 
-        response = delete_user(test_values['request'], "-1")
+        response = delete_user(test_values['request'], "2c19381a-ce88-49a0-bace-e27d57e2a5d0")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "No user with id", status_code=400)
 
     def test_delete_user_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("delete_user_invalid_params_returns_all_invalid_params")
@@ -1408,9 +1508,12 @@ class ViewsTestCase(TestCase):
     def test_get_ask_with_identifier_with_non_existent_ask(self):
         test_values = get_all_test_values("get_ask_with_identifier_with_non_existent_ask")
 
-        response = get_ask_with_identifier(test_values['request'], test_values['user_id'], "-1")
+        response = get_ask_with_identifier(test_values['request'], test_values['user_id'],
+                                           "8c9d49f5-096a-45a3-b29a-0294d447bb64")
 
         self.assertEqual(type(response), HttpResponseBadRequest)
+
+        self.assertContains(response, "No ask with id", status_code=400)
 
     def test_get_ask_with_identifier_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("get_ask_with_identifier_invalid_params_returns_all_invalid_params")
@@ -1503,9 +1606,11 @@ class ViewsTestCase(TestCase):
         buyer_test_values = get_all_test_values("transfer_denarii_back_to_seller_with_ask_that_doesnt_exist_buyer")
 
         transfer_response = transfer_denarii_back_to_seller(buyer_test_values['request'], buyer_test_values['user_id'],
-                                                            "-1")
+                                                            "92a5e976-21b5-4f6e-8e8d-058b4029a8a8")
 
         self.assertEqual(type(transfer_response), HttpResponseBadRequest)
+
+        self.assertContains(transfer_response, "No ask with id", status_code=400)
 
     def test_transfer_denarii_back_to_seller_with_ask_not_in_escrow(self):
         # First we create the seller and some asks
@@ -1529,6 +1634,8 @@ class ViewsTestCase(TestCase):
                                                             ask_id)
 
         self.assertEqual(type(transfer_response), HttpResponseBadRequest)
+
+        self.assertContains(transfer_response, "Ask was not bought", status_code=400)
 
     def test_transfer_denarii_back_to_seller_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values(
@@ -1561,9 +1668,11 @@ class ViewsTestCase(TestCase):
 
         self.assertNotEqual(type(set_response), HttpResponseBadRequest)
 
-        send_response = send_money_back_to_buyer(test_values['request'], test_values['user_id'], "-1", "usd")
+        send_response = send_money_back_to_buyer(test_values['request'], test_values['user_id'], "101", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+        self.assertContains(send_response, "Could not create payout", status_code=400)
 
     def test_send_money_back_to_buyer_without_credit_card(self):
         test_values = get_all_test_values("send_money_back_to_buyer_without_credit_card")
@@ -1571,6 +1680,8 @@ class ViewsTestCase(TestCase):
         send_response = send_money_back_to_buyer(test_values['request'], test_values['user_id'], "1", "usd")
 
         self.assertEqual(type(send_response), HttpResponseBadRequest)
+
+        self.assertContains(send_response, "No credit card for user", status_code=400)
 
     def test_send_money_back_to_buyer_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("send_money_back_to_buyer_invalid_params_returns_all_invalid_params")
@@ -1624,9 +1735,12 @@ class ViewsTestCase(TestCase):
 
         test_values = get_all_test_values("cancel_buy_of_ask_that_doesnt_exist")
 
-        cancel_response = cancel_buy_of_ask(test_values['request'], test_values['user_id'], "-1")
+        cancel_response = cancel_buy_of_ask(test_values['request'], test_values['user_id'],
+                                            "3675a5e5-70cf-4e48-9c65-feac9dbc705f")
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
+
+        self.assertContains(cancel_response, "No ask with id", status_code=400)
 
     def test_cancel_buy_of_ask_not_in_escrow(self):
         # First we create the seller and some asks
@@ -1640,6 +1754,8 @@ class ViewsTestCase(TestCase):
         cancel_response = cancel_buy_of_ask(buyer_test_values['request'], buyer_test_values['user_id'], asks[0].ask_id)
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
+
+        self.assertContains(cancel_response, "Ask is settled and not in escrow", status_code=400)
 
     def test_cancel_buy_of_ask_that_is_settled(self):
         # First we create the seller and some asks
@@ -1680,6 +1796,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(cancel_response), HttpResponseBadRequest)
 
+        self.assertContains(cancel_response, "Ask is settled and not in escrow", status_code=400)
+
     def test_cancel_buy_of_ask_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("cancel_buy_of_ask_invalid_params_returns_all_invalid_params")
 
@@ -1712,6 +1830,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
 
+        self.assertContains(verify_identity_response, "Could not create candidate", status_code=400)
+
     def test_verify_identity_but_cannot_create_invitation(self):
         test_values = get_all_test_values("verify_identity_but_cannot_create_invitation")
 
@@ -1720,6 +1840,8 @@ class ViewsTestCase(TestCase):
                                                    "123-45-2134", "22102", "2035408926", "[{\"country\":\"US\"}]")
 
         self.assertEqual(type(verify_identity_response), HttpResponseBadRequest)
+
+        self.assertContains(verify_identity_response, "Could not create invitation", status_code=400)
 
     def test_verify_identity_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("verify_identity_invalid_params_returns_all_invalid_params")
@@ -2004,9 +2126,11 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("update_non_existent_support_ticket")
 
         update_response = update_support_ticket(test_values['request'], test_values['user_id'],
-                                                "-1", "update comment")
+                                                "8a99c23a-a0fd-4542-91a3-ff1aebc413f7", "update comment")
 
         self.assertEqual(type(update_response), HttpResponseBadRequest)
+
+        self.assertContains(update_response, "No support ticket with id", status_code=400)
 
     def test_update_support_ticket_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("update_support_ticket_invalid_params_returns_all_invalid_params")
@@ -2040,6 +2164,8 @@ class ViewsTestCase(TestCase):
                                                 "98756ed1-e1b0-41a6-abd7-5e3a675ea5c0")
 
         self.assertEqual(type(delete_response), HttpResponseBadRequest)
+
+        self.assertContains(delete_response, "No support ticket with id", status_code=400)
 
     def test_delete_support_ticket_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("delete_support_ticket_invalid_params_returns_all_invalid_params")
@@ -2179,9 +2305,11 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("get_support_ticket_comments_for_non_existent_support_ticket")
 
         get_comments_response = get_comments_on_ticket(test_values['request'], test_values['user_id'],
-                                                       "-1")
+                                                       "3aae1872-1b53-42ce-9bb9-0a6079760017")
 
         self.assertEqual(type(get_comments_response), HttpResponseBadRequest)
+
+        self.assertContains(get_comments_response, "No support ticket with id", status_code=400)
 
     def test_get_support_ticket_comments_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("get_support_ticket_comments_invalid_params_returns_all_invalid_params")
@@ -2210,8 +2338,10 @@ class ViewsTestCase(TestCase):
         test_values = get_all_test_values("resolve_non_existent_support_ticket")
 
         resolve_response = resolve_support_ticket(test_values['request'], test_values['user_id'],
-                                                  "-1")
+                                                  "5d179258-e7b6-4567-b084-55f12b895fa6")
         self.assertEqual(type(resolve_response), HttpResponseBadRequest)
+
+        self.assertContains(resolve_response, "No support ticket with id", status_code=400)
 
     def test_resolve_ticket_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("resolve_ticket_invalid_params_returns_all_invalid_params")
@@ -2330,9 +2460,11 @@ class ViewsTestCase(TestCase):
         self.assertNotEqual(type(response_two), HttpResponseBadRequest)
 
         get_all_response = get_support_ticket(test_values['request'], test_values['user_id'],
-                                              "-1")
+                                              "a095b1c7-b230-4e56-91ac-ed3052bacf90")
 
         self.assertEqual(type(get_all_response), HttpResponseBadRequest)
+
+        self.assertContains(get_all_response, "No support ticket with id", status_code=400)
 
     def test_get_support_ticket_invalid_params_returns_all_invalid_params(self):
         dict_of_values = get_all_test_values("get_support_ticket_invalid_params_returns_all_invalid_params")

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import check_password
 from django.core import serializers
 from django.core.mail import send_mail
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -123,6 +124,10 @@ def get_credit_card(user):
         return None
 
 
+def open_current_user_wallet(user_wallet):
+    return client.set_current_wallet(user_wallet)
+
+
 def try_to_buy_denarii(ordered_asks, to_buy_amount, bid_price, buy_regardless_of_price, fail_if_full_amount_isnt_met):
     current_bought_amount = 0
     amount_to_buy_left = to_buy_amount
@@ -173,9 +178,7 @@ def update_user_verification_status(user):
         user.save()
 
 
-# In spite of its name this function handles login and registration
-# TODO: split up
-def get_user_id(request, username, email, password):
+def register(request, username, email, password):
     invalid_fields = []
     if not is_valid_pattern(username, Patterns.alphanumeric):
         invalid_fields.append(Params.username)
@@ -191,13 +194,8 @@ def get_user_id(request, username, email, password):
 
     existing = get_user(username, email, password)
     if existing is not None:
-        login(request, existing)
-        response = Response.objects.create(user_identifier=str(existing.id))
-
-        serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
-        return JsonResponse({'response_list': serialized_response_list})
+        return HttpResponseBadRequest("User already exists")
     else:
-
         # We first need to check no user has this email or username.
         if get_user_with_username(username) is not None or get_user_with_email(email) is not None:
             return HttpResponseBadRequest("User already exists")
@@ -213,6 +211,33 @@ def get_user_id(request, username, email, password):
 
         serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
         return JsonResponse({'response_list': serialized_response_list})
+
+
+def login_user(request, username_or_email, password):
+    invalid_fields = []
+    if not is_valid_pattern(username_or_email, Patterns.alphanumeric) and not is_valid_pattern(username_or_email,
+                                                                                               Patterns.email):
+        invalid_fields.append(Params.username_or_email)
+
+    if not is_valid_pattern(password, Patterns.password):
+        invalid_fields.append(Params.password)
+
+    if len(invalid_fields) > 0:
+        return HttpResponseBadRequest(f"Invalid fields: {invalid_fields}")
+
+    existing = get_user_with_username_or_email(username_or_email)
+    if existing is not None:
+
+        if not check_password(password, existing.password):
+            return HttpResponseBadRequest("Password was not correct")
+
+        login(request, existing)
+        response = Response.objects.create(user_identifier=str(existing.id))
+
+        serialized_response_list = serializers.serialize('json', [response], fields='user_identifier')
+        return JsonResponse({'response_list': serialized_response_list})
+    else:
+        return HttpResponseBadRequest("No user exists with that information")
 
 
 def request_reset(request, username_or_email):
@@ -454,7 +479,7 @@ def open_wallet(request, user_id, wallet_name, password):
 
         if res is True:
             existing_wallet.wallet_name = wallet_interface.name
-            existing_wallet.wallet_address = wallet_interface.password
+            existing_wallet.wallet_password = wallet_interface.password
 
             res = client.query_seed(wallet_interface)
             if res is True:
@@ -506,17 +531,21 @@ def get_balance(request, user_id, wallet_name):
 
         wallet_interface = wallet.Wallet(wallet_name, existing_wallet.wallet_password)
 
-        wallet_interface.balance = client.get_balance_of_wallet(wallet_interface)
-        existing_wallet.balance = wallet_interface.balance
+        if open_current_user_wallet(wallet_interface):
 
-        existing_wallet.save()
+            wallet_interface.balance = client.get_balance_of_wallet(wallet_interface)
+            existing_wallet.balance = wallet_interface.balance
 
-        response = Response.objects.create(balance=existing_wallet.balance)
+            existing_wallet.save()
 
-        serialized_response_list = serializers.serialize('json', [response],
-                                                         fields='balance')
+            response = Response.objects.create(balance=existing_wallet.balance)
 
-        return JsonResponse({'response_list': serialized_response_list})
+            serialized_response_list = serializers.serialize('json', [response],
+                                                             fields='balance')
+
+            return JsonResponse({'response_list': serialized_response_list})
+        else:
+            return HttpResponseBadRequest("Couldn't open user wallet")
 
     else:
         return HttpResponseBadRequest("No user with id")
@@ -548,27 +577,31 @@ def send_denarii(request, user_id, wallet_name, address, amount):
             return HttpResponseBadRequest("No wallet for user")
 
         sender = wallet.Wallet(wallet_name, existing_wallet.wallet_password)
-        # We only need the receiver's address not their wallet name and password
-        receiver = wallet.Wallet("", "")
-        receiver.address = address
 
-        amount_sent = client.transfer_money(float(amount), sender, receiver)
+        if open_current_user_wallet(sender):
 
-        existing_wallet.balance = client.get_balance_of_wallet(sender)
+            # We only need the receiver's address not their wallet name and password
+            receiver = wallet.Wallet("", "")
+            receiver.address = address
 
-        existing_wallet.save()
+            amount_sent = client.transfer_money(float(amount), sender, receiver)
 
-        # We explicitly send no fields when sending denarii because the client should know how much was sent
-        # based on whether the call was successful or not.
-        response = Response.objects.create()
+            existing_wallet.balance = client.get_balance_of_wallet(sender)
 
-        serialized_response_list = serializers.serialize('json', [response], fields=())
+            existing_wallet.save()
 
-        if amount_sent is True:
-            return JsonResponse({'response_list': serialized_response_list})
+            # We explicitly send no fields when sending denarii because the client should know how much was sent
+            # based on whether the call was successful or not.
+            response = Response.objects.create()
+
+            serialized_response_list = serializers.serialize('json', [response], fields=())
+
+            if amount_sent is True:
+                return JsonResponse({'response_list': serialized_response_list})
+            else:
+                return HttpResponseBadRequest("Could not send denarii")
         else:
-            return HttpResponseBadRequest("Could not send denarii")
-
+            return HttpResponseBadRequest("Couldn't open user wallet")
     else:
         return HttpResponseBadRequest("No user with id")
 
@@ -699,42 +732,51 @@ def transfer_denarii(request, user_id, ask_id):
                 if receiver_wallet is None:
                     return HttpResponseBadRequest("No wallet for receiving user")
 
-                sender = wallet.Wallet(sender_user_wallet.wallet_name, sender_user_wallet.wallet_password)
-                receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
+                sender = wallet.Wallet(sender_user_wallet.wallet_name,
+                                       sender_user_wallet.wallet_password)
+                receiver = wallet.Wallet(receiver_wallet.wallet_name,
+                                         receiver_wallet.wallet_password)
                 receiver.address = receiver_wallet.wallet_address
 
-                amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
+                if open_current_user_wallet(sender):
 
-                sender_user_wallet.balance = client.get_balance_of_wallet(sender)
+                    amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
 
-                sender_user_wallet.save()
+                    sender_user_wallet.balance = client.get_balance_of_wallet(sender)
 
-                receiver_wallet.balance = client.get_balance_of_wallet(receiver)
+                    sender_user_wallet.save()
 
-                receiver_wallet.save()
+                    if open_current_user_wallet(receiver):
 
-                response = Response.objects.create(ask_id=ask.ask_id, amount_bought=ask.amount_bought)
+                        receiver_wallet.balance = client.get_balance_of_wallet(receiver)
 
-                ask.in_escrow = False
-                ask.buyer = None
-                ask.amount = ask.amount - ask.amount_bought
-                ask.amount_bought = 0
+                        receiver_wallet.save()
 
-                serialized_response_list = serializers.serialize('json', [response], fields=('ask_id', 'amount_bought'))
+                        response = Response.objects.create(ask_id=ask.ask_id, amount_bought=ask.amount_bought)
 
-                # An ask is always settled if the transfer worked. It will get unsettled later on if it still has
-                # money in it.
-                ask.is_settled = True
-                ask.save()
+                        ask.in_escrow = False
+                        ask.buyer = None
+                        ask.amount = ask.amount - ask.amount_bought
+                        ask.amount_bought = 0
 
-                if amount_sent is True:
-                    return JsonResponse({'response_list': serialized_response_list})
+                        serialized_response_list = serializers.serialize('json', [response],
+                                                                         fields=('ask_id', 'amount_bought'))
+
+                        # An ask is always settled if the transfer worked. It will get unsettled later on if it still has
+                        # money in it.
+                        ask.is_settled = True
+                        ask.save()
+
+                        if amount_sent is True:
+                            return JsonResponse({'response_list': serialized_response_list})
+                        else:
+                            return HttpResponseBadRequest("Could not transfer denarii")
+                    else:
+                        return HttpResponseBadRequest("Couldn't open user wallet")
                 else:
-                    return HttpResponseBadRequest("Could not transfer denarii")
-
+                    return HttpResponseBadRequest("Couldn't open user wallet")
             else:
                 return HttpResponseBadRequest("Ask was not bought")
-
         else:
             return HttpResponseBadRequest("No ask with id")
     else:
@@ -1234,31 +1276,39 @@ def transfer_denarii_back_to_seller(request, user_id, ask_id):
                 receiver = wallet.Wallet(receiver_wallet.wallet_name, receiver_wallet.wallet_password)
                 receiver.address = receiver_wallet.wallet_address
 
-                amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
+                if open_current_user_wallet(sender):
 
-                if not amount_sent:
-                    return HttpResponseBadRequest("Could not transfer denarii")
+                    amount_sent = client.transfer_money(float(ask.amount_bought), sender, receiver)
 
-                sender_user_wallet.balance = client.get_balance_of_wallet(sender)
+                    if not amount_sent:
+                        return HttpResponseBadRequest("Could not transfer denarii")
 
-                sender_user_wallet.save()
+                    sender_user_wallet.balance = client.get_balance_of_wallet(sender)
 
-                receiver_wallet.balance = client.get_balance_of_wallet(receiver)
+                    sender_user_wallet.save()
 
-                receiver_wallet.save()
+                    if open_current_user_wallet(receiver):
 
-                ask.in_escrow = False
-                ask.buyer = None
-                ask.amount += ask.amount_bought
-                ask.amount_bought = 0
+                        receiver_wallet.balance = client.get_balance_of_wallet(receiver)
 
-                response = Response.objects.create(ask_id=ask.ask_id)
+                        receiver_wallet.save()
 
-                serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
+                        ask.in_escrow = False
+                        ask.buyer = None
+                        ask.amount += ask.amount_bought
+                        ask.amount_bought = 0
 
-                ask.save()
+                        response = Response.objects.create(ask_id=ask.ask_id)
 
-                return JsonResponse({'response_list': serialized_response_list})
+                        serialized_response_list = serializers.serialize('json', [response], fields='ask_id')
+
+                        ask.save()
+
+                        return JsonResponse({'response_list': serialized_response_list})
+                    else:
+                        return HttpResponseBadRequest("Couldn't open user wallet")
+                else:
+                    return HttpResponseBadRequest("Couldn't open user wallet")
             else:
                 return HttpResponseBadRequest("Ask was not bought")
         else:
@@ -1327,24 +1377,20 @@ def cancel_buy_of_ask(request, user_id, ask_id):
         ask = get_ask_with_id(ask_id)
 
         if ask is not None:
-            if ask.in_escrow:
-                if not ask.is_settled:
+            if ask.in_escrow and not ask.is_settled:
+                ask.in_escrow = False
+                ask.buyer = None
+                ask.amount_bought = 0
 
-                    ask.in_escrow = False
-                    ask.buyer = None
-                    ask.amount_bought = 0
+                ask.save()
 
-                    ask.save()
+                response = Response.objects.create()
 
-                    response = Response.objects.create()
-
-                    # Just send a successful response
-                    serialized_response_list = serializers.serialize('json', [response], fields=())
-                    return JsonResponse({'response_list': serialized_response_list})
-                else:
-                    return HttpResponseBadRequest("Ask is settled it cannot be cancelled")
+                # Just send a successful response
+                serialized_response_list = serializers.serialize('json', [response], fields=())
+                return JsonResponse({'response_list': serialized_response_list})
             else:
-                return HttpResponseBadRequest("Ask is not in escrow nothing to do")
+                return HttpResponseBadRequest("Ask is settled and not in escrow")
         else:
             return HttpResponseBadRequest("No ask with id")
     else:
@@ -1706,7 +1752,7 @@ def get_support_ticket(request, user_id, support_ticket_id):
         support_tickets = existing.supportticket_set.all().filter(support_id=support_ticket_id)
 
         if len(support_tickets) == 0:
-            return HttpResponseBadRequest("No support ticket with that id")
+            return HttpResponseBadRequest("No support ticket with id")
 
         for ticket in support_tickets:
             response = Response.objects.create(support_ticket_id=ticket.support_id, author=existing.username,

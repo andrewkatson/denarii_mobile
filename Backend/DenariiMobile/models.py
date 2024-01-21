@@ -2,6 +2,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django_cryptography.fields import encrypt
 
 
 class DenariiUser(AbstractUser):
@@ -102,7 +103,7 @@ class Response(models.Model):
 
 class WalletDetails(models.Model):
     wallet_name = models.TextField(null=True)
-    wallet_password = models.TextField(null=True)
+    wallet_password = encrypt(models.TextField(null=True))
     seed = models.TextField(null=True)
     balance = models.FloatField(null=True)
     wallet_address = models.TextField(null=True)

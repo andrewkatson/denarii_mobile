@@ -71,7 +71,7 @@ class TokenClass:
         self.expiration_year = card['exp_year']
         self.cvc = card['cvc']
 
-        if self.card_number == "-1":
+        if self.card_number == "1999-999-9999":
             raise Exception("Failed to create credit card token")
 
         return {'id': "tok_something"}
@@ -99,13 +99,13 @@ class PaymentIntentClass:
         self.customer = customer
         self.receipt_email = receipt_email
 
-        if self.amount == -3:
+        if self.amount == 103:
             raise Exception("Failed to create payment intent")
 
-        if self.amount == -2:
+        if self.amount == 102:
             return {'id': 'pi_fail_confirm'}
 
-        if self.amount == -1:
+        if self.amount == 101:
             return {'id': 'pi_fail_cancel'}
 
         return {'id': "pi_something"}
@@ -148,7 +148,7 @@ class PayoutClass:
         self.currency = currency
         self.destination = destination
 
-        if amount == -1:
+        if amount == 101:
             raise Exception("Failed to create payout")
 
         return {'id': "po_something"}
