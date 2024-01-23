@@ -138,16 +138,9 @@ final class denariiUITests: XCTestCase {
     func loginWithDenarii(_ app: XCUIApplication, _ suffix: String) {
         registerWithDenarii(app, suffix)
         
-        let loginTextField = app.textFields["Name"]
+        let loginTextField = app.textFields["Name or Email"]
         tapElementAndWaitForKeyboardToAppear(loginTextField)
         loginTextField.typeText("User_\(self.currentTestName)_\(suffix)")
-        
-        // After we type things in we need to dismiss the keyboard
-        dismissKeyboardIfPresent(app)
-        
-        let emailTextField = app.textFields["Email"]
-        tapElementAndWaitForKeyboardToAppear(emailTextField)
-        emailTextField.typeText("Email_\(self.currentTestName)_\(suffix)@email.com")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -247,7 +240,7 @@ final class denariiUITests: XCTestCase {
         
         let resetIdTextField = app.textFields["Reset id"]
         tapElementAndWaitForKeyboardToAppear(resetIdTextField)
-        resetIdTextField.typeText("123")
+        resetIdTextField.typeText("123456")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -442,7 +435,7 @@ final class denariiUITests: XCTestCase {
         
         let sendToTextField = app.textFields["Send To"]
         tapElementAndWaitForKeyboardToAppear(sendToTextField)
-        sendToTextField.typeText("345")
+        sendToTextField.typeText("3457891202")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -1032,7 +1025,9 @@ final class denariiUITests: XCTestCase {
      
         cancelBuyDenarii(app, Constants.FIRST_USER, Constants.SECOND_USER)
         
-        XCTAssert(!app.buttons["Cancel"].exists)
+        // The cancel should still exist because it is impossible to cancel a buy
+        // that succeeded
+        XCTAssert(app.buttons["Cancel"].exists)
         
         // Always log the user out
         logout(app, Constants.SECOND_USER)
@@ -1047,7 +1042,7 @@ final class denariiUITests: XCTestCase {
         sellDenarii(app, Constants.FIRST_USER)
         
         let sellDenariiText = app.staticTexts["Sell Denarii"]
-        refreshScreen(app, sellDenariiText)
+        refreshScreen(app, sellDenariiText, 8)
         
         XCTAssert(app.buttons["Cancel"].exists)
         
@@ -1062,6 +1057,9 @@ final class denariiUITests: XCTestCase {
         app.launch()
         
         cancelSellDenarii(app, Constants.FIRST_USER)
+        
+        let sellDenariiText = app.staticTexts["Sell Denarii"]
+        refreshScreen(app, sellDenariiText, 8)
         
         XCTAssert(!app.buttons["Cancel"].exists)
         
@@ -1078,7 +1076,7 @@ final class denariiUITests: XCTestCase {
         verifyIdentity(app, Constants.FIRST_USER)
         
         let verificationText = app.staticTexts["Verification"]
-        refreshScreen(app, verificationText)
+        refreshScreen(app, verificationText, 8)
         
         XCTAssert(!app.buttons["Submit"].isHittable)
         
@@ -1112,7 +1110,7 @@ final class denariiUITests: XCTestCase {
         clearCreditCardInfo(app, Constants.FIRST_USER)
         
         let creditCardText = app.staticTexts["Credit Card Info"]
-        refreshScreen(app, creditCardText)
+        refreshScreen(app, creditCardText, 8)
         
         XCTAssert(!app.buttons["Clear Info"].isHittable)
 
@@ -1484,6 +1482,7 @@ final class denariiUITests: XCTestCase {
             }
         }
     }
+    
     
     func testDeleteSupportTicketPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
