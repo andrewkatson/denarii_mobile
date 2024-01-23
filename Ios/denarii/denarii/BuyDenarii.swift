@@ -583,7 +583,8 @@ struct BuyDenarii: View {
                 }
             }
             
-            if successfullyCancelledAsk {
+            // If the ask is not cancelled successfully then it sits in the queue
+            if !successfullyCancelledAsk {
                 newQueuedBuys.append(ask)
             }
         }

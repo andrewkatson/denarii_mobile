@@ -151,16 +151,9 @@ final class denariiUITestsLaunchTests: XCTestCase {
     func loginWithDenarii(_ app: XCUIApplication, _ suffix: String) {
         registerWithDenarii(app, suffix)
         
-        let loginTextField = app.textFields["Name"]
+        let loginTextField = app.textFields["Name or Email"]
         tapElementAndWaitForKeyboardToAppear(loginTextField)
         loginTextField.typeText("User_\(self.currentTestName)_\(suffix)")
-        
-        // After we type things in we need to dismiss the keyboard
-        dismissKeyboardIfPresent(app)
-        
-        let emailTextField = app.textFields["Email"]
-        tapElementAndWaitForKeyboardToAppear(emailTextField)
-        emailTextField.typeText("Email_\(self.currentTestName)_\(suffix)@email.com")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -260,7 +253,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
         
         let resetIdTextField = app.textFields["Reset id"]
         tapElementAndWaitForKeyboardToAppear(resetIdTextField)
-        resetIdTextField.typeText("123")
+        resetIdTextField.typeText("123456")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -455,7 +448,7 @@ final class denariiUITestsLaunchTests: XCTestCase {
         
         let sendToTextField = app.textFields["Send To"]
         tapElementAndWaitForKeyboardToAppear(sendToTextField)
-        sendToTextField.typeText("345")
+        sendToTextField.typeText("3457891202")
         
         // After we type things in we need to dismiss the keyboard
         dismissKeyboardIfPresent(app)
@@ -855,10 +848,12 @@ final class denariiUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
         
         // get the name and remove the class name and what comes before the class name
-        self.currentTestName = self.name.replacingOccurrences(of: "-[denariiUITests ", with: "")
+        self.currentTestName = self.name.replacingOccurrences(of: "-[denariiUITestsLaunchTests ", with: "")
 
         // And then you'll need to remove the closing square bracket at the end of the test name
         self.currentTestName = self.currentTestName.replacingOccurrences(of: "]", with: "")
+        
+        self.currentTestName = self.currentTestName.replacingOccurrences(of: " ", with: "_")
     }
 
     func testLaunchScreen() throws {

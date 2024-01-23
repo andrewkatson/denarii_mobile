@@ -79,7 +79,7 @@ struct RegisterView: View {
             }
             
             let api = Config.api
-            let denariiResponses = api.getUserId(username, email, password)
+            let denariiResponses = api.register(username, email, password)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
                 return false

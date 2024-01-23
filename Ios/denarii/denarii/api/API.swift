@@ -8,8 +8,11 @@
 import Foundation
 
 protocol API {
-    // Returns a DenariiResponse instance with a user identifier
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse>
+    // Returns a DenariiResponse instance with a user identifier and registers the user
+    func register(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse>
+    
+    // Returns a DenariiResponse instance with a user identifier and logs the user in
+    func login(_ usernameOrEmail: String, _ password: String) -> Array<DenariiResponse>
     
     // Returns a DenariiResponse instance with nothing in it
     func requestPasswordReset(_ usernameOrEmail: String) -> Array<DenariiResponse>
@@ -170,8 +173,13 @@ class RealAPI: API {
         return denariiResponses
     }
 
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
-        let urlString = "\(urlBase)/users/\(username)/\(email)/\(password)"
+    func register(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/register/\(username)/\(email)/\(password)"
+        return makeApiCall(urlString)
+    }
+    
+    func login(_ usernameOrEmail: String, _ password: String) -> Array<DenariiResponse> {
+        let urlString = "\(urlBase)/users/login/\(usernameOrEmail)/\(password)"
         return makeApiCall(urlString)
     }
     
@@ -424,25 +432,24 @@ class StubbedAPI: API {
         return true
     }
     
-    func getUserId(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
+    func register(_ username: String, _ email: String, _ password: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         
         var denariiResponse = DenariiResponse()
         denariiResponse.responseCode = 200
         
         var foundUser = false
-        var aUser = UserDetails()
         for user in self.users {
             if user.userName == username && user.userEmail == email && user.userPassword == password{
                 foundUser = true
-                aUser = user
                 break
             }
         }
         
         if foundUser {
-            denariiResponse.userIdentifier = aUser.userID
-            self.loggedInUser = aUser
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
         } else if !self.loggedInUser.userID.isEmpty {
             denariiResponse.responseCode = -1
             denariiResponses.append(denariiResponse)
@@ -462,6 +469,36 @@ class StubbedAPI: API {
         return denariiResponses
     }
     
+    func login(_ usernameOrEmail: String, _ password: String) -> Array<DenariiResponse> {
+        var denariiResponses = Array<DenariiResponse>()
+        
+        var denariiResponse = DenariiResponse()
+        denariiResponse.responseCode = 200
+        
+        var foundUser = false
+        var aUser = UserDetails()
+        for user in self.users {
+            if (user.userName == usernameOrEmail || user.userEmail == usernameOrEmail) && user.userPassword == password{
+                foundUser = true
+                aUser = user
+                break
+            }
+        }
+        
+        if foundUser && self.loggedInUser.userID.isEmpty {
+            denariiResponse.userIdentifier = aUser.userID
+            self.loggedInUser = aUser
+        } else {
+            denariiResponse.responseCode = -1
+            denariiResponses.append(denariiResponse)
+            return denariiResponses
+        }
+        
+        denariiResponses.append(denariiResponse)
+        
+        return denariiResponses
+    }
+    
     func requestPasswordReset(_ usernameOrEmail: String) -> Array<DenariiResponse> {
         var denariiResponses = Array<DenariiResponse>()
         
@@ -472,7 +509,7 @@ class StubbedAPI: API {
             let user = self.users[index]
             if user.userName == usernameOrEmail || user.userEmail == usernameOrEmail {
                 // A static resetID to make testing easier
-                user.denariiUser.resetID = 123
+                user.denariiUser.resetID = 123456
                 break
             }
         }

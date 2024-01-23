@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var username: String = ""
-    @State private var email: String = ""
+    @State private var usernameOrEmail: String = ""
     @State private var password: String = ""
     @State private var isSubmitted: Bool = false
     @State private var showingPopover = false
@@ -29,8 +28,7 @@ struct LoginView: View {
             VStack(alignment: .center) {
                 Text("Login").font(.largeTitle)
                 Spacer()
-                TextField("Name", text: $username)
-                TextField("Email", text: $email)
+                TextField("Name or Email", text: $usernameOrEmail)
                 SecureField("Password", text: $password).autocorrectionDisabled().textContentType(.newPassword)
                 Button("Submit") {
                     isSubmitted = attemptSubmit()
@@ -67,12 +65,8 @@ struct LoginView: View {
             
             var invalid_fields: Array<String> = Array()
             
-            if !is_valid_input(username, Constants.Patterns.alphanumeric) {
-                invalid_fields.append(Constants.Params.username)
-            }
-            
-            if !is_valid_input(email, Constants.Patterns.email) {
-                invalid_fields.append(Constants.Params.email)
+            if !is_valid_input(usernameOrEmail, Constants.Patterns.alphanumeric) && !is_valid_input(usernameOrEmail, Constants.Patterns.email) {
+                invalid_fields.append(Constants.Params.usernameOrEmail)
             }
             
             if !is_valid_input(password, Constants.Patterns.password) {
@@ -85,7 +79,7 @@ struct LoginView: View {
             }
             
             let api = Config.api
-            let denariiResponses = api.getUserId(username, email, password)
+            let denariiResponses = api.login(usernameOrEmail, password)
             if denariiResponses.isEmpty {
                 successOrFailure.setValue("Failed to login there were no responses from server")
                 return false
