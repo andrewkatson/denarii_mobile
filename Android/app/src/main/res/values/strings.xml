@@ -47,9 +47,8 @@
     <string name="login_next_text">Next</string>
     <string name="login_failure_text">Failure</string>
     <string name="login_success_text">Success</string>
-    <string name="login_name_text">Your Name</string>
+    <string name="login_name_text">Your Name or Email</string>
     <string name="login_password_text">Your Password</string>
-    <string name="login_email_text">Your Email</string>
     <string name="register_confirm_password_text">Confirm Password</string>
     <string name="register_submit_text">Submit</string>
     <string name="register_failure_text">Failure</string>

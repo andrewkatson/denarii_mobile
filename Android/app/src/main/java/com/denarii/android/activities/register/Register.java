@@ -92,7 +92,7 @@ public class Register extends AppCompatActivity {
     }
     DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
     Call<List<DenariiResponse>> walletCall =
-        denariiService.getUserId(
+        denariiService.register(
             userDetails.getUserName(), userDetails.getUserEmail(), userDetails.getUserPassword());
     final UserDetails[] finalUserDetails = {userDetails};
     walletCall.enqueue(

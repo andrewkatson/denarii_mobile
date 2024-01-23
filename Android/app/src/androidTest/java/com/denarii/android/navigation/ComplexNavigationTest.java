@@ -533,8 +533,6 @@ public class ComplexNavigationTest {
   private void strictlyLoginWithDenarii(String name, String email, String password) {
     onView(withId(R.id.login_enter_name_edit_text)).perform(typeText(name), closeSoftKeyboard());
 
-    onView(withId(R.id.login_enter_email_edit_text)).perform(typeText(email), closeSoftKeyboard());
-
     onView(withId(R.id.login_enter_password_edit_text))
         .perform(typeText(password), closeSoftKeyboard());
 

@@ -40,14 +40,10 @@ public class Login extends AppCompatActivity {
 
     submit.setOnClickListener(
         v -> {
-          EditText name = (EditText) findViewById(R.id.login_enter_name_edit_text);
-          if (!isValidInput(name, Constants.ALPHANUMERIC_PATTERN)) {
+          EditText usernameOrEmail = (EditText) findViewById(R.id.login_enter_name_edit_text);
+          if (!isValidInput(usernameOrEmail, Constants.ALPHANUMERIC_PATTERN)
+              && !isValidInput(usernameOrEmail, Patterns.EMAIL_ADDRESS)) {
             createFailureToast("Not a valid name");
-            return;
-          }
-          EditText email = (EditText) findViewById(R.id.login_enter_email_edit_text);
-          if (!isValidInput(email, Patterns.EMAIL_ADDRESS)) {
-            createFailureToast("Not a valid email");
             return;
           }
 
@@ -56,8 +52,11 @@ public class Login extends AppCompatActivity {
             return;
           }
 
-          userDetails.setUserName(name.getText().toString());
-          userDetails.setUserEmail(email.getText().toString());
+          if (isValidInput(usernameOrEmail, Constants.ALPHANUMERIC_PATTERN)) {
+            userDetails.setUserName(usernameOrEmail.getText().toString());
+          } else if (isValidInput(usernameOrEmail, Patterns.EMAIL_ADDRESS)) {
+            userDetails.setUserEmail(usernameOrEmail.getText().toString());
+          }
           userDetails.setUserPassword(password.getText().toString());
 
           getUserID(userDetails);
@@ -90,10 +89,11 @@ public class Login extends AppCompatActivity {
     if (userDetails == null) {
       userDetails = UnpackDenariiResponse.validUserDetails();
     }
+    EditText usernameOrEmail = findViewById(R.id.login_enter_name_edit_text);
+
     DenariiService denariiService = DenariiServiceHandler.returnDenariiService();
     Call<List<DenariiResponse>> walletCall =
-        denariiService.getUserId(
-            userDetails.getUserName(), userDetails.getUserEmail(), userDetails.getUserPassword());
+        denariiService.login(usernameOrEmail.getText().toString(), userDetails.getUserPassword());
     final UserDetails[] finalUserDetails = {userDetails};
     final boolean[] succeeded = {false};
     walletCall.enqueue(

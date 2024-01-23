@@ -228,7 +228,7 @@ public class StubbedDenariiService implements DenariiService {
   }
 
   @Override
-  public Call<List<DenariiResponse>> getUserId(String userName, String email, String password) {
+  public Call<List<DenariiResponse>> register(String userName, String email, String password) {
     List<DenariiResponse> responses = new ArrayList<>();
 
     UserDetails foundUser = null;
@@ -243,10 +243,8 @@ public class StubbedDenariiService implements DenariiService {
 
     DenariiResponse response = new DenariiResponse();
     if (foundUser != null) {
-      response.userIdentifier = foundUser.getUserID();
-      loggedInUser = foundUser;
+      return new StubbedCall(responses);
     } else if (loggedInUser != null) {
-
       return new StubbedCall(responses);
     } else {
       // This is the same as registering
@@ -262,6 +260,32 @@ public class StubbedDenariiService implements DenariiService {
       users.put(newUser.getUserID(), newUser);
 
       lastUserId += 1;
+    }
+
+    responses.add(response);
+    return new StubbedCall(responses);
+  }
+
+  @Override
+  public Call<List<DenariiResponse>> login(String userNameOrEmail, String password) {
+    List<DenariiResponse> responses = new ArrayList<>();
+
+    UserDetails foundUser = null;
+    for (UserDetails user : users.values()) {
+      if ((Objects.equals(user.getUserName(), userNameOrEmail)
+              || Objects.equals(user.getUserEmail(), userNameOrEmail))
+          && Objects.equals(user.getUserPassword(), password)) {
+        foundUser = user;
+        break;
+      }
+    }
+
+    DenariiResponse response = new DenariiResponse();
+    if (foundUser != null && loggedInUser == null) {
+      response.userIdentifier = foundUser.getUserID();
+      loggedInUser = foundUser;
+    } else {
+      return new StubbedCall(responses);
     }
 
     responses.add(response);

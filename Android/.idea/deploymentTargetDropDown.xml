@@ -5,6 +5,9 @@
       <entry key="All Tests">
         <State />
       </entry>
+      <entry key="Tests in 'com.denarii.android'">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>
@@ -18,9 +21,6 @@
         <State />
       </entry>
       <entry key="createSupportTicketCommentThenResolve_withValidData_createsSupportTicketCommentsThenResolves()">
-        <State />
-      </entry>
-      <entry key="sendDenarii_withValidData_sendsDenarii()">
         <State />
       </entry>
     </value>

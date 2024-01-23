@@ -11,12 +11,17 @@ import retrofit2.http.Path;
 
 public interface DenariiService {
 
-  // Returns a single Wallet instance with a user identifier
-  @GET("users/{user}/{email}/{password}")
-  Call<List<DenariiResponse>> getUserId(
+  // Returns a single Wallet instance with a user identifier and registers the user
+  @GET("users/register/{user}/{email}/{password}")
+  Call<List<DenariiResponse>> register(
       @Path("user") String userName,
       @Path("email") String email,
       @Path("password") String password);
+
+  // Returns a single Wallet instance with a user identifier and logs the user in
+  @GET("users/login/{user}/{email}/{password}")
+  Call<List<DenariiResponse>> login(
+      @Path("user_or_email") String userName, @Path("password") String password);
 
   // Returns a single Wallet instance with nothing in it
   @GET("users/request_reset/{username_or_email}")
